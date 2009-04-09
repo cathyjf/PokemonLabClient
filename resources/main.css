@@ -1,0 +1,16 @@
+.self, .others {
+	font-weight: bold;
+}
+
+.self {
+	color: green;
+}
+
+.others {
+	color: blue;
+}
+
+a {
+	color: blue;
+	text-decoration: underline;
+}
