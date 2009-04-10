@@ -24,8 +24,11 @@
 package shoddybattleclient;
 
 import java.awt.Dimension;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.ArrayList;
-
 import shoddybattleclient.shoddybattle.*;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
 import shoddybattleclient.utils.*;
@@ -43,25 +46,35 @@ public class TeamBuilder extends javax.swing.JFrame {
     /** Creates new form TeamBuilder */
     public TeamBuilder() {
         initComponents();
-        
+        long t1 = System.currentTimeMillis();
         MoveListParser mlp = new MoveListParser();
         m_moves = mlp.parseDocument("resources/moves2.xml");
         SpeciesListParser parser = new SpeciesListParser();
         m_species = parser.parseDocument("resources/species.xml");
         String[] species = getSpeciesList();
+        long t2 = System.currentTimeMillis();
+        System.out.println("Loaded moves and species info in " + (t2-t1) + " milliseconds");
 
         //TODO: Catherine claims that she wants other numbers of teams
         for (int i = 0; i < 6; i++) {
             TeamBuilderForm tbf = new TeamBuilderForm(this, species, i);
             m_forms[i] = tbf;
-            tabForms.addTab("Bulbasaur", tbf);
+            tabForms.addTab("", tbf);
+            tbf.setPokemon(new Pokemon("Bulbasaur", "", false, Gender.GENDER_MALE, 100, "None", "None", "None",
+                new String[] {null, null, null, null}, new int[] {3,3,3,3}, new int[] {31,31,31,31,31,31},
+                new int[] {0,0,0,0,0,0}), true);
         }
         Dimension d = m_forms[0].getPreferredSize();
         setSize((int)d.getWidth() + 50, (int)d.getHeight() + 100);
     }
 
-    public PokemonSpecies getSpecies(int i) {
-        return m_species.get(i);
+    public PokemonSpecies getSpecies(String species) {
+        for (PokemonSpecies sp : m_species) {
+            if (sp.getName().equals(species)) {
+                return sp;
+            }
+        }
+        return null;
     }
 
     public String[] getSpeciesList() {
@@ -81,6 +94,31 @@ public class TeamBuilder extends javax.swing.JFrame {
         return m_moves;
     }
 
+    private void saveTeam() {
+        int length = m_forms.length;
+        StringBuffer buf = new StringBuffer();
+        buf.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<shoddybattle>\n\n");
+        for (int i = 0; i < length; i++) {
+            //team[i] = m_forms[i].getPokemon();
+            Pokemon p = new Pokemon("Bulbasaur", "", false, Gender.GENDER_MALE, 100, "None", "None", "None",
+                new String[] {null, null, null, null}, new int[] {3,3,3,3}, new int[] {31,31,31,31,31,31},
+                new int[] {0,0,0,0,0,0});
+            buf.append(p.toXML());
+            buf.append("\n");
+        }
+        buf.append("</shoddybattle>");
+
+        try {
+            Writer output = new PrintWriter(new FileWriter("testteam.sbt"));
+            output.write(new String(buf));
+            output.flush();
+            output.close();
+        } catch (IOException e) {
+            System.out.println("Failed to write team to file");
+        }
+
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -95,6 +133,8 @@ public class TeamBuilder extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         menuNew = new javax.swing.JMenuItem();
         menuLoad = new javax.swing.JMenuItem();
+        menuSave = new javax.swing.JMenuItem();
+        menuSaveAs = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
         menuExport = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
@@ -125,6 +165,23 @@ public class TeamBuilder extends javax.swing.JFrame {
             }
         });
         jMenu1.add(menuLoad);
+
+        menuSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+        menuSave.setText("Save");
+        menuSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuSaveActionPerformed(evt);
+            }
+        });
+        jMenu1.add(menuSave);
+
+        menuSaveAs.setText("Save As...");
+        menuSaveAs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuSaveAsActionPerformed(evt);
+            }
+        });
+        jMenu1.add(menuSaveAs);
         jMenu1.add(jSeparator1);
 
         menuExport.setText("Export to Text");
@@ -172,11 +229,16 @@ public class TeamBuilder extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosing
 
     private void menuLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLoadActionPerformed
-        Pokemon p = new Pokemon(0, "Bulby", false, Gender.GENDER_MALE, 100, 1, 1, 1,
-                new int[] {1,2,3,4}, new int[] {0,1,2,3}, new int[] {0,1,2,3,4,5},
-                new int[] {0,10,20,30,40,50});
-        m_forms[0].setPokemon(p, true);
+        
 }//GEN-LAST:event_menuLoadActionPerformed
+
+    private void menuSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSaveActionPerformed
+        saveTeam();
+}//GEN-LAST:event_menuSaveActionPerformed
+
+    private void menuSaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSaveAsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_menuSaveAsActionPerformed
 
     /**
     * @param args the command line arguments
@@ -200,6 +262,8 @@ public class TeamBuilder extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuLoad;
     private javax.swing.JMenuItem menuNew;
     private javax.swing.JMenuItem menuRandomise;
+    private javax.swing.JMenuItem menuSave;
+    private javax.swing.JMenuItem menuSaveAs;
     private javax.swing.JTabbedPane tabForms;
     // End of variables declaration//GEN-END:variables
 

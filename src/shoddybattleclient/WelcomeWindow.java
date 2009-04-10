@@ -23,6 +23,7 @@
 
 package shoddybattleclient;
 import javax.swing.UIManager;
+import shoddybattleclient.utils.*;
 
 /**
  *
@@ -30,9 +31,60 @@ import javax.swing.UIManager;
  */
 public class WelcomeWindow extends javax.swing.JFrame {
 
+    public static class ServerListEntry {
+        private String m_host;
+        private int m_port;
+        private String m_name;
+        private int m_users;
+        private int m_maxUsers;
+        private String m_desc;
+        
+        public ServerListEntry(String name, String desc, String host, int port,
+                int users, int maxUsers) {
+            m_name = name;
+            m_desc = desc;
+            m_host = host;
+            m_port = port;
+            m_users = users;
+            m_maxUsers = maxUsers;
+        }
+        public String getName() {
+            return m_name;
+        }
+        public String getHost() {
+            return m_host;
+        }
+        public int getPort() {
+            return m_port;
+        }
+        public int getUsers() {
+            return m_users;
+        }
+        public int getMaxUsers() {
+            return m_maxUsers;
+        }
+        public String getDescription() {
+            return m_desc;
+        }
+        public String toString() {
+            return m_name;
+        }
+    }
+
     /** Creates new form WelcomeWindow */
     public WelcomeWindow() {
         initComponents();
+        ServerListEntry sle = new ServerListEntry("Official Server", 
+                "The official server of Shoddy Battle", "official.shoddybattle.com",
+                8446, 150, 250);
+        ServerListEntry sle2 = new ServerListEntry("Smogon", 
+                "Official server of smogon.com", "shoddy.smogon.com",
+                50000, 150, 250);
+        ServerListEntry sle3 = new ServerListEntry("Pokemonexperte",
+                "A german server.", "shoddy.pokemonexperte.com",
+                1234, 50, 250);
+        lstServers.setModel(new ServerListModel(new ServerListEntry[] {sle,sle2,sle3}));
+        lstServers.setCellRenderer(new ServerListRenderer());
     }
 
     /** This method is called from within the constructor to
@@ -44,11 +96,8 @@ public class WelcomeWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
         serverListPane = new javax.swing.JScrollPane();
-        btnConnect = new javax.swing.JButton();
-        btnAdvanced = new javax.swing.JButton();
-        btnRefresh = new javax.swing.JButton();
+        lstServers = new javax.swing.JList();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         cmdTeamBuilder = new javax.swing.JMenuItem();
@@ -57,24 +106,12 @@ public class WelcomeWindow extends javax.swing.JFrame {
         setTitle("Shoddy Battle - Server List");
         setLocationByPlatform(true);
 
-        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 42));
-        jLabel1.setText("Shoddy Battle");
-
-        btnConnect.setText("Connect");
-        btnConnect.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnConnectActionPerformed(evt);
+        lstServers.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lstServersMouseClicked(evt);
             }
         });
-
-        btnAdvanced.setText("Advanced");
-        btnAdvanced.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAdvancedActionPerformed(evt);
-            }
-        });
-
-        btnRefresh.setText("Refresh");
+        serverListPane.setViewportView(lstServers);
 
         jMenu1.setText("File");
 
@@ -96,52 +133,32 @@ public class WelcomeWindow extends javax.swing.JFrame {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .add(serverListPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                                .add(org.jdesktop.layout.GroupLayout.TRAILING, btnRefresh, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
-                                .add(org.jdesktop.layout.GroupLayout.TRAILING, btnAdvanced))
-                            .add(btnConnect)))
-                    .add(jLabel1))
+                .add(serverListPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
                 .addContainerGap())
         );
-
-        layout.linkSize(new java.awt.Component[] {btnAdvanced, btnConnect}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
-
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(jLabel1)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(btnConnect)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(btnAdvanced)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 147, Short.MAX_VALUE)
-                        .add(btnRefresh))
-                    .add(serverListPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE))
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .add(serverListPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectActionPerformed
-        new ServerConnect().setVisible(true);
-        this.dispose();
-}//GEN-LAST:event_btnConnectActionPerformed
-
-    private void btnAdvancedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdvancedActionPerformed
-        new AdvancedDialog(this).setVisible(true);
-}//GEN-LAST:event_btnAdvancedActionPerformed
-
     private void cmdTeamBuilderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdTeamBuilderActionPerformed
         new TeamBuilder().setVisible(true);
 }//GEN-LAST:event_cmdTeamBuilderActionPerformed
+
+    private void lstServersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstServersMouseClicked
+        if (evt.getClickCount() == 2) {
+            int index = lstServers.locationToIndex(evt.getPoint());
+            System.out.println(lstServers.getModel().getElementAt(index));
+            new ServerConnect().setVisible(true);
+            dispose();
+        }
+    }//GEN-LAST:event_lstServersMouseClicked
 
     /**
     * @param args the command line arguments
@@ -150,6 +167,7 @@ public class WelcomeWindow extends javax.swing.JFrame {
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            //UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             System.setProperty("apple.laf.useScreenMenuBar", "true");
         } catch (Exception e) {
             
@@ -162,13 +180,10 @@ public class WelcomeWindow extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAdvanced;
-    private javax.swing.JButton btnConnect;
-    private javax.swing.JButton btnRefresh;
     private javax.swing.JMenuItem cmdTeamBuilder;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JList lstServers;
     private javax.swing.JScrollPane serverListPane;
     // End of variables declaration//GEN-END:variables
 

@@ -21,7 +21,6 @@
  */
 
 package shoddybattleclient.shoddybattle;
-
 /**
  *
  * @author ben
@@ -29,33 +28,49 @@ package shoddybattleclient.shoddybattle;
 public class Pokemon {
 
     public static enum Gender {
-        GENDER_MALE,
-        GENDER_FEMALE,
-        GENDER_NONE,
-        GENDER_BOTH
+        GENDER_MALE   ("Male"),
+        GENDER_FEMALE ("Female"),
+        GENDER_NONE   ("None"),
+        GENDER_BOTH   ("Both");
+
+        private String m_name;
+        Gender(String name) {
+            m_name = name;
+        }
+
+        public String getName() {
+            return m_name;
+        }
     }
+
+    public static final int S_HP = 0;
+    public static final int S_ATK = 1;
+    public static final int S_DEF = 2;
+    public static final int S_SPD = 3;
+    public static final int S_SPATK = 4;
+    public static final int S_SPDEF = 5;
 
     public static final int MOVE_COUNT = 4;
     public static final int STAT_COUNT = 6;
 
-    public int speciesId;
+    public String species;
     public String nickname;
     public boolean shiny;
     public Gender gender;
     public int level;
-    public int item;
-    public int ability;
-    public int nature;
-    public int[] moves = new int[MOVE_COUNT];
+    public String item;
+    public String ability;
+    public String nature;
+    public String[] moves = new String[MOVE_COUNT];
     public int[] ppUps = new int[MOVE_COUNT];
     public int[] ivs = new int[STAT_COUNT];
     public int[] evs = new int[STAT_COUNT];
 
-    public Pokemon(int speciesId, String nickname, boolean shiny, Gender gender,
-            int level, int item, int ability, int nature, int[] moves, int[] ppUps,
-            int[] ivs, int[] evs) {
+    public Pokemon(String species, String nickname, boolean shiny, Gender gender,
+            int level, String item, String ability, String nature, String[] moves,
+            int[] ppUps, int[] ivs, int[] evs) {
 
-        this.speciesId = speciesId;
+        this.species = species;
         this.nickname = nickname;
         this.shiny = shiny;
         this.gender = gender;
@@ -68,4 +83,74 @@ public class Pokemon {
         this.ivs = ivs;
         this.evs = evs;
     }
+
+    public String getStatName(int idx) {
+        switch(idx) {
+            case S_HP:
+                return "HP";
+            case S_ATK:
+                return "Atk";
+            case S_DEF:
+                return "Def";
+            case S_SPD:
+                return "Spd";
+            case S_SPDEF:
+                return "SpDef";
+            case S_SPATK:
+                return "SpAtk";
+            default:
+                return "Bad stat index";
+        }
+    }
+
+    public String toXML() {
+        StringBuffer buf = new StringBuffer();
+        buf.append("<pokemon species=\"");
+        buf.append(species);
+        buf.append("\">\n");
+        buf.append("<nickname>");
+        buf.append(nickname);
+        buf.append("</nickname>\n");
+        if (shiny) {
+            buf.append("<shiny />\n");
+        }
+        buf.append("<level>");
+        buf.append(level);
+        buf.append("</level>\n");
+        buf.append("<gender>");
+        buf.append(gender.getName());
+        buf.append("</gender>\n");
+        buf.append("<nature>");
+        buf.append(nature);
+        buf.append("</nature>\n");
+        buf.append("<item>");
+        buf.append(item);
+        buf.append("</item>\n");
+        buf.append("<ability>");
+        buf.append(ability);
+        buf.append("</ability>\n");
+        buf.append(("<moveset>\n"));
+        for (int i = 0; i < MOVE_COUNT; i++) {
+            buf.append(("\t<move pp-up=\""));
+            buf.append(ppUps[i]);
+            buf.append("\">");
+            buf.append(moves[i]);
+            buf.append("</move>\n");
+        }
+        buf.append("</moveset>\n");
+        buf.append("<stats>\n");
+        for (int i = 0; i < STAT_COUNT; i++) {
+            buf.append("\t<stat name=\"");
+            buf.append(getStatName(i));
+            buf.append("\" iv=\"");
+            buf.append(ivs[i]);
+            buf.append("\" ev=\"");
+            buf.append(evs[i]);
+            buf.append("\" />\n");
+        }
+        buf.append("</stats>\n");
+        buf.append("</pokemon>\n");
+        return new String(buf);
+    }
+    
 }

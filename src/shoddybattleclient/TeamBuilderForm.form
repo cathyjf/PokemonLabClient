@@ -16,7 +16,7 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
@@ -26,7 +26,7 @@
                   </Group>
                   <Group type="102" attributes="0">
                       <EmptySpace min="7" pref="7" max="7" attributes="0"/>
-                      <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
+                      <Component id="jPanel2" min="-2" pref="281" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -42,7 +42,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="chkShiny" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Group type="102" alignment="0" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
                       <Component id="jLabel28" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="cmbPp0" min="-2" max="-2" attributes="0"/>
@@ -53,46 +53,41 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="cmbPp3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="scrollMoves" pref="391" max="32767" attributes="0"/>
+                  <Component id="scrollMoves" alignment="1" pref="405" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="cmbPokemon" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txtNickname" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="cmbItem" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="chkShiny" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="cmbGender" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txtLevel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel24" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="cmbPokemon" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtNickname" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                      <Component id="scrollMoves" pref="307" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="1">
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="cmbItem" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="chkShiny" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="cmbGender" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtLevel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel24" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="scrollMoves" pref="0" max="32767" attributes="0"/>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel28" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="cmbPp0" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="cmbPp1" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="cmbPp2" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="cmbPp3" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="cmbPp0" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
+                  <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -116,6 +111,66 @@
     <Component class="javax.swing.JLabel" name="jLabel24">
       <Properties>
         <Property name="text" type="java.lang.String" value="Level:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel28">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Lucida Grande" size="13" style="1"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="PP UPs:"/>
+      </Properties>
+    </Component>
+    <Container class="javax.swing.JScrollPane" name="scrollMoves">
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+    </Container>
+    <Component class="javax.swing.JComboBox" name="cmbPp0">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="4">
+            <StringItem index="0" value="0"/>
+            <StringItem index="1" value="1"/>
+            <StringItem index="2" value="2"/>
+            <StringItem index="3" value="3"/>
+          </StringArray>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="cmbPp1">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="4">
+            <StringItem index="0" value="0"/>
+            <StringItem index="1" value="1"/>
+            <StringItem index="2" value="2"/>
+            <StringItem index="3" value="3"/>
+          </StringArray>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="cmbPp2">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="4">
+            <StringItem index="0" value="0"/>
+            <StringItem index="1" value="1"/>
+            <StringItem index="2" value="2"/>
+            <StringItem index="3" value="3"/>
+          </StringArray>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="cmbPp3">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="4">
+            <StringItem index="0" value="0"/>
+            <StringItem index="1" value="1"/>
+            <StringItem index="2" value="2"/>
+            <StringItem index="3" value="3"/>
+          </StringArray>
+        </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtLevel">
@@ -146,94 +201,98 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jLabel26" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel27" alignment="0" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="cmbNature" linkSize="1" alignment="0" min="-2" pref="211" max="-2" attributes="0"/>
-                      <Component id="cmbAbility" linkSize="1" alignment="0" min="-2" pref="210" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
-              </Group>
-              <Group type="102" alignment="0" attributes="1">
-                  <Component id="jLabel25" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="cmbHiddenPower" pref="0" max="32767" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="txtHiddenPower" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
-              </Group>
-              <Group type="102" alignment="0" attributes="0">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel9" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel12" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel15" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel18" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel21" alignment="0" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                      <Component id="totalSpDef" min="-2" pref="28" max="-2" attributes="0"/>
-                      <Component id="totalSpAtk" min="-2" pref="28" max="-2" attributes="0"/>
-                      <Component id="totalSpd" min="-2" pref="28" max="-2" attributes="0"/>
-                      <Component id="totalDef" min="-2" pref="28" max="-2" attributes="0"/>
-                      <Component id="totalAtk" min="-2" pref="28" max="-2" attributes="0"/>
-                      <Component id="totalHp" min="-2" pref="28" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace pref="18" max="32767" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="baseHp" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
-                      <Component id="baseAtk" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
-                      <Component id="baseDef" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
-                      <Component id="baseSpd" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
-                      <Component id="baseSpAtk" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
-                      <Component id="baseSpDef" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Group type="102" alignment="0" attributes="1">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="ivHp" linkSize="3" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
-                              <Component id="ivAtk" linkSize="3" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
-                              <Component id="ivDef" linkSize="3" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
-                              <Component id="ivSpd" linkSize="3" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
-                              <Component id="ivSpAtk" linkSize="3" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
-                              <Component id="ivSpDef" linkSize="3" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                              <Component id="evSpd" linkSize="2" alignment="1" min="-2" pref="40" max="-2" attributes="1"/>
-                              <Component id="evSpAtk" linkSize="2" alignment="1" min="-2" pref="40" max="-2" attributes="1"/>
-                              <Component id="evSpDef" linkSize="2" alignment="1" min="-2" pref="40" max="-2" attributes="1"/>
-                              <Component id="evHp" linkSize="2" alignment="1" min="-2" pref="40" max="-2" attributes="1"/>
-                              <Component id="evAtk" linkSize="2" alignment="1" min="-2" pref="40" max="-2" attributes="1"/>
-                              <Component id="evDef" linkSize="2" alignment="1" min="-2" pref="40" max="-2" attributes="1"/>
-                          </Group>
-                      </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel9" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel12" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel15" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel18" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel21" alignment="0" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                              <Component id="totalSpDef" min="-2" pref="28" max="-2" attributes="0"/>
+                              <Component id="totalSpAtk" min="-2" pref="28" max="-2" attributes="0"/>
+                              <Component id="totalSpd" min="-2" pref="28" max="-2" attributes="0"/>
+                              <Component id="totalDef" min="-2" pref="28" max="-2" attributes="0"/>
+                              <Component id="totalAtk" min="-2" pref="28" max="-2" attributes="0"/>
+                              <Component id="totalHp" min="-2" pref="28" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="baseHp" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
+                              <Component id="baseAtk" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
+                              <Component id="baseDef" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
+                              <Component id="baseSpd" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
+                              <Component id="baseSpAtk" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
+                              <Component id="baseSpDef" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Group type="102" alignment="0" attributes="1">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="ivHp" linkSize="3" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
+                                      <Component id="ivAtk" linkSize="3" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
+                                      <Component id="ivDef" linkSize="3" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
+                                      <Component id="ivSpd" linkSize="3" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
+                                      <Component id="ivSpAtk" linkSize="3" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
+                                      <Component id="ivSpDef" linkSize="3" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                      <Component id="evSpd" linkSize="2" alignment="1" pref="40" max="32767" attributes="1"/>
+                                      <Component id="evSpAtk" linkSize="2" alignment="1" pref="40" max="32767" attributes="1"/>
+                                      <Component id="evSpDef" linkSize="2" alignment="1" pref="40" max="32767" attributes="1"/>
+                                      <Component id="evHp" linkSize="2" alignment="1" pref="40" max="32767" attributes="1"/>
+                                      <Component id="evAtk" linkSize="2" alignment="1" pref="40" max="32767" attributes="1"/>
+                                      <Component id="evDef" linkSize="2" alignment="1" pref="40" max="32767" attributes="1"/>
+                                  </Group>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="evsTotal" min="-2" pref="60" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                      </Group>
+                      <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                          <Group type="102" alignment="0" attributes="1">
+                              <Component id="jLabel25" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="cmbHiddenPower" max="32767" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="txtHiddenPower" min="-2" max="-2" attributes="1"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jLabel26" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel27" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="cmbNature" linkSize="1" alignment="0" min="-2" pref="211" max="-2" attributes="0"/>
+                                  <Component id="cmbAbility" linkSize="1" alignment="0" min="-2" pref="210" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
                       </Group>
                   </Group>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
+              <Group type="102" alignment="1" attributes="0">
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="evsTotal" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
@@ -297,8 +356,8 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel25" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="cmbHiddenPower" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="txtHiddenPower" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="cmbHiddenPower" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -393,12 +452,15 @@
             <Property name="text" type="java.lang.String" value="Sp. Defense"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="jLabel5">
+        <Component class="javax.swing.JLabel" name="evsTotal">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Lucida Grande" size="13" style="1"/>
+              <Font name="Lucida Grande" size="11" style="1"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="(0/510)"/>
+            <Property name="text" type="java.lang.String" value="(000/510)"/>
+            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[50, 16]"/>
+            </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="evSpDef">
@@ -507,7 +569,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel27">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Ability"/>
+            <Property name="text" type="java.lang.String" value="Ability:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel26">
@@ -540,6 +602,12 @@
             <Property name="text" type="java.lang.String" value="Hidden Power:"/>
           </Properties>
         </Component>
+        <Component class="javax.swing.JTextField" name="txtHiddenPower">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+            <Property name="text" type="java.lang.String" value="70"/>
+          </Properties>
+        </Component>
         <Component class="javax.swing.JComboBox" name="cmbHiddenPower">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
@@ -549,17 +617,7 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="txtHiddenPower">
-          <Properties>
-            <Property name="editable" type="boolean" value="false"/>
-            <Property name="text" type="java.lang.String" value="70"/>
-          </Properties>
-        </Component>
       </SubComponents>
-    </Container>
-    <Container class="javax.swing.JScrollPane" name="scrollMoves">
-
-      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
     </Container>
     <Component class="javax.swing.JComboBox" name="cmbItem">
       <Properties>
@@ -567,62 +625,6 @@
           <StringArray count="2">
             <StringItem index="0" value="No Item"/>
             <StringItem index="1" value="Leftovers"/>
-          </StringArray>
-        </Property>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="jLabel28">
-      <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Lucida Grande" size="13" style="1"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="PP UPs:"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JComboBox" name="cmbPp0">
-      <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="4">
-            <StringItem index="0" value="0"/>
-            <StringItem index="1" value="1"/>
-            <StringItem index="2" value="2"/>
-            <StringItem index="3" value="3"/>
-          </StringArray>
-        </Property>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JComboBox" name="cmbPp1">
-      <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="4">
-            <StringItem index="0" value="0"/>
-            <StringItem index="1" value="1"/>
-            <StringItem index="2" value="2"/>
-            <StringItem index="3" value="3"/>
-          </StringArray>
-        </Property>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JComboBox" name="cmbPp2">
-      <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="4">
-            <StringItem index="0" value="0"/>
-            <StringItem index="1" value="1"/>
-            <StringItem index="2" value="2"/>
-            <StringItem index="3" value="3"/>
-          </StringArray>
-        </Property>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JComboBox" name="cmbPp3">
-      <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="4">
-            <StringItem index="0" value="0"/>
-            <StringItem index="1" value="1"/>
-            <StringItem index="2" value="2"/>
-            <StringItem index="3" value="3"/>
           </StringArray>
         </Property>
       </Properties>
