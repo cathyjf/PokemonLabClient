@@ -62,14 +62,17 @@ public class ServerLink extends Thread {
             m_map = new HashMap<Integer, ServerMessage>();
             
             new ServerMessage(0, new MessageHandler() { // WELCOME_MESSAGE
+                // int32  : server version
                 // string : server name
                 // string : welcome message
                 public void handle(ServerLink link, DataInputStream is)
                         throws IOException {
+                    int version = is.readInt();
                     String name = is.readUTF();
                     String welcome = is.readUTF();
 
                     System.out.println("Received WELCOME_MESSAGE.");
+                    System.out.println("Server version: " + version);
                     System.out.println("Server name: " + name);
                     System.out.println("Welcome message: " + welcome);
                 }
