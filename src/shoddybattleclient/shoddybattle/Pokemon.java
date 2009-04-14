@@ -37,18 +37,21 @@ public class Pokemon {
         Gender(String name) {
             m_name = name;
         }
-
         public String getName() {
+            return m_name;
+        }
+        @Override
+        public String toString() {
             return m_name;
         }
     }
 
     public static final int S_HP = 0;
-    public static final int S_ATK = 1;
-    public static final int S_DEF = 2;
-    public static final int S_SPD = 3;
-    public static final int S_SPATK = 4;
-    public static final int S_SPDEF = 5;
+    public static final int S_ATTACK = 1;
+    public static final int S_DEFENCE = 2;
+    public static final int S_SPEED = 3;
+    public static final int S_SPATTACK = 4;
+    public static final int S_SPDEFENCE = 5;
 
     public static final int MOVE_COUNT = 4;
     public static final int STAT_COUNT = 6;
@@ -84,19 +87,23 @@ public class Pokemon {
         this.evs = evs;
     }
 
-    public String getStatName(int idx) {
+    public Pokemon() {
+        
+    }
+
+    public static String getStatName(int idx) {
         switch(idx) {
             case S_HP:
                 return "HP";
-            case S_ATK:
+            case S_ATTACK:
                 return "Atk";
-            case S_DEF:
+            case S_DEFENCE:
                 return "Def";
-            case S_SPD:
+            case S_SPEED:
                 return "Spd";
-            case S_SPDEF:
+            case S_SPDEFENCE:
                 return "SpDef";
-            case S_SPATK:
+            case S_SPATTACK:
                 return "SpAtk";
             default:
                 return "Bad stat index";
@@ -130,7 +137,8 @@ public class Pokemon {
         buf.append(ability);
         buf.append("</ability>\n");
         buf.append(("<moveset>\n"));
-        for (int i = 0; i < MOVE_COUNT; i++) {
+        for (int i = 0; i < moves.length; i++) {
+            if (moves[i] == null) continue;
             buf.append(("\t<move pp-up=\""));
             buf.append(ppUps[i]);
             buf.append("\">");

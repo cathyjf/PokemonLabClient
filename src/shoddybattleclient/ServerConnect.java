@@ -23,6 +23,13 @@
 
 package shoddybattleclient;
 
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.StyleSheet;
+
 /**
  *
  * @author ben
@@ -30,8 +37,31 @@ package shoddybattleclient;
 public class ServerConnect extends javax.swing.JFrame {
 
     /** Creates new form ServerConnect */
-    public ServerConnect() {
+    public ServerConnect(String name, String message) {
         initComponents();
+        lblName.setText(name);
+        HTMLEditorKit kit = new HTMLEditorKit();
+        StyleSheet css = new StyleSheet();
+        css.addRule("a {color: blue; text-decoration: underline;}");
+        kit.setStyleSheet(css);
+        txtWelcome.setEditorKit(kit);
+        txtWelcome.addHyperlinkListener(new HyperlinkListener() {
+            public void hyperlinkUpdate(HyperlinkEvent e) {
+                if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                    LobbyWindow.viewWebPage(e.getURL());
+                }
+            }
+        });
+        message = "<p>" + message;
+        message = message.replaceAll("\n", "</p><p>");
+        message += "</p>";
+        HTMLDocument doc = (HTMLDocument)txtWelcome.getDocument();
+        try {
+            kit.insertHTML(doc, 0, message, 0, 0, null);
+        } catch (Exception e) {
+            //really should not be here
+        }
+        txtWelcome.setCaretPosition(0);
     }
 
     /** This method is called from within the constructor to
@@ -43,9 +73,9 @@ public class ServerConnect extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        lblName = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jEditorPane1 = new javax.swing.JEditorPane();
+        txtWelcome = new javax.swing.JEditorPane();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -68,11 +98,12 @@ public class ServerConnect extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 24));
-        jLabel1.setText("Server Name");
+        lblName.setFont(new java.awt.Font("Lucida Grande", 1, 24)); // NOI18N
+        lblName.setText("Server Name");
 
-        jEditorPane1.setContentType("text/html");
-        jScrollPane1.setViewportView(jEditorPane1);
+        txtWelcome.setContentType("text/html");
+        txtWelcome.setEditable(false);
+        jScrollPane1.setViewportView(txtWelcome);
 
         jLabel2.setText("Username:");
 
@@ -101,7 +132,7 @@ public class ServerConnect extends javax.swing.JFrame {
                             .add(txtLoginUsername, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 164, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(txtLoginPassword, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 164, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                     .add(jButton1))
-                .addContainerGap(83, Short.MAX_VALUE))
+                .addContainerGap(59, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -142,7 +173,7 @@ public class ServerConnect extends javax.swing.JFrame {
                         .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                             .add(jPasswordField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 164, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 164, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(83, Short.MAX_VALUE))
+                .addContainerGap(59, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -168,15 +199,15 @@ public class ServerConnect extends javax.swing.JFrame {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE))
+                    .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, lblName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .add(jLabel1)
+                .add(lblName)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
@@ -193,7 +224,7 @@ public class ServerConnect extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosing
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        new LobbyWindow().setVisible(true);
+        new LobbyWindow("Ben").setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -203,7 +234,7 @@ public class ServerConnect extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ServerConnect().setVisible(true);
+                new ServerConnect("test server", "Hello").setVisible(true);
             }
         });
     }
@@ -211,8 +242,6 @@ public class ServerConnect extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JEditorPane jEditorPane1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -223,8 +252,10 @@ public class ServerConnect extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel lblName;
     private javax.swing.JPasswordField txtLoginPassword;
     private javax.swing.JTextField txtLoginUsername;
+    private javax.swing.JEditorPane txtWelcome;
     // End of variables declaration//GEN-END:variables
 
 }

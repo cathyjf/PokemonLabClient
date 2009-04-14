@@ -66,8 +66,10 @@ public class ServerListRenderer extends JPanel implements ListCellRenderer {
         int h = getHeight();
         //initial left margin
         int left = 5;
+        //draw background
         g.setColor(getBackground());
         g.fillRect(0, 0, w, h);
+        //draw the server name and description
         g.setColor(Color.BLACK);
         g.setFont(getFont().deriveFont(18f).deriveFont(Font.BOLD));
         g.drawString(m_sle.getName(), left, h / 2);

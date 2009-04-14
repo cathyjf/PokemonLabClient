@@ -23,6 +23,7 @@
 
 package shoddybattleclient;
 
+import javax.swing.JScrollPane;
 import shoddybattleclient.utils.HTMLPane;
 
 /**
@@ -32,17 +33,21 @@ import shoddybattleclient.utils.HTMLPane;
 public class ChatPane extends javax.swing.JPanel {
 
     private HTMLPane m_chatPane;
+    private LobbyWindow m_lobby;
+    private String m_name;
 
     /** Creates new form ChatPane */
-    public ChatPane() {
+    public ChatPane(LobbyWindow lobby, String name) {
+        m_lobby = lobby;
+        m_name = name;
         initComponents();
-        m_chatPane = new HTMLPane("Ben");
+        m_chatPane = new HTMLPane(name);
+        scrollChat.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollChat.add(m_chatPane);
         scrollChat.setViewportView(m_chatPane);
-        
     }
 
-    void addMessage(String user, String message) {
+    public void addMessage(String user, String message) {
         m_chatPane.addMessage(user, message);
     }
 
@@ -50,7 +55,15 @@ public class ChatPane extends javax.swing.JPanel {
         if (message.equals("") || txtChat.getForeground().equals(java.awt.Color.GRAY)) {
             return;
         }
-        m_chatPane.addMessage("Ben", message);
+        m_chatPane.addMessage(m_name, message);
+    }
+
+    public JScrollPane getPane() {
+        return scrollChat;
+    }
+
+    public HTMLPane getChat() {
+        return m_chatPane;
     }
 
     /** This method is called from within the constructor to
@@ -86,6 +99,8 @@ public class ChatPane extends javax.swing.JPanel {
                 jButton1ActionPerformed(evt);
             }
         });
+
+        scrollChat.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);

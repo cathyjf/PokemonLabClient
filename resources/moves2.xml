@@ -12,13 +12,7 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Karate Chop" id="1">
@@ -33,13 +27,8 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
+	<high-critical/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Doubleslap" id="2">
@@ -96,13 +85,7 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Pay Day" id="5">
@@ -197,13 +180,7 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Vicegrip" id="10">
@@ -218,13 +195,7 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Guillotine" id="11">
@@ -297,13 +268,7 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Gust" id="15">
@@ -317,13 +282,7 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Wing Attack" id="16">
@@ -338,18 +297,13 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Whirlwind" id="17">
 <type>Normal</type>
 <class>Other</class>
+<priority>-6</priority>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
@@ -420,13 +374,7 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Vine Whip" id="21">
@@ -503,13 +451,7 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Jump Kick" id="25">
@@ -545,13 +487,7 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Sand-Attack" id="27">
@@ -606,13 +542,7 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Fury Attack" id="30">
@@ -668,13 +598,7 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Body Slam" id="33">
@@ -922,6 +846,7 @@
 <move name="Roar" id="45">
 <type>Normal</type>
 <class>Other</class>
+<priority>-6</priority>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
@@ -1103,13 +1028,7 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Hydro Pump" id="55">
@@ -1123,13 +1042,7 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Surf" id="56">
@@ -1143,13 +1056,7 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Ice Beam" id="57">
@@ -1279,13 +1186,7 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Drill Peck" id="64">
@@ -1300,13 +1201,7 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Submission" id="65">
@@ -1354,6 +1249,7 @@
 <move name="Counter" id="67">
 <type>Fighting</type>
 <class>Physical</class>
+<priority>-5</priority>
 <power>1</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
@@ -1402,13 +1298,7 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Absorb" id="70">
@@ -1498,13 +1388,8 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
+	<high-critical/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Solarbeam" id="75">
@@ -1756,13 +1641,7 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Earthquake" id="88">
@@ -1776,13 +1655,7 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Fissure" id="89">
@@ -1942,6 +1815,7 @@
 <move name="Quick Attack" id="97">
 <type>Normal</type>
 <class>Physical</class>
+<priority>1</priority>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>30</pp>
@@ -2296,6 +2170,7 @@
 <move name="Bide" id="116">
 <type>Normal</type>
 <class>Physical</class>
+<priority>1</priority>
 <power>1</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
@@ -2378,13 +2253,7 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Lick" id="121">
@@ -2985,13 +2854,8 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
+	<high-critical/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Explosion" id="152">
@@ -3198,13 +3062,8 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
+	<high-critical/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Substitute" id="163">
@@ -3467,13 +3326,8 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
+	<high-critical/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Cotton Spore" id="177">
@@ -3558,6 +3412,7 @@
 <move name="Protect" id="181">
 <type>Normal</type>
 <class>Other</class>
+<priority>3</priority>
 <power>0</power>
 <accuracy>0.0</accuracy>
 <pp>10</pp>
@@ -3575,6 +3430,7 @@
 <move name="Mach Punch" id="182">
 <type>Fighting</type>
 <class>Physical</class>
+<priority>1</priority>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>30</pp>
@@ -3840,6 +3696,7 @@
 <move name="Detect" id="196">
 <type>Fighting</type>
 <class>Other</class>
+<priority>3</priority>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>5</pp>
@@ -3953,6 +3810,7 @@
 <move name="Endure" id="202">
 <type>Normal</type>
 <class>Other</class>
+<priority>3</priority>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
@@ -4216,13 +4074,7 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Present" id="216">
@@ -4256,13 +4108,7 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Safeguard" id="218">
@@ -4373,13 +4219,7 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Dragonbreath" id="224">
@@ -4542,6 +4382,7 @@
 <move name="Vital Throw" id="232">
 <type>Fighting</type>
 <class>Physical</class>
+<priority>-1</priority>
 <power>70</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
@@ -4646,13 +4487,8 @@
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
+	<high-critical/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Twister" id="238">
@@ -4732,6 +4568,7 @@
 <move name="Mirror Coat" id="242">
 <type>Psychic</type>
 <class>Special</class>
+<priority>-5</priority>
 <power>1</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
@@ -4767,6 +4604,7 @@
 <move name="Extremespeed" id="244">
 <type>Normal</type>
 <class>Physical</class>
+<priority>1</priority>
 <power>80</power>
 <accuracy>1.00</accuracy>
 <pp>5</pp>
@@ -4903,6 +4741,7 @@
 <move name="Fake Out" id="251">
 <type>Normal</type>
 <class>Physical</class>
+<priority>1</priority>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
@@ -5133,6 +4972,7 @@
 <move name="Focus Punch" id="263">
 <type>Fighting</type>
 <class>Physical</class>
+<priority>-3</priority>
 <power>150</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
@@ -5172,6 +5012,7 @@
 <move name="Follow Me" id="265">
 <type>Normal</type>
 <class>Other</class>
+<priority>3</priority>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
@@ -5243,6 +5084,7 @@
 <move name="Helping Hand" id="269">
 <type>Normal</type>
 <class>Other</class>
+<priority>5</priority>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
@@ -5368,6 +5210,7 @@
 <move name="Magic Coat" id="276">
 <type>Psychic</type>
 <class>Other</class>
+<priority>4</priority>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
@@ -5402,6 +5245,7 @@
 <move name="Revenge" id="278">
 <type>Fighting</type>
 <class>Physical</class>
+<priority>-4</priority>
 <power>60</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
@@ -5596,6 +5440,7 @@
 <move name="Snatch" id="288">
 <type>Dark</type>
 <class>Other</class>
+<priority>4</priority>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
@@ -5890,13 +5735,7 @@
 <flags>
 	<protect/>
 	<mirrorable/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Poison Fang" id="304">
@@ -6109,13 +5948,8 @@ print(status.inducer.name);
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
+	<high-critical/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Overheat" id="314">
@@ -6365,13 +6199,7 @@ print(status.inducer.name);
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Sand Tomb" id="327">
@@ -6562,13 +6390,7 @@ print(status.inducer.name);
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Frenzy Plant" id="337">
@@ -6663,6 +6485,7 @@ print(status.inducer.name);
 	<mirrorable/>
 	<flinch/>
 	<unimplemented/>
+	<high-critical/>
 </flags>
 <use>
 <![CDATA[
@@ -6780,6 +6603,7 @@ print(status.inducer.name);
 	<mirrorable/>
 	<flinch/>
 	<unimplemented/>
+	<high-critical/>
 </flags>
 <use>
 <![CDATA[
@@ -7079,6 +6903,7 @@ print(status.inducer.name);
 <move name="Feint" id="363">
 <type>Normal</type>
 <class>Physical</class>
+<priority>2</priority>
 <power>50</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
@@ -7562,6 +7387,7 @@ print(status.inducer.name);
 <move name="Sucker Punch" id="388">
 <type>Dark</type>
 <class>Physical</class>
+<priority>1</priority>
 <power>80</power>
 <accuracy>1.00</accuracy>
 <pp>5</pp>
@@ -7782,13 +7608,8 @@ print(status.inducer.name);
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
+	<high-critical/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Aqua Tail" id="400">
@@ -7977,6 +7798,7 @@ print(status.inducer.name);
 <move name="Vacuum Wave" id="409">
 <type>Fighting</type>
 <class>Special</class>
+<priority>1</priority>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>30</pp>
@@ -8134,6 +7956,7 @@ print(status.inducer.name);
 <move name="Bullet Punch" id="417">
 <type>Steel</type>
 <class>Physical</class>
+<priority>1</priority>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>30</pp>
@@ -8155,6 +7978,7 @@ print(status.inducer.name);
 <move name="Avalanche" id="418">
 <type>Ice</type>
 <class>Physical</class>
+<priority>-4</priority>
 <power>60</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
@@ -8176,6 +8000,7 @@ print(status.inducer.name);
 <move name="Ice Shard" id="419">
 <type>Ice</type>
 <class>Physical</class>
+<priority>1</priority>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>30</pp>
@@ -8205,13 +8030,8 @@ print(status.inducer.name);
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
+	<high-critical/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Thunder Fang" id="421">
@@ -8280,6 +8100,7 @@ print(status.inducer.name);
 <move name="Shadow Sneak" id="424">
 <type>Ghost</type>
 <class>Physical</class>
+<priority>1</priority>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>30</pp>
@@ -8329,13 +8150,8 @@ print(status.inducer.name);
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
+	<high-critical/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Zen Headbutt" id="427">
@@ -8442,6 +8258,7 @@ print(status.inducer.name);
 <move name="Trick Room" id="432">
 <type>Psychic</type>
 <class>Other</class>
+<priority>-7</priority>
 <power>0</power>
 <accuracy>0.0</accuracy>
 <pp>5</pp>
@@ -8591,6 +8408,7 @@ print(status.inducer.name);
 	<mirrorable/>
 	<flinch/>
 	<unimplemented/>
+	<high-critical/>
 </flags>
 <use>
 <![CDATA[
@@ -8671,13 +8489,8 @@ print(status.inducer.name);
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
+	<high-critical/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Captivate" id="444">
@@ -8841,6 +8654,7 @@ print(status.inducer.name);
 <move name="Aqua Jet" id="452">
 <type>Water</type>
 <class>Physical</class>
+<priority>1</priority>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
@@ -8870,13 +8684,8 @@ print(status.inducer.name);
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
+	<high-critical/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Defend Order" id="454">
@@ -8988,13 +8797,8 @@ print(status.inducer.name);
 	<protect/>
 	<mirrorable/>
 	<flinch/>
-	<unimplemented/>
+	<high-critical/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
 
 <move name="Lunar Dance" id="460">

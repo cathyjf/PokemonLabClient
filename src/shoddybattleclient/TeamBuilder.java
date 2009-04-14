@@ -24,6 +24,7 @@
 package shoddybattleclient;
 
 import java.awt.Dimension;
+import java.awt.FileDialog;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -95,21 +96,23 @@ public class TeamBuilder extends javax.swing.JFrame {
     }
 
     private void saveTeam() {
+        FileDialog fd = new FileDialog(this, "Choose a file", FileDialog.SAVE);
+        fd.setVisible(true);
+        if (fd.getFile() == null) return;
+        String file = fd.getDirectory() + fd.getFile() + ".sbt";
+
         int length = m_forms.length;
         StringBuffer buf = new StringBuffer();
         buf.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<shoddybattle>\n\n");
         for (int i = 0; i < length; i++) {
-            //team[i] = m_forms[i].getPokemon();
-            Pokemon p = new Pokemon("Bulbasaur", "", false, Gender.GENDER_MALE, 100, "None", "None", "None",
-                new String[] {null, null, null, null}, new int[] {3,3,3,3}, new int[] {31,31,31,31,31,31},
-                new int[] {0,0,0,0,0,0});
+            Pokemon p = m_forms[i].getPokemon();
             buf.append(p.toXML());
             buf.append("\n");
         }
         buf.append("</shoddybattle>");
 
         try {
-            Writer output = new PrintWriter(new FileWriter("testteam.sbt"));
+            Writer output = new PrintWriter(new FileWriter(file));
             output.write(new String(buf));
             output.flush();
             output.close();
@@ -229,7 +232,22 @@ public class TeamBuilder extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosing
 
     private void menuLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLoadActionPerformed
-        
+        FileDialog fd = new FileDialog(this, "Choose a file", FileDialog.LOAD);
+        fd.setVisible(true);
+        if (fd.getFile() == null) return;
+        String file = fd.getDirectory() + fd.getFile();
+ 
+        TeamFileParser tfp = new TeamFileParser();
+        Pokemon[] team = tfp.parseTeam(file);
+        for (int i = 0; i < m_forms.length; i++) {
+            tabForms.removeTabAt(0);
+        }
+        m_forms = new TeamBuilderForm[team.length];
+        for (int i = 0; i < team.length; i++) {
+            m_forms[i] = new TeamBuilderForm(this, getSpeciesList(), i);
+            tabForms.add("", m_forms[i]);
+            m_forms[i].setPokemon(team[i], true);
+        }
 }//GEN-LAST:event_menuLoadActionPerformed
 
     private void menuSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSaveActionPerformed

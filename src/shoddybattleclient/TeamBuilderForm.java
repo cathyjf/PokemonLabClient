@@ -68,6 +68,8 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         cmbPokemon.setModel(new DefaultComboBoxModel(species));
         m_idx = idx;
 
+        cmbNature.setModel(new DefaultComboBoxModel(PokemonNature.getNatureNames()));
+
         m_ivs = new JTextField[] {
             ivHp,
             ivAtk,
@@ -131,12 +133,31 @@ public class TeamBuilderForm extends javax.swing.JPanel {
      */
     public void setPokemon(Pokemon p, boolean loading) {
         m_pokemon = p;
+        m_species = m_parent.getSpecies(p.species);
+        
         if (loading) {
             cmbPokemon.setSelectedItem(p.species);
         }
+
+        Gender g = m_species.getGenders();
+        if (g.equals(Gender.GENDER_MALE)) {
+            cmbGender.setModel(new DefaultComboBoxModel(new Gender[] {Gender.GENDER_MALE}));
+        } else if (g.equals(Gender.GENDER_FEMALE)) {
+            cmbGender.setModel(new DefaultComboBoxModel(new Gender[] {Gender.GENDER_FEMALE}));
+        } else if (g.equals(Gender.GENDER_BOTH)) {
+            cmbGender.setModel(new DefaultComboBoxModel(new Gender[] {
+                Gender.GENDER_MALE,
+                Gender.GENDER_FEMALE
+            }));
+        } else {
+            cmbGender.setModel(new DefaultComboBoxModel(new Gender[] {Gender.GENDER_NONE}));
+        }
+
         txtNickname.setText(p.nickname);
-        cmbItem.setSelectedItem(p.item);
-        cmbNature.setSelectedItem(p.nature);
+        if (loading) {
+            cmbItem.setSelectedItem(p.item);
+            cmbNature.setSelectedItem(p.nature);
+        }
         txtLevel.setText(String.valueOf(p.level));
         chkShiny.setSelected(p.shiny);
         cmbAbility.setSelectedItem(p.ability);
@@ -145,19 +166,22 @@ public class TeamBuilderForm extends javax.swing.JPanel {
             m_ivs[i].setText(String.valueOf(p.ivs[i]));
             m_evs[i].setText(String.valueOf(p.evs[i]));
         }
-        for (int i = 0; i < Pokemon.MOVE_COUNT; i++) {
+        for (int i = 0; i < p.moves.length; i++) {
             m_ppUps[i].setSelectedIndex(p.ppUps[i]);
         }
-        m_species = m_parent.getSpecies(p.species);
         for (int i = 0; i < Pokemon.STAT_COUNT; i++) {
             m_bases[i].setText(String.valueOf(m_species.getBase(i)));
             m_totals[i].setText(String.valueOf(calculateStat(i)));
         }
 
-        tblMoves.setModel(new MoveTableModel(m_parent.getMoveList(), m_species.getMoves()));
+        MoveTableModel mtm = new MoveTableModel(m_parent.getMoveList(), m_species.getMoves());
+        mtm.setSelectedMoves(p.moves);
+        tblMoves.setModel(mtm);
+        //name column should be wider
         tblMoves.getColumnModel().getColumn(1).setPreferredWidth(160);
+        
         cmbAbility.setModel(new DefaultComboBoxModel(m_species.getAbilities()));
-
+        
         m_parent.updateTitle(m_idx, m_species.getName());
     }
 
@@ -175,12 +199,14 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                 return common + 10 + m_pokemon.level;
             }
         }
-        //TODO: natures
-        return (int)((common + 5) * 1);/*p.getNature().getEffect(i));*/
+        PokemonNature n = PokemonNature.getNature((String)cmbNature.getSelectedItem());
+        double effect = (n == null) ? 1.0 : n.getEffect(i);
+        return (int)((common + 5) * effect);
     }
 
     private void updateStat(int idx) {
         if (m_pokemon == null) return;
+        if ((idx < 0) || (idx > m_totals.length)) return;
         try {
             m_pokemon.ivs[idx] = Integer.parseInt(m_ivs[idx].getText());
             m_pokemon.evs[idx] = Integer.parseInt(m_evs[idx].getText());
@@ -198,6 +224,26 @@ public class TeamBuilderForm extends javax.swing.JPanel {
     }
 
     public Pokemon getPokemon() {
+        m_pokemon.species = (String)cmbPokemon.getSelectedItem();
+        m_pokemon.nickname = txtNickname.getText();
+        try {
+            m_pokemon.level = Integer.parseInt(txtLevel.getText());
+        } catch (NumberFormatException e) {
+            m_pokemon.level = 100;
+        }
+        m_pokemon.gender = (Gender)cmbGender.getSelectedItem();
+        m_pokemon.nature = (String)cmbNature.getSelectedItem();
+        m_pokemon.item = (String)cmbItem.getSelectedItem();
+        m_pokemon.ability = (String)cmbAbility.getSelectedItem();
+        MoveTableModel m = (MoveTableModel)tblMoves.getModel();
+        m_pokemon.moves = m.getSelectedMoves();
+        for (int i = 0; i < m_ppUps.length; i++) {
+            try {
+                m_pokemon.ppUps[i] = Integer.parseInt((String)m_ppUps[i].getSelectedItem());
+            } catch (NumberFormatException e) {
+                m_pokemon.ppUps[i] = 3;
+            }
+        }
         return m_pokemon;
     }
 
@@ -285,20 +331,22 @@ public class TeamBuilderForm extends javax.swing.JPanel {
 
         jLabel24.setText("Level:");
 
-        jLabel28.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel28.setFont(new java.awt.Font("Lucida Grande", 1, 13));
         jLabel28.setText("PP UPs:");
 
         cmbPp0.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "0", "1", "2", "3" }));
+        cmbPp0.setSelectedIndex(3);
 
         cmbPp1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "0", "1", "2", "3" }));
+        cmbPp1.setSelectedIndex(3);
 
         cmbPp2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "0", "1", "2", "3" }));
+        cmbPp2.setSelectedIndex(3);
 
         cmbPp3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "0", "1", "2", "3" }));
+        cmbPp3.setSelectedIndex(3);
 
         txtLevel.setText("100");
-
-        cmbGender.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Male", "Female" }));
 
         chkShiny.setText("Shiny?");
         chkShiny.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -315,7 +363,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
 
         ivSpAtk.setText("31");
 
-        jLabel3.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Lucida Grande", 1, 13));
         jLabel3.setText("Base");
 
         ivSpDef.setText("31");
@@ -334,7 +382,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
 
         jLabel21.setText("Sp. Defense");
 
-        evsTotal.setFont(new java.awt.Font("Lucida Grande", 1, 11)); // NOI18N
+        evsTotal.setFont(new java.awt.Font("Lucida Grande", 1, 11));
         evsTotal.setText("(000/510)");
         evsTotal.setMaximumSize(new java.awt.Dimension(50, 16));
 
@@ -363,7 +411,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         jLabel2.setFont(new java.awt.Font("Lucida Grande", 1, 13));
         jLabel2.setText("Total");
 
-        jLabel4.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Lucida Grande", 1, 13));
         jLabel4.setText("IVs");
 
         jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 13));
@@ -384,6 +432,11 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         jLabel26.setText("Nature:");
 
         cmbNature.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Jolly", "Hasty" }));
+        cmbNature.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbNatureItemStateChanged(evt);
+            }
+        });
 
         cmbAbility.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Overgrow", "Truant" }));
 
@@ -572,9 +625,10 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(txtLevel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(cmbGender, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(cmbGender, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 128, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(chkShiny))
+                        .add(chkShiny)
+                        .add(0, 0, Short.MAX_VALUE))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(jLabel28)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -596,14 +650,14 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                     .add(cmbPokemon, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(txtNickname, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(cmbItem, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(chkShiny)
                     .add(cmbGender, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(txtLevel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel24))
+                    .add(jLabel24)
+                    .add(chkShiny))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
-                        .add(scrollMoves, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 303, Short.MAX_VALUE)
+                        .add(scrollMoves, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(jLabel28)
@@ -617,12 +671,20 @@ public class TeamBuilderForm extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cmbPokemonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbPokemonItemStateChanged
+        if (!(evt.getStateChange() == ItemEvent.SELECTED)) return;
         int idx = cmbPokemon.getSelectedIndex();
         if ((idx == -1) || (evt.getStateChange() == ItemEvent.DESELECTED)) return;
         setPokemon(new Pokemon((String)cmbPokemon.getSelectedItem(), "", false,
                 Gender.GENDER_MALE, 100, null, null, null, new String[] {null, null, null, null},
                 new int[] {3,3,3,3}, new int[] {31,31,31,31,31,31}, new int[] {0,0,0,0,0,0}), false);
     }//GEN-LAST:event_cmbPokemonItemStateChanged
+
+    private void cmbNatureItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbNatureItemStateChanged
+        if (!(evt.getStateChange() == ItemEvent.SELECTED)) return;
+        for (int i = 0; i < m_totals.length; i++) {
+            updateStat(i);
+        }
+    }//GEN-LAST:event_cmbNatureItemStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

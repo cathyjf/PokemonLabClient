@@ -107,8 +107,8 @@ public class HTMLPane extends JTextPane {
             buffer.append(htmlEntityEncode(user));
             buffer.append("</font>");
             buffer.append(": ");
-            buffer.append(message);
         }
+        buffer.append(message);
         String msg = new String(buffer);
         msg = msg.replaceAll("&#32;", " ")
                         .replaceAll("\\b([^ ]*&#58;&#47;&#47;[^ ]+)",
@@ -133,7 +133,7 @@ public class HTMLPane extends JTextPane {
                 doc.remove(0, position);
             }
         } catch (Exception e) {
-
+            
         }
         
         //scroll only if we are already at the bottom

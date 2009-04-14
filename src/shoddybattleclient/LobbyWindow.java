@@ -23,11 +23,19 @@
 
 package shoddybattleclient;
 
+import java.awt.AWTEvent;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.net.URL;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import javax.jnlp.BasicService;
 import javax.jnlp.ServiceManager;
-import javax.swing.DefaultListModel;
+import java.util.*;
+import shoddybattleclient.network.ServerLink.Status;
+import shoddybattleclient.utils.UserListModel;
 
 /**
  *
@@ -35,15 +43,144 @@ import javax.swing.DefaultListModel;
  */
 public class LobbyWindow extends javax.swing.JFrame {
 
+    public static class User implements Comparable {
+        public final static int STATUS_PRESENT = 0;
+        public final static int STATUS_AWAY = 1;
+        private static final String m_colors[] = {
+            "black",        // Regular user
+            "#0000aa",      // Mod
+            "rgb(200,0,0)"  // Admin
+        };
+        private String m_name;
+        private int m_status = 0;
+        private int m_level;
+        private List<Integer> m_battles = new ArrayList<Integer>();
+
+        public User(String name, int level) {
+            m_name = name;
+            m_level = level;
+        }
+        public void setStatus(int status) {
+            m_status = status;
+        }
+        public String getName() {
+            return m_name;
+        }
+        public int compareTo(Object o2) {
+            User u2 = ((User)o2);
+            if (m_level > u2.m_level)
+                return -1;
+            if (m_level < u2.m_level)
+                return 1;
+            if (m_status < u2.m_status)
+                return -1;
+            if (m_status > u2.m_status)
+                return 1;
+            String s2 = u2.m_name;
+            return m_name.compareToIgnoreCase(s2);
+        }
+        public void addBattle(int id) {
+            m_battles.add(id);
+        }
+        public void removeBattle(int id) {
+            m_battles.remove(id);
+        }
+        @Override
+        public boolean equals(Object o2) {
+            return ((User)o2).m_name.equals(m_name);
+        }
+        @Override
+        public String toString() {
+            //TODO: hardcoded constants
+            String colour = ((m_status == 1) ?
+                "rgb(130,130,130)" : m_colors[m_level]) + ";";
+            String suffix = "";
+            if (m_level == 1) {
+                suffix = "*";
+            } else if (m_level == 2) {
+                suffix = "**";
+            }
+            String style = (m_battles.size() > 0) ? "font-style: italic;" : "";
+            return "<html><font style='color: "
+                    + colour + style + "'>" + m_name + suffix + "</font></html>";
+        }
+    }
+
+
+    private ChatPane m_chat;
+    private ChallengeNotifier m_notifier;
+    private UserListModel m_userList;
+    private String m_name;
+
     /** Creates new form LobbyWindow */
-    public LobbyWindow() {
+    public LobbyWindow(String userName) {
         initComponents();
-        final ChatPane mainChat = new ChatPane();
-        tabChats.add("Main", mainChat);
-        DefaultListModel m = new DefaultListModel();
-        m.addElement("<html><b style='color: red'>bearzly</b></html>");
-        m.addElement("<html><b style='color: gray'>Catherine</b></html>");
-        listUsers.setModel(m);
+        m_name = userName;
+        m_chat = new ChatPane(this, userName);
+        tabChats.add("Main", m_chat);
+
+        m_userList = new UserListModel(new ArrayList<User>());
+        listUsers.setModel(m_userList);
+
+        m_notifier = new ChallengeNotifier(this);
+        setGlassPane(m_notifier);
+        m_chat.getChat().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                Point p = e.getPoint();
+                Point p2 = SwingUtilities.convertPoint(m_chat.getChat(), p, m_notifier);
+                p2.x = p.x;
+                m_notifier.processClick(p2);
+            }
+        });
+    }
+
+    /**
+     * Updates a user's status in the user list
+     * @param name The user's name
+     * @param status A constant representing status changes
+     * @param value An extra parameter
+     */
+    public void updateUserStatus(String name, Status status, Object value) {
+        switch (status) {
+            case ONLINE:
+                int level = (Integer)value;
+                m_userList.add(new User(name, level));
+                m_userList.sort();
+                break;
+            case OFFLINE:
+                m_userList.remove(name);
+                break;
+            case AWAY:
+                m_userList.setStatus(name, User.STATUS_AWAY);
+                break;
+            case RETURN:
+                m_userList.setStatus(name, User.STATUS_PRESENT);
+                break;
+            case BATTLE_START:
+                String opp = (String)value;
+                m_chat.addMessage("Battle starting", name + " vs. " + opp);
+                break;
+            case BATTLE_END:
+                break;
+        }
+        m_userList = new UserListModel(m_userList.getList());
+        listUsers.setModel(m_userList);
+    }
+
+    /**
+     * Returns the bounds of the main chat pane
+     */
+    public Rectangle getChatBounds() {
+        Point p = m_chat.getPane().getLocation();
+        Point p2 = m_chat.getLocation();
+        Point p3 = tabChats.getLocation();
+        JScrollPane pane = m_chat.getPane();
+        int w = pane.getWidth() - pane.getVerticalScrollBar().getWidth();
+        int h = pane.getHeight();
+        int x = p.x + p2.x + p3.x;
+        int y = p.y + p2.y + p3.y;
+        return new Rectangle(x, y, w, h);
     }
 
     public static void viewWebPage(URL page) {
@@ -97,6 +234,11 @@ public class LobbyWindow extends javax.swing.JFrame {
         jScrollPane1.setViewportView(listUsers);
 
         jButton4.setText("Challenge");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         org.jdesktop.layout.GroupLayout jPanel3Layout = new org.jdesktop.layout.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -135,6 +277,11 @@ public class LobbyWindow extends javax.swing.JFrame {
         jScrollPane3.setViewportView(jList2);
 
         jButton1.setText("Cancel");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -207,6 +354,8 @@ public class LobbyWindow extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Find", jTabbedPane2);
 
+        tabChats.setOpaque(true);
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -221,10 +370,10 @@ public class LobbyWindow extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .addContainerGap()
+                .add(10, 10, 10)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, tabChats, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 390, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -240,13 +389,21 @@ public class LobbyWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formWindowClosing
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        m_notifier.addChallenge("Catherine", 0, true);
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        m_notifier.addChallenge("bearzly", 1, false);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
     * @param args the command line arguments
     */
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new LobbyWindow().setVisible(true);
+                new LobbyWindow("Ben").setVisible(true);
             }
         });
     }

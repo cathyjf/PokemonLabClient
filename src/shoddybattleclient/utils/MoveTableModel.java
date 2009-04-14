@@ -20,8 +20,6 @@
 package shoddybattleclient.utils;
 import javax.swing.table.*;
 import java.util.*;
-import shoddybattleclient.*;
-import shoddybattleclient.shoddybattle.*;
 import shoddybattleclient.shoddybattle.PokemonMove;
 
 /**
@@ -102,14 +100,17 @@ public class MoveTableModel extends AbstractTableModel {
         return m_row.length;
     }
     
+    @Override
     public Class getColumnClass(int c) {
          return getValueAt(0, c).getClass();
     }
     
+    @Override
     public boolean isCellEditable(int row, int col) {
         return (col == 0);
     }
      
+    @Override
     public void setValueAt(Object value, int i, int j) {
         TableRow row = m_row[i];
         switch (j) {
@@ -154,7 +155,12 @@ public class MoveTableModel extends AbstractTableModel {
      * Set the moves that have been selected.
      */
     public void setSelectedMoves(String[] moves) {
-        List<String> list = Arrays.asList(moves);
+        List<String> list = new ArrayList<String>();
+        for (int i = 0; i < moves.length; i++) {
+            if (moves[i] != null) {
+                list.add(moves[i]);
+            }
+        }
         m_selected = new ArrayList<String>(list);
         Set<String> set = new HashSet<String>(list);
         for (int i = 0; i < m_row.length; ++i) {
@@ -182,6 +188,9 @@ public class MoveTableModel extends AbstractTableModel {
             }
             PokemonMove m = getMove(moves[i], moveList);
             set.add(moves[i]);
+            if (m == null) {
+                continue;
+            }
             TableRow row = new TableRow(
                     m.damageClass, m.name, m.type, m.pp, m.power, m.accuracy);
             if (!set.contains(row)) list.add(row);

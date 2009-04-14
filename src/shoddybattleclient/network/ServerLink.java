@@ -41,6 +41,19 @@ import javax.crypto.spec.SecretKeySpec;
 public class ServerLink extends Thread {
 
     /**
+     * Enum representing different status changes
+     * that a user can have
+     */
+    public static enum Status {
+        ONLINE,
+        OFFLINE,
+        AWAY,
+        RETURN,
+        BATTLE_START,
+        BATTLE_END
+    }
+
+    /**
      * Messages sent by the client to the server.
      */
     public static class OutMessage extends ByteArrayOutputStream {
