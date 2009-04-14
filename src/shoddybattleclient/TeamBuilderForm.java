@@ -322,6 +322,8 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         cmbHiddenPower = new javax.swing.JComboBox();
         cmbItem = new javax.swing.JComboBox();
 
+        setOpaque(false);
+
         cmbPokemon.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Bulbasaur", "Ivysaur" }));
         cmbPokemon.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {

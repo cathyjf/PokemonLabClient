@@ -106,6 +106,7 @@ public class ServerConnect extends javax.swing.JFrame {
         jScrollPane1.setViewportView(txtWelcome);
 
         jPanel1.setBackground(new java.awt.Color(244, 242, 242));
+        jPanel1.setOpaque(false);
 
         jLabel2.setText("Username:");
 
@@ -134,7 +135,7 @@ public class ServerConnect extends javax.swing.JFrame {
                             .add(txtLoginUsername, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 164, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(txtLoginPassword, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 164, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                     .add(jButton1))
-                .addContainerGap(76, Short.MAX_VALUE))
+                .addContainerGap(59, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -148,12 +149,13 @@ public class ServerConnect extends javax.swing.JFrame {
                     .add(txtLoginPassword, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jButton1)
-                .add(0, 22, Short.MAX_VALUE))
+                .add(0, 0, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Log In", jPanel1);
 
         jPanel2.setBackground(new java.awt.Color(244, 242, 242));
+        jPanel2.setOpaque(false);
 
         jLabel4.setText("Username:");
 
@@ -177,7 +179,7 @@ public class ServerConnect extends javax.swing.JFrame {
                         .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                             .add(jPasswordField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 164, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 164, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(76, Short.MAX_VALUE))
+                .addContainerGap(59, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -191,7 +193,7 @@ public class ServerConnect extends javax.swing.JFrame {
                     .add(jPasswordField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jButton2)
-                .add(0, 22, Short.MAX_VALUE))
+                .add(0, 0, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Register", jPanel2);

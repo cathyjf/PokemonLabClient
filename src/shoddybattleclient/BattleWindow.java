@@ -107,6 +107,8 @@ public class BattleWindow extends javax.swing.JFrame {
             }
         });
 
+        jPanel3.setOpaque(false);
+
         jToggleButton1.setText("Surf");
         jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -161,6 +163,8 @@ public class BattleWindow extends javax.swing.JFrame {
         );
 
         jTabbedPane1.addTab("Move", jPanel3);
+
+        jPanel4.setOpaque(false);
 
         org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
