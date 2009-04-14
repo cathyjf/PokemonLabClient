@@ -79,6 +79,8 @@ public class ChatPane extends javax.swing.JPanel {
         jButton1 = new javax.swing.JButton();
         scrollChat = new javax.swing.JScrollPane();
 
+        setBackground(new java.awt.Color(244, 242, 242));
+
         txtChat.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txtChatFocusGained(evt);
@@ -111,7 +113,7 @@ public class ChatPane extends javax.swing.JPanel {
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(scrollChat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
-                        .add(txtChat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
+                        .add(txtChat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jButton1)))
                 .addContainerGap())
