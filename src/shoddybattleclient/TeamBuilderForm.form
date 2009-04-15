@@ -29,11 +29,12 @@
                   </Group>
                   <Group type="102" attributes="0">
                       <EmptySpace min="7" pref="7" max="7" attributes="0"/>
-                      <Component id="jPanel2" min="-2" pref="281" max="-2" attributes="0"/>
+                      <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="scrollMoves" pref="329" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="cmbItem" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -57,9 +58,8 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="cmbPp3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="scrollMoves" alignment="1" pref="405" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -76,11 +76,11 @@
                   <Component id="jLabel24" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="chkShiny" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Component id="scrollMoves" pref="311" max="32767" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="1">
+                      <Component id="scrollMoves" pref="0" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel28" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="cmbPp1" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -91,7 +91,7 @@
                   </Group>
                   <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -197,9 +197,13 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Shiny?"/>
         <Property name="horizontalTextPosition" type="int" value="2"/>
+        <Property name="opaque" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Container class="javax.swing.JPanel" name="jPanel2">
+      <Properties>
+        <Property name="opaque" type="boolean" value="false"/>
+      </Properties>
 
       <Layout>
         <DimensionLayout dim="0">
@@ -285,7 +289,7 @@
                           </Group>
                       </Group>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="29" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
