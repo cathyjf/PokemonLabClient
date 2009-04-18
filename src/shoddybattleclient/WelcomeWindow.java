@@ -23,6 +23,7 @@
 
 package shoddybattleclient;
 import java.awt.event.MouseEvent;
+import java.util.prefs.Preferences;
 import javax.swing.UIManager;
 import shoddybattleclient.utils.*;
 
@@ -76,7 +77,7 @@ public class WelcomeWindow extends javax.swing.JFrame {
     /** Creates new form WelcomeWindow */
     public WelcomeWindow() {
         initComponents();
-        ServerListEntry sle = new ServerListEntry("Official Server", 
+        ServerListEntry sle = new ServerListEntry("Official Server",
                 "The official server of Shoddy Battle", "official.shoddybattle.com",
                 8446, 220, 250);
         ServerListEntry sle2 = new ServerListEntry("Smogon", 
@@ -95,6 +96,7 @@ public class WelcomeWindow extends javax.swing.JFrame {
         new ServerConnect("test server", "this is a test").setVisible(true);
         dispose();
     }
+
 
     /** This method is called from within the constructor to
      * initialize the form.

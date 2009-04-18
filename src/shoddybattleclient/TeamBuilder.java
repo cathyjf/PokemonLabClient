@@ -49,9 +49,9 @@ public class TeamBuilder extends javax.swing.JFrame {
         initComponents();
         long t1 = System.currentTimeMillis();
         MoveListParser mlp = new MoveListParser();
-        m_moves = mlp.parseDocument("resources/moves2.xml");
+        m_moves = mlp.parseDocument(TeamBuilder.class.getResource("resources/moves2.xml").toString());
         SpeciesListParser parser = new SpeciesListParser();
-        m_species = parser.parseDocument("resources/species.xml");
+        m_species = parser.parseDocument(TeamBuilder.class.getResource("resources/species.xml").toString());
         String[] species = getSpeciesList();
         long t2 = System.currentTimeMillis();
         System.out.println("Loaded moves and species info in " + (t2-t1) + " milliseconds");

@@ -24,7 +24,17 @@
 package shoddybattleclient;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import javax.swing.ButtonGroup;
+import javax.swing.JOptionPane;
+import javax.swing.JToggleButton;
+import shoddybattleclient.GameVisualisation.VisualPokemon;
+import shoddybattleclient.shoddybattle.*;
+import shoddybattleclient.utils.*;
 
 /**
  *
@@ -32,12 +42,133 @@ import java.awt.event.KeyEvent;
  */
 public class BattleWindow extends javax.swing.JFrame {
 
+    private static class Move {
+        private String m_name;
+        private int m_pp;
+        private int m_maxPp;
+        private String m_type;
+        public Move(String name, String type, int maxPp) {
+            m_name = name;
+            m_type = type;
+            m_maxPp = maxPp;
+            m_pp = maxPp;
+        }
+        public String getName() {
+            return m_name;
+        }
+        public String getType() {
+            return m_type;
+        }
+        public String getPp() {
+            return m_pp + "/" + m_maxPp;
+        }
+    }
+
+    private static class MoveButton extends JToggleButton {
+        private Move m_move = null;
+        public MoveButton() {
+            setFocusPainted(false);
+        }
+        public void setMove(Move move) {
+            m_move = move;
+            repaint();
+        }
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            if (m_move == null) return;
+            Graphics g2 = g.create();
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD));
+            g2.drawString(m_move.getName(), 10, 20);
+            g2.setColor(Color.DARK_GRAY);
+            g2.setFont(g2.getFont().deriveFont(Font.PLAIN));
+            g2.setFont(g2.getFont().deriveFont(12f));
+            g2.drawString(m_move.getType(), 10, 50);
+            g2.drawString(m_move.getPp(), 110, 50);
+            g2.dispose();
+        }
+    }
+
+    private static class SwitchButton extends JToggleButton {
+        public SwitchButton(String text) {
+            super(text);
+            this.setFocusPainted(false);
+        }
+        protected void paintComponent(Graphics g) {
+            Graphics g2 = g.create();
+            String text = getText();
+            setText(null);
+            super.paintComponent(g2);
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD));
+            g2.drawString(text, 10, 20);
+            setText(text);
+            g2.dispose();
+        }
+    }
+
+    private MoveButton[] m_moves;
+    private SwitchButton[] m_switches;
+    private GameVisualisation m_visual;
+    private HealthBar[] m_healthBars = new HealthBar[2];
+    private HTMLPane m_chat;
+    private ArrayList<PokemonMove> m_moveList;
+
     /** Creates new form BattleWindow */
     public BattleWindow() {
         initComponents();
 
-        txtChat.setText("Chat...");
-        txtChat.setForeground(Color.GRAY);
+        m_chat = new HTMLPane("Ben");
+        scrollChat.add(m_chat);
+        scrollChat.setViewportView(m_chat);
+
+        MoveListParser mlp = new MoveListParser();
+        m_moveList = mlp.parseDocument(BattleWindow.class.getResource("resources/moves2.xml").toString());
+
+        m_moves = new MoveButton[4];
+        panelMoves.setLayout(new GridLayout(2, 2));
+
+        ButtonGroup moveButtons = new ButtonGroup();
+        for (int i = 0; i < m_moves.length; i++) {
+            MoveButton button = new MoveButton();
+            moveButtons.add(button);
+            m_moves[i] = button;
+            panelMoves.add(button);
+        }
+
+        ButtonGroup switchButtons = new ButtonGroup();
+        panelSwitch.setLayout(new GridLayout(3, 2));
+        m_switches = new SwitchButton[6];
+        for (int i = 0; i < m_switches.length; i++) {
+            SwitchButton button = new SwitchButton(String.valueOf(i));
+            switchButtons.add(button);
+            m_switches[i] = button;
+            panelSwitch.add(button);
+        }
+        m_visual = new GameVisualisation(0);
+        m_visual.setSize(m_visual.getPreferredSize());
+        m_visual.setLocation(20, 60);
+        m_healthBars[0] = new HealthBar();
+        m_healthBars[0].setLocation(20, 20);
+        m_healthBars[0].setSize(m_visual.getWidth(), 35);
+        m_healthBars[1] = new HealthBar();
+        m_healthBars[1].setLocation(20, 65 + m_visual.getHeight());
+        m_healthBars[1].setSize(m_visual.getWidth(), 35);
+        add(m_healthBars[0]);
+        add(m_healthBars[1]);
+        add(m_visual);
+    }
+
+    public void setParties(VisualPokemon[] p1, VisualPokemon[] p2) {
+        m_visual.setParties(p1, p2);
+    }
+
+    public void setMove(int idx, String name) {
+        if ((idx < 0) || (idx >= m_moves.length)) return;
+        for (PokemonMove move : m_moveList) {
+            if (move.name.equals(name)) {
+                m_moves[idx].setMove(new Move(name, move.type, move.pp));
+                break;
+            }
+        }
     }
 
     /** This method is called from within the constructor to
@@ -49,49 +180,31 @@ public class BattleWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
-        jPanel2 = new javax.swing.JPanel();
         txtChat = new javax.swing.JTextField();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel3 = new javax.swing.JPanel();
-        jToggleButton1 = new javax.swing.JToggleButton();
-        jToggleButton2 = new javax.swing.JToggleButton();
-        jToggleButton3 = new javax.swing.JToggleButton();
-        jToggleButton4 = new javax.swing.JToggleButton();
-        jButton1 = new javax.swing.JButton();
-        jPanel4 = new javax.swing.JPanel();
+        panelMoves = new javax.swing.JPanel();
+        btnMove = new javax.swing.JButton();
+        btnMoveCancel = new javax.swing.JButton();
+        jPanel5 = new javax.swing.JPanel();
+        panelSwitch = new javax.swing.JPanel();
+        btnSwitch = new javax.swing.JButton();
+        btnSwitchCancel = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList();
+        scrollChat = new javax.swing.JScrollPane();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 272, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 190, Short.MAX_VALUE)
-        );
-
-        jScrollPane2.setViewportView(jList1);
-
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
-
-        org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 268, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 393, Short.MAX_VALUE)
-        );
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setLocationByPlatform(true);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         txtChat.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -109,138 +222,178 @@ public class BattleWindow extends javax.swing.JFrame {
 
         jPanel3.setOpaque(false);
 
-        jToggleButton1.setText("Surf");
-        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jToggleButton1ActionPerformed(evt);
-            }
-        });
+        panelMoves.setOpaque(false);
 
-        jToggleButton2.setText("Hyper Beam");
+        org.jdesktop.layout.GroupLayout panelMovesLayout = new org.jdesktop.layout.GroupLayout(panelMoves);
+        panelMoves.setLayout(panelMovesLayout);
+        panelMovesLayout.setHorizontalGroup(
+            panelMovesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 319, Short.MAX_VALUE)
+        );
+        panelMovesLayout.setVerticalGroup(
+            panelMovesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 117, Short.MAX_VALUE)
+        );
 
-        jToggleButton3.setText("Tackle");
+        btnMove.setText("Choose");
 
-        jToggleButton4.setText("Heat Wave");
-
-        jButton1.setText("Choose");
+        btnMoveCancel.setText("Cancel");
 
         org.jdesktop.layout.GroupLayout jPanel3Layout = new org.jdesktop.layout.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel3Layout.createSequentialGroup()
-                .add(29, 29, 29)
-                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel3Layout.createSequentialGroup()
-                        .add(jButton1)
-                        .addContainerGap())
-                    .add(jPanel3Layout.createSequentialGroup()
-                        .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(jToggleButton3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 128, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jToggleButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 128, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 31, Short.MAX_VALUE)
-                        .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jToggleButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 128, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jToggleButton4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 128, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                        .add(27, 27, 27))))
+                .add(btnMove, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 165, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(btnMoveCancel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE))
+            .add(panelMoves, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jToggleButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 71, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jToggleButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 71, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel3Layout.createSequentialGroup()
+                .add(panelMoves, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel3Layout.createSequentialGroup()
-                        .add(jToggleButton3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 71, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 18, Short.MAX_VALUE)
-                        .add(jButton1))
-                    .add(jPanel3Layout.createSequentialGroup()
-                        .add(jToggleButton4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 71, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(btnMove)
+                    .add(btnMoveCancel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 29, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
+
+        jPanel3Layout.linkSize(new java.awt.Component[] {btnMove, btnMoveCancel}, org.jdesktop.layout.GroupLayout.VERTICAL);
 
         jTabbedPane1.addTab("Move", jPanel3);
 
-        jPanel4.setOpaque(false);
+        jPanel5.setOpaque(false);
 
-        org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 343, Short.MAX_VALUE)
+        panelSwitch.setOpaque(false);
+
+        org.jdesktop.layout.GroupLayout panelSwitchLayout = new org.jdesktop.layout.GroupLayout(panelSwitch);
+        panelSwitch.setLayout(panelSwitchLayout);
+        panelSwitchLayout.setHorizontalGroup(
+            panelSwitchLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 319, Short.MAX_VALUE)
         );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 206, Short.MAX_VALUE)
+        panelSwitchLayout.setVerticalGroup(
+            panelSwitchLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 117, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.addTab("Switch", jPanel4);
+        btnSwitch.setText("Switch");
+
+        btnSwitchCancel.setText("Cancel");
+
+        org.jdesktop.layout.GroupLayout jPanel5Layout = new org.jdesktop.layout.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel5Layout.createSequentialGroup()
+                .add(btnSwitch, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 165, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(btnSwitchCancel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE))
+            .add(panelSwitch, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel5Layout.createSequentialGroup()
+                .add(panelSwitch, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(btnSwitch)
+                    .add(btnSwitchCancel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 29, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Switch", jPanel5);
+
+        jScrollPane1.setViewportView(jList1);
+
+        jLabel1.setText("Player 1");
+
+        jLabel2.setText("Player 2");
+
+        jLabel3.setText("20:00:00");
+
+        jLabel4.setText("20:00:00");
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                    .add(layout.createSequentialGroup()
-                        .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 78, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(jTabbedPane1))
+                .add(29, 29, 29)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 340, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 82, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(txtChat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE))
+                    .add(scrollChat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE)
+                    .add(txtChat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
+                            .add(jLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 113, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(jLabel4)
+                            .add(jLabel3))))
                 .addContainerGap())
         );
+
+        layout.linkSize(new java.awt.Component[] {jLabel1, jLabel2}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
+
+        layout.linkSize(new java.awt.Component[] {jLabel3, jLabel4}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
+
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
-                        .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(jLabel3)
+                            .add(jLabel1))
+                        .add(6, 6, 6)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(jLabel4)
+                            .add(jLabel2))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(txtChat, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
+                        .add(scrollChat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(txtChat, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                     .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane2)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 227, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE))))
+                        .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 216, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jToggleButton1ActionPerformed
-
     private void txtChatFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtChatFocusGained
-        if (txtChat.getForeground().equals(Color.GRAY)) {
-            txtChat.setForeground(Color.BLACK);
-            txtChat.setText("");
-        }
+
 }//GEN-LAST:event_txtChatFocusGained
 
     private void txtChatFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtChatFocusLost
-        if (txtChat.getText().equals("")) {
-            txtChat.setText("Chat...");
-            txtChat.setForeground(Color.GRAY);
-        }
+
     }//GEN-LAST:event_txtChatFocusLost
 
     private void txtChatKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtChatKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            m_chat.addMessage("Ben", txtChat.getText());
             txtChat.setText("");
         }
     }//GEN-LAST:event_txtChatKeyReleased
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        int result = JOptionPane.showConfirmDialog(this, "Leaving will cause you " +
+                "to forfeit this battle. Are you sure you want to leave?",
+                "Leaving Battle", JOptionPane.YES_NO_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            dispose();
+        }
+    }//GEN-LAST:event_formWindowClosing
 
     /**
     * @param args the command line arguments
@@ -248,24 +401,49 @@ public class BattleWindow extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new BattleWindow().setVisible(true);
+                try {
+                    //javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getCrossPlatformLookAndFeelClassName());
+                } catch (Exception e) {
+                    
+                }
+                BattleWindow battle = new BattleWindow();
+                VisualPokemon[] party1 = new VisualPokemon[] {
+                    new VisualPokemon("Squirtle", 0, false)/*,
+                    new VisualPokemon("Ivysaur", 0, true)*/
+                };
+                VisualPokemon[] party2 = new VisualPokemon[] {
+                    new VisualPokemon("Blissey", 1, false)/*,
+                    new VisualPokemon("Wobbuffet", 1, true)*/
+                };
+                battle.setParties(party1, party2);
+
+                battle.setMove(0, "Surf");
+                battle.setMove(1, "Tackle");
+                battle.setMove(2, "Withdraw");
+                battle.setMove(3, "Hydro Pump");
+
+                battle.setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnMove;
+    private javax.swing.JButton btnMoveCancel;
+    private javax.swing.JButton btnSwitch;
+    private javax.swing.JButton btnSwitchCancel;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JList jList1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JToggleButton jToggleButton1;
-    private javax.swing.JToggleButton jToggleButton2;
-    private javax.swing.JToggleButton jToggleButton3;
-    private javax.swing.JToggleButton jToggleButton4;
+    private javax.swing.JPanel panelMoves;
+    private javax.swing.JPanel panelSwitch;
+    private javax.swing.JScrollPane scrollChat;
     private javax.swing.JTextField txtChat;
     // End of variables declaration//GEN-END:variables
 

@@ -54,11 +54,7 @@ public class HTMLPane extends JTextPane {
         setOpaque(true);
         HTMLEditorKit kit = new HTMLEditorKit();
         StyleSheet css = new StyleSheet();
-        try {
-            css.importStyleSheet(new File("resources/main.css").toURL());
-        } catch (MalformedURLException ex) {
-            System.out.println("Failed to load style sheet");
-        }
+        css.importStyleSheet(HTMLPane.class.getResource("../resources/main.css"));
         kit.setStyleSheet(css);
         setEditorKit(kit);
 

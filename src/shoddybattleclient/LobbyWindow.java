@@ -23,10 +23,8 @@
 
 package shoddybattleclient;
 
-import java.awt.AWTEvent;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URL;
@@ -127,10 +125,7 @@ public class LobbyWindow extends javax.swing.JFrame {
         m_chat.getChat().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                Point p = e.getPoint();
-                Point p2 = SwingUtilities.convertPoint(m_chat.getChat(), p, m_notifier);
-                p2.x = p.x;
-                m_notifier.processClick(p2);
+                m_notifier.processClick(e);
             }
         });
     }
@@ -191,6 +186,18 @@ public class LobbyWindow extends javax.swing.JFrame {
         } catch (Exception e) {
             System.out.println(page);
         }
+    }
+
+    public void addChallenge(String name, int id, boolean incoming) {
+        m_notifier.addChallenge(name, id, incoming);
+    }
+
+    public void cancelChallenge(int id) {
+        m_notifier.removeChallenge(id);
+    }
+
+    public ChatPane getChat() {
+        return m_chat;
     }
 
     /** This method is called from within the constructor to
