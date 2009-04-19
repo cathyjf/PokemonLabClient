@@ -29,7 +29,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="jTabbedPane1" min="-2" pref="340" max="-2" attributes="1"/>
+                  <Component id="tabAction" min="-2" pref="340" max="-2" attributes="1"/>
                   <Component id="jScrollPane1" min="-2" pref="82" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -38,13 +38,13 @@
                   <Component id="txtChat" alignment="1" pref="233" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel1" linkSize="6" pref="113" max="32767" attributes="1"/>
-                          <Component id="jLabel2" linkSize="6" min="-2" pref="113" max="-2" attributes="1"/>
+                          <Component id="lblPlayer0" linkSize="6" pref="113" max="32767" attributes="1"/>
+                          <Component id="lblPlayer1" linkSize="6" min="-2" pref="113" max="-2" attributes="1"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel4" linkSize="7" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel3" linkSize="7" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblClock1" linkSize="7" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblClock0" linkSize="7" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -59,23 +59,23 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblClock0" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblPlayer0" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblClock1" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblPlayer1" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="scrollChat" pref="364" max="32767" attributes="0"/>
+                      <Component id="scrollChat" pref="399" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="txtChat" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Group type="102" attributes="0">
-                      <Component id="jScrollPane1" min="-2" pref="227" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jTabbedPane1" min="-2" pref="216" max="-2" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="jScrollPane1" min="-2" pref="230" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="tabAction" min="-2" pref="216" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -91,11 +91,11 @@
         <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtChatKeyReleased"/>
       </Events>
     </Component>
-    <Container class="javax.swing.JTabbedPane" name="jTabbedPane1">
+    <Container class="javax.swing.JTabbedPane" name="tabAction">
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
       <SubComponents>
-        <Container class="javax.swing.JPanel" name="jPanel3">
+        <Container class="javax.swing.JPanel" name="jPanel4">
           <Properties>
             <Property name="opaque" type="boolean" value="false"/>
           </Properties>
@@ -110,10 +110,10 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
                       <Component id="btnMove" min="-2" pref="165" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="btnMoveCancel" pref="154" max="32767" attributes="0"/>
+                      <Component id="btnMoveCancel" pref="160" max="32767" attributes="0"/>
                   </Group>
                   <Component id="panelMoves" alignment="0" max="32767" attributes="1"/>
               </Group>
@@ -124,8 +124,8 @@
                       <Component id="panelMoves" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="btnMove" linkSize="8" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="btnMoveCancel" linkSize="8" alignment="3" min="-2" pref="29" max="-2" attributes="0"/>
+                          <Component id="btnMove" linkSize="9" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnMoveCancel" linkSize="9" alignment="3" min="-2" pref="29" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -141,29 +141,35 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="319" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="335" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="117" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="142" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
             </Container>
             <Component class="javax.swing.JButton" name="btnMove">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Choose"/>
+                <Property name="text" type="java.lang.String" value="Attack"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnMoveActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnMoveCancel">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Cancel"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnMoveCancelActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
-        <Container class="javax.swing.JPanel" name="jPanel5">
+        <Container class="javax.swing.JPanel" name="jPanel3">
           <Properties>
             <Property name="opaque" type="boolean" value="false"/>
           </Properties>
@@ -178,10 +184,10 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
+                  <Group type="102" attributes="0">
                       <Component id="btnSwitch" min="-2" pref="165" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="btnSwitchCancel" pref="154" max="32767" attributes="0"/>
+                      <Component id="btnSwitchCancel" pref="160" max="32767" attributes="0"/>
                   </Group>
                   <Component id="panelSwitch" alignment="0" max="32767" attributes="1"/>
               </Group>
@@ -192,8 +198,8 @@
                       <Component id="panelSwitch" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="btnSwitch" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="btnSwitchCancel" alignment="3" min="-2" pref="29" max="-2" attributes="0"/>
+                          <Component id="btnSwitch" linkSize="8" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnSwitchCancel" linkSize="8" alignment="3" min="-2" pref="29" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -209,12 +215,12 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="319" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="335" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="117" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="142" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -223,11 +229,17 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Switch"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSwitchActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnSwitchCancel">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Cancel"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSwitchCancelActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -240,7 +252,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JList" name="jList1">
+        <Component class="javax.swing.JList" name="listUsers">
           <Properties>
             <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
               <StringArray count="0"/>
@@ -253,22 +265,22 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
     </Container>
-    <Component class="javax.swing.JLabel" name="jLabel1">
+    <Component class="javax.swing.JLabel" name="lblPlayer0">
       <Properties>
         <Property name="text" type="java.lang.String" value="Player 1"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel2">
+    <Component class="javax.swing.JLabel" name="lblPlayer1">
       <Properties>
         <Property name="text" type="java.lang.String" value="Player 2"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel3">
+    <Component class="javax.swing.JLabel" name="lblClock0">
       <Properties>
         <Property name="text" type="java.lang.String" value="20:00:00"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel4">
+    <Component class="javax.swing.JLabel" name="lblClock1">
       <Properties>
         <Property name="text" type="java.lang.String" value="20:00:00"/>
       </Properties>

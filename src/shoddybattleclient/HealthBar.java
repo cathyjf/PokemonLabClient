@@ -20,6 +20,8 @@
 package shoddybattleclient;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 /**
  *
@@ -66,27 +68,28 @@ public class HealthBar extends JPanel {
     
     @Override
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        
+        Graphics2D g2 = (Graphics2D)g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         int width = getWidth();
         int height = getHeight();
         double ratio = getRatio();
         int x = (int)((double)width * ratio);
-        g.drawImage(m_image, 0, 0, x, height, this);
-        g.setColor(Color.BLACK);
-        g.drawRect(0, 0, x - 1, height - 1);
-        g.drawRect(0, 0, width - 1, height - 1);
-        g.setFont(new Font(null, Font.BOLD, 20));
-        FontMetrics metrics = g.getFontMetrics();
+        g2.drawImage(m_image, 0, 0, x, height, this);
+        g2.setColor(Color.BLACK);
+        g2.drawRect(0, 0, x - 1, height - 1);
+        g2.drawRect(0, 0, width - 1, height - 1);
+        g2.setFont(new Font(null, Font.BOLD, 20));
+        FontMetrics metrics = g2.getFontMetrics();
         String str;
         if (m_denominator == 100) {
             str = (int)(ratio * 100) + "%";
         } else {
             str = m_numerator + "/" + m_denominator;
         }
-        g.drawString(str,
+        g2.drawString(str,
                 (width - metrics.stringWidth(str)) / 2,
                 (height - metrics.getDescent() + metrics.getAscent()) / 2);
+        g2.dispose();
     }
     
     public static void main(String[] args) {

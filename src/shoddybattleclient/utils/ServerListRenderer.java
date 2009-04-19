@@ -28,6 +28,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import javax.swing.JPanel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
@@ -62,32 +64,35 @@ public class ServerListRenderer extends JPanel implements ListCellRenderer {
     }
 
     public void paintComponent(Graphics g) {
+        Graphics2D g2 = (Graphics2D)g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         int w = getWidth();
         int h = getHeight();
         //initial left margin
         int left = 5;
         //draw background
-        g.setColor(getBackground());
-        g.fillRect(0, 0, w, h);
+        g2.setColor(getBackground());
+        g2.fillRect(0, 0, w, h);
         //draw the server name and description
-        g.setColor(Color.BLACK);
-        g.setFont(getFont().deriveFont(18f).deriveFont(Font.BOLD));
-        g.drawString(m_sle.getName(), left, h / 2);
-        int nameRight = left + g.getFontMetrics().stringWidth(m_sle.getName());
-        g.setFont(g.getFont().deriveFont(10f).deriveFont(Font.PLAIN));
-        g.drawString(m_sle.getDescription(), nameRight + 10, h / 2);
+        g2.setColor(Color.BLACK);
+        g2.setFont(getFont().deriveFont(18f).deriveFont(Font.BOLD));
+        g2.drawString(m_sle.getName(), left, h / 2);
+        int nameRight = left + g2.getFontMetrics().stringWidth(m_sle.getName());
+        g2.setFont(g.getFont().deriveFont(10f).deriveFont(Font.PLAIN));
+        g2.drawString(m_sle.getDescription(), nameRight + 10, h / 2);
 
         //draw host, port users
-        g.setColor(Color.DARK_GRAY);
+        g2.setColor(Color.DARK_GRAY);
         int hostPortHeight = h / 2 + 15;
         String host = "Host: " + m_sle.getHost();
         int hostRight = left + g.getFontMetrics().stringWidth(host);
-        g.drawString(host, left, hostPortHeight);
+        g2.drawString(host, left, hostPortHeight);
         String port = "Port: " + m_sle.getPort();
-        g.drawString(port, hostRight + 5, hostPortHeight);
+        g2.drawString(port, hostRight + 5, hostPortHeight);
         int portRight = hostRight + g.getFontMetrics().stringWidth(port);
         String users = "[" + m_sle.getUsers() + "/" + m_sle.getMaxUsers() + "]";
-        g.drawString(users, portRight + 15, hostPortHeight);
+        g2.drawString(users, portRight + 15, hostPortHeight);
+        g2.dispose();
     }
 
 }

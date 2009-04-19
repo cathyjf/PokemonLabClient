@@ -126,7 +126,7 @@ public class ChallengePanel extends javax.swing.JPanel {
 }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnAcceptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAcceptActionPerformed
-        new BattleWindow().setVisible(true);
+        //do something here
         dispose();
     }//GEN-LAST:event_btnAcceptActionPerformed
 

@@ -23,12 +23,18 @@
 
 package shoddybattleclient;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
@@ -76,46 +82,87 @@ public class BattleWindow extends javax.swing.JFrame {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             if (m_move == null) return;
-            Graphics g2 = g.create();
-            g2.setFont(g2.getFont().deriveFont(Font.BOLD));
-            g2.drawString(m_move.getName(), 10, 20);
+            Graphics2D g2 = (Graphics2D)g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            if (!isEnabled()) {
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+            }
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD).deriveFont(17f));
+            g2.drawString(m_move.getName(), 10, 25);
             g2.setColor(Color.DARK_GRAY);
-            g2.setFont(g2.getFont().deriveFont(Font.PLAIN));
-            g2.setFont(g2.getFont().deriveFont(12f));
-            g2.drawString(m_move.getType(), 10, 50);
-            g2.drawString(m_move.getPp(), 110, 50);
+            g2.setFont(g2.getFont().deriveFont(Font.PLAIN).deriveFont(12f));
+            int y = getHeight() - g2.getFontMetrics().getHeight();
+            g2.drawString(m_move.getType(), 10, y);
+            String pp = m_move.getPp();
+            int left = getWidth() - g2.getFontMetrics().stringWidth(pp) - 5;
+            g2.drawString(m_move.getPp(), left, y);
             g2.dispose();
         }
     }
 
     private static class SwitchButton extends JToggleButton {
-        public SwitchButton(String text) {
-            super(text);
+        //TODO: make this more advanced than a String
+        private String m_pokemon = null;
+        public SwitchButton() {
             this.setFocusPainted(false);
         }
+        public void setPokemon(String pokemon) {
+            m_pokemon = pokemon;
+        }
         protected void paintComponent(Graphics g) {
-            Graphics g2 = g.create();
-            String text = getText();
-            setText(null);
+            Graphics2D g2 = (Graphics2D)g.create();
             super.paintComponent(g2);
+            if (m_pokemon == null) return;
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            if (!isEnabled()) {
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+            }
             g2.setFont(g2.getFont().deriveFont(Font.BOLD));
-            g2.drawString(text, 10, 20);
-            setText(text);
+            g2.drawString(m_pokemon, 5, getHeight() / 2 - g2.getFontMetrics().getHeight() / 2);
             g2.dispose();
         }
     }
 
-    private MoveButton[] m_moves;
+    private MoveButton[] m_moveButtons;
     private SwitchButton[] m_switches;
     private GameVisualisation m_visual;
     private HealthBar[] m_healthBars = new HealthBar[2];
     private HTMLPane m_chat;
     private ArrayList<PokemonMove> m_moveList;
+    //Pokemon in your party
+    private String[] m_pokemon;
+    //Users in this match
+    private String[] m_users;
+    //Moves for each of your pokemon
+    private String[][] m_moves;
+    //Your participant number in this battle
+    private int m_participant;
+    //This battles field ID
+    private int m_fid;
+    //if we are forced to make a certain move
+    private boolean m_forced = false;
 
     /** Creates new form BattleWindow */
-    public BattleWindow() {
+    public BattleWindow(int fid, int participant, String[] users, String[][] moves, String[] party) {
         initComponents();
 
+        setTitle(users[0] + " vs. " + users[1] + " - Shoddy Battle");
+
+        m_fid = fid;
+        m_participant = participant;
+        m_users = users;
+        m_moves = moves;
+        m_pokemon = party;
+
+        listUsers.setModel(new UserListModel(new ArrayList()));
+        setUsers(users);
+        if (m_participant == 0) {
+            lblPlayer0.setText(users[0]);
+            lblPlayer1.setText(users[1]);
+        } else {
+            lblPlayer0.setText(users[1]);
+            lblPlayer1.setText(users[0]);
+        }
         m_chat = new HTMLPane("Ben");
         scrollChat.add(m_chat);
         scrollChat.setViewportView(m_chat);
@@ -123,14 +170,30 @@ public class BattleWindow extends javax.swing.JFrame {
         MoveListParser mlp = new MoveListParser();
         m_moveList = mlp.parseDocument(BattleWindow.class.getResource("resources/moves2.xml").toString());
 
-        m_moves = new MoveButton[4];
-        panelMoves.setLayout(new GridLayout(2, 2));
+        createButtons();
+        setupVisual();
+        setMoves(0);
+        updateSwitches();
+    }
 
+    private void createButtons() {
+        m_moveButtons = new MoveButton[4];
+        panelMoves.setLayout(new GridLayout(2, 2));
         ButtonGroup moveButtons = new ButtonGroup();
-        for (int i = 0; i < m_moves.length; i++) {
-            MoveButton button = new MoveButton();
+        for (int i = 0; i < m_moveButtons.length; i++) {
+            final int idx = i;
+            final MoveButton button = new MoveButton();
+            button.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (!button.isEnabled()) return;
+                    if (e.getClickCount() == 2) {
+                        sendMove(idx);
+                    }
+                }
+            });
             moveButtons.add(button);
-            m_moves[i] = button;
+            m_moveButtons[i] = button;
             panelMoves.add(button);
         }
 
@@ -138,38 +201,130 @@ public class BattleWindow extends javax.swing.JFrame {
         panelSwitch.setLayout(new GridLayout(3, 2));
         m_switches = new SwitchButton[6];
         for (int i = 0; i < m_switches.length; i++) {
-            SwitchButton button = new SwitchButton(String.valueOf(i));
+            final int idx = i;
+            final SwitchButton button = new SwitchButton();
+            button.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (!button.isEnabled()) return;
+                    if (e.getClickCount() == 2) {
+                        sendSwitch(idx);
+                    }
+                }
+            });
             switchButtons.add(button);
             m_switches[i] = button;
             panelSwitch.add(button);
         }
+    }
+
+    public void setUsers(String[] users) {
+        listUsers.setModel(new UserListModel(new ArrayList(Arrays.asList(users))));
+    }
+
+    private void setMoves(int i) {
+        for (int j = 0; j < m_moveButtons.length; j++) {
+            setMove(j, m_moves[i][j]);
+        }
+    }
+
+    private void setupVisual() {
         m_visual = new GameVisualisation(0);
         m_visual.setSize(m_visual.getPreferredSize());
-        m_visual.setLocation(20, 60);
+        int base = 15;
+        int buffer = 5;
+        int healthHeight = 35;
+        int x = 20;
+        m_visual.setLocation(x, base + healthHeight + buffer);
         m_healthBars[0] = new HealthBar();
-        m_healthBars[0].setLocation(20, 20);
-        m_healthBars[0].setSize(m_visual.getWidth(), 35);
+        m_healthBars[0].setLocation(x, base);
+        m_healthBars[0].setSize(m_visual.getWidth(), healthHeight);
         m_healthBars[1] = new HealthBar();
-        m_healthBars[1].setLocation(20, 65 + m_visual.getHeight());
-        m_healthBars[1].setSize(m_visual.getWidth(), 35);
+        m_healthBars[1].setLocation(x, base + healthHeight + (2 * buffer) + m_visual.getHeight());
+        m_healthBars[1].setSize(m_visual.getWidth(), healthHeight);
         add(m_healthBars[0]);
         add(m_healthBars[1]);
         add(m_visual);
     }
 
-    public void setParties(VisualPokemon[] p1, VisualPokemon[] p2) {
-        m_visual.setParties(p1, p2);
-    }
-
     public void setMove(int idx, String name) {
-        if ((idx < 0) || (idx >= m_moves.length)) return;
+        if ((idx < 0) || (idx >= m_moveButtons.length)) return;
         for (PokemonMove move : m_moveList) {
             if (move.name.equals(name)) {
-                m_moves[idx].setMove(new Move(name, move.type, move.pp));
+                m_moveButtons[idx].setMove(new Move(name, move.type, move.pp));
                 break;
             }
         }
     }
+
+    public void requestMove() {
+        btnMove.setEnabled(true);
+        btnSwitch.setEnabled(true);
+        btnMoveCancel.setEnabled(false);
+        btnSwitchCancel.setEnabled(false);
+        tabAction.setSelectedIndex(0);
+    }
+
+    public void requestReplacement() {
+        btnMove.setEnabled(false);
+        btnMoveCancel.setEnabled(false);
+        btnSwitch.setEnabled(true);
+        btnSwitchCancel.setEnabled(false);
+        tabAction.setSelectedIndex(1);
+    }
+
+    public void requestTarget() {
+        //do something for targetting here
+    }
+
+    private void sendMove(int idx) {
+        if (!btnMove.isEnabled()) return;
+        System.out.println("Used move " + idx);
+        btnMove.setEnabled(false);
+        btnMoveCancel.setEnabled(true);
+    }
+
+    private void sendSwitch(int idx) {
+        if (!btnSwitch.isEnabled()) return;
+        System.out.println("Switched to " + idx);
+        btnSwitch.setEnabled(false);
+        btnSwitchCancel.setEnabled(true);
+    }
+
+    public void setValidMoves(boolean[] valid) {
+        boolean struggle = true;
+        for (int i = 0; i < m_moveButtons.length; i++) {
+            m_moveButtons[i].setEnabled(valid[i]);
+            if (valid[i]) struggle = false;
+        }
+        if (struggle && !m_forced) {
+            btnMove.setText("Struggle");
+        }
+    }
+
+    public void setValidSwitches(boolean[] valid) {
+        for (int i = 0; i < m_switches.length; i++) {
+            m_switches[i].setEnabled(valid[i]);
+        }
+    }
+
+    private void updateSwitches() {
+        for (int i = 0; i < m_switches.length; i++) {
+            m_switches[i].setPokemon(m_pokemon[i]);
+        }
+    }
+
+    public void setPokemon(VisualPokemon[] p1, VisualPokemon[] p2) {
+        m_visual.setParties(p1, p2);
+    }
+
+    public void setForced(boolean forced) {
+        m_forced = forced;
+        if (forced) {
+            setValidMoves(new boolean[] {false, false, false, false});
+        }
+    }
+
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -181,22 +336,22 @@ public class BattleWindow extends javax.swing.JFrame {
     private void initComponents() {
 
         txtChat = new javax.swing.JTextField();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel3 = new javax.swing.JPanel();
+        tabAction = new javax.swing.JTabbedPane();
+        jPanel4 = new javax.swing.JPanel();
         panelMoves = new javax.swing.JPanel();
         btnMove = new javax.swing.JButton();
         btnMoveCancel = new javax.swing.JButton();
-        jPanel5 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
         panelSwitch = new javax.swing.JPanel();
         btnSwitch = new javax.swing.JButton();
         btnSwitchCancel = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
+        listUsers = new javax.swing.JList();
         scrollChat = new javax.swing.JScrollPane();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
+        lblPlayer0 = new javax.swing.JLabel();
+        lblPlayer1 = new javax.swing.JLabel();
+        lblClock0 = new javax.swing.JLabel();
+        lblClock1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setLocationByPlatform(true);
@@ -220,7 +375,7 @@ public class BattleWindow extends javax.swing.JFrame {
             }
         });
 
-        jPanel3.setOpaque(false);
+        jPanel4.setOpaque(false);
 
         panelMoves.setOpaque(false);
 
@@ -228,43 +383,53 @@ public class BattleWindow extends javax.swing.JFrame {
         panelMoves.setLayout(panelMovesLayout);
         panelMovesLayout.setHorizontalGroup(
             panelMovesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 319, Short.MAX_VALUE)
+            .add(0, 335, Short.MAX_VALUE)
         );
         panelMovesLayout.setVerticalGroup(
             panelMovesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 117, Short.MAX_VALUE)
+            .add(0, 142, Short.MAX_VALUE)
         );
 
-        btnMove.setText("Choose");
+        btnMove.setText("Attack");
+        btnMove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMoveActionPerformed(evt);
+            }
+        });
 
         btnMoveCancel.setText("Cancel");
+        btnMoveCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMoveCancelActionPerformed(evt);
+            }
+        });
 
-        org.jdesktop.layout.GroupLayout jPanel3Layout = new org.jdesktop.layout.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel3Layout.createSequentialGroup()
+        org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel4Layout.createSequentialGroup()
                 .add(btnMove, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 165, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(btnMoveCancel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE))
+                .add(btnMoveCancel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE))
             .add(panelMoves, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel3Layout.createSequentialGroup()
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel4Layout.createSequentialGroup()
                 .add(panelMoves, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(btnMove)
                     .add(btnMoveCancel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 29, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
-        jPanel3Layout.linkSize(new java.awt.Component[] {btnMove, btnMoveCancel}, org.jdesktop.layout.GroupLayout.VERTICAL);
+        jPanel4Layout.linkSize(new java.awt.Component[] {btnMove, btnMoveCancel}, org.jdesktop.layout.GroupLayout.VERTICAL);
 
-        jTabbedPane1.addTab("Move", jPanel3);
+        tabAction.addTab("Move", jPanel4);
 
-        jPanel5.setOpaque(false);
+        jPanel3.setOpaque(false);
 
         panelSwitch.setOpaque(false);
 
@@ -272,49 +437,61 @@ public class BattleWindow extends javax.swing.JFrame {
         panelSwitch.setLayout(panelSwitchLayout);
         panelSwitchLayout.setHorizontalGroup(
             panelSwitchLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 319, Short.MAX_VALUE)
+            .add(0, 335, Short.MAX_VALUE)
         );
         panelSwitchLayout.setVerticalGroup(
             panelSwitchLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 117, Short.MAX_VALUE)
+            .add(0, 142, Short.MAX_VALUE)
         );
 
         btnSwitch.setText("Switch");
+        btnSwitch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSwitchActionPerformed(evt);
+            }
+        });
 
         btnSwitchCancel.setText("Cancel");
+        btnSwitchCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSwitchCancelActionPerformed(evt);
+            }
+        });
 
-        org.jdesktop.layout.GroupLayout jPanel5Layout = new org.jdesktop.layout.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel5Layout.createSequentialGroup()
+        org.jdesktop.layout.GroupLayout jPanel3Layout = new org.jdesktop.layout.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel3Layout.createSequentialGroup()
                 .add(btnSwitch, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 165, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(btnSwitchCancel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE))
+                .add(btnSwitchCancel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE))
             .add(panelSwitch, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel5Layout.createSequentialGroup()
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel3Layout.createSequentialGroup()
                 .add(panelSwitch, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(btnSwitch)
                     .add(btnSwitchCancel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 29, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Switch", jPanel5);
+        jPanel3Layout.linkSize(new java.awt.Component[] {btnSwitch, btnSwitchCancel}, org.jdesktop.layout.GroupLayout.VERTICAL);
 
-        jScrollPane1.setViewportView(jList1);
+        tabAction.addTab("Switch", jPanel3);
 
-        jLabel1.setText("Player 1");
+        jScrollPane1.setViewportView(listUsers);
 
-        jLabel2.setText("Player 2");
+        lblPlayer0.setText("Player 1");
 
-        jLabel3.setText("20:00:00");
+        lblPlayer1.setText("Player 2");
 
-        jLabel4.setText("20:00:00");
+        lblClock0.setText("20:00:00");
+
+        lblClock1.setText("20:00:00");
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -323,7 +500,7 @@ public class BattleWindow extends javax.swing.JFrame {
             .add(layout.createSequentialGroup()
                 .add(29, 29, 29)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 340, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(tabAction, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 340, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 82, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
@@ -331,18 +508,18 @@ public class BattleWindow extends javax.swing.JFrame {
                     .add(txtChat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
-                            .add(jLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 113, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                            .add(lblPlayer0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
+                            .add(lblPlayer1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 113, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jLabel4)
-                            .add(jLabel3))))
+                            .add(lblClock1)
+                            .add(lblClock0))))
                 .addContainerGap())
         );
 
-        layout.linkSize(new java.awt.Component[] {jLabel1, jLabel2}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
+        layout.linkSize(new java.awt.Component[] {lblPlayer0, lblPlayer1}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
 
-        layout.linkSize(new java.awt.Component[] {jLabel3, jLabel4}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
+        layout.linkSize(new java.awt.Component[] {lblClock0, lblClock1}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
 
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -351,20 +528,20 @@ public class BattleWindow extends javax.swing.JFrame {
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(jLabel3)
-                            .add(jLabel1))
+                            .add(lblClock0)
+                            .add(lblPlayer0))
                         .add(6, 6, 6)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(jLabel4)
-                            .add(jLabel2))
+                            .add(lblClock1)
+                            .add(lblPlayer1))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(scrollChat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
+                        .add(scrollChat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 399, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(txtChat, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                     .add(layout.createSequentialGroup()
-                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 227, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 216, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 230, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(18, 18, 18)
+                        .add(tabAction, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 216, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -395,6 +572,39 @@ public class BattleWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formWindowClosing
 
+    private void btnMoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveActionPerformed
+        int selected = -1;
+        for (int i = 0; i < m_moveButtons.length; i++) {
+            if (m_moveButtons[i].isSelected()) {
+                selected = i;
+                break;
+            }
+        }
+        sendMove(selected);
+    }//GEN-LAST:event_btnMoveActionPerformed
+
+    private void btnSwitchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSwitchActionPerformed
+        int selected = -1;
+        for (int i = 0; i < m_switches.length; i++) {
+            if (m_switches[i].isSelected()) {
+                selected = i;
+                break;
+            }
+        }
+        if (selected == -1) return;
+        sendSwitch(selected);
+    }//GEN-LAST:event_btnSwitchActionPerformed
+
+    private void btnMoveCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveCancelActionPerformed
+        btnMove.setEnabled(true);
+        btnMoveCancel.setEnabled(false);
+    }//GEN-LAST:event_btnMoveCancelActionPerformed
+
+    private void btnSwitchCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSwitchCancelActionPerformed
+        btnSwitch.setEnabled(true);
+        btnSwitchCancel.setEnabled(false);
+    }//GEN-LAST:event_btnSwitchCancelActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -402,26 +612,21 @@ public class BattleWindow extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    //javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getCrossPlatformLookAndFeelClassName());
+                    //javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
                 } catch (Exception e) {
                     
                 }
-                BattleWindow battle = new BattleWindow();
-                VisualPokemon[] party1 = new VisualPokemon[] {
-                    new VisualPokemon("Squirtle", 0, false)/*,
-                    new VisualPokemon("Ivysaur", 0, true)*/
-                };
-                VisualPokemon[] party2 = new VisualPokemon[] {
-                    new VisualPokemon("Blissey", 1, false)/*,
-                    new VisualPokemon("Wobbuffet", 1, true)*/
-                };
-                battle.setParties(party1, party2);
-
-                battle.setMove(0, "Surf");
-                battle.setMove(1, "Tackle");
-                battle.setMove(2, "Withdraw");
-                battle.setMove(3, "Hydro Pump");
-
+                BattleWindow battle = new BattleWindow(0, 1, new String[] {"bearzly", "Catherine"},
+                        new String[][] {
+                            {"Tackle", "Bite", "Yawn", "Mega Punch"},
+                            {"Tackle", "Bite", "Yawn", "Mega Punch"},
+                            {"Tackle", "Bite", "Yawn", "Mega Punch"},
+                            {"Tackle", "Bite", "Yawn", "Mega Punch"},
+                            {"Tackle", "Bite", "Yawn", "Mega Punch"},
+                            {"Tackle", "Bite", "Yawn", "Mega Punch"}
+                }, new String[] {"Bulbasaur", "Squirtle", "Ivysaur", "Chansey", "Pikachu", "Totodile"});
+                battle.setPokemon(new VisualPokemon[] {new VisualPokemon("Bulbasaur", 1, false)},
+                        new VisualPokemon[] {new VisualPokemon("Groudon", 0, true)});
                 battle.setVisible(true);
             }
         });
@@ -432,18 +637,18 @@ public class BattleWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnMoveCancel;
     private javax.swing.JButton btnSwitch;
     private javax.swing.JButton btnSwitchCancel;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JList jList1;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JLabel lblClock0;
+    private javax.swing.JLabel lblClock1;
+    private javax.swing.JLabel lblPlayer0;
+    private javax.swing.JLabel lblPlayer1;
+    private javax.swing.JList listUsers;
     private javax.swing.JPanel panelMoves;
     private javax.swing.JPanel panelSwitch;
     private javax.swing.JScrollPane scrollChat;
+    private javax.swing.JTabbedPane tabAction;
     private javax.swing.JTextField txtChat;
     // End of variables declaration//GEN-END:variables
 

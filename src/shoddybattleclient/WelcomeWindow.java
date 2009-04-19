@@ -23,7 +23,6 @@
 
 package shoddybattleclient;
 import java.awt.event.MouseEvent;
-import java.util.prefs.Preferences;
 import javax.swing.UIManager;
 import shoddybattleclient.utils.*;
 
@@ -78,7 +77,7 @@ public class WelcomeWindow extends javax.swing.JFrame {
     public WelcomeWindow() {
         initComponents();
         ServerListEntry sle = new ServerListEntry("Official Server",
-                "The official server of Shoddy Battle", "official.shoddybattle.com",
+                "This server will be gone but is here for example", "official.shoddybattle.com",
                 8446, 220, 250);
         ServerListEntry sle2 = new ServerListEntry("Smogon", 
                 "Official server of smogon.com", "shoddy.smogon.com",
@@ -167,12 +166,12 @@ public class WelcomeWindow extends javax.swing.JFrame {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(serverListPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
+                    .add(serverListPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(btnConnect)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(btnAdvanced)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 59, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 109, Short.MAX_VALUE)
                         .add(btnRefresh)))
                 .addContainerGap())
         );
@@ -180,7 +179,7 @@ public class WelcomeWindow extends javax.swing.JFrame {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .add(serverListPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+                .add(serverListPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(btnConnect)
