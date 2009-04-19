@@ -23,12 +23,15 @@
 
 package shoddybattleclient;
 
+import java.io.IOException;
+import javax.swing.JOptionPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
+import shoddybattleclient.network.ServerLink;
 
 /**
  *
@@ -36,9 +39,12 @@ import javax.swing.text.html.StyleSheet;
  */
 public class ServerConnect extends javax.swing.JFrame {
 
+    private ServerLink m_link;
+
     /** Creates new form ServerConnect */
-    public ServerConnect(String name, String message) {
+    public ServerConnect(ServerLink link, String name, String message) {
         initComponents();
+        m_link = link;
         lblName.setText(name);
         HTMLEditorKit kit = new HTMLEditorKit();
         StyleSheet css = new StyleSheet();
@@ -76,19 +82,21 @@ public class ServerConnect extends javax.swing.JFrame {
         lblName = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtWelcome = new javax.swing.JEditorPane();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        tabbedPane = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        txtLoginUsername = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        txtLoginName = new javax.swing.JTextField();
+        cmdLogIn = new javax.swing.JButton();
         txtLoginPassword = new javax.swing.JPasswordField();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        txtLoginUsername1 = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
-        txtLoginPassword1 = new javax.swing.JPasswordField();
+        txtRegisterName = new javax.swing.JTextField();
+        cmdRegister = new javax.swing.JButton();
+        txtRegisterPassword = new javax.swing.JPasswordField();
+        txtRegisterConfirm = new javax.swing.JPasswordField();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setLocationByPlatform(true);
@@ -98,7 +106,7 @@ public class ServerConnect extends javax.swing.JFrame {
             }
         });
 
-        lblName.setFont(new java.awt.Font("Lucida Grande", 1, 24)); // NOI18N
+        lblName.setFont(new java.awt.Font("Lucida Grande", 1, 24));
         lblName.setText("Server Name");
 
         txtWelcome.setContentType("text/html");
@@ -112,10 +120,10 @@ public class ServerConnect extends javax.swing.JFrame {
 
         jLabel3.setText("Password:");
 
-        jButton1.setText("Log In");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        cmdLogIn.setText("Log In");
+        cmdLogIn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                cmdLogInActionPerformed(evt);
             }
         });
 
@@ -132,9 +140,9 @@ public class ServerConnect extends javax.swing.JFrame {
                             .add(jLabel3))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(txtLoginPassword, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
-                            .add(txtLoginUsername, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)))
-                    .add(jButton1))
+                            .add(txtLoginPassword, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
+                            .add(txtLoginName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)))
+                    .add(cmdLogIn))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -143,17 +151,17 @@ public class ServerConnect extends javax.swing.JFrame {
                 .addContainerGap()
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel2)
-                    .add(txtLoginUsername, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(txtLoginName, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(txtLoginPassword, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jLabel3))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(jButton1)
+                .add(cmdLogIn)
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Log In", jPanel1);
+        tabbedPane.addTab("Log In", jPanel1);
 
         jPanel2.setBackground(new java.awt.Color(244, 242, 242));
         jPanel2.setOpaque(false);
@@ -162,12 +170,14 @@ public class ServerConnect extends javax.swing.JFrame {
 
         jLabel5.setText("Password:");
 
-        jButton2.setText("Register");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        cmdRegister.setText("Register");
+        cmdRegister.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                cmdRegisterActionPerformed(evt);
             }
         });
+
+        jLabel1.setText("Confirm:");
 
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -179,12 +189,14 @@ public class ServerConnect extends javax.swing.JFrame {
                     .add(jPanel2Layout.createSequentialGroup()
                         .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(jLabel4)
-                            .add(jLabel5))
+                            .add(jLabel5)
+                            .add(jLabel1))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(txtLoginPassword1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
-                            .add(txtLoginUsername1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)))
-                    .add(jButton2))
+                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, txtRegisterPassword, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, txtRegisterName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
+                            .add(txtRegisterConfirm, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)))
+                    .add(cmdRegister))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -193,17 +205,21 @@ public class ServerConnect extends javax.swing.JFrame {
                 .addContainerGap()
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel4)
-                    .add(txtLoginUsername1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(txtRegisterName, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(txtLoginPassword1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(txtRegisterPassword, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jLabel5))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(txtRegisterConfirm, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jLabel1))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(jButton2)
-                .addContainerGap())
+                .add(cmdRegister)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Register", jPanel2);
+        tabbedPane.addTab("Register", jPanel2);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -212,9 +228,9 @@ public class ServerConnect extends javax.swing.JFrame {
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
-                    .add(lblName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, tabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
+                    .add(lblName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -222,9 +238,9 @@ public class ServerConnect extends javax.swing.JFrame {
             .add(layout.createSequentialGroup()
                 .add(lblName)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 143, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(tabbedPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 180, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -232,33 +248,105 @@ public class ServerConnect extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+       m_link.close();
        new WelcomeWindow().setVisible(true);
        this.dispose();
     }//GEN-LAST:event_formWindowClosing
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        new LobbyWindow("Ben").setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void cmdLogInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdLogInActionPerformed
+        String user = txtLoginName.getText().trim();
+        // todo: collapse whitespace?
+        String password = new String(txtLoginPassword.getPassword()).trim();
+        m_link.attemptAuthentication(user, password);
+}//GEN-LAST:event_cmdLogInActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    public void informUserBanned(String explanation) {
+        // todo: internationalise the top part of this
+        String message = "Login failed for the following reason:\n\n";
+        message += explanation;
+        JOptionPane.showMessageDialog(this, message);
+    }
+
+    public void informNameUnavailable() {
+        // todo: internationalisation
+        JOptionPane.showMessageDialog(this, "The user name you have requested "
+                + "is already taken on the server. "
+                + "Please try a different name.");
+    }
+
+    public void informFailedChallenge() {
+        // todo: internationalisation
+        JOptionPane.showMessageDialog(this,
+                "Error: Invalid password."
+            );
+    }
+    
+    public void informNonexistentAccount() {
+        // todo: internationalisation
+        JOptionPane.showMessageDialog(this,
+                "Error: No such user account exists on the server.");
+    }
+
+    public void informInvalidName() {
+        // todo: internationalisation
+        String message = "Error: User names may contain only the letters, "
+                + "the numbers, the underscore, the hyphen, the dot, "
+                + "and the space.";
+        JOptionPane.showMessageDialog(this, message);
+    }
+
+    public void informNameTooLong() {
+        // todo: internationalisation
+        JOptionPane.showMessageDialog(this,
+                "Error: User name must be shorter than 19 characters.");
+    }
+    
+    public void informRegisterSuccess() {
+        // todo: internationalisation
+        JOptionPane.showMessageDialog(this,
+                "Successfully registered the account!");
+        txtRegisterPassword.setText(null);
+        txtRegisterConfirm.setText(null);
+        String name = txtRegisterName.getText().trim();
+        // todo: collapse whitespace...
+        txtRegisterName.setText(null);
+        // set it to the login tab and put the user's name in
+        tabbedPane.setSelectedIndex(0);
+        txtLoginName.setText(name);
+        txtLoginPassword.setText(null);
+    }
+
+    private void cmdRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdRegisterActionPerformed
+
+        String pass1 = new String(txtRegisterPassword.getPassword()).trim();
+        String pass2 = new String(txtRegisterConfirm.getPassword()).trim();
+
+        if (!pass1.equals(pass2)) {
+            // todo: internationalisation
+            JOptionPane.showMessageDialog(this,
+                    "Error: Passwords do not match.");
+            return;
+        }
+
+        String user = txtRegisterName.getText().trim();
+        // todo: collapse whitespace...
+        m_link.registerAccount(user, pass1);
+
+        // note: NetBeans will not let me fix the indention of the following
+        // line
+}//GEN-LAST:event_cmdRegisterActionPerformed
 
     /**
     * @param args the command line arguments
     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ServerConnect("test server", "Hello").setVisible(true);
-            }
-        });
+    public static void main(String args[]) throws Exception {
+        new ServerLink("localhost", 8446).start();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton cmdLogIn;
+    private javax.swing.JButton cmdRegister;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -266,12 +354,13 @@ public class ServerConnect extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lblName;
+    private javax.swing.JTabbedPane tabbedPane;
+    private javax.swing.JTextField txtLoginName;
     private javax.swing.JPasswordField txtLoginPassword;
-    private javax.swing.JPasswordField txtLoginPassword1;
-    private javax.swing.JTextField txtLoginUsername;
-    private javax.swing.JTextField txtLoginUsername1;
+    private javax.swing.JPasswordField txtRegisterConfirm;
+    private javax.swing.JTextField txtRegisterName;
+    private javax.swing.JPasswordField txtRegisterPassword;
     private javax.swing.JEditorPane txtWelcome;
     // End of variables declaration//GEN-END:variables
 

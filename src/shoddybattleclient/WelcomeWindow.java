@@ -23,7 +23,9 @@
 
 package shoddybattleclient;
 import java.awt.event.MouseEvent;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.utils.*;
 
 /**
@@ -77,7 +79,7 @@ public class WelcomeWindow extends javax.swing.JFrame {
     public WelcomeWindow() {
         initComponents();
         ServerListEntry sle = new ServerListEntry("Official Server",
-                "This server will be gone but is here for example", "official.shoddybattle.com",
+                "This server may or may not be gone", "localhost",
                 8446, 220, 250);
         ServerListEntry sle2 = new ServerListEntry("Smogon", 
                 "Official server of smogon.com", "shoddy.smogon.com",
@@ -90,9 +92,18 @@ public class WelcomeWindow extends javax.swing.JFrame {
     }
 
     private void connect(int index) {
-        ServerListEntry sle = (ServerListEntry) lstServers.getModel().getElementAt(index);
+        ServerListEntry sle =
+                (ServerListEntry)lstServers.getModel().getElementAt(index);
         
-        new ServerConnect("test server", "this is a test").setVisible(true);
+        //new ServerConnect("test server", "this is a test").setVisible(true);
+        ServerLink link;
+        try {
+            link = new ServerLink(sle.getHost(), sle.getPort());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+            return;
+        }
+        link.start();
         dispose();
     }
 

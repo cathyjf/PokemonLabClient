@@ -31,6 +31,7 @@ import java.util.concurrent.*;
 import java.security.*;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import shoddybattleclient.ServerConnect;
 
 /**
  * An instance of this class acts as the client's link to the Shoddy Battle 2
@@ -98,6 +99,19 @@ public class ServerLink extends Thread {
         }
     }
 
+    public static class RegisterAccountMessage extends OutMessage {
+        public RegisterAccountMessage(String user, String password) {
+            super (2);
+
+            try {
+                m_stream.writeUTF(user);
+                m_stream.writeUTF(password);
+            } catch (Exception e) {
+
+            }
+        }
+    }
+
     public static abstract class MessageHandler {
         /**
          * Handle a message from the server by reading values from the
@@ -115,10 +129,6 @@ public class ServerLink extends Thread {
      *
      * Note that the codes from this enum MUST match the codes from the
      * OutMessage::TYPE enum in the server.
-     *
-     * Note also that handlers are NOT invoked on the Swing/AWT event
-     * processing thread, so if any code invokes Swing methods, it must do so
-     * through the Swing event queue class.
      */
     public static class ServerMessage {
         static {
@@ -135,10 +145,14 @@ public class ServerLink extends Thread {
                     String name = is.readUTF();
                     String welcome = is.readUTF();
 
-                    System.out.println("Received WELCOME_MESSAGE.");
+                    link.m_serverConnect =
+                            new ServerConnect(link, name, welcome);
+                    link.m_serverConnect.setVisible(true);
+
+                    //System.out.println("Received WELCOME_MESSAGE.");
                     System.out.println("Server version: " + version);
-                    System.out.println("Server name: " + name);
-                    System.out.println("Welcome message: " + welcome);
+                    //System.out.println("Server name: " + name);
+                    //System.out.println("Welcome message: " + welcome);
                 }
             });
             
@@ -176,11 +190,54 @@ public class ServerLink extends Thread {
                         
                         link.sendMessage(
                                 new ChallengeResponseMessage(challenge));
+
+                        // don't keep the keys in memory indefinitely
+                        link.m_key[0] = null;
+                        link.m_key[1] = null;
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             });
+
+            // REGISTRY_RESPONSE
+            new ServerMessage(2, new MessageHandler() {
+                // byte : type
+                // string : details
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException {
+                    int type = is.readUnsignedByte();
+                    String details = is.readUTF();
+
+                    ServerConnect conn = link.m_serverConnect;
+
+                    // see network.cpp for these values
+                    switch (type) {
+                        case 0:
+                            conn.informNameUnavailable();
+                            break;
+                        case 1:
+                            conn.informRegisterSuccess();
+                            break;
+                        case 2:
+                            conn.informInvalidName();
+                            break;
+                        case 3:
+                            conn.informNameTooLong();
+                            break;
+                        case 4:
+                            conn.informNonexistentAccount();
+                            break;
+                        case 5:
+                            conn.informFailedChallenge();
+                            break;
+                        case 6:
+                            conn.informUserBanned(details);
+                            break;
+                    }
+                }
+            });
+
             // add additional messages here
         }
 
@@ -207,12 +264,17 @@ public class ServerLink extends Thread {
     protected SecretKeySpec[] m_key = new SecretKeySpec[2];
     private String m_name;
     private Thread m_messageThread;
+    private ServerConnect m_serverConnect;
 
     public ServerLink(String host, int port)
             throws IOException, UnknownHostException {
         m_socket = new Socket(InetAddress.getByName(host), port);
         m_input = new DataInputStream(m_socket.getInputStream());
         m_output = new DataOutputStream(m_socket.getOutputStream());
+    }
+
+    public void registerAccount(String user, String password) {
+        sendMessage(new RegisterAccountMessage(user, password));
     }
 
     public void attemptAuthentication(String user, String password) {
@@ -262,6 +324,19 @@ public class ServerLink extends Thread {
         m_messageThread.start();
     }
 
+    public void close() {
+        try {
+            m_input.close();
+        } catch (Exception e) {
+
+        }
+        try {
+            m_output.close();
+        } catch (Exception e) {
+
+        }
+    }
+
     /**
      * protocol is simple:
      *     byte type : type of message
@@ -279,7 +354,7 @@ public class ServerLink extends Thread {
                 m_input.readFully(body);
 
                 // find the right handler to call
-                ServerMessage msg = ServerMessage.getMessage(type);
+                final ServerMessage msg = ServerMessage.getMessage(type);
                 if (msg == null) {
                     // unknown message type - but we can skip over it and live
                     System.out.println("Unkown message type: " + type);
@@ -287,18 +362,17 @@ public class ServerLink extends Thread {
                 }
 
                 // call the handler
-                DataInputStream stream = new DataInputStream(
+                final DataInputStream stream = new DataInputStream(
                         new ByteArrayInputStream(body));
-                try {
-                    msg.handle(this, stream);
-                } catch (IOException e) {
-                    /** This one is less important -- block had the wrong
-                     * number of bytes most likely. The next message will
-                     * probably cause an error, but for now we don't need to
-                     * die.
-                     */
-                    
-                }
+                java.awt.EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        try {
+                            msg.handle(ServerLink.this, stream);
+                        } catch (IOException e) {
+
+                        }
+                    }
+                });
 
             } catch (IOException e) {
                 // fatal error - exit the while loop
