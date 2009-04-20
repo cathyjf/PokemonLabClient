@@ -85,11 +85,11 @@ public class ServerListRenderer extends JPanel implements ListCellRenderer {
         g2.setColor(Color.DARK_GRAY);
         int hostPortHeight = h / 2 + 15;
         String host = "Host: " + m_sle.getHost();
-        int hostRight = left + g.getFontMetrics().stringWidth(host);
+        int hostRight = left + g2.getFontMetrics().stringWidth(host);
         g2.drawString(host, left, hostPortHeight);
         String port = "Port: " + m_sle.getPort();
         g2.drawString(port, hostRight + 5, hostPortHeight);
-        int portRight = hostRight + g.getFontMetrics().stringWidth(port);
+        int portRight = hostRight + g2.getFontMetrics().stringWidth(port);
         String users = "[" + m_sle.getUsers() + "/" + m_sle.getMaxUsers() + "]";
         g2.drawString(users, portRight + 15, hostPortHeight);
         g2.dispose();

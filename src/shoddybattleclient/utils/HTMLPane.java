@@ -22,8 +22,6 @@
 
 package shoddybattleclient.utils;
 import java.awt.Color;
-import java.io.File;
-import java.net.MalformedURLException;
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -88,6 +86,19 @@ public class HTMLPane extends JTextPane {
 
     public void addMessage(String user, String message) {
         if (message == null) return;
+        if (message.indexOf('/') == 0) {
+            int idx = message.indexOf(' ');
+            String command, args;
+            if (idx != -1) {
+                command = message.substring(1, idx);
+                args = message.substring(idx + 1);
+            } else {
+                command = message.substring(1);
+                args = "";
+            }
+            parseCommand(command.toLowerCase(), args);
+            return;
+        }
         message = htmlEntityEncode(message);
         StringBuffer buffer = new StringBuffer();
         //Date d = new Date();
@@ -136,14 +147,71 @@ public class HTMLPane extends JTextPane {
         JScrollBar vbar = ((JScrollPane)this.getParent().getParent()).getVerticalScrollBar();
         if ((vbar.getValue() + vbar.getVisibleAmount()) == vbar.getMaximum()) {
             this.setCaretPosition(doc.getLength());
-        } else {
-
         }
     }
 
     private void clear() {
         setText("");
         m_lines = 0;
+    }
+
+    private void parseCommand(String command, String args) {
+        if ("mode".equals(command)) {
+            int idx = args.indexOf(' ');
+            if (idx == -1) {
+                addMessage(null, "Try '/mode help' for usage");
+                return;
+            }
+            String action = args.substring(0, idx);
+            parseMode(action.toLowerCase(), args.substring(idx + 1));
+        }
+    }
+
+    private void parseMode(String action, String users) {
+        if ("help".equals(action)) {
+            addMessage(null, "Usage: /mode +q/a/o/h/v/b/m/i user1[,user2,...]");
+            return;
+        }
+        char char1 = action.charAt(0);
+        if ((char1 != '+') && (char1 != '-')) {
+            addMessage(null, "Try '/mode help' for usage");
+            return;
+        }
+        boolean add = (char1 == '+');
+        action = action.substring(1);
+        String[] args = users.split(",");
+        if (action.length() == 1) {
+            String user = users;
+            String verb = add ? "Adding" : "Removing";
+            System.out.println(verb + " " + action + " to " + user);
+            switch (action.charAt(0)) {
+                case 'q':
+                    break;
+                case 'a':
+                    break;
+                case 'o':
+                    break;
+                case 'h':
+                    break;
+                case 'v':
+                    break;
+                case 'b':
+                    break;
+                case 'm':
+                    break;
+                case 'i':
+                    break;
+                default:
+                    addMessage(null, "Invalid command: " + action);
+
+            }
+        } else {
+            for (int i = 0; i < action.length(); i++) {
+                if (i >= args.length) break;
+                String pm = add ? "+" : "-";
+                parseMode(pm + action.substring(i, i + 1), args[i].trim());
+            }
+        }
     }
 
     public static void main(String[] args) {

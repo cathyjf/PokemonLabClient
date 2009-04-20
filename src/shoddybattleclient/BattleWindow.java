@@ -118,7 +118,7 @@ public class BattleWindow extends javax.swing.JFrame {
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
             }
             g2.setFont(g2.getFont().deriveFont(Font.BOLD));
-            g2.drawString(m_pokemon, 5, getHeight() / 2 - g2.getFontMetrics().getHeight() / 2);
+            g2.drawString(m_pokemon, 5, getHeight() / 2 - g2.getFontMetrics().getHeight() / 2 + 7);
             g2.dispose();
         }
     }
@@ -627,6 +627,7 @@ public class BattleWindow extends javax.swing.JFrame {
                 }, new String[] {"Bulbasaur", "Squirtle", "Ivysaur", "Chansey", "Pikachu", "Totodile"});
                 battle.setPokemon(new VisualPokemon[] {new VisualPokemon("Bulbasaur", 1, false)},
                         new VisualPokemon[] {new VisualPokemon("Groudon", 0, true)});
+                battle.setForced(true);
                 battle.setVisible(true);
             }
         });

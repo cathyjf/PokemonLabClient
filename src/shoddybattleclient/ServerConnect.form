@@ -42,9 +42,9 @@
           <Group type="102" alignment="0" attributes="0">
               <Component id="lblName" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="175" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" pref="201" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="tabbedPane" min="-2" pref="180" max="-2" attributes="0"/>
+              <Component id="tabbedPane" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -103,8 +103,8 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="txtLoginPassword" pref="220" max="32767" attributes="1"/>
-                                  <Component id="txtLoginName" alignment="0" pref="220" max="32767" attributes="1"/>
+                                  <Component id="txtLoginPassword" pref="195" max="32767" attributes="1"/>
+                                  <Component id="txtLoginName" alignment="0" pref="195" max="32767" attributes="1"/>
                               </Group>
                           </Group>
                           <Component id="cmdLogIn" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -187,9 +187,9 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="txtRegisterPassword" alignment="0" pref="220" max="32767" attributes="1"/>
-                                  <Component id="txtRegisterName" alignment="0" pref="220" max="32767" attributes="1"/>
-                                  <Component id="txtRegisterConfirm" alignment="1" pref="220" max="32767" attributes="1"/>
+                                  <Component id="txtRegisterPassword" alignment="0" pref="195" max="32767" attributes="1"/>
+                                  <Component id="txtRegisterName" alignment="0" pref="195" max="32767" attributes="1"/>
+                                  <Component id="txtRegisterConfirm" alignment="1" pref="195" max="32767" attributes="1"/>
                               </Group>
                           </Group>
                           <Component id="cmdRegister" alignment="0" min="-2" max="-2" attributes="0"/>
