@@ -158,17 +158,20 @@ public class HTMLPane extends JTextPane {
     private void parseCommand(String command, String args) {
         if ("mode".equals(command)) {
             int idx = args.indexOf(' ');
+            String action, cmd;
             if (idx == -1) {
-                addMessage(null, "Try '/mode help' for usage");
-                return;
+                action = args;
+                cmd = "";
+            } else {
+                action = args.substring(0, idx);
+                cmd = args.substring(idx + 1);
             }
-            String action = args.substring(0, idx);
-            parseMode(action.toLowerCase(), args.substring(idx + 1));
+            parseMode(action.toLowerCase(), cmd);
         }
     }
 
     private void parseMode(String action, String users) {
-        if ("help".equals(action)) {
+        if ("".equals(action) || "help".equals(action)) {
             addMessage(null, "Usage: /mode +q/a/o/h/v/b/m/i user1[,user2,...]");
             return;
         }
@@ -179,7 +182,6 @@ public class HTMLPane extends JTextPane {
         }
         boolean add = (char1 == '+');
         action = action.substring(1);
-        String[] args = users.split(",");
         if (action.length() == 1) {
             String user = users;
             String verb = add ? "Adding" : "Removing";
@@ -206,10 +208,16 @@ public class HTMLPane extends JTextPane {
 
             }
         } else {
+            String[] args = users.split(",");
             for (int i = 0; i < action.length(); i++) {
-                if (i >= args.length) break;
+                String user;
+                if (i >= args.length) {
+                    user = "";
+                } else {
+                    user = args[i];
+                }
                 String pm = add ? "+" : "-";
-                parseMode(pm + action.substring(i, i + 1), args[i].trim());
+                parseMode(pm + action.substring(i, i + 1), user.trim());
             }
         }
     }
