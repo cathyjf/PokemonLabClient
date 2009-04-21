@@ -31,6 +31,7 @@ import java.util.concurrent.*;
 import java.security.*;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import shoddybattleclient.LobbyWindow;
 import shoddybattleclient.ServerConnect;
 
 /**
@@ -106,6 +107,43 @@ public class ServerLink extends Thread {
             try {
                 m_stream.writeUTF(user);
                 m_stream.writeUTF(password);
+            } catch (Exception e) {
+
+            }
+        }
+    }
+
+    public static class JoinChannel extends OutMessage {
+        public JoinChannel(String channel) {
+            super(3);
+            try {
+                m_stream.writeUTF(channel);
+            } catch (Exception e) {
+
+            }
+        }
+    }
+
+    public static class ChannelMessage extends OutMessage {
+        public ChannelMessage(int channel, String message) {
+            super(4);
+            try {
+                m_stream.writeInt(channel);
+                m_stream.writeUTF(message);
+            } catch (Exception e) {
+                
+            }
+        }
+    }
+
+    public static class ModeMessage extends OutMessage {
+        public ModeMessage(int channel, String user, int mode, boolean enable) {
+            super(5);
+            try {
+                m_stream.writeInt(channel);
+                m_stream.writeUTF(user);
+                m_stream.write(mode);
+                m_stream.write(enable ? 1 : 0);
             } catch (Exception e) {
 
             }
@@ -234,7 +272,101 @@ public class ServerLink extends Thread {
                         case 6:
                             conn.informUserBanned(details);
                             break;
+                        case 7:
+                            conn.informSuccessfulLogin();
+                            break;
                     }
+                }
+            });
+
+            // CHANNEL_INFO
+            new ServerMessage(4, new MessageHandler() {
+                // int32 : channel id
+                // string : channel name
+                // string : channel topic
+                // int32 : channel flags
+                // int32 : number of users
+                // for each user:
+                //      string : name
+                //      int32 : flags
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException {
+                    int id = is.readInt();
+                    String channelName = is.readUTF();
+                    String topic = is.readUTF();
+                    int channelFlags = is.readInt();
+                    int count = is.readInt();
+                    LobbyWindow.Channel channel =
+                            new LobbyWindow.Channel(id, channelName,
+                            topic, channelFlags);
+                    for (int i = 0; i < count; ++i) {
+                        String name = is.readUTF();
+                        int flags = is.readInt();
+                        channel.addUser(name, flags);
+                    }
+                    link.m_lobby.addChannel(channel);
+                }
+            });
+
+            // CHANNEL_JOIN_PART
+            new ServerMessage(5, new MessageHandler() {
+                // int32 : channel id
+                // string : user
+                // byte : joining?
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException {
+                    int id = is.readInt();
+                    String user = is.readUTF();
+                    boolean join = (is.readByte() != 0);
+                    link.m_lobby.handleJoinPart(id, user, join);
+                }
+            });
+
+            // CHANNEL_STATUS
+            new ServerMessage(6, new MessageHandler() {
+                // int32 : channel id
+                // string : user
+                // int32 : flags
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException {
+                    int id = is.readInt();
+                    String user = is.readUTF();
+                    int flags = is.readInt();
+                    link.m_lobby.handleUpdateStatus(id, user, flags);
+                }
+            });
+
+            // CHANNEL_LIST
+            new ServerMessage(7, new MessageHandler() {
+                // int32 : number of channels
+                // for each channel:
+                //      string : name
+                //      string : topic
+                //      int32 : population
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException {
+                    int count = is.readInt();
+                    for (int i = 0; i < count; ++i) {
+                        String name = is.readUTF();
+                        String topic = is.readUTF();
+                        int population = is.readInt();
+                        System.out.println(name + ", "
+                                + topic + ", " + population);
+                    }
+                }
+            });
+
+            // CHANNEL_MESSAGE
+            new ServerMessage(8, new MessageHandler() {
+                // int32 : channel id
+                // string : user
+                // string : message
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException {
+                    int id = is.readInt();
+                    String user = is.readUTF();
+                    String message = is.readUTF();
+                    link.m_lobby.handleChannelMessage(id, user, message);
                 }
             });
 
@@ -261,10 +393,11 @@ public class ServerLink extends Thread {
     private Socket m_socket;
     private DataInputStream m_input;
     private DataOutputStream m_output;
-    protected SecretKeySpec[] m_key = new SecretKeySpec[2];
+    private SecretKeySpec[] m_key = new SecretKeySpec[2];
     private String m_name;
     private Thread m_messageThread;
     private ServerConnect m_serverConnect;
+    private LobbyWindow m_lobby;
 
     public ServerLink(String host, int port)
             throws IOException, UnknownHostException {
@@ -275,6 +408,22 @@ public class ServerLink extends Thread {
 
     public void registerAccount(String user, String password) {
         sendMessage(new RegisterAccountMessage(user, password));
+    }
+
+    public void setLobbyWindow(LobbyWindow window) {
+        m_lobby = window;
+    }
+
+    public void joinChannel(String name) {
+        sendMessage(new JoinChannel(name));
+    }
+
+    public void sendChannelMessage(int id, String message) {
+        sendMessage(new ChannelMessage(id, message));
+    }
+
+    public void updateMode(int channel, String user, int mode, boolean enable) {
+        sendMessage(new ModeMessage(channel, user, mode, enable));
     }
 
     public void attemptAuthentication(String user, String password) {

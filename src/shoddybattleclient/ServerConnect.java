@@ -258,6 +258,12 @@ public class ServerConnect extends javax.swing.JFrame {
         m_link.attemptAuthentication(user, password);
 }//GEN-LAST:event_cmdLogInActionPerformed
 
+    public void informSuccessfulLogin() {
+        dispose();
+        new LobbyWindow(m_link, txtLoginName.getText().trim()).setVisible(true);
+        m_link.joinChannel("main"); // join #main - the main chat
+    }
+    
     public void informUserBanned(String explanation) {
         // todo: internationalise the top part of this
         String message = "Login failed for the following reason:\n\n";

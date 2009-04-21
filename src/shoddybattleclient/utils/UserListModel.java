@@ -60,39 +60,50 @@ public class UserListModel implements ListModel {
     }
     
     public void add(User user) {
-        synchronized (m_items) {
-            if (m_items.contains(user)) return;
-            Iterator i = m_items.iterator();
-            while (i.hasNext()) {
-                Object item = (Object)i.next();
-                if (item == null) {
-                    continue;
-                }
-                if (item.equals(user)) {
-                    return;
-                }
+        if (m_items.contains(user)) return;
+        Iterator i = m_items.iterator();
+        while (i.hasNext()) {
+            Object item = (Object)i.next();
+            if (item == null) {
+                continue;
+            }
+            if (item.equals(user)) {
+                return;
             }
         }
         m_items.add(user);
     }
+
+    public User getUser(String name) {
+        for (User u : m_items) {
+            if (u.getName().equals(name)) {
+                return u;
+            }
+        }
+        return null;
+    }
     
     public void remove(String name) {
-        synchronized (m_items) {
-            for (User u : m_items) {
-                if (u.getName().equals(name)) {
-                    m_items.remove(u);
-                    break;
-                }
+        for (User u : m_items) {
+            if (u.getName().equals(name)) {
+                m_items.remove(u);
+                break;
+            }
+        }
+    }
+
+    public void setLevel(String name, int level) {
+        for (User u : m_items) {
+            if (u.getName().equals(name)) {
+                u.setLevel(level);
             }
         }
     }
 
     public void setStatus(String name, int status) {
-        synchronized (m_items) {
-            for (User u : m_items) {
-                if (u.getName().equals(name)) {
-                    u.setStatus(status);
-                }
+        for (User u : m_items) {
+            if (u.getName().equals(name)) {
+                u.setStatus(status);
             }
         }
     }

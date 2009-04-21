@@ -35,9 +35,11 @@ public class ChatPane extends javax.swing.JPanel {
     private HTMLPane m_chatPane;
     private LobbyWindow m_lobby;
     private String m_name;
+    private LobbyWindow.Channel m_channel;
 
     /** Creates new form ChatPane */
-    public ChatPane(LobbyWindow lobby, String name) {
+    public ChatPane(LobbyWindow.Channel c, LobbyWindow lobby, String name) {
+        m_channel = c;
         m_lobby = lobby;
         m_name = name;
         initComponents();
@@ -47,15 +49,126 @@ public class ChatPane extends javax.swing.JPanel {
         scrollChat.setViewportView(m_chatPane);
     }
 
+    public LobbyWindow.Channel getChannel() {
+        return m_channel;
+    }
+
+    private void parseCommand(String command, String args) {
+        if ("mode".equals(command)) {
+            int idx = args.indexOf(' ');
+            String action, cmd;
+            if (idx == -1) {
+                action = args;
+                cmd = "";
+            } else {
+                action = args.substring(0, idx);
+                cmd = args.substring(idx + 1);
+            }
+            parseMode(action.toLowerCase(), cmd);
+        }
+    }
+
+    private int getMode(char c) {
+        switch (c) {
+            case 'q':
+                return 0;
+            case 'a':
+                return 1;
+            case 'o':
+                return 2;
+            case 'h':
+                return 3;
+            case 'v':
+                return 4;
+            case 'b':
+                return 5;
+            case 'm':
+                return 6;
+            case 'i':
+                return 7;
+            // todo: idle?
+        }
+        throw new InternalError();
+    }
+
+    private void parseMode(String action, String users) {
+        if ("".equals(action) || "help".equals(action)) {
+            addMessage(null, "Usage: /mode +q/a/o/h/v/b/m/i [user1[,user2,...]]");
+            return;
+        }
+        char char1 = action.charAt(0);
+        if ((char1 != '+') && (char1 != '-')) {
+            addMessage(null, "Try '/mode help' for usage");
+            return;
+        }
+        boolean add = (char1 == '+');
+        action = action.substring(1);
+        if (action.length() == 1) {
+            String user = users;
+            String verb = add ? "Adding" : "Removing";
+            System.out.println(verb + " " + action + " to " + user);
+            char c = action.charAt(0);
+            switch (c) {
+                case 'q':
+                case 'a':
+                case 'o':
+                case 'h':
+                case 'v':
+                case 'b':
+                case 'm':
+                case 'i':
+                    int mode = getMode(c);
+                    m_lobby.getLink().updateMode(m_channel.getId(),
+                            user, mode, add);
+                    break;
+                default:
+                    addMessage(null, "Invalid command: " + action);
+
+            }
+        } else {
+            String[] args = users.split(",");
+            for (int i = 0; i < action.length(); i++) {
+                String user;
+                if (i >= args.length) {
+                    user = "";
+                } else {
+                    user = args[i];
+                }
+                String pm = add ? "+" : "-";
+                parseMode(pm + action.substring(i, i + 1), user.trim());
+            }
+        }
+    }
+
     public void addMessage(String user, String message) {
-        m_chatPane.addMessage(user, message);
+        addMessage(user, message, true);
+    }
+
+    public void addMessage(String user, String message, boolean encode) {
+        m_chatPane.addMessage(user, message, encode);
     }
 
     private void sendMessage(String message) {
+        message = message.trim();
         if (message.equals("") || txtChat.getForeground().equals(java.awt.Color.GRAY)) {
             return;
         }
-        m_chatPane.addMessage(m_name, message);
+
+        if (message.indexOf('/') == 0) {
+            int idx = message.indexOf(' ');
+            String command, args;
+            if (idx != -1) {
+                command = message.substring(1, idx);
+                args = message.substring(idx + 1);
+            } else {
+                command = message.substring(1);
+                args = "";
+            }
+            parseCommand(command.toLowerCase(), args);
+            return;
+        }
+
+        m_lobby.getLink().sendChannelMessage(m_channel.getId(), message);
     }
 
     public JScrollPane getPane() {

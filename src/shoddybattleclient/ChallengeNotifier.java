@@ -201,6 +201,6 @@ public class ChallengeNotifier extends JComponent {
     }
 
     public static void main(String[] args) {
-        new LobbyWindow("Ben").setVisible(true);
+        //new LobbyWindow("Ben").setVisible(true);
     }
 }
