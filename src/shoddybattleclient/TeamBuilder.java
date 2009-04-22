@@ -25,11 +25,13 @@ package shoddybattleclient;
 
 import java.awt.Dimension;
 import java.awt.FileDialog;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import javax.swing.JFileChooser;
 import shoddybattleclient.shoddybattle.*;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
 import shoddybattleclient.utils.*;
@@ -96,10 +98,18 @@ public class TeamBuilder extends javax.swing.JFrame {
     }
 
     private void saveTeam() {
-        FileDialog fd = new FileDialog(this, "Choose a file", FileDialog.SAVE);
-        fd.setVisible(true);
-        if (fd.getFile() == null) return;
-        String file = fd.getDirectory() + fd.getFile() + ".sbt";
+        JFileChooser choose = new JFileChooser();
+        if (choose.showSaveDialog(this) != JFileChooser.APPROVE_OPTION)
+            return;
+
+        String file = choose.getSelectedFile().getPath();
+
+        int dot = file.lastIndexOf('.');
+        int slash = file.lastIndexOf(File.separatorChar);
+        if (slash > dot) {
+            // no extension - so supply the default one
+            file += ".sbt";
+        }
 
         int length = m_forms.length;
         StringBuffer buf = new StringBuffer();
@@ -232,10 +242,11 @@ public class TeamBuilder extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosing
 
     private void menuLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLoadActionPerformed
-        FileDialog fd = new FileDialog(this, "Choose a file", FileDialog.LOAD);
-        fd.setVisible(true);
-        if (fd.getFile() == null) return;
-        String file = fd.getDirectory() + fd.getFile();
+        JFileChooser choose = new JFileChooser();
+        if (choose.showOpenDialog(this) != JFileChooser.APPROVE_OPTION)
+            return;
+
+        String file = choose.getSelectedFile().getPath();
  
         TeamFileParser tfp = new TeamFileParser();
         Pokemon[] team = tfp.parseTeam(file);
