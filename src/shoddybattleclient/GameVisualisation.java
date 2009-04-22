@@ -58,8 +58,11 @@ public class GameVisualisation extends JPanel {
 
     private static final Image m_background;
     private static final Image[] m_pokeball = new Image[3];
+    private static final Image[] m_arrows = new Image[2];
     private VisualPokemon[][] m_parties = new VisualPokemon[2][];
     private int m_view;
+    private int m_selected = -1;
+    private int m_target = Integer.MAX_VALUE;
     
     public static Image getImageFromResource(String file) {
         return Toolkit.getDefaultToolkit()
@@ -71,6 +74,8 @@ public class GameVisualisation extends JPanel {
         m_pokeball[0] = getImageFromResource("pokeball.png");
         m_pokeball[1] = getImageFromResource("pokeball2.png");
         m_pokeball[2] = getImageFromResource("pokeball3.png");
+        m_arrows[0] = getImageFromResource("arrow_green.png");
+        m_arrows[1] = getImageFromResource("arrow_red.png");
     }
     
     public GameVisualisation(int view) {
@@ -81,6 +86,8 @@ public class GameVisualisation extends JPanel {
         tracker.addImage(m_pokeball[0], 1);
         tracker.addImage(m_pokeball[1], 2);
         tracker.addImage(m_pokeball[2], 3);
+        tracker.addImage(m_arrows[0], 4);
+        tracker.addImage(m_arrows[1], 5);
         try {
             tracker.waitForAll();
         } catch (InterruptedException e) {
@@ -102,6 +109,28 @@ public class GameVisualisation extends JPanel {
         return new Dimension(m_background.getWidth(this), m_background.getHeight(this));
     }
 
+
+    public void setSelected(int i) {
+        m_selected = i;
+        repaint();
+    }
+
+    public void setTarget(int i) {
+        m_target = i;
+        repaint();
+    }
+
+    public String[] getPokemonNames() {
+        String[] ret = new String[m_parties[0].length * 2];
+        int len = m_parties[0].length;
+        for (int i = 0; i < m_parties.length; i++) {
+            for (int j = 0; j < len; j++) {
+                ret[i * len + j] = m_parties[i][j].getSpecies();
+            }
+        }
+        return ret;
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D)g.create();
@@ -112,7 +141,7 @@ public class GameVisualisation extends JPanel {
     }
 
     private void paintParty(int idx, Graphics g) {
-        Graphics g2 = g.create();
+        Graphics2D g2 = (Graphics2D)g.create();
         VisualPokemon[] team = m_parties[idx];
         if (team == null) return;
         boolean us = (idx == m_view);
@@ -146,6 +175,14 @@ public class GameVisualisation extends JPanel {
                 //get ugly
                 x = us ? 45 * (n - (i + 1)) - 15 : 220 - 45 * (n - (i + 1));
             }
+            int index = i + idx * n;
+            if (us && (m_selected == i)) {
+                g2.drawImage(m_arrows[0], x + w / 2, y - m_arrows[0].getHeight(this), this);
+            }
+            if ((m_target == index) || ((m_target == -1) && !us) || ((m_target == -2) && us)
+                    || (m_target == -3)) {
+                g2.drawImage(m_arrows[1], x + w / 2, y - m_arrows[1].getHeight(this), this);
+            }
             g2.drawImage(img, x, y, this);
         }
         g2.dispose();
@@ -158,7 +195,7 @@ public class GameVisualisation extends JPanel {
         String gender = male ? "m" : "f";
         String path = prefix + shininess + "/" + gender + name.replaceAll("[ '\\.]", "").toLowerCase() + ".png";
         //TODO: change storage location
-        String qualified = "/home/Catherine/.shoddybattle/" + path;
+        String qualified = "/Users/ben/sprites/" + path;
         File f = new File(qualified);
         String[] repositories = new String[] {"http://shoddybattle.com/dpsprites/", repository};
         if (!f.exists()) {
@@ -191,23 +228,17 @@ public class GameVisualisation extends JPanel {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Visualisation test");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        GameVisualisation vis = new GameVisualisation(0);
+        final GameVisualisation vis = new GameVisualisation(0);
         VisualPokemon[] party1 = new VisualPokemon[] {
             new VisualPokemon("Squirtle", 0, false),
-            new VisualPokemon("Ivysaur", 0, true),
-            new VisualPokemon("Ho-oh", 0, false),
-            new VisualPokemon("Tyranitar", 0, false),
-            new VisualPokemon("Lugia", 0, false),
-            new VisualPokemon("Latios", 0, false)
+            new VisualPokemon("Wartortle", 1, true)
         };
         VisualPokemon[] party2 = new VisualPokemon[] {
             new VisualPokemon("Blissey", 1, false),
-            new VisualPokemon("Wobbuffet", 1, true),
-            new VisualPokemon("Blastoise", 0, false),
-            new VisualPokemon("Smeargle", 0, false),
-            new VisualPokemon("Pikachu", 0, false),
-            new VisualPokemon("Umbreon", 0, false)
+            new VisualPokemon("Chansey", 1, true)
         };
+        vis.setSelected(0);
+        vis.setTarget(-2);
         vis.setParties(party1, party2);
         Dimension d = vis.getPreferredSize();
         frame.setSize(d.width, d.height + 22);
@@ -215,5 +246,28 @@ public class GameVisualisation extends JPanel {
         vis.setLocation(0, 0);
         frame.add(vis);
         frame.setVisible(true);
+        new Thread(new Runnable() {
+
+            public void run() {
+                int i = -3;
+                while (true) {
+                    synchronized(this) {
+                        final int idx = i;
+                        javax.swing.SwingUtilities.invokeLater(new Runnable(){
+                            public void run() {
+                                vis.setTarget(idx);
+                            }
+                        });
+                        try {
+                            wait(700);
+                        } catch (Exception e) {
+
+                        }
+                        if (++i > 3) i = -3;
+                    }
+                }
+            }
+
+        }).start();
     }
 }

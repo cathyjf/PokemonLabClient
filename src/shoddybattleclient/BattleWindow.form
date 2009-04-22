@@ -68,7 +68,7 @@
                           <Component id="lblPlayer1" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="scrollChat" pref="399" max="32767" attributes="0"/>
+                      <Component id="scrollChat" pref="382" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="txtChat" min="-2" max="-2" attributes="0"/>
                   </Group>
