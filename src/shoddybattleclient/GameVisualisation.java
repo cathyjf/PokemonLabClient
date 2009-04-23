@@ -131,6 +131,15 @@ public class GameVisualisation extends JPanel {
         return ret;
     }
 
+    public String[] getAllyNames() {
+        VisualPokemon[] party = m_parties[m_view];
+        String[] ret = new String[party.length];
+        for (int i = 0; i < party.length; i++) {
+            ret[i] = party[i].getSpecies();
+        }
+        return ret;
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D)g.create();

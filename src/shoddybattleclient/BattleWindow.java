@@ -33,7 +33,6 @@ import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.ButtonGroup;
@@ -258,55 +257,38 @@ public class BattleWindow extends javax.swing.JFrame {
         //todo: server tells us team length for this battle?
         int n = 2;
         panelMoves.removeAll();
-        String[] names = m_visual.getPokemonNames();
+        String[] names;
         if (mode == 0) {
             /*single target*/
-            panelMoves.setLayout(new GridLayout(2, teamLength));
-            m_targets = new TargetButton[names.length];
-            ButtonGroup bg = new ButtonGroup();
-            for (int i = names.length - 1; i >= 0; i--) {
-                final int idx = i;
-                TargetButton button = new TargetButton(names[i], idx);
-                button.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        m_visual.setTarget(idx);
-                        if (e.getClickCount() == 2) {
-                            sendMove(idx);
-                        }
-                    }
-                });
-                m_targets[i] = button;
-                bg.add(button);
-                panelMoves.add(button);
-            }
+            names = m_visual.getPokemonNames();
+            panelMoves.setLayout(new GridLayout(2, n));
         } else if (mode == 1) {
-            /* party select */
-            panelMoves.setLayout(new GridLayout(2, 1));
-            m_targets = new TargetButton[2];
-            ButtonGroup bg = new ButtonGroup();
-            for (int i = 1; i >= 0; i--) {
-                StringBuilder sb = new StringBuilder();
-                for (int j = 0; j < n; j++) {
-                    sb.append(names[i * n + j]);
-                    sb.append(", ");
-                }
-                sb.delete(sb.length() - 2, sb.length() - 1);
-                final int idx = -2 + i;
-                TargetButton button = new TargetButton(sb.toString(), idx);
-                button.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        m_visual.setTarget(idx);
-                        if (e.getClickCount() == 2) {
-                            sendMove(idx);
-                        }
+            /* ally */
+            names = m_visual.getAllyNames();
+            panelMoves.setLayout(new GridLayout(1, n));
+        } else {
+            names = new String[0];
+        }
+        
+        m_targets = new TargetButton[names.length];
+        ButtonGroup bg = new ButtonGroup();
+        for (int i = names.length - 1; i >= 0; i--) {
+            final int idx = i;
+            final TargetButton button = new TargetButton(names[i], idx);
+            button.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (!button.isEnabled()) return;
+                    m_visual.setTarget(idx);
+                    if (e.getClickCount() == 2) {
+                        sendMove(idx);
                     }
-                });
-                m_targets[i] = button;
-                bg.add(button);
-                panelMoves.add(button);
-            }
+                }
+            });
+            if (idx == 0) button.setEnabled(false);
+            m_targets[i] = button;
+            bg.add(button);
+            panelMoves.add(button);
         }
     }
 
@@ -360,6 +342,7 @@ public class BattleWindow extends javax.swing.JFrame {
         btnMoveCancel.setEnabled(false);
         btnSwitchCancel.setEnabled(false);
         tabAction.setSelectedIndex(0);
+        m_visual.setSelected(idx);
     }
 
     public void requestReplacement() {
@@ -747,6 +730,7 @@ public class BattleWindow extends javax.swing.JFrame {
                 battle.setPokemon(new VisualPokemon[] {new VisualPokemon("Squirtle", 1, false), new VisualPokemon("Wartortle", 1, false)},
                         new VisualPokemon[] {new VisualPokemon("Groudon", 0, true), new VisualPokemon("Kyogre", 0, false)});
                 battle.setVisible(true);
+                battle.requestMove(0);
                 battle.requestTarget(1);
             }
         });
