@@ -91,6 +91,10 @@ public class Pokemon {
         
     }
 
+    public String toString() {
+        return this.species;
+    }
+
     public static String getStatName(int idx) {
         switch(idx) {
             case S_HP:
