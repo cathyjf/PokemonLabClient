@@ -33,7 +33,10 @@ public class Text {
 
     public static String getText(int cat, int id, String[] args) {
         String text = m_text.get(cat).get(id);
-        //TODO: replacements
+        for (int i = 0; i < args.length; i++) {
+            String match = "\\$" + (i + 1);
+            text = text.replaceAll(match, args[i]);
+        }
         return text;
     }
 
@@ -41,7 +44,7 @@ public class Text {
         return getText(cat, id, new String[0]);
     }
 
-    private static void loadText(String file) {
+    public static void loadText(String file) {
         Scanner s = null;
         try {
             s = new Scanner(new File(Text.class.getResource("../languages/" + file).getFile()));
@@ -92,13 +95,9 @@ public class Text {
         System.out.println("Syntax error on line " + line);
     }
 
-    public static void loadTextFile(String file) {
-        loadText(file);
-    }
-
     public static void main(String[] args) {
-        Text.loadTextFile("english.lang");
-        System.out.println(Text.getText(4, 1, new String[] {"Bearzly"}));
+        Text.loadText("english.lang");
+        System.out.println(Text.getText(12, 2, new String[] {"Bearzly", "2"}));
     }
 
 }

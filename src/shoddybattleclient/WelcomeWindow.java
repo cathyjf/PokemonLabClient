@@ -228,11 +228,13 @@ public class WelcomeWindow extends javax.swing.JFrame {
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            //UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             System.setProperty("apple.laf.useScreenMenuBar", "true");
         } catch (Exception e) {
             
         }
+
+        Text.loadText("english.lang");
+
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new WelcomeWindow().setVisible(true);
