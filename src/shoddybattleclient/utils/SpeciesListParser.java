@@ -66,6 +66,7 @@ public class SpeciesListParser extends DefaultHandler {
         if (qName.equals("species")) {
             tempSpecies = new PokemonSpecies();
             tempSpecies.setName(attributes.getValue("name"));
+            tempSpecies.setId(Integer.parseInt(attributes.getValue("id")));
             idx = 0;
         }
         tempStr = "";

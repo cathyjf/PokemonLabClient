@@ -30,6 +30,7 @@ import shoddybattleclient.shoddybattle.Pokemon.Gender;
  * @author ben
  */
 public class PokemonSpecies {
+    private int m_id;
     private String m_name;
     private ArrayList<String> m_moves = new ArrayList<String>();
     private Gender m_genders;
@@ -38,6 +39,12 @@ public class PokemonSpecies {
 
     public PokemonSpecies() {
 
+    }
+    public void setId(int id) {
+        m_id = id;
+    }
+    public int getId() {
+        return m_id;
     }
     public void setName(String name) {
         m_name = name;

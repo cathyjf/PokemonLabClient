@@ -33,6 +33,10 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import shoddybattleclient.LobbyWindow;
 import shoddybattleclient.ServerConnect;
+import shoddybattleclient.shoddybattle.PokemonMove;
+import shoddybattleclient.shoddybattle.PokemonSpecies;
+import shoddybattleclient.utils.MoveListParser;
+import shoddybattleclient.utils.SpeciesListParser;
 
 /**
  * An instance of this class acts as the client's link to the Shoddy Battle 2
@@ -398,12 +402,24 @@ public class ServerLink extends Thread {
     private Thread m_messageThread;
     private ServerConnect m_serverConnect;
     private LobbyWindow m_lobby;
+    private List<PokemonSpecies> m_speciesList;
+    private List<PokemonMove> m_moveList;
 
     public ServerLink(String host, int port)
             throws IOException, UnknownHostException {
         m_socket = new Socket(InetAddress.getByName(host), port);
         m_input = new DataInputStream(m_socket.getInputStream());
         m_output = new DataOutputStream(m_socket.getOutputStream());
+    }
+
+    private void loadSpecies(String file) {
+        SpeciesListParser slp = new SpeciesListParser();
+        m_speciesList = slp.parseDocument(file);
+    }
+
+    private void loadMoves(String file) {
+        MoveListParser mlp = new MoveListParser();
+        m_moveList = mlp.parseDocument(file);
     }
 
     public void registerAccount(String user, String password) {
