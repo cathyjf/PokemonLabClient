@@ -250,8 +250,9 @@ public class BattleWindow extends javax.swing.JFrame {
     /**
      * Switches the move panel to show targets
      * @param mode Some constant representing the kind of targeting this move has
+     * @param self The index of the current user
      */
-    private void showTargets(int mode) {
+    private void showTargets(int mode, int self) {
         m_targeting = true;
         int teamLength = m_pokemon.length;
         //todo: server tells us team length for this battle?
@@ -285,7 +286,7 @@ public class BattleWindow extends javax.swing.JFrame {
                     }
                 }
             });
-            if (idx == 0) button.setEnabled(false);
+            if (idx == self) button.setEnabled(false);
             m_targets[i] = button;
             bg.add(button);
             panelMoves.add(button);
@@ -353,8 +354,8 @@ public class BattleWindow extends javax.swing.JFrame {
         tabAction.setSelectedIndex(1);
     }
 
-    public void requestTarget(int mode) {
-        showTargets(mode);
+    public void requestTarget(int user, int mode) {
+        showTargets(mode, user);
         btnMove.setEnabled(true);
         btnMoveCancel.setEnabled(false);
     }
@@ -730,8 +731,8 @@ public class BattleWindow extends javax.swing.JFrame {
                 battle.setPokemon(new VisualPokemon[] {new VisualPokemon("Squirtle", 1, false), new VisualPokemon("Wartortle", 1, false)},
                         new VisualPokemon[] {new VisualPokemon("Groudon", 0, true), new VisualPokemon("Kyogre", 0, false)});
                 battle.setVisible(true);
-                battle.requestMove(0);
-                battle.requestTarget(1);
+                battle.requestMove(1);
+                battle.requestTarget(1, 0);
             }
         });
     }
