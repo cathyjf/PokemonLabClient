@@ -23,6 +23,7 @@
 package shoddybattleclient.shoddybattle;
 
 import java.util.ArrayList;
+import java.util.List;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
 
 /**
@@ -39,6 +40,14 @@ public class PokemonSpecies {
 
     public PokemonSpecies() {
 
+    }
+    public static int getIdFromName(List<PokemonSpecies> species, String name) {
+        for (PokemonSpecies i : species) {
+            if (i.m_name.equals(name)) {
+                return i.m_id;
+            }
+        }
+        return -1;
     }
     public void setId(int id) {
         m_id = id;

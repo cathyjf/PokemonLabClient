@@ -33,7 +33,6 @@ import java.util.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import shoddybattleclient.network.ServerLink;
-import shoddybattleclient.network.ServerLink.Status;
 import shoddybattleclient.utils.UserListModel;
 
 /**
@@ -310,8 +309,12 @@ public class LobbyWindow extends javax.swing.JFrame {
         }
     }
 
-    public void addChallenge(String name, int id, boolean incoming) {
-        m_notifier.addChallenge(name, id, incoming);
+    public void addChallenge(String name, boolean incoming) {
+        m_notifier.addChallenge(name, incoming);
+    }
+
+    public void cancelChallenge(String name) {
+        m_notifier.removeChallenge(name);
     }
 
     public void cancelChallenge(int id) {
@@ -554,7 +557,13 @@ public class LobbyWindow extends javax.swing.JFrame {
     private void btnChallengeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChallengeActionPerformed
         User user = (User)listUsers.getSelectedValue();
         if (user == null) return;
-        System.out.println("Challenging " + user.getName());
+        String opponent = user.getName();
+        if (opponent.equals(m_name)) {
+            // todo: internationalisation
+            JOptionPane.showMessageDialog(this, "You cannot challenge yourself.");
+        } else {
+            new ChallengeWindow(m_link, opponent).setVisible(true);
+        }
 }//GEN-LAST:event_btnChallengeActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed

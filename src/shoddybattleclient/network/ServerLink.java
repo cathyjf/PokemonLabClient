@@ -33,7 +33,9 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import shoddybattleclient.LobbyWindow;
 import shoddybattleclient.ServerConnect;
+import shoddybattleclient.shoddybattle.Pokemon;
 import shoddybattleclient.shoddybattle.PokemonMove;
+import shoddybattleclient.shoddybattle.PokemonNature;
 import shoddybattleclient.shoddybattle.PokemonSpecies;
 import shoddybattleclient.utils.MoveListParser;
 import shoddybattleclient.utils.SpeciesListParser;
@@ -46,17 +48,31 @@ import shoddybattleclient.utils.SpeciesListParser;
  */
 public class ServerLink extends Thread {
 
-    /**
-     * Enum representing different status changes
-     * that a user can have
-     */
-    public static enum Status {
-        ONLINE,
-        OFFLINE,
-        AWAY,
-        RETURN,
-        BATTLE_START,
-        BATTLE_END
+    public interface ChallengeMediator {
+        /**
+         * Called when the challenge has been resolved, either through it
+         * being accepted or rejected. If it was accepted, the method should
+         * send the client's team to the server.
+         * @param accepted
+         */
+        public void informResolved(boolean accepted);
+        
+        /**
+         * Get the name of the user who has been challenged.
+         */
+        String getOpponent();
+
+        /**
+         * Get the generation being played.
+         */
+        public int getGeneration();
+
+        /**
+         * Get the active party size ("n").
+         */
+        public int getActivePartySize();
+
+        // TODO: Clauses
     }
 
     /**
@@ -148,6 +164,84 @@ public class ServerLink extends Thread {
                 m_stream.writeUTF(user);
                 m_stream.write(mode);
                 m_stream.write(enable ? 1 : 0);
+            } catch (Exception e) {
+
+            }
+        }
+    }
+
+    public static class OutgoingChallenge extends OutMessage {
+        public OutgoingChallenge(ChallengeMediator mediator) {
+            super(6);
+            try {
+                m_stream.writeUTF(mediator.getOpponent());
+                m_stream.write(mediator.getGeneration());
+                m_stream.writeInt(mediator.getActivePartySize());
+                // TODO: clauses
+            } catch (Exception e) {
+
+            }
+        }
+    }
+
+    public void writePokemon(Pokemon pokemon, DataOutputStream stream)
+                throws IOException {
+        stream.writeInt(PokemonSpecies.getIdFromName(
+                m_speciesList, pokemon.species));
+        stream.writeUTF(pokemon.nickname);
+        stream.write(pokemon.shiny ? 1 : 0);
+        stream.write(pokemon.gender.getValue());
+        stream.writeInt(pokemon.level);
+        stream.writeUTF(pokemon.item);
+        stream.writeUTF(pokemon.ability);
+        PokemonNature nature = PokemonNature.getNature(pokemon.nature);
+        stream.writeInt(nature.getInternalValue());
+        stream.writeInt(pokemon.moves.length);
+        for (int i = 0; i < pokemon.moves.length; ++i) {
+            stream.writeInt(PokemonMove.getIdFromName(
+                    m_moveList, pokemon.moves[i]));
+            stream.writeInt(pokemon.ppUps[i]);
+        }
+        for (int i = 0; i < Pokemon.STAT_COUNT; ++i) {
+            stream.writeInt(pokemon.ivs[i]);
+            stream.writeInt(pokemon.evs[i]);
+        }
+    }
+
+    public void writeTeam(Pokemon[] team, DataOutputStream stream)
+                throws IOException {
+        stream.writeInt(team.length);
+        for (Pokemon i : team) {
+            writePokemon(i, stream);
+        }
+    }
+
+    public static class ResolveChallenge extends OutMessage {
+        public ResolveChallenge(ServerLink link,
+                String opponent,
+                boolean accepted,
+                Pokemon[] team) {
+            super(7);
+            try {
+                m_stream.writeUTF(opponent);
+                m_stream.write(accepted ? 1 : 0);
+                if (accepted) {
+                    link.writeTeam(team, m_stream);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static class ChallengeTeam extends OutMessage {
+        public ChallengeTeam(ServerLink link,
+                String opponent,
+                Pokemon[] team) {
+            super(8);
+            try {
+                m_stream.writeUTF(opponent);
+                link.writeTeam(team, m_stream);
             } catch (Exception e) {
 
             }
@@ -374,6 +468,39 @@ public class ServerLink extends Thread {
                 }
             });
 
+            // INCOMING_CHALLENGE
+            new ServerMessage(9, new MessageHandler() {
+                // string : user
+                // byte : generation
+                // int32 : active party size
+                // ... [ TODO: clauses ] ...
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException {
+                    // todo: use all of the information
+                    String user = is.readUTF();
+                    int generation = is.read();
+                    int partySize = is.readInt();
+
+                    link.m_lobby.addChallenge(user, true);
+                }
+            });
+
+            // FINALISE_CHALLENGE
+            new ServerMessage(10, new MessageHandler() {
+                // string : user
+                // byte : whether the challenge was accepted
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException {
+                    String user = is.readUTF();
+                    boolean accepted = (is.read() != 0);
+
+                    ChallengeMediator mediator = link.m_challenges.get(user);
+                    if (mediator != null) {
+                        mediator.informResolved(accepted);
+                    }
+                }
+            });
+
             // add additional messages here
         }
 
@@ -404,6 +531,8 @@ public class ServerLink extends Thread {
     private LobbyWindow m_lobby;
     private List<PokemonSpecies> m_speciesList;
     private List<PokemonMove> m_moveList;
+    private Map<String, ChallengeMediator> m_challenges =
+            new HashMap<String, ChallengeMediator>();
 
     public ServerLink(String host, int port)
             throws IOException, UnknownHostException {
@@ -412,12 +541,31 @@ public class ServerLink extends Thread {
         m_output = new DataOutputStream(m_socket.getOutputStream());
     }
 
-    private void loadSpecies(String file) {
+    public LobbyWindow getLobby() {
+        return m_lobby;
+    }
+
+    public void postChallenge(ChallengeMediator mediator) {
+        m_challenges.put(mediator.getOpponent(), mediator);
+        sendMessage(new OutgoingChallenge(mediator));
+    }
+
+    public void resolveChallenge(String opponent,
+            boolean accepted,
+            Pokemon[] team) {
+        sendMessage(new ResolveChallenge(this, opponent, accepted, team));
+    }
+
+    public void postChallengeTeam(String opponent, Pokemon[] team) {
+        sendMessage(new ChallengeTeam(this, opponent, team));
+    }
+
+    public void loadSpecies(String file) {
         SpeciesListParser slp = new SpeciesListParser();
         m_speciesList = slp.parseDocument(file);
     }
 
-    private void loadMoves(String file) {
+    public void loadMoves(String file) {
         MoveListParser mlp = new MoveListParser();
         m_moveList = mlp.parseDocument(file);
     }

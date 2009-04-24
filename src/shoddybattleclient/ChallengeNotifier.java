@@ -46,21 +46,18 @@ public class ChallengeNotifier extends JComponent {
 
     public static class Challenge {
         private String m_name;
-        //battle id
-        private int m_id;
         private boolean m_incoming;
         private boolean m_popup = false;
 
-        public Challenge(String name, int id, boolean incoming) {
+        public Challenge(String name, boolean incoming) {
             m_name = name;
-            m_id = id;
             m_incoming = incoming;
         }
         public String getName() {
             return m_name;
         }
         public int getId() {
-            return m_id;
+            return hashCode();
         }
         public boolean isIncoming() {
             return m_incoming;
@@ -97,10 +94,19 @@ public class ChallengeNotifier extends JComponent {
     }
 
 
-    public synchronized void addChallenge(String challenger, int id, boolean incoming) {
-        m_challenges.add(new Challenge(challenger, id, incoming));
+    public synchronized void addChallenge(String challenger, boolean incoming) {
+        m_challenges.add(new Challenge(challenger, incoming));
         setVisible(true);
         repaint();
+    }
+
+    public synchronized void removeChallenge(String name) {
+        for (Challenge c : m_challenges) {
+            if (c.getName().equals(name)) {
+                removeChallenge(c.getId());
+                return;
+            }
+        }
     }
 
     public synchronized void removeChallenge(int id) {

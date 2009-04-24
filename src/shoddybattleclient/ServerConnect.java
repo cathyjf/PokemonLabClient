@@ -66,6 +66,14 @@ public class ServerConnect extends javax.swing.JFrame {
             //really should not be here
         }
         txtWelcome.setCaretPosition(0);
+
+        // temporary
+        link.loadMoves(
+                ServerConnect.class.getResource(
+                "resources/moves2.xml").toString());
+        link.loadSpecies(
+                ServerConnect.class.getResource(
+                "resources/species.xml").toString());
     }
 
     /** This method is called from within the constructor to

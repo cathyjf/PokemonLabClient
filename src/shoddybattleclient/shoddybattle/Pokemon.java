@@ -28,17 +28,22 @@ package shoddybattleclient.shoddybattle;
 public class Pokemon {
 
     public static enum Gender {
-        GENDER_MALE   ("Male"),
-        GENDER_FEMALE ("Female"),
-        GENDER_NONE   ("None"),
-        GENDER_BOTH   ("Both");
+        GENDER_MALE   ("Male", 1),
+        GENDER_FEMALE ("Female", 2),
+        GENDER_NONE   ("None", 0),
+        GENDER_BOTH   ("Both", 3);
 
         private String m_name;
-        Gender(String name) {
+        private int m_value;
+        Gender(String name, int value) {
             m_name = name;
+            m_value = value;
         }
         public String getName() {
             return m_name;
+        }
+        public int getValue() {
+            return m_value;
         }
         @Override
         public String toString() {

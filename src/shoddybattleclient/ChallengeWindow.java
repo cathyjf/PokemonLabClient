@@ -13,7 +13,9 @@ package shoddybattleclient;
 
 import java.awt.FileDialog;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 import shoddybattleclient.network.ServerLink;
+import shoddybattleclient.network.ServerLink.ChallengeMediator;
 import shoddybattleclient.shoddybattle.*;
 import shoddybattleclient.utils.TeamFileParser;
 
@@ -25,11 +27,14 @@ public class ChallengeWindow extends javax.swing.JFrame {
 
     private Pokemon[] m_team = null;
     private ServerLink m_link;
+    private String m_opponent;
 
     /** Creates new form ChallengeWindow */
-    public ChallengeWindow(ServerLink link) {
+    public ChallengeWindow(ServerLink link, String opponent) {
         initComponents();
         m_link = link;
+        m_opponent = opponent;
+        btnChallenge.setEnabled(false);
     }
 
     /** This method is called from within the constructor to
@@ -46,7 +51,7 @@ public class ChallengeWindow extends javax.swing.JFrame {
         btnLoad = new javax.swing.JButton();
         btnChallenge = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jScrollPane1.setViewportView(lstTeam);
 
@@ -92,29 +97,44 @@ public class ChallengeWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadActionPerformed
-        FileDialog fd = new FileDialog(this, "Choose a team to load", FileDialog.LOAD);
+        /**FileDialog fd = new FileDialog(this, "Choose a team to load", FileDialog.LOAD);
         fd.setVisible(true);
         if (fd.getFile() == null) return;
-        String file = fd.getDirectory() + fd.getFile();
+        String file = fd.getDirectory() + fd.getFile();**/
+        String file = "/home/Catherine/team1.sbt";
         TeamFileParser tfp = new TeamFileParser();
         m_team = tfp.parseTeam(file);
-        lstTeam.setModel(new DefaultComboBoxModel(m_team));
+        if (m_team != null) {
+            lstTeam.setModel(new DefaultComboBoxModel(m_team));
+            btnChallenge.setEnabled(true);
+        }
     }//GEN-LAST:event_btnLoadActionPerformed
 
     private void btnChallengeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChallengeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnChallengeActionPerformed
-
-    /**
-    * @param args the command line arguments
-    */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ChallengeWindow(null).setVisible(true);
+        m_link.postChallenge(new ChallengeMediator() {
+            public void informResolved(boolean accepted) {
+                if (accepted) {
+                    m_link.postChallengeTeam(m_opponent, m_team);
+                } else {
+                    // todo: internationalisation
+                    JOptionPane.showMessageDialog(ChallengeWindow.this,
+                            m_opponent + " rejected the challenge.");
+                }
+                dispose();
+            }
+            public String getOpponent() {
+                return m_opponent;
+            }
+            public int getGeneration() {
+                return 1; // platinum
+            }
+            public int getActivePartySize() {
+                return 2; // doubles
             }
         });
-    }
+        btnChallenge.setEnabled(false);
+    }//GEN-LAST:event_btnChallengeActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChallenge;

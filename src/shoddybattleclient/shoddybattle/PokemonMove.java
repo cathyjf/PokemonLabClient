@@ -22,6 +22,8 @@
 
 package shoddybattleclient.shoddybattle;
 
+import java.util.List;
+
 /**
  *
  * @author ben
@@ -34,6 +36,15 @@ public class PokemonMove {
     public int power;
     public int accuracy;
     public int pp;
+
+    public static int getIdFromName(List<PokemonMove> moves, String name) {
+        for (PokemonMove i : moves) {
+            if (i.name.equals(name)) {
+                return i.id;
+            }
+        }
+        return -1;
+    }
 
     public PokemonMove() {
 

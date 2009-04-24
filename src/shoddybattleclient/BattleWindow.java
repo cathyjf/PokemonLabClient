@@ -154,7 +154,7 @@ public class BattleWindow extends javax.swing.JFrame {
     private boolean m_targeting = false;
 
     /** Creates new form BattleWindow */
-    public BattleWindow(int fid, int participant, String[] users, String file) {
+    public BattleWindow(int fid, int participant, String[] users, Pokemon[] team) {
         initComponents();
 
         setTitle(users[0] + " vs. " + users[1] + " - Shoddy Battle");
@@ -162,8 +162,7 @@ public class BattleWindow extends javax.swing.JFrame {
         m_fid = fid;
         m_participant = participant;
         m_users = users;
-        TeamFileParser tfp = new TeamFileParser();
-        m_pokemon = tfp.parseTeam(file);
+        m_pokemon = team;
 
         listUsers.setModel(new UserListModel(new ArrayList()));
         setUsers(users);
@@ -726,13 +725,12 @@ public class BattleWindow extends javax.swing.JFrame {
                 } catch (Exception e) {
                     
                 }
+                TeamFileParser tfp = new TeamFileParser();
+                Pokemon[] pokemon = tfp.parseTeam("/home/Catherine/test.sbt");
                 BattleWindow battle = new BattleWindow(0, 1, new String[] {"bearzly", "Catherine"},
-                        "testteam.sbt");
+                        pokemon);
                 battle.setPokemon(new VisualPokemon[] {new VisualPokemon("Squirtle", 1, false), new VisualPokemon("Wartortle", 1, false)},
                         new VisualPokemon[] {new VisualPokemon("Groudon", 0, true), new VisualPokemon("Kyogre", 0, false)});
-                battle.setVisible(true);
-                battle.requestMove(1);
-                battle.requestTarget(1, 0);
             }
         });
     }

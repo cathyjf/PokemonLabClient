@@ -10,8 +10,12 @@
  */
 
 package shoddybattleclient;
+import java.awt.FileDialog;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.Popup;
 import shoddybattleclient.ChallengeNotifier.Challenge;
+import shoddybattleclient.shoddybattle.Pokemon;
+import shoddybattleclient.utils.TeamFileParser;
 
 /**
  *
@@ -22,13 +26,16 @@ public class ChallengePanel extends javax.swing.JPanel {
     private LobbyWindow m_lobby;
     private Challenge m_challenge;
     private Popup m_popup;
+    private Pokemon[] m_team = null;
 
     /** Creates new form ChallengePanel */
     public ChallengePanel(LobbyWindow lobby, Challenge c) {
         initComponents();
         m_lobby = lobby;
         m_challenge = c;
-        System.out.println(c.getName());
+        // note: this window needs serious work; this button never appears
+        // enabled again after disabling it.
+        //btnAccept.setEnabled(false);
     }
 
     public void setPopup(Popup p) {
@@ -71,6 +78,11 @@ public class ChallengePanel extends javax.swing.JPanel {
         );
 
         btnLoad.setText("Load Team");
+        btnLoad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoadActionPerformed(evt);
+            }
+        });
 
         btnAccept.setText("Accept");
         btnAccept.addActionListener(new java.awt.event.ActionListener() {
@@ -123,12 +135,32 @@ public class ChallengePanel extends javax.swing.JPanel {
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         dispose();
         m_lobby.cancelChallenge(m_challenge.getId());
+        m_lobby.getLink().resolveChallenge(m_challenge.getName(), false, null);
 }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnAcceptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAcceptActionPerformed
-        //do something here
+        m_lobby.cancelChallenge(m_challenge.getId());
+        m_lobby.getLink().resolveChallenge(m_challenge.getName(), true, m_team);
         dispose();
     }//GEN-LAST:event_btnAcceptActionPerformed
+
+    private void btnLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadActionPerformed
+        /**FileDialog fd = new FileDialog(m_lobby,
+                "Choose a team to load",
+                FileDialog.LOAD);
+        fd.setVisible(true);
+        if (fd.getFile() == null) return;
+        String file = fd.getDirectory() + fd.getFile();**/
+        String file = "/home/Catherine/team1.sbt";
+        TeamFileParser tfp = new TeamFileParser();
+        m_team = tfp.parseTeam(file);
+        if (m_team != null) {
+            // todo: team list
+            //lstTeam.setModel(new DefaultComboBoxModel(m_team));
+            btnAccept.setEnabled(true);
+            repaint();
+        }
+    }//GEN-LAST:event_btnLoadActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
