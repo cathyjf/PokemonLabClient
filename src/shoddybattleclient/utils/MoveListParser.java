@@ -75,7 +75,9 @@ public class MoveListParser extends DefaultHandler {
         } else if (qName.equals("accuracy")) {
             tempMove.accuracy = (int) (Double.parseDouble(tempStr) * 100);
         } else if (qName.equals("pp")) {
-            tempMove.pp = Integer.parseInt(tempStr);
+            tempMove.maxPp = tempMove.pp = Integer.parseInt(tempStr);
+        } else if (qName.endsWith("target")) {
+            tempMove.target = tempStr;
         } else if (qName.equals("move")) {
             m_moves.add(tempMove);
         }

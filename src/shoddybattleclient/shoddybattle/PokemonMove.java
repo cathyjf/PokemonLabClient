@@ -36,6 +36,8 @@ public class PokemonMove {
     public int power;
     public int accuracy;
     public int pp;
+    public int maxPp;
+    public String target;
 
     public static int getIdFromName(List<PokemonMove> moves, String name) {
         for (PokemonMove i : moves) {
