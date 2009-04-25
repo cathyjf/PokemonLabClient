@@ -48,36 +48,22 @@ import shoddybattleclient.utils.*;
  */
 public class BattleWindow extends javax.swing.JFrame {
 
-    private static class Move {
-        private String m_name;
-        private int m_pp;
-        private int m_maxPp;
-        private String m_type;
-        public Move(String name, String type, int maxPp) {
-            m_name = name;
-            m_type = type;
-            m_maxPp = maxPp;
-            m_pp = maxPp;
-        }
-        public String getName() {
-            return m_name;
-        }
-        public String getType() {
-            return m_type;
-        }
-        public String getPp() {
-            return m_pp + "/" + m_maxPp;
-        }
+    private static enum Action {
+        MOVE,
+        SWITCH
     }
 
     private static class MoveButton extends JToggleButton {
-        private Move m_move = null;
+        private PokemonMove m_move = null;
         public MoveButton() {
             setFocusPainted(false);
         }
-        public void setMove(Move move) {
+        public void setMove(PokemonMove move) {
             m_move = move;
             repaint();
+        }
+        public PokemonMove getMove() {
+            return m_move;
         }
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -88,14 +74,14 @@ public class BattleWindow extends javax.swing.JFrame {
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
             }
             g2.setFont(g2.getFont().deriveFont(Font.BOLD).deriveFont(17f));
-            g2.drawString(m_move.getName(), 10, 25);
+            g2.drawString(m_move.name, 10, 25);
             g2.setColor(Color.DARK_GRAY);
             g2.setFont(g2.getFont().deriveFont(Font.PLAIN).deriveFont(12f));
             int y = getHeight() - g2.getFontMetrics().getHeight();
-            g2.drawString(m_move.getType(), 10, y);
-            String pp = m_move.getPp();
+            g2.drawString(m_move.type, 10, y);
+            String pp = m_move.pp + "/" + m_move.maxPp;
             int left = getWidth() - g2.getFontMetrics().stringWidth(pp) - 5;
-            g2.drawString(m_move.getPp(), left, y);
+            g2.drawString(pp, left, y);
             g2.dispose();
         }
     }
@@ -151,15 +137,23 @@ public class BattleWindow extends javax.swing.JFrame {
     private int m_fid;
     //if we are forced to make a certain move
     private boolean m_forced = false;
+    //if we are in the process of targeting
     private boolean m_targeting = false;
+    //the number of pokemon on each team
+    private int m_n;
+    //the pokemon we are currently selecting for
+    private int m_current;
+    //the move that we are targeting for
+    private int m_selectedMove = -1;
 
     /** Creates new form BattleWindow */
-    public BattleWindow(int fid, int participant, String[] users, Pokemon[] team) {
+    public BattleWindow(int fid, int n, int participant, String[] users, Pokemon[] team) {
         initComponents();
 
         setTitle(users[0] + " vs. " + users[1] + " - Shoddy Battle");
 
         m_fid = fid;
+        m_n = n;
         m_participant = participant;
         m_users = users;
         m_pokemon = team;
@@ -244,6 +238,7 @@ public class BattleWindow extends javax.swing.JFrame {
         for (int i = 0; i < m_moveButtons.length; i++) {
             panelMoves.add(m_moveButtons[i]);
         }
+        panelMoves.repaint();
     }
 
     /**
@@ -253,7 +248,7 @@ public class BattleWindow extends javax.swing.JFrame {
      */
     private void showTargets(int mode, int self) {
         m_targeting = true;
-        int teamLength = m_pokemon.length;
+        int teamLength = m_n;
         //todo: server tells us team length for this battle?
         int n = 2;
         panelMoves.removeAll();
@@ -290,6 +285,7 @@ public class BattleWindow extends javax.swing.JFrame {
             bg.add(button);
             panelMoves.add(button);
         }
+        panelMoves.repaint();
     }
 
     public void setUsers(String[] users) {
@@ -298,7 +294,7 @@ public class BattleWindow extends javax.swing.JFrame {
 
     private void setMoves(int i) {
         for (int j = 0; j < m_moveButtons.length; j++) {
-            setMove(j, m_pokemon[i].moves[j]);
+            setMove(j, PokemonMove.getIdFromName(m_moveList, m_pokemon[i].moves[j]));
         }
     }
 
@@ -321,21 +317,22 @@ public class BattleWindow extends javax.swing.JFrame {
         add(m_visual);
     }
 
-    public void setMove(int idx, String name) {
+    public void setMove(int idx, int id) {
         if ((idx < 0) || (idx >= m_moveButtons.length)) return;
         for (PokemonMove move : m_moveList) {
-            if (move.name.equals(name)) {
-                m_moveButtons[idx].setMove(new Move(name, move.type, move.pp));
+            if (move.id == id) {
+                m_moveButtons[idx].setMove(move);
                 break;
             }
         }
     }
 
     /**
-     * Move requested from the server
-     * @param idx index of the pokemon in the party
+     * Request an action for a pokemon
+     * @param idx the index of the pokemon
      */
-    public void requestMove(int idx) {
+    public void requestAction(int idx) {
+        m_current = idx;
         setMoves(idx);
         btnMove.setEnabled(true);
         btnSwitch.setEnabled(true);
@@ -353,24 +350,46 @@ public class BattleWindow extends javax.swing.JFrame {
         tabAction.setSelectedIndex(1);
     }
 
-    public void requestTarget(int user, int mode) {
-        showTargets(mode, user);
+    public void requestTarget(int mode) {
+        showTargets(mode, m_current);
         btnMove.setEnabled(true);
         btnMoveCancel.setEnabled(false);
     }
 
     private void sendMove(int idx) {
         if (!btnMove.isEnabled()) return;
-        System.out.println("Used move " + idx);
-        btnMove.setEnabled(false);
-        btnMoveCancel.setEnabled(true);
+        m_selectedMove = idx;
+        int defaultTarget = 1;
+        String target = m_moveButtons[idx].getMove().target;
+        if (m_n == 1) {
+            sendAction(Action.MOVE, idx, defaultTarget);
+        } else if ("Enemy".equals(target)) {
+            requestTarget(0);
+        } else if ("Ally".equals(target)) {
+            if (m_n == 2) {
+                sendAction(Action.MOVE, idx, defaultTarget);
+            } else {
+                requestTarget(1);
+            }
+        } else {
+            sendAction(Action.MOVE, idx, defaultTarget);
+        }
     }
 
     private void sendSwitch(int idx) {
         if (!btnSwitch.isEnabled()) return;
-        System.out.println("Switched to " + idx);
+        sendAction(Action.SWITCH, idx, 0);
         btnSwitch.setEnabled(false);
         btnSwitchCancel.setEnabled(true);
+    }
+
+    private void sendAction(Action action, int idx, int target) {
+        System.out.println(action + " " + idx + " on " + target);
+        showMoves();
+        btnMove.setEnabled(false);
+        btnMoveCancel.setEnabled(true);
+        btnSwitch.setEnabled(false);
+        btnSwitchCancel.setEnabled(false);
     }
 
     public void setValidMoves(boolean[] valid) {
@@ -681,6 +700,7 @@ public class BattleWindow extends javax.swing.JFrame {
                     break;
                 }
             }
+            sendAction(Action.MOVE, m_selectedMove, selected);
         } else {
             for (int i = 0; i < m_moveButtons.length; i++) {
                 if (m_moveButtons[i].isSelected()) {
@@ -688,8 +708,8 @@ public class BattleWindow extends javax.swing.JFrame {
                     break;
                 }
             }
+            sendMove(selected);
         }
-        sendMove(selected);
     }//GEN-LAST:event_btnMoveActionPerformed
 
     private void btnSwitchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSwitchActionPerformed
@@ -726,11 +746,13 @@ public class BattleWindow extends javax.swing.JFrame {
                     
                 }
                 TeamFileParser tfp = new TeamFileParser();
-                Pokemon[] pokemon = tfp.parseTeam("/home/Catherine/test.sbt");
-                BattleWindow battle = new BattleWindow(0, 1, new String[] {"bearzly", "Catherine"},
+                Pokemon[] pokemon = tfp.parseTeam("/Users/ben/team1.sbt");
+                BattleWindow battle = new BattleWindow(0, 2, 1, new String[] {"bearzly", "Catherine"},
                         pokemon);
                 battle.setPokemon(new VisualPokemon[] {new VisualPokemon("Squirtle", 1, false), new VisualPokemon("Wartortle", 1, false)},
                         new VisualPokemon[] {new VisualPokemon("Groudon", 0, true), new VisualPokemon("Kyogre", 0, false)});
+                battle.setVisible(true);
+                battle.requestAction(1);
             }
         });
     }
