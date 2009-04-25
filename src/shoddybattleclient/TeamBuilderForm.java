@@ -142,6 +142,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         Gender g = m_species.getGenders();
         if (g.equals(Gender.GENDER_MALE)) {
             cmbGender.setModel(new DefaultComboBoxModel(new Gender[] {Gender.GENDER_MALE}));
+            cmbGender.setSelectedIndex(0);
         } else if (g.equals(Gender.GENDER_FEMALE)) {
             cmbGender.setModel(new DefaultComboBoxModel(new Gender[] {Gender.GENDER_FEMALE}));
         } else if (g.equals(Gender.GENDER_BOTH)) {
@@ -149,8 +150,10 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                 Gender.GENDER_MALE,
                 Gender.GENDER_FEMALE
             }));
+            cmbGender.setSelectedIndex(0);
         } else {
             cmbGender.setModel(new DefaultComboBoxModel(new Gender[] {Gender.GENDER_NONE}));
+            cmbGender.setSelectedIndex(0);
         }
 
         txtNickname.setText(p.nickname);
@@ -161,7 +164,10 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         txtLevel.setText(String.valueOf(p.level));
         chkShiny.setSelected(p.shiny);
         cmbAbility.setSelectedItem(p.ability);
-        cmbGender.setSelectedIndex(p.gender.ordinal());
+        System.out.println(p.gender.ordinal());
+        if (g.equals(Gender.GENDER_BOTH)) {
+            cmbGender.setSelectedIndex(p.gender.ordinal());
+        }
         for (int i = 0; i < Pokemon.STAT_COUNT; i++) {
             m_ivs[i].setText(String.valueOf(p.ivs[i]));
             m_evs[i].setText(String.valueOf(p.evs[i]));
