@@ -59,7 +59,7 @@ public class GameVisualisation extends JPanel {
     private static final Image m_background;
     private static final Image[] m_pokeball = new Image[3];
     private static final Image[] m_arrows = new Image[2];
-    private VisualPokemon[][] m_parties = new VisualPokemon[2][];
+    private VisualPokemon[][] m_parties;
     private int m_view;
     private int m_selected = -1;
     private int m_target = Integer.MAX_VALUE;
@@ -78,8 +78,9 @@ public class GameVisualisation extends JPanel {
         m_arrows[1] = getImageFromResource("arrow_red.png");
     }
     
-    public GameVisualisation(int view) {
+    public GameVisualisation(int view, int n) {
         m_view = view;
+        m_parties = new VisualPokemon[2][n];
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
         MediaTracker tracker = new MediaTracker(this);
         tracker.addImage(m_background, 0);
@@ -96,8 +97,12 @@ public class GameVisualisation extends JPanel {
     }
 
     public void setParties(VisualPokemon[] party1, VisualPokemon[] party2) {
-        m_parties[0] = party1;
-        m_parties[1] = party2;
+        for (int i = 0; i < m_parties[0].length; i++) {
+            VisualPokemon[] party = (i == 0) ? party1 : party2;
+            for (int j = 0; j < party.length; j++) {
+                m_parties[i][j] = party[j];
+            }
+        }
     }
 
     public void setPokemon(int party, int order, VisualPokemon p) {
@@ -125,7 +130,8 @@ public class GameVisualisation extends JPanel {
         int len = m_parties[0].length;
         for (int i = 0; i < m_parties.length; i++) {
             for (int j = 0; j < len; j++) {
-                ret[i * len + j] = m_parties[i][j].getSpecies();
+                VisualPokemon p = m_parties[i][j];
+                ret[i * len + j] = (p == null) ? null : p.getSpecies();
             }
         }
         return ret;
@@ -135,7 +141,8 @@ public class GameVisualisation extends JPanel {
         VisualPokemon[] party = m_parties[m_view];
         String[] ret = new String[party.length];
         for (int i = 0; i < party.length; i++) {
-            ret[i] = party[i].getSpecies();
+            VisualPokemon p = party[i];
+            ret[i] = (p == null) ? null : p.getSpecies();
         }
         return ret;
     }
@@ -158,6 +165,7 @@ public class GameVisualisation extends JPanel {
         MediaTracker tracker = new MediaTracker(this);
         for (int i = team.length - 1; i >= 0; i--) {
             VisualPokemon p = team[i];
+            if (p == null) continue;
             Image img = null;
             try {
                 img = getSprite(p.getSpecies(), !us, p.getGender() == 0, p.isShiny(), null);
@@ -237,7 +245,7 @@ public class GameVisualisation extends JPanel {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Visualisation test");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        final GameVisualisation vis = new GameVisualisation(0);
+        final GameVisualisation vis = new GameVisualisation(0, 2);
         VisualPokemon[] party1 = new VisualPokemon[] {
             new VisualPokemon("Squirtle", 0, false),
             new VisualPokemon("Wartortle", 1, true)

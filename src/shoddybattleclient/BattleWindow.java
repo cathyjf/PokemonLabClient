@@ -246,7 +246,7 @@ public class BattleWindow extends javax.swing.JFrame {
      * @param mode Some constant representing the kind of targeting this move has
      * @param self The index of the current user
      */
-    private void showTargets(int mode, int self) {
+    private void showTargets(int mode) {
         m_targeting = true;
         int teamLength = m_n;
         //todo: server tells us team length for this battle?
@@ -280,7 +280,7 @@ public class BattleWindow extends javax.swing.JFrame {
                     }
                 }
             });
-            if (idx == self) button.setEnabled(false);
+            if ((idx == m_current) || (names[i] == null)) button.setEnabled(false);
             m_targets[i] = button;
             bg.add(button);
             panelMoves.add(button);
@@ -299,7 +299,7 @@ public class BattleWindow extends javax.swing.JFrame {
     }
 
     private void setupVisual() {
-        m_visual = new GameVisualisation(0);
+        m_visual = new GameVisualisation(0, m_n);
         m_visual.setSize(m_visual.getPreferredSize());
         int base = 15;
         int buffer = 5;
@@ -332,6 +332,7 @@ public class BattleWindow extends javax.swing.JFrame {
      * @param idx the index of the pokemon
      */
     public void requestAction(int idx) {
+        if (idx >= m_n) idx -= m_n;
         m_current = idx;
         setMoves(idx);
         btnMove.setEnabled(true);
@@ -351,7 +352,7 @@ public class BattleWindow extends javax.swing.JFrame {
     }
 
     public void requestTarget(int mode) {
-        showTargets(mode, m_current);
+        showTargets(mode);
         btnMove.setEnabled(true);
         btnMoveCancel.setEnabled(false);
     }
@@ -384,6 +385,13 @@ public class BattleWindow extends javax.swing.JFrame {
     }
 
     private void sendAction(Action action, int idx, int target) {
+        if (m_participant == 1) {
+            if (target >= m_n) {
+                target -= m_n;
+            } else {
+                target += m_n;
+            }
+        }
         System.out.println(action + " " + idx + " on " + target);
         showMoves();
         btnMove.setEnabled(false);
@@ -747,12 +755,12 @@ public class BattleWindow extends javax.swing.JFrame {
                 }
                 TeamFileParser tfp = new TeamFileParser();
                 Pokemon[] pokemon = tfp.parseTeam("/Users/ben/team1.sbt");
-                BattleWindow battle = new BattleWindow(0, 2, 1, new String[] {"bearzly", "Catherine"},
+                BattleWindow battle = new BattleWindow(0, 2, 0, new String[] {"bearzly", "Catherine"},
                         pokemon);
-                battle.setPokemon(new VisualPokemon[] {new VisualPokemon("Squirtle", 1, false), new VisualPokemon("Wartortle", 1, false)},
-                        new VisualPokemon[] {new VisualPokemon("Groudon", 0, true), new VisualPokemon("Kyogre", 0, false)});
+                battle.setPokemon(new VisualPokemon[] {new VisualPokemon("Wartortle", 1, false), null},
+                        new VisualPokemon[] {new VisualPokemon("Groudon", 0, true), null});
                 battle.setVisible(true);
-                battle.requestAction(1);
+                battle.requestAction(0);
             }
         });
     }
