@@ -139,7 +139,6 @@ public class ChallengePanel extends javax.swing.JPanel {
 }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnAcceptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAcceptActionPerformed
-        m_lobby.cancelChallenge(m_challenge.getId());
         m_lobby.getLink().resolveChallenge(m_challenge.getName(), true, m_team);
         dispose();
     }//GEN-LAST:event_btnAcceptActionPerformed
@@ -154,6 +153,7 @@ public class ChallengePanel extends javax.swing.JPanel {
         String file = "/home/Catherine/team1.sbt";
         TeamFileParser tfp = new TeamFileParser();
         m_team = tfp.parseTeam(file);
+        m_challenge.setTeam(m_team);
         if (m_team != null) {
             // todo: team list
             //lstTeam.setModel(new DefaultComboBoxModel(m_team));

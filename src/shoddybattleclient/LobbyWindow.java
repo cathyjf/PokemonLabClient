@@ -33,6 +33,7 @@ import java.util.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import shoddybattleclient.network.ServerLink;
+import shoddybattleclient.network.ServerLink.ChallengeMediator;
 import shoddybattleclient.utils.UserListModel;
 
 /**
@@ -309,8 +310,12 @@ public class LobbyWindow extends javax.swing.JFrame {
         }
     }
 
-    public void addChallenge(String name, boolean incoming) {
-        m_notifier.addChallenge(name, incoming);
+    public void addChallenge(String name, boolean incoming, int gen, int n) {
+        m_notifier.addChallenge(name, incoming, gen, n);
+    }
+
+    public ChallengeMediator getChallengeMediator(String name) {
+        return m_notifier.getMediator(name);
     }
 
     public void cancelChallenge(String name) {

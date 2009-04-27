@@ -41,6 +41,14 @@ public class PokemonSpecies {
     public PokemonSpecies() {
 
     }
+    public static String getNameFromId(List<PokemonSpecies> species, int id) {
+        for (PokemonSpecies i : species) {
+            if (i.m_id == id) {
+                return i.m_name;
+            }
+        }
+        return null;
+    }
     public static int getIdFromName(List<PokemonSpecies> species, String name) {
         for (PokemonSpecies i : species) {
             if (i.m_name.equals(name)) {

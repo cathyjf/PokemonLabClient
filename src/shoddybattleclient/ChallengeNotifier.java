@@ -37,6 +37,9 @@ import javax.swing.JComponent;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
 import javax.swing.SwingUtilities;
+import shoddybattleclient.network.ServerLink;
+import shoddybattleclient.network.ServerLink.ChallengeMediator;
+import shoddybattleclient.shoddybattle.Pokemon;
 
 /**
  *
@@ -48,10 +51,18 @@ public class ChallengeNotifier extends JComponent {
         private String m_name;
         private boolean m_incoming;
         private boolean m_popup = false;
+        private Pokemon[] m_team = null;
+        private int m_generation = 0;
+        private int m_n = 0;
 
-        public Challenge(String name, boolean incoming) {
+        public Challenge(String name, boolean incoming, int generation, int n) {
             m_name = name;
             m_incoming = incoming;
+            m_generation = generation;
+            m_n = n;
+        }
+        public void setTeam(Pokemon[] team) {
+            m_team = team;
         }
         public String getName() {
             return m_name;
@@ -67,6 +78,26 @@ public class ChallengeNotifier extends JComponent {
         }
         public void setPopup(boolean active) {
             m_popup = active;
+        }
+
+        private ChallengeMediator getMediator() {
+            return new ChallengeMediator() {
+                public Pokemon[] getTeam() {
+                    return m_team;
+                }
+                public void informResolved(boolean accepted) {
+                    return;
+                }
+                public String getOpponent() {
+                    return m_name;
+                }
+                public int getGeneration() {
+                    return m_generation;
+                }
+                public int getActivePartySize() {
+                    return m_n;
+                }
+            };
         }
     }
 
@@ -94,8 +125,9 @@ public class ChallengeNotifier extends JComponent {
     }
 
 
-    public synchronized void addChallenge(String challenger, boolean incoming) {
-        m_challenges.add(new Challenge(challenger, incoming));
+    public synchronized void addChallenge(String challenger, boolean incoming,
+            int generation, int n) {
+        m_challenges.add(new Challenge(challenger, incoming, generation, n));
         setVisible(true);
         repaint();
     }
@@ -121,6 +153,15 @@ public class ChallengeNotifier extends JComponent {
         } else {
             repaint();
         }
+    }
+
+    public ServerLink.ChallengeMediator getMediator(String name) {
+        for (Challenge c : m_challenges) {
+            if (c.getName().equals(name)) {
+                return c.getMediator();
+            }
+        }
+        return null;
     }
 
     private int getY(int idx) {

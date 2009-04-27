@@ -31,6 +31,8 @@ import java.util.concurrent.*;
 import java.security.*;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import shoddybattleclient.BattleWindow;
+import shoddybattleclient.GameVisualisation.VisualPokemon;
 import shoddybattleclient.LobbyWindow;
 import shoddybattleclient.ServerConnect;
 import shoddybattleclient.shoddybattle.Pokemon;
@@ -50,10 +52,14 @@ public class ServerLink extends Thread {
 
     public interface ChallengeMediator {
         /**
+         * Get the team being used for this challenge.
+         */
+        public Pokemon[] getTeam();
+
+        /**
          * Called when the challenge has been resolved, either through it
          * being accepted or rejected. If it was accepted, the method should
          * send the client's team to the server.
-         * @param accepted
          */
         public void informResolved(boolean accepted);
         
@@ -242,6 +248,20 @@ public class ServerLink extends Thread {
             try {
                 m_stream.writeUTF(opponent);
                 link.writeTeam(team, m_stream);
+            } catch (Exception e) {
+
+            }
+        }
+    }
+
+    public static class BattleAction extends OutMessage {
+        public BattleAction(int fid, int turnType, int index, int target) {
+            super(10);
+            try {
+                m_stream.writeInt(fid);
+                m_stream.write(turnType);
+                m_stream.write(index);
+                m_stream.write(target);
             } catch (Exception e) {
 
             }
@@ -481,7 +501,8 @@ public class ServerLink extends Thread {
                     int generation = is.read();
                     int partySize = is.readInt();
 
-                    link.m_lobby.addChallenge(user, true);
+                    link.m_lobby.addChallenge(user, true,
+                            generation, partySize);
                 }
             });
 
@@ -497,6 +518,145 @@ public class ServerLink extends Thread {
                     ChallengeMediator mediator = link.m_challenges.get(user);
                     if (mediator != null) {
                         mediator.informResolved(accepted);
+                    }
+                    if (!accepted) {
+                        link.m_challenges.remove(user);
+                    }
+                }
+            });
+
+            // TODO : 11 (CHALLENGE_WITHDRAWN)
+
+            // BATTLE_BEGIN
+            new ServerMessage(12, new MessageHandler() {
+                // int32 : field id
+                // string : opponent
+                // byte : party
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException {
+                    int id = is.readInt();
+                    String user = is.readUTF();
+                    int party = is.read();
+
+                    ChallengeMediator mediator = null;
+
+                    if (party == 0) {
+                        // we made the original challenge
+                        mediator = link.m_challenges.get(user);
+                        link.m_challenges.remove(user);
+                    } else {
+                        // we were challenged
+                        mediator = link.m_lobby.getChallengeMediator(user);
+                        link.m_lobby.cancelChallenge(user);
+                    }
+
+                    BattleWindow wnd = new BattleWindow(link,
+                            id,
+                            mediator.getActivePartySize(),
+                            party,
+                            new String[] { link.m_name, user },
+                            mediator.getTeam());
+
+                    link.m_battles.put(id, wnd);
+
+                    wnd.setVisible(true);
+                }
+            });
+
+            // REQUEST_ACTION
+            new ServerMessage(13, new MessageHandler() {
+                 // int32 : field id
+                 // byte  : slot of relevant pokemon
+                 // byte  : position of relevant pokemon
+                 // byte  : whether this is a replacement
+                 // int32 : number of pokemon
+                 // for each pokemon:
+                 //      byte : whether it is legal to switch to this pokemon
+                 // if not replacement:
+                 //      byte : whether switching is legal
+                 //      byte : whether there is a forced move
+                 //      if not forced:
+                 //          int32 : total number of moves
+                 //          for each move:
+                 //              byte : whether the move is legal
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException {
+                    int fid = is.readInt();
+                    
+                    BattleWindow wnd = link.m_battles.get(fid);
+                    if (wnd == null) return;
+
+                    int slot = is.read();
+                    int pos = is.read();
+
+                    boolean replacement = (is.read() != 0);
+                    int count = is.readInt();
+                    boolean[] switches = new boolean[count];
+                    for (int i = 0; i < count; ++i) {
+                        switches[i] = (is.read() != 0);
+                    }
+                    if (replacement) {
+                        wnd.requestReplacement();
+                        wnd.setValidSwitches(switches);
+                    } else {
+                        wnd.requestAction(pos, slot);
+                        boolean canSwitch = (is.read() != 0);
+                        if (!canSwitch) {
+                            Arrays.fill(switches, false);
+                        }
+                        wnd.setValidSwitches(switches);
+                        boolean forced = (is.read() != 0);
+                        wnd.setForced(forced);
+                        if (!forced) {
+                            count = is.readInt();
+                            boolean[] legal = new boolean[count];
+                            for (int i = 0; i < count; ++i) {
+                                legal[i] = (is.read() != 0);
+                            }
+                            wnd.setValidMoves(legal);
+                        }
+                    }
+                }
+            });
+
+            // BATTLE_POKEMON
+            new ServerMessage(14, new MessageHandler() {
+                 // int32 : field id
+                 // for 0...1:
+                 //     for 0...n-1:
+                 //         int16 : species id
+                 //         if id != -1:
+                 //             byte : gender
+                 //             byte : whether the pokemon is shiny
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException {
+                    int fid = is.readInt();
+
+                    BattleWindow wnd = link.m_battles.get(fid);
+                    if (wnd == null) return;
+
+                    int size = wnd.getPartySize();
+
+                    VisualPokemon[][] pokemon = new VisualPokemon[2][size];
+
+                    for (int i = 0; i < 2; ++i) {
+                        for (int j = 0; j < size; ++j) {
+                            short id = is.readShort();
+                            if (id != -1) {
+                                int gender = is.read();
+                                boolean shiny = (is.read() != 0);
+                                VisualPokemon p = new VisualPokemon(
+                                        PokemonSpecies.getNameFromId(
+                                        link.m_speciesList, id),
+                                        gender, shiny);
+                                pokemon[i][j] = p;
+                            }
+                        }
+                    }
+                    if (wnd.getParticipant() == 0) {
+                        wnd.setPokemon(pokemon[0], pokemon[1]);
+                    } else {
+                        wnd.setPokemon(pokemon[1], pokemon[0]);
                     }
                 }
             });
@@ -533,6 +693,8 @@ public class ServerLink extends Thread {
     private List<PokemonMove> m_moveList;
     private Map<String, ChallengeMediator> m_challenges =
             new HashMap<String, ChallengeMediator>();
+    private Map<Integer, BattleWindow> m_battles =
+            new HashMap<Integer, BattleWindow>();
 
     public ServerLink(String host, int port)
             throws IOException, UnknownHostException {
@@ -584,6 +746,14 @@ public class ServerLink extends Thread {
 
     public void sendChannelMessage(int id, String message) {
         sendMessage(new ChannelMessage(id, message));
+    }
+
+    public void sendSwitchAction(int fid, int idx) {
+        sendMessage(new BattleAction(fid, 1, idx, -1));
+    }
+
+    public void sendMoveAction(int fid, int idx, int target) {
+        sendMessage(new BattleAction(fid, 0, idx, target));
     }
 
     public void updateMode(int channel, String user, int mode, boolean enable) {
@@ -677,15 +847,19 @@ public class ServerLink extends Thread {
                 // call the handler
                 final DataInputStream stream = new DataInputStream(
                         new ByteArrayInputStream(body));
-                java.awt.EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                        try {
-                            msg.handle(ServerLink.this, stream);
-                        } catch (IOException e) {
-
+                try {
+                    java.awt.EventQueue.invokeAndWait(new Runnable() {
+                        public void run() {
+                            try {
+                                msg.handle(ServerLink.this, stream);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                });
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
             } catch (IOException e) {
                 // fatal error - exit the while loop

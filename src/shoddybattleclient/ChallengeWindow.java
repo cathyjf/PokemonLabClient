@@ -112,6 +112,9 @@ public class ChallengeWindow extends javax.swing.JFrame {
 
     private void btnChallengeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChallengeActionPerformed
         m_link.postChallenge(new ChallengeMediator() {
+            public Pokemon[] getTeam() {
+                return m_team;
+            }
             public void informResolved(boolean accepted) {
                 if (accepted) {
                     m_link.postChallengeTeam(m_opponent, m_team);
