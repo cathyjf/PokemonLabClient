@@ -23,6 +23,7 @@
 
 package shoddybattleclient;
 
+import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -130,6 +131,12 @@ public class ServerConnect extends javax.swing.JFrame {
         cmdLogIn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmdLogInActionPerformed(evt);
+            }
+        });
+
+        txtLoginPassword.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtLoginPasswordKeyPressed(evt);
             }
         });
 
@@ -347,6 +354,12 @@ public class ServerConnect extends javax.swing.JFrame {
         // note: NetBeans will not let me fix the indention of the following
         // line
 }//GEN-LAST:event_cmdRegisterActionPerformed
+
+    private void txtLoginPasswordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtLoginPasswordKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            cmdLogInActionPerformed(null);
+        }
+    }//GEN-LAST:event_txtLoginPasswordKeyPressed
 
     /**
     * @param args the command line arguments
