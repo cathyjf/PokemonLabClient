@@ -31,6 +31,11 @@ import java.util.*;
 public class Text {
     private static List<HashMap<Integer, String>> m_text = new ArrayList<HashMap<Integer, String>>();
 
+    static {
+        // TODO: remove this (it is temporary)
+        loadText("english.lang");
+    }
+
     public static String getText(int cat, int id, String[] args) {
         String text = m_text.get(cat).get(id);
         for (int i = 0; i < args.length; i++) {
@@ -96,7 +101,6 @@ public class Text {
     }
 
     public static void main(String[] args) {
-        Text.loadText("english.lang");
         System.out.println(Text.getText(12, 2, new String[] {"Bearzly", "2"}));
     }
 

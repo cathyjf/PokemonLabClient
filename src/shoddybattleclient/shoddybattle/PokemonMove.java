@@ -39,6 +39,15 @@ public class PokemonMove {
     public int maxPp;
     public String target;
 
+    public static String getNameFromId(List<PokemonMove> moves, int id) {
+        for (PokemonMove i : moves) {
+            if (id == i.id) {
+                return i.name;
+            }
+        }
+        return null;
+    }
+
     public static int getIdFromName(List<PokemonMove> moves, String name) {
         for (PokemonMove i : moves) {
             if (i.name.equals(name)) {

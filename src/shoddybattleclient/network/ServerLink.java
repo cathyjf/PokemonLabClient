@@ -41,6 +41,7 @@ import shoddybattleclient.shoddybattle.PokemonNature;
 import shoddybattleclient.shoddybattle.PokemonSpecies;
 import shoddybattleclient.utils.MoveListParser;
 import shoddybattleclient.utils.SpeciesListParser;
+import shoddybattleclient.utils.Text;
 
 /**
  * An instance of this class acts as the client's link to the Shoddy Battle 2
@@ -537,6 +538,7 @@ public class ServerLink extends Thread {
                     int id = is.readInt();
                     String user = is.readUTF();
                     int party = is.read();
+                    String[] users = null;
 
                     ChallengeMediator mediator = null;
 
@@ -544,17 +546,19 @@ public class ServerLink extends Thread {
                         // we made the original challenge
                         mediator = link.m_challenges.get(user);
                         link.m_challenges.remove(user);
+                        users = new String[] { link.m_name, user };
                     } else {
                         // we were challenged
                         mediator = link.m_lobby.getChallengeMediator(user);
                         link.m_lobby.cancelChallenge(user);
+                        users = new String[] { user, link.m_name };
                     }
 
                     BattleWindow wnd = new BattleWindow(link,
                             id,
                             mediator.getActivePartySize(),
                             party,
-                            new String[] { link.m_name, user },
+                            users,
                             mediator.getTeam());
 
                     link.m_battles.put(id, wnd);
@@ -658,6 +662,195 @@ public class ServerLink extends Thread {
                     } else {
                         wnd.setPokemon(pokemon[1], pokemon[0]);
                     }
+                }
+            });
+
+            // BATTLE_PRINT
+            new ServerMessage(15, new MessageHandler() {
+                // int32 : field id
+                // byte  : category
+                // int16 : message id
+                // byte  : number of arguments
+                // for each argument:
+                //     string : value of the argument
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException {
+                    int fid = is.readInt();
+
+                    BattleWindow wnd = link.m_battles.get(fid);
+                    if (wnd == null) return;
+
+                    int category = is.readUnsignedByte();
+                    int msg = is.readShort();
+                    int count = is.readUnsignedByte();
+                    String[] args = new String[count];
+                    for (int i = 0; i < count; ++i) {
+                        args[i] = is.readUTF();
+                    }
+
+                    String message = Text.getText(category, msg, args);
+                    wnd.addMessage(null, message);
+                }
+            });
+
+            // BATTLE_VICTORY
+            new ServerMessage(16, new MessageHandler() {
+                // int32 : field id
+                // int16 : party id
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException {
+                    int fid = is.readInt();
+
+                    BattleWindow wnd = link.m_battles.get(fid);
+                    if (wnd == null) return;
+
+                    int party = is.readShort();
+                    wnd.informVictory(party);
+                }
+            });
+
+            // BATTLE_USE_MOVE
+            new ServerMessage(17, new MessageHandler() {
+                // int32 : field id
+                // byte : party
+                // byte : slot
+                // string : user [nick]name
+                // int16 : move id
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException {
+                    int fid = is.readInt();
+
+                    BattleWindow wnd = link.m_battles.get(fid);
+                    if (wnd == null) return;
+
+                    int party = is.read();
+                    int slot = is.read();
+                    String name = is.readUTF();
+                    int idx = is.readShort();
+
+                    String move =
+                            PokemonMove.getNameFromId(link.m_moveList, idx);
+                    String message = name + " used " + move + "!";
+                    wnd.addMessage(null, message);
+                }
+            });
+
+            // BATTLE_WITHDRAW
+            new ServerMessage(18, new MessageHandler() {
+                // int32 : field id
+                // byte : party
+                // byte : slot
+                // string : user [nick]name
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException {
+                    int fid = is.readInt();
+
+                    BattleWindow wnd = link.m_battles.get(fid);
+                    if (wnd == null) return;
+
+                    int party = is.read();
+                    int slot = is.read();
+                    String name = is.readUTF();
+
+                    String message = wnd.getTrainer(party)
+                            + " withdrew " + name + "!";
+                    wnd.addMessage(null, message);
+                }
+            });
+
+            // BATTLE_SEND_OUT
+            new ServerMessage(19, new MessageHandler() {
+                // int32 : field id
+                // byte : party
+                // byte : slot
+                // string : user [nick]name
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException {
+                    int fid = is.readInt();
+
+                    BattleWindow wnd = link.m_battles.get(fid);
+                    if (wnd == null) return;
+
+                    int party = is.read();
+                    int slot = is.read();
+                    String name = is.readUTF();
+
+                    String message = wnd.getTrainer(party)
+                            + " sent out " + name + "!";
+                    wnd.addMessage(null, message);
+                }
+            });
+
+            // BATTLE_HEALTH_CHANGE
+            new ServerMessage(20, new MessageHandler() {
+                // int32  : field id
+                // byte   : party
+                // byte   : slot
+                // string : pokemon [nick]name
+                // int16  : delta health in [0, 48]
+                // int16  : new total health [0, 48]
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException {
+                    int fid = is.readInt();
+
+                    BattleWindow wnd = link.m_battles.get(fid);
+                    if (wnd == null) return;
+
+                    int party = is.read();
+                    int slot = is.read();
+                    String name = is.readUTF();
+
+                    int delta = is.readShort();
+                    int total = is.readShort();
+
+                    int percent = 100 * delta / 48;
+                    
+                    String message = name + " lost " + percent
+                            + "% of its health.";
+                    wnd.addMessage(null, message);
+                }
+            });
+
+            // BATTLE_SET_PP
+            new ServerMessage(21, new MessageHandler() {
+                // int32  : field id
+                // byte   : pokemon
+                // byte   : move
+                // byte   : pp
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException {
+                    int fid = is.readInt();
+
+                    BattleWindow wnd = link.m_battles.get(fid);
+                    if (wnd == null) return;
+
+                    int i = is.readUnsignedByte();
+                    int j = is.readUnsignedByte();
+                    int pp = is.readUnsignedByte();
+
+                    wnd.setPp(i, j, pp);
+                }
+            });
+
+            // BATTLE_FAINTED
+            new ServerMessage(22, new MessageHandler() {
+                // int32 : field id
+                // byte : party
+                // byte : slot
+                // string : user [nick]name
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException {
+                    int fid = is.readInt();
+
+                    BattleWindow wnd = link.m_battles.get(fid);
+                    if (wnd == null) return;
+
+                    int party = is.read();
+                    int slot = is.read();
+                    String name = is.readUTF();
+
+                    String message = name + " fainted!";
+                    wnd.addMessage(null, message);
                 }
             });
 

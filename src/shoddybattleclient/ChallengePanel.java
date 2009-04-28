@@ -144,13 +144,13 @@ public class ChallengePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnAcceptActionPerformed
 
     private void btnLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadActionPerformed
-        /**FileDialog fd = new FileDialog(m_lobby,
+        FileDialog fd = new FileDialog(m_lobby,
                 "Choose a team to load",
                 FileDialog.LOAD);
         fd.setVisible(true);
         if (fd.getFile() == null) return;
-        String file = fd.getDirectory() + fd.getFile();**/
-        String file = "/home/Catherine/team1.sbt";
+        String file = fd.getDirectory() + fd.getFile();
+        //String file = "/home/Catherine/team1.sbt";
         TeamFileParser tfp = new TeamFileParser();
         m_team = tfp.parseTeam(file);
         m_challenge.setTeam(m_team);

@@ -54,17 +54,27 @@ public class BattleWindow extends javax.swing.JFrame {
         SWITCH
     }
 
-    private static class MoveButton extends JToggleButton {
+    private class MoveButton extends JToggleButton {
+        private int m_i, m_j;
         private PokemonMove m_move = null;
         public MoveButton() {
             setFocusPainted(false);
         }
-        public void setMove(PokemonMove move) {
+        public void setMove(int i, int j, PokemonMove move) {
+            m_i = i;
+            m_j = j;
             m_move = move;
             repaint();
         }
         public PokemonMove getMove() {
             return m_move;
+        }
+        private int getPp() {
+            int pp = m_pp[m_i][m_j];
+            if (pp != -1) {
+                return pp;
+            }
+            return m_move.pp;
         }
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -80,7 +90,7 @@ public class BattleWindow extends javax.swing.JFrame {
             g2.setFont(g2.getFont().deriveFont(Font.PLAIN).deriveFont(12f));
             int y = getHeight() - g2.getFontMetrics().getHeight();
             g2.drawString(m_move.type, 10, y);
-            String pp = m_move.pp + "/" + m_move.maxPp;
+            String pp = getPp() + "/" + m_move.maxPp;
             int left = getWidth() - g2.getFontMetrics().stringWidth(pp) - 5;
             g2.drawString(pp, left, y);
             g2.dispose();
@@ -126,26 +136,29 @@ public class BattleWindow extends javax.swing.JFrame {
     private SwitchButton[] m_switches;
     private TargetButton[] m_targets = null;
     private GameVisualisation m_visual;
+    // TODO: allow for more health bars in doubles
     private HealthBar[] m_healthBars = new HealthBar[2];
     private HTMLPane m_chat;
     private ArrayList<PokemonMove> m_moveList;
-    //Your Pokemon in this match
+    // Your Pokemon in this match
     private Pokemon[] m_pokemon;
-    //Users in this match
+    // Users in this match
     private String[] m_users;
-    //Your participant number in this battle
+    // Pp of moves
+    private int[][] m_pp;
+    // Your participant number in this battle
     private int m_participant;
-    //This battles field ID
+    // This battle's field ID
     private int m_fid;
-    //if we are forced to make a certain move
+    // if we are forced to make a certain move
     private boolean m_forced = false;
-    //if we are in the process of targeting
+    // if we are in the process of targeting
     private boolean m_targeting = false;
-    //the number of pokemon on each team
+    // the number of pokemon on each team
     private int m_n;
-    //the pokemon we are currently selecting for
+    // the pokemon we are currently selecting for
     private int m_current;
-    //the move that we are targeting for
+    // the move that we are targeting for
     private int m_selectedMove = -1;
 
     public int getPartySize() {
@@ -172,6 +185,12 @@ public class BattleWindow extends javax.swing.JFrame {
         m_participant = participant;
         m_users = users;
         m_pokemon = team;
+        m_pp = new int[m_pokemon.length][Pokemon.MOVE_COUNT];
+        for (int i = 0; i < m_pp.length; ++i) {
+            for (int j = 0; j < Pokemon.MOVE_COUNT; ++j) {
+                m_pp[i][j] = -1;
+            }
+        }
 
         listUsers.setModel(new UserListModel(new ArrayList()));
         setUsers(users);
@@ -198,6 +217,23 @@ public class BattleWindow extends javax.swing.JFrame {
         btnSwitchCancel.setEnabled(false);
         btnMove.setEnabled(false);
         btnMoveCancel.setEnabled(false);
+    }
+
+    public String getTrainer(int party) {
+        return m_users[party];
+    }
+
+    public void setPp(int pokemon, int move, int pp) {
+        m_pp[pokemon][move] = pp;
+    }
+
+    public void informVictory(int party) {
+        // todo: improve this
+        if (party == -1) {
+            addMessage(null, "It's a draw!");
+        } else {
+            addMessage(null, m_users[party] + " wins!");
+        }
     }
 
     private void createButtons() {
@@ -306,7 +342,7 @@ public class BattleWindow extends javax.swing.JFrame {
 
     private void setMoves(int i) {
         for (int j = 0; j < m_moveButtons.length; j++) {
-            setMove(j, PokemonMove.getIdFromName(m_moveList, m_pokemon[i].moves[j]));
+            setMove(i, j, PokemonMove.getIdFromName(m_moveList, m_pokemon[i].moves[j]));
         }
     }
 
@@ -329,11 +365,11 @@ public class BattleWindow extends javax.swing.JFrame {
         add(m_visual);
     }
 
-    public void setMove(int idx, int id) {
+    public void setMove(int pokemon, int idx, int id) {
         if ((idx < 0) || (idx >= m_moveButtons.length)) return;
         for (PokemonMove move : m_moveList) {
             if (move.id == id) {
-                m_moveButtons[idx].setMove(move);
+                m_moveButtons[idx].setMove(pokemon, idx, move);
                 break;
             }
         }
@@ -697,6 +733,10 @@ public class BattleWindow extends javax.swing.JFrame {
     private void txtChatFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtChatFocusLost
 
     }//GEN-LAST:event_txtChatFocusLost
+
+    public void addMessage(String user, String message) {
+        m_chat.addMessage(user, message);
+    }
 
     private void txtChatKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtChatKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
