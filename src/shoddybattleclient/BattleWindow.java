@@ -324,7 +324,7 @@ public class BattleWindow extends javax.swing.JFrame {
                     if (!button.isEnabled()) return;
                     m_visual.setTarget(idx);
                     if (e.getClickCount() == 2) {
-                        sendMove(idx);
+                        btnMoveActionPerformed(null);
                     }
                 }
             });
@@ -445,7 +445,7 @@ public class BattleWindow extends javax.swing.JFrame {
         } else {
             m_link.sendSwitchAction(m_fid, idx);
         }
-        //System.out.println(action + " " + idx + " on " + target);
+        System.out.println(action + " " + idx + " on " + target);
         //showMoves();
         btnMove.setEnabled(false);
         btnMoveCancel.setEnabled(false);
