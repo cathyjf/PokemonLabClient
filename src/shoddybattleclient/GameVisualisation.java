@@ -66,7 +66,7 @@ public class GameVisualisation extends JPanel {
         public void removeStatus(String status) {
             m_statuses.remove(status);
         }
-        public List<String> getStatuse() {
+        public List<String> getStatuses() {
             return m_statuses;
         }
         public void setHealth(int num, int denom) {
@@ -290,7 +290,7 @@ public class GameVisualisation extends JPanel {
         stats.append("</html>");
         StringBuilder effects = new StringBuilder();
         effects.append("<html>");
-        List<String> statuses = p.getStatuse();
+        List<String> statuses = p.getStatuses();
         if (statuses.size() == 0) {
             effects.append("No effects");
         } else {
