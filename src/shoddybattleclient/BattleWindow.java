@@ -137,7 +137,7 @@ public class BattleWindow extends javax.swing.JFrame {
     private TargetButton[] m_targets = null;
     private GameVisualisation m_visual;
     // TODO: allow for more health bars in doubles
-    private HealthBar[] m_healthBars = new HealthBar[2];
+    private HealthBar[] m_healthBars;
     private HTMLPane m_chat;
     private ArrayList<PokemonMove> m_moveList;
     // Your Pokemon in this match
@@ -349,19 +349,41 @@ public class BattleWindow extends javax.swing.JFrame {
     private void setupVisual() {
         m_visual = new GameVisualisation(0, m_n);
         m_visual.setSize(m_visual.getPreferredSize());
-        int base = 15;
+        int base = 20;
         int buffer = 5;
         int healthHeight = 35;
         int x = 20;
         m_visual.setLocation(x, base + healthHeight + buffer);
-        m_healthBars[0] = new HealthBar();
-        m_healthBars[0].setLocation(x, base);
-        m_healthBars[0].setSize(m_visual.getWidth(), healthHeight);
-        m_healthBars[1] = new HealthBar();
-        m_healthBars[1].setLocation(x, base + healthHeight + (2 * buffer) + m_visual.getHeight());
-        m_healthBars[1].setSize(m_visual.getWidth(), healthHeight);
-        add(m_healthBars[0]);
-        add(m_healthBars[1]);
+        if (m_n == 1) {
+            m_healthBars = new HealthBar[2];
+            m_healthBars[0] = new HealthBar();
+            m_healthBars[0].setLocation(x, base);
+            m_healthBars[0].setSize(m_visual.getWidth(), healthHeight);
+            m_healthBars[1] = new HealthBar();
+            m_healthBars[1].setLocation(x, base + healthHeight + (2 * buffer) + m_visual.getHeight());
+            m_healthBars[1].setSize(m_visual.getWidth(), healthHeight);
+            add(m_healthBars[0]);
+            add(m_healthBars[1]);
+        } else if (m_n == 2) {
+            final int w = m_visual.getWidth() / 2;
+            m_healthBars = new HealthBar[4];
+            m_healthBars[0] = new HealthBar();
+            m_healthBars[0].setLocation(x, base);
+            m_healthBars[0].setSize(w, healthHeight);
+            m_healthBars[1] = new HealthBar();
+            m_healthBars[1].setLocation(x + w, base);
+            m_healthBars[1].setSize(w, healthHeight);
+            m_healthBars[2] = new HealthBar();
+            m_healthBars[2].setLocation(x, base + healthHeight + (2 * buffer) + m_visual.getHeight());
+            m_healthBars[2].setSize(w, healthHeight);
+            m_healthBars[3] = new HealthBar();
+            m_healthBars[3].setLocation(x + w, base + healthHeight + (2 * buffer) + m_visual.getHeight());
+            m_healthBars[3].setSize(w, healthHeight);
+            add(m_healthBars[0]);
+            add(m_healthBars[1]);
+            add(m_healthBars[2]);
+            add(m_healthBars[3]);
+        }
         add(m_visual);
     }
 
@@ -445,8 +467,6 @@ public class BattleWindow extends javax.swing.JFrame {
         } else {
             m_link.sendSwitchAction(m_fid, idx);
         }
-        System.out.println(action + " " + idx + " on " + target);
-        //showMoves();
         btnMove.setEnabled(false);
         btnMoveCancel.setEnabled(false);
         btnSwitch.setEnabled(false);
@@ -468,6 +488,23 @@ public class BattleWindow extends javax.swing.JFrame {
         for (int i = 0; i < m_switches.length; i++) {
             m_switches[i].setEnabled(valid[i]);
         }
+    }
+
+    public void updateHealth(int party, int slot, int total) {
+        if (m_n <= 2) {
+            int idx = (m_participant == 0) ? slot : m_n + slot;
+            m_healthBars[idx].setRatio(total, 48);
+        } else {
+            m_visual.updateHealth(party, slot, total, 48);
+        }
+    }
+
+    public void updateStatLevel(int party, int slot, int stat, int level) {
+        m_visual.updateStatLevel(party, slot, stat, level);
+    }
+
+    public void updateStatMultiplier(int party, int slot, int stat, double mult) {
+        m_visual.updateStatMultiplier(party, slot, stat, mult);
     }
 
     private void updateSwitches() {
@@ -738,6 +775,10 @@ public class BattleWindow extends javax.swing.JFrame {
         m_chat.addMessage(user, message);
     }
 
+    public void addMessage(String user, String message, boolean encode) {
+        m_chat.addMessage(user, message, encode);
+    }
+
     private void txtChatKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtChatKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             m_chat.addMessage("Ben", txtChat.getText());
@@ -816,13 +857,16 @@ public class BattleWindow extends javax.swing.JFrame {
                     
                 }
                 TeamFileParser tfp = new TeamFileParser();
-                Pokemon[] pokemon = tfp.parseTeam("/home/Catherine/team1.sbt");
-                BattleWindow battle = new BattleWindow(null, 0, 2, 1, new String[] {"bearzly", "Catherine"},
+                Pokemon[] pokemon = tfp.parseTeam("/Users/ben/team1.sbt");
+                BattleWindow battle = new BattleWindow(null, 0, 1, 1, new String[] {"bearzly", "Catherine"},
                         pokemon);
-                battle.setPokemon(new VisualPokemon[] {new VisualPokemon("Wartortle", 1, false), null},
-                        new VisualPokemon[] {new VisualPokemon("Groudon", 0, true), null});
+                battle.setPokemon(new VisualPokemon[] {new VisualPokemon("Wartortle", 1, false)},
+                        new VisualPokemon[] {new VisualPokemon("Groudon", 0, true)});
                 battle.setVisible(true);
                 battle.requestAction(2, 0);
+                battle.updateHealth(0, 0, 38);
+                battle.updateStatLevel(0, 0, 2, -3);
+                battle.updateStatMultiplier(0, 0, 3, 2.0);
             }
         });
     }

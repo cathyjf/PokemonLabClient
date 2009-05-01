@@ -42,20 +42,20 @@ public class HealthBar extends JPanel {
     
     /** Creates a new instance of HealthBar */
     public HealthBar() {
-        
-    }
-    
-    public void setRatio(int numerator, int denominator) {
-        m_numerator = numerator;
-        m_denominator = denominator;
-        double ratio = getRatio();
         MediaTracker tracker = new MediaTracker(this);
-        tracker.addImage(m_image, 0, (int)((double)getWidth() * ratio), getHeight());
+        tracker.addImage(m_image, 0);
         try {
             tracker.waitForAll();
         } catch (InterruptedException e) {
-            
+
         }
+    }
+    
+    public void setRatio(int numerator, int denominator) {
+        if (numerator < 0) numerator = 0;
+        m_numerator = numerator;
+        m_denominator = denominator;
+        repaint();
     }
 
     private double getRatio() {
@@ -72,6 +72,8 @@ public class HealthBar extends JPanel {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         int width = getWidth();
         int height = getHeight();
+        g2.setColor(getBackground());
+        g2.fillRect(0, 0, width, height);
         double ratio = getRatio();
         int x = (int)((double)width * ratio);
         g2.drawImage(m_image, 0, 0, x, height, this);

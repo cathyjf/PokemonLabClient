@@ -34,7 +34,7 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="scrollMoves" pref="329" max="32767" attributes="0"/>
+                  <Component id="scrollMoves" pref="405" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="cmbItem" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -197,7 +197,6 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Shiny?"/>
         <Property name="horizontalTextPosition" type="int" value="2"/>
-        <Property name="opaque" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Container class="javax.swing.JPanel" name="jPanel2">
@@ -236,9 +235,9 @@
                               <Component id="baseHp" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
                               <Component id="baseAtk" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
                               <Component id="baseDef" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
-                              <Component id="baseSpd" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
                               <Component id="baseSpAtk" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
                               <Component id="baseSpDef" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
+                              <Component id="baseSpd" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -247,15 +246,15 @@
                                       <Component id="ivHp" linkSize="3" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
                                       <Component id="ivAtk" linkSize="3" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
                                       <Component id="ivDef" linkSize="3" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
-                                      <Component id="ivSpd" linkSize="3" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
                                       <Component id="ivSpAtk" linkSize="3" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
                                       <Component id="ivSpDef" linkSize="3" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
+                                      <Component id="ivSpd" linkSize="3" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                      <Component id="evSpd" linkSize="2" alignment="1" pref="40" max="32767" attributes="1"/>
                                       <Component id="evSpAtk" linkSize="2" alignment="1" pref="40" max="32767" attributes="1"/>
                                       <Component id="evSpDef" linkSize="2" alignment="1" pref="40" max="32767" attributes="1"/>
+                                      <Component id="evSpd" linkSize="2" alignment="1" pref="40" max="32767" attributes="1"/>
                                       <Component id="evHp" linkSize="2" alignment="1" pref="40" max="32767" attributes="1"/>
                                       <Component id="evAtk" linkSize="2" alignment="1" pref="40" max="32767" attributes="1"/>
                                       <Component id="evDef" linkSize="2" alignment="1" pref="40" max="32767" attributes="1"/>
@@ -329,22 +328,22 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="jLabel15" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="baseSpd" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="ivSpd" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="baseSpAtk" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="ivSpAtk" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="totalSpd" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="jLabel18" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="baseSpAtk" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="ivSpAtk" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="baseSpDef" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="ivSpDef" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="totalSpAtk" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="jLabel21" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="baseSpDef" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="ivSpDef" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="baseSpd" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="ivSpd" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="totalSpDef" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -355,11 +354,11 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="evDef" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="evSpd" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="evSpAtk" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="evSpDef" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="evSpd" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -403,12 +402,12 @@
             <Property name="text" type="java.lang.String" value="000"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="evSpAtk">
+        <Component class="javax.swing.JTextField" name="evSpDef">
           <Properties>
             <Property name="text" type="java.lang.String" value="000"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="ivSpAtk">
+        <Component class="javax.swing.JTextField" name="ivSpDef">
           <Properties>
             <Property name="text" type="java.lang.String" value="31"/>
           </Properties>
@@ -421,12 +420,12 @@
             <Property name="text" type="java.lang.String" value="Base"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="ivSpDef">
+        <Component class="javax.swing.JTextField" name="ivSpd">
           <Properties>
             <Property name="text" type="java.lang.String" value="31"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="ivSpd">
+        <Component class="javax.swing.JTextField" name="ivSpAtk">
           <Properties>
             <Property name="text" type="java.lang.String" value="31"/>
           </Properties>
@@ -458,7 +457,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel21">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Sp. Defense"/>
+            <Property name="text" type="java.lang.String" value="Speed"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="evsTotal">
@@ -472,7 +471,7 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="evSpDef">
+        <Component class="javax.swing.JTextField" name="evSpd">
           <Properties>
             <Property name="text" type="java.lang.String" value="000"/>
           </Properties>
@@ -482,7 +481,7 @@
             <Property name="text" type="java.lang.String" value="000"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="baseSpd">
+        <Component class="javax.swing.JLabel" name="baseSpAtk">
           <Properties>
             <Property name="text" type="java.lang.String" value="000"/>
           </Properties>
@@ -502,7 +501,7 @@
             <Property name="text" type="java.lang.String" value="000"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="baseSpAtk">
+        <Component class="javax.swing.JLabel" name="baseSpDef">
           <Properties>
             <Property name="text" type="java.lang.String" value="000"/>
           </Properties>
@@ -524,7 +523,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel18">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Sp. Attack"/>
+            <Property name="text" type="java.lang.String" value="Sp. Defense"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel2">
@@ -553,7 +552,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel15">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Speed"/>
+            <Property name="text" type="java.lang.String" value="Sp. Attack"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="baseAtk">
@@ -566,12 +565,12 @@
             <Property name="text" type="java.lang.String" value="Attack"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="evSpd">
+        <Component class="javax.swing.JTextField" name="evSpAtk">
           <Properties>
             <Property name="text" type="java.lang.String" value="000"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="baseSpDef">
+        <Component class="javax.swing.JLabel" name="baseSpd">
           <Properties>
             <Property name="text" type="java.lang.String" value="000"/>
           </Properties>

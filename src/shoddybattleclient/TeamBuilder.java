@@ -31,7 +31,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import shoddybattleclient.shoddybattle.*;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
 import shoddybattleclient.utils.*;
@@ -42,7 +44,7 @@ import shoddybattleclient.utils.*;
  */
 public class TeamBuilder extends javax.swing.JFrame {
 
-    private TeamBuilderForm[] m_forms = new TeamBuilderForm[6];
+    private List<TeamBuilderForm> m_forms = new ArrayList<TeamBuilderForm>();
     private ArrayList<PokemonSpecies> m_species;
     private ArrayList<PokemonMove> m_moves;
 
@@ -54,21 +56,23 @@ public class TeamBuilder extends javax.swing.JFrame {
         m_moves = mlp.parseDocument(TeamBuilder.class.getResource("resources/moves2.xml").toString());
         SpeciesListParser parser = new SpeciesListParser();
         m_species = parser.parseDocument(TeamBuilder.class.getResource("resources/species.xml").toString());
-        String[] species = getSpeciesList();
         long t2 = System.currentTimeMillis();
         System.out.println("Loaded moves and species info in " + (t2-t1) + " milliseconds");
 
-        //TODO: Catherine claims that she wants other numbers of teams
         for (int i = 0; i < 6; i++) {
-            TeamBuilderForm tbf = new TeamBuilderForm(this, species, i);
-            m_forms[i] = tbf;
-            tabForms.addTab("", tbf);
-            tbf.setPokemon(new Pokemon("Bulbasaur", "", false, Gender.GENDER_MALE, 100, "None", "None", "None",
-                new String[] {null, null, null, null}, new int[] {3,3,3,3}, new int[] {31,31,31,31,31,31},
-                new int[] {0,0,0,0,0,0}), true);
+            addDefaultForm();
         }
-        Dimension d = m_forms[0].getPreferredSize();
+        Dimension d = m_forms.get(0).getPreferredSize();
         setSize((int)d.getWidth() + 50, (int)d.getHeight() + 100);
+    }
+
+    private void addDefaultForm() {
+        TeamBuilderForm tbf = new TeamBuilderForm(this, getSpeciesList(), m_forms.size());
+        m_forms.add(tbf);
+        tabForms.addTab("", tbf);
+        tbf.setPokemon(new Pokemon("Bulbasaur", "", false, Gender.GENDER_MALE, 100, "None", "None", "None",
+            new String[] {null, null, null, null}, new int[] {3,3,3,3}, new int[] {31,31,31,31,31,31},
+            new int[] {0,0,0,0,0,0}), true);
     }
 
     public PokemonSpecies getSpecies(String species) {
@@ -111,11 +115,11 @@ public class TeamBuilder extends javax.swing.JFrame {
             file += ".sbt";
         }
 
-        int length = m_forms.length;
+        int length = m_forms.size();
         StringBuffer buf = new StringBuffer();
         buf.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<shoddybattle>\n\n");
         for (int i = 0; i < length; i++) {
-            Pokemon p = m_forms[i].getPokemon();
+            Pokemon p = m_forms.get(i).getPokemon();
             buf.append(p.toXML());
             buf.append("\n");
         }
@@ -149,6 +153,8 @@ public class TeamBuilder extends javax.swing.JFrame {
         menuSave = new javax.swing.JMenuItem();
         menuSaveAs = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
+        menuChangeSize = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JSeparator();
         menuExport = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         menuRandomise = new javax.swing.JMenuItem();
@@ -196,6 +202,15 @@ public class TeamBuilder extends javax.swing.JFrame {
         });
         jMenu1.add(menuSaveAs);
         jMenu1.add(jSeparator1);
+
+        menuChangeSize.setText("Change Team Size");
+        menuChangeSize.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuChangeSizeActionPerformed(evt);
+            }
+        });
+        jMenu1.add(menuChangeSize);
+        jMenu1.add(jSeparator2);
 
         menuExport.setText("Export to Text");
         jMenu1.add(menuExport);
@@ -250,14 +265,14 @@ public class TeamBuilder extends javax.swing.JFrame {
  
         TeamFileParser tfp = new TeamFileParser();
         Pokemon[] team = tfp.parseTeam(file);
-        for (int i = 0; i < m_forms.length; i++) {
+        for (int i = 0; i < m_forms.size(); i++) {
             tabForms.removeTabAt(0);
         }
-        m_forms = new TeamBuilderForm[team.length];
+        m_forms = new ArrayList<TeamBuilderForm>();
         for (int i = 0; i < team.length; i++) {
-            m_forms[i] = new TeamBuilderForm(this, getSpeciesList(), i);
-            tabForms.add("", m_forms[i]);
-            m_forms[i].setPokemon(team[i], true);
+            m_forms.add(new TeamBuilderForm(this, getSpeciesList(), i));
+            tabForms.add("", m_forms.get(i));
+            m_forms.get(i).setPokemon(team[i], true);
         }
 }//GEN-LAST:event_menuLoadActionPerformed
 
@@ -268,6 +283,31 @@ public class TeamBuilder extends javax.swing.JFrame {
     private void menuSaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSaveAsActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_menuSaveAsActionPerformed
+
+    private void menuChangeSizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuChangeSizeActionPerformed
+        String str = JOptionPane.showInputDialog(this, "Enter a new size for this team", "6");
+        int size = -1;
+        try {
+            size = Integer.parseInt(str);
+        } catch (NumberFormatException e) {
+
+        }
+        if (size <= 0) {
+            return;
+        }
+        if (size > m_forms.size()) {
+            System.out.println("a");
+            while (size > m_forms.size()) {
+                addDefaultForm();
+            }
+        } else {
+            while (m_forms.size() > size) {
+                int idx = m_forms.size() - 1;
+                m_forms.remove(idx);
+                tabForms.remove(idx);
+            }
+        }
+}//GEN-LAST:event_menuChangeSizeActionPerformed
 
     /**
     * @param args the command line arguments
@@ -286,7 +326,9 @@ public class TeamBuilder extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JMenuItem menuBox;
+    private javax.swing.JMenuItem menuChangeSize;
     private javax.swing.JMenuItem menuExport;
     private javax.swing.JMenuItem menuLoad;
     private javax.swing.JMenuItem menuNew;

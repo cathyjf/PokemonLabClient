@@ -74,25 +74,25 @@ public class TeamBuilderForm extends javax.swing.JPanel {
             ivHp,
             ivAtk,
             ivDef,
-            ivSpd,
             ivSpAtk,
-            ivSpDef
+            ivSpDef,
+            ivSpd
         };
         m_evs = new JTextField[] {
             evHp,
             evAtk,
             evDef,
-            evSpd,
             evSpAtk,
-            evSpDef
+            evSpDef,
+            evSpd
         };
         m_bases = new JLabel[] {
             baseHp,
             baseAtk,
             baseDef,
-            baseSpd,
             baseSpAtk,
-            baseSpDef
+            baseSpDef,
+            baseSpd
         };
         m_totals = new JLabel[] {
             totalHp,
@@ -164,7 +164,6 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         txtLevel.setText(String.valueOf(p.level));
         chkShiny.setSelected(p.shiny);
         cmbAbility.setSelectedItem(p.ability);
-        System.out.println(p.gender.ordinal());
         if (g.equals(Gender.GENDER_BOTH)) {
             cmbGender.setSelectedIndex(p.gender.ordinal());
         }
@@ -288,11 +287,11 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         ivHp = new javax.swing.JTextField();
         baseHp = new javax.swing.JLabel();
         totalHp = new javax.swing.JLabel();
-        evSpAtk = new javax.swing.JTextField();
-        ivSpAtk = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
+        evSpDef = new javax.swing.JTextField();
         ivSpDef = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
         ivSpd = new javax.swing.JTextField();
+        ivSpAtk = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         totalAtk = new javax.swing.JLabel();
         totalSpAtk = new javax.swing.JLabel();
@@ -300,13 +299,13 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         totalSpd = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
         evsTotal = new javax.swing.JLabel();
-        evSpDef = new javax.swing.JTextField();
+        evSpd = new javax.swing.JTextField();
         baseDef = new javax.swing.JLabel();
-        baseSpd = new javax.swing.JLabel();
+        baseSpAtk = new javax.swing.JLabel();
         totalDef = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         evHp = new javax.swing.JTextField();
-        baseSpAtk = new javax.swing.JLabel();
+        baseSpDef = new javax.swing.JLabel();
         evAtk = new javax.swing.JTextField();
         evDef = new javax.swing.JTextField();
         totalSpDef = new javax.swing.JLabel();
@@ -317,8 +316,8 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         jLabel15 = new javax.swing.JLabel();
         baseAtk = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        evSpd = new javax.swing.JTextField();
-        baseSpDef = new javax.swing.JLabel();
+        evSpAtk = new javax.swing.JTextField();
+        baseSpd = new javax.swing.JLabel();
         jLabel27 = new javax.swing.JLabel();
         jLabel26 = new javax.swing.JLabel();
         cmbNature = new javax.swing.JComboBox();
@@ -358,7 +357,6 @@ public class TeamBuilderForm extends javax.swing.JPanel {
 
         chkShiny.setText("Shiny?");
         chkShiny.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        chkShiny.setOpaque(false);
 
         jPanel2.setOpaque(false);
 
@@ -370,16 +368,16 @@ public class TeamBuilderForm extends javax.swing.JPanel {
 
         totalHp.setText("000");
 
-        evSpAtk.setText("000");
+        evSpDef.setText("000");
 
-        ivSpAtk.setText("31");
+        ivSpDef.setText("31");
 
         jLabel3.setFont(new java.awt.Font("Lucida Grande", 1, 13));
         jLabel3.setText("Base");
 
-        ivSpDef.setText("31");
-
         ivSpd.setText("31");
+
+        ivSpAtk.setText("31");
 
         jLabel6.setText("HP");
 
@@ -391,17 +389,17 @@ public class TeamBuilderForm extends javax.swing.JPanel {
 
         totalSpd.setText("000");
 
-        jLabel21.setText("Sp. Defense");
+        jLabel21.setText("Speed");
 
         evsTotal.setFont(new java.awt.Font("Lucida Grande", 1, 11));
         evsTotal.setText("(000/510)");
         evsTotal.setMaximumSize(new java.awt.Dimension(50, 16));
 
-        evSpDef.setText("000");
+        evSpd.setText("000");
 
         baseDef.setText("000");
 
-        baseSpd.setText("000");
+        baseSpAtk.setText("000");
 
         totalDef.setText("000");
 
@@ -409,7 +407,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
 
         evHp.setText("000");
 
-        baseSpAtk.setText("000");
+        baseSpDef.setText("000");
 
         evAtk.setText("000");
 
@@ -417,7 +415,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
 
         totalSpDef.setText("000");
 
-        jLabel18.setText("Sp. Attack");
+        jLabel18.setText("Sp. Defense");
 
         jLabel2.setFont(new java.awt.Font("Lucida Grande", 1, 13));
         jLabel2.setText("Total");
@@ -428,15 +426,15 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 13));
         jLabel1.setText("Stat");
 
-        jLabel15.setText("Speed");
+        jLabel15.setText("Sp. Attack");
 
         baseAtk.setText("000");
 
         jLabel9.setText("Attack");
 
-        evSpd.setText("000");
+        evSpAtk.setText("000");
 
-        baseSpDef.setText("000");
+        baseSpd.setText("000");
 
         jLabel27.setText("Ability:");
 
@@ -488,9 +486,9 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                             .add(baseHp, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 28, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(baseAtk, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 28, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(baseDef, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 28, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(baseSpd, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 28, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(baseSpAtk, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 28, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(baseSpDef, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 28, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                            .add(baseSpDef, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 28, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(baseSpd, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 28, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                             .add(jPanel2Layout.createSequentialGroup()
@@ -498,14 +496,14 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                                     .add(ivHp, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 30, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                     .add(ivAtk, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 30, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                     .add(ivDef, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 30, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(ivSpd, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 30, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                     .add(ivSpAtk, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 30, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(ivSpDef, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 30, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                    .add(ivSpDef, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 30, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                    .add(ivSpd, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 30, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                                 .add(18, 18, 18)
                                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                                    .add(evSpd, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
                                     .add(evSpAtk, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
                                     .add(evSpDef, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                                    .add(evSpd, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
                                     .add(evHp, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
                                     .add(evAtk, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
                                     .add(evDef, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)))
@@ -569,20 +567,20 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(jLabel15)
-                            .add(baseSpd)
-                            .add(ivSpd, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(baseSpAtk)
+                            .add(ivSpAtk, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(totalSpd))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(jLabel18)
-                            .add(baseSpAtk)
-                            .add(ivSpAtk, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(baseSpDef)
+                            .add(ivSpDef, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(totalSpAtk))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(jLabel21)
-                            .add(baseSpDef)
-                            .add(ivSpDef, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(baseSpd)
+                            .add(ivSpd, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(totalSpDef)))
                     .add(jPanel2Layout.createSequentialGroup()
                         .add(evHp, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -591,11 +589,11 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(evDef, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(evSpd, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(evSpAtk, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(evSpDef, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                        .add(evSpDef, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(evSpd, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel25)
@@ -629,7 +627,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                         .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(scrollMoves, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
+                    .add(scrollMoves, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 405, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .add(cmbItem, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)

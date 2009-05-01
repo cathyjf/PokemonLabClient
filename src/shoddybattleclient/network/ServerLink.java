@@ -808,6 +808,7 @@ public class ServerLink extends Thread {
                     String message = name + " lost " + percent
                             + "% of its health.";
                     wnd.addMessage(null, message);
+                    wnd.updateHealth(party, slot, total);
                 }
             });
 
