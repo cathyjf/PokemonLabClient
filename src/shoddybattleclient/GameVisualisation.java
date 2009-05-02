@@ -360,7 +360,7 @@ public class GameVisualisation extends JPanel {
             if (p == null) continue;
             Image img = null;
             try {
-                img = getSprite(p.getSpecies(), !us, p.getGender() == Pokemon.Gender.GENDER_MALE.getValue(), p.isShiny(), null);
+                img = getSprite(p.getSpecies(), !us, p.getGender() != Pokemon.Gender.GENDER_FEMALE.getValue(), p.isShiny(), null);
             } catch (IOException e) {
                 String gender = p.getGender() == 0 ? "Male" : "Female";
                 System.out.println(p.getSpecies() + " " + gender + " sprite not found");
