@@ -55,6 +55,7 @@ public class AdvancedDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Advanced");
+        setLocationByPlatform(true);
         setResizable(false);
 
         jLabel1.setText("Host:");

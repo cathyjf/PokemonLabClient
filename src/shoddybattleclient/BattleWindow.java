@@ -137,7 +137,7 @@ public class BattleWindow extends javax.swing.JFrame {
     private TargetButton[] m_targets = null;
     private GameVisualisation m_visual;
     // TODO: allow for more health bars in doubles
-    private HealthBar[] m_healthBars;
+    private HealthBar[][] m_healthBars;
     private HTMLPane m_chat;
     private ArrayList<PokemonMove> m_moveList;
     // Your Pokemon in this match
@@ -354,35 +354,37 @@ public class BattleWindow extends javax.swing.JFrame {
         int healthHeight = 35;
         int x = 20;
         m_visual.setLocation(x, base + healthHeight + buffer);
+        int p1 = 1 - m_participant;
+        int p2 = m_participant;
         if (m_n == 1) {
-            m_healthBars = new HealthBar[2];
-            m_healthBars[0] = new HealthBar();
-            m_healthBars[0].setLocation(x, base);
-            m_healthBars[0].setSize(m_visual.getWidth(), healthHeight);
-            m_healthBars[1] = new HealthBar();
-            m_healthBars[1].setLocation(x, base + healthHeight + (2 * buffer) + m_visual.getHeight());
-            m_healthBars[1].setSize(m_visual.getWidth(), healthHeight);
-            add(m_healthBars[0]);
-            add(m_healthBars[1]);
+            m_healthBars = new HealthBar[2][1];
+            m_healthBars[p1][0] = new HealthBar();
+            m_healthBars[p1][0].setLocation(x, base);
+            m_healthBars[p1][0].setSize(m_visual.getWidth(), healthHeight);
+            m_healthBars[p2][0] = new HealthBar();
+            m_healthBars[p2][0].setLocation(x, base + healthHeight + (2 * buffer) + m_visual.getHeight());
+            m_healthBars[p2][0].setSize(m_visual.getWidth(), healthHeight);
+            add(m_healthBars[0][0]);
+            add(m_healthBars[1][0]);
         } else if (m_n == 2) {
             final int w = m_visual.getWidth() / 2;
-            m_healthBars = new HealthBar[4];
-            m_healthBars[0] = new HealthBar();
-            m_healthBars[0].setLocation(x, base);
-            m_healthBars[0].setSize(w, healthHeight);
-            m_healthBars[1] = new HealthBar();
-            m_healthBars[1].setLocation(x + w, base);
-            m_healthBars[1].setSize(w, healthHeight);
-            m_healthBars[2] = new HealthBar();
-            m_healthBars[2].setLocation(x, base + healthHeight + (2 * buffer) + m_visual.getHeight());
-            m_healthBars[2].setSize(w, healthHeight);
-            m_healthBars[3] = new HealthBar();
-            m_healthBars[3].setLocation(x + w, base + healthHeight + (2 * buffer) + m_visual.getHeight());
-            m_healthBars[3].setSize(w, healthHeight);
-            add(m_healthBars[0]);
-            add(m_healthBars[1]);
-            add(m_healthBars[2]);
-            add(m_healthBars[3]);
+            m_healthBars = new HealthBar[2][2];
+            m_healthBars[p1][1] = new HealthBar();
+            m_healthBars[p1][1].setLocation(x, base);
+            m_healthBars[p1][1].setSize(w, healthHeight);
+            m_healthBars[p1][0] = new HealthBar();
+            m_healthBars[p1][0].setLocation(x + w, base);
+            m_healthBars[p1][0].setSize(w, healthHeight);
+            m_healthBars[p2][1] = new HealthBar();
+            m_healthBars[p2][1].setLocation(x, base + healthHeight + (2 * buffer) + m_visual.getHeight());
+            m_healthBars[p2][1].setSize(w, healthHeight);
+            m_healthBars[p2][0] = new HealthBar();
+            m_healthBars[p2][0].setLocation(x + w, base + healthHeight + (2 * buffer) + m_visual.getHeight());
+            m_healthBars[p2][0].setSize(w, healthHeight);
+            add(m_healthBars[0][0]);
+            add(m_healthBars[0][1]);
+            add(m_healthBars[1][0]);
+            add(m_healthBars[1][1]);
         }
         add(m_visual);
     }
@@ -410,7 +412,7 @@ public class BattleWindow extends javax.swing.JFrame {
         btnMoveCancel.setEnabled(false);
         btnSwitchCancel.setEnabled(false);
         tabAction.setSelectedIndex(0);
-        m_visual.setSelected(slot);
+        if (m_n > 1) m_visual.setSelected(slot);
     }
 
     public void requestReplacement() {
@@ -492,8 +494,7 @@ public class BattleWindow extends javax.swing.JFrame {
 
     public void updateHealth(int party, int slot, int total) {
         if (m_n <= 2) {
-            int idx = (m_participant == 0) ? slot : m_n + slot;
-            m_healthBars[idx].setRatio(total, 48);
+            m_healthBars[party][slot].setRatio(total, 48);
         } else {
             m_visual.updateHealth(party, slot, total, 48);
         }
@@ -538,6 +539,10 @@ public class BattleWindow extends javax.swing.JFrame {
         if (forced) {
             setValidMoves(new boolean[] {false, false, false, false});
         }
+    }
+
+    public void setSpriteVisible(int party, int slot, boolean visible) {
+        m_visual.setSpriteVisible(party, slot, visible);
     }
 
 
@@ -867,6 +872,7 @@ public class BattleWindow extends javax.swing.JFrame {
                 battle.updateHealth(0, 0, 38);
                 battle.updateStatLevel(0, 0, 2, -3);
                 battle.updateStatMultiplier(0, 0, 3, 2.0);
+                battle.setSpriteVisible(0, 0, false);
             }
         });
     }

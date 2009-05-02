@@ -1,6 +1,24 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * GameVisualisation.java
+ *
+ * Created on Apr 10, 2009, 2:13:23 PM
+ *
+ * This file is a part of Shoddy Battle.
+ * Copyright (C) 2009  Catherine Fitzpatrick and Benjamin Gwin
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program; if not, visit the Free Software Foundation, Inc.
+ * online at http://gnu.org.
  */
 
 package shoddybattleclient;
@@ -45,6 +63,7 @@ public class GameVisualisation extends JPanel {
         private int m_healthD = 100;
         private int[] m_statLevels = new int[6];
         private double[] m_statMultipliers = new double[] {1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+        private boolean m_visible = true;
 
         public VisualPokemon(String species, int gender, boolean shiny) {
             m_species = species;
@@ -191,6 +210,10 @@ public class GameVisualisation extends JPanel {
         m_parties[party][slot].setStatMultiplier(stat, mult);
     }
 
+    public void setSpriteVisible(int party, int slot, boolean visible) {
+        m_parties[party][slot].m_visible = visible;
+    }
+
     private void displayInformation(int party, int idx) {
         m_tooltipParty = party;
         m_tooltipPoke = idx;
@@ -271,7 +294,7 @@ public class GameVisualisation extends JPanel {
         stats.append("<html>");
         for (int i = 0; i < 6; i++) {
             //calc stat
-            stats.append("stat ");
+            stats.append(Text.getText(2, i));
             if (i > 0) {
                 int level = p.getStatLevel(i);
                 if (level != 0) {
@@ -368,7 +391,7 @@ public class GameVisualisation extends JPanel {
                     || (m_target == -3)) {
                 g2.drawImage(m_arrows[1], x + w / 2, y - m_arrows[1].getHeight(this), this);
             }
-            g2.drawImage(img, x, y, this);
+            if (p.m_visible) g2.drawImage(img, x, y, this);
             m_mouseInput.setColor(new Color(idx, 0, 1));
             m_mouseInput.fillRect(x - partyBuf, y - partyBuf, w + partyBuf * 2,
                     h + partyBuf * 2);

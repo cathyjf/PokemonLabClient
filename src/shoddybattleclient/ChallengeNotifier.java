@@ -34,9 +34,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JComponent;
-import javax.swing.Popup;
 import javax.swing.PopupFactory;
-import javax.swing.SwingUtilities;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.network.ServerLink.ChallengeMediator;
 import shoddybattleclient.shoddybattle.Pokemon;
@@ -210,19 +208,6 @@ public class ChallengeNotifier extends JComponent {
         g2.dispose();
     }
 
-    /**
-     * Gets a new popup instance at a specified point relative to the chat
-     */
-    private void createPopup(Challenge c, Point point) {
-        if (c.popupActive()) return;
-        c.setPopup(true);
-        SwingUtilities.convertPointToScreen(point, m_parent.getChat().getChat());
-         ChallengePanel cp = new ChallengePanel(m_parent, c);
-         Popup p = m_factory.getPopup(m_parent, cp, point.x, point.y);
-         cp.setPopup(p);
-         p.show();
-    }
-
     public void processClick(MouseEvent e) {
         Point point = e.getPoint();
         int w = getW();
@@ -237,7 +222,7 @@ public class ChallengeNotifier extends JComponent {
                 return;
             } else if (fullRect.contains(point)) {
                 //clicked somewhere else on the notification
-                createPopup(c, point);
+                new IncomingChallenge(m_parent, c).setVisible(true);
             }
         }
     }

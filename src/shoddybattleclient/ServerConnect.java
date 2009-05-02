@@ -45,6 +45,7 @@ public class ServerConnect extends javax.swing.JFrame {
         initComponents();
         m_link = link;
         lblName.setText(name);
+        txtLoginName.requestFocus();
         HTMLEditorKit kit = new HTMLEditorKit();
         StyleSheet css = new StyleSheet();
         css.addRule("a {color: blue; text-decoration: underline;}");
