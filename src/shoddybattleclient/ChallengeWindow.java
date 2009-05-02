@@ -52,6 +52,7 @@ public class ChallengeWindow extends javax.swing.JFrame {
         btnChallenge = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setLocationByPlatform(true);
 
         jScrollPane1.setViewportView(lstTeam);
 
