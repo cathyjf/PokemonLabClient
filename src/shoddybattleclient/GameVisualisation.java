@@ -47,6 +47,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JToolTip;
 import javax.swing.ToolTipManager;
+import shoddybattleclient.shoddybattle.Pokemon;
 
 /**
  *
@@ -359,9 +360,10 @@ public class GameVisualisation extends JPanel {
             if (p == null) continue;
             Image img = null;
             try {
-                img = getSprite(p.getSpecies(), !us, p.getGender() == 0, p.isShiny(), null);
+                img = getSprite(p.getSpecies(), !us, p.getGender() == Pokemon.Gender.GENDER_MALE.getValue(), p.isShiny(), null);
             } catch (IOException e) {
-                System.out.println(p.getSpecies() + " sprite not found");
+                String gender = p.getGender() == 0 ? "Male" : "Female";
+                System.out.println(p.getSpecies() + " " + gender + " sprite not found");
             }
             if (img == null) continue;
             tracker.addImage(img, 0);
