@@ -38,6 +38,7 @@ import java.util.Arrays;
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
+import shoddybattleclient.ChatPane.CommandException;
 import shoddybattleclient.GameVisualisation.VisualPokemon;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.shoddybattle.*;
@@ -786,7 +787,11 @@ public class BattleWindow extends javax.swing.JFrame {
 
     private void txtChatKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtChatKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            m_chat.addMessage("Ben", txtChat.getText());
+            try {
+                m_link.sendBattleMessage(m_fid, txtChat.getText());
+            } catch (CommandException e) {
+                addMessage(null, e.getMessage());
+            }
             txtChat.setText("");
         }
     }//GEN-LAST:event_txtChatKeyReleased

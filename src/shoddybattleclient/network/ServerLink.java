@@ -32,6 +32,7 @@ import java.security.*;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import shoddybattleclient.BattleWindow;
+import shoddybattleclient.ChatPane;
 import shoddybattleclient.GameVisualisation.VisualPokemon;
 import shoddybattleclient.LobbyWindow;
 import shoddybattleclient.ServerConnect;
@@ -400,23 +401,25 @@ public class ServerLink extends Thread {
 
             // CHANNEL_INFO
             new ServerMessage(4, new MessageHandler() {
-                // int32 : channel id
+                // int32  : channel id
+                // byte   : channel info
                 // string : channel name
                 // string : channel topic
-                // int32 : channel flags
-                // int32 : number of users
+                // int32  : channel flags
+                // int32  : number of users
                 // for each user:
                 //      string : name
-                //      int32 : flags
+                //      int32  : flags
                 public void handle(ServerLink link, DataInputStream is)
                         throws IOException {
                     int id = is.readInt();
+                    int type = is.read();
                     String channelName = is.readUTF();
                     String topic = is.readUTF();
                     int channelFlags = is.readInt();
                     int count = is.readInt();
                     LobbyWindow.Channel channel =
-                            new LobbyWindow.Channel(id, channelName,
+                            new LobbyWindow.Channel(id, type, channelName,
                             topic, channelFlags);
                     for (int i = 0; i < count; ++i) {
                         String name = is.readUTF();
@@ -460,13 +463,15 @@ public class ServerLink extends Thread {
                 // int32 : number of channels
                 // for each channel:
                 //      string : name
+                //      byte   : type
                 //      string : topic
-                //      int32 : population
+                //      int32  : population
                 public void handle(ServerLink link, DataInputStream is)
                         throws IOException {
                     int count = is.readInt();
                     for (int i = 0; i < count; ++i) {
                         String name = is.readUTF();
+                        int type = is.read();
                         String topic = is.readUTF();
                         int population = is.readInt();
                         System.out.println(name + ", "
@@ -895,6 +900,15 @@ public class ServerLink extends Thread {
         m_socket = new Socket(InetAddress.getByName(host), port);
         m_input = new DataInputStream(m_socket.getInputStream());
         m_output = new DataOutputStream(m_socket.getOutputStream());
+    }
+
+    public BattleWindow getBattle(int id) {
+        return m_battles.get(id);
+    }
+
+    public void sendBattleMessage(int id, String message)
+            throws ChatPane.CommandException {
+        m_lobby.getChannel(id).getChatPane().sendMessage(message);
     }
 
     public LobbyWindow getLobby() {

@@ -51,7 +51,11 @@ public class LobbyWindow extends javax.swing.JFrame {
         public static final int IDLE = 32;      // inactive
         public static final int BUSY = 64;      // ("ignoring challenges")
 
+        public static final int TYPE_ORDINARY = 0;
+        public static final int TYPE_BATTLE = 1;
+
         private int m_id;
+        private int m_type;
         private String m_name;
         private String m_topic;
         private int m_flags;
@@ -85,8 +89,9 @@ public class LobbyWindow extends javax.swing.JFrame {
             return 0;
         }
 
-        public Channel(int id, String name, String topic, int flags) {
+        public Channel(int id, int type, String name, String topic, int flags) {
             m_id = id;
+            m_type = type;
             m_name = name;
             m_topic = topic;
             m_flags = flags;
@@ -118,16 +123,14 @@ public class LobbyWindow extends javax.swing.JFrame {
         public User getUser(String name) {
             return m_users.getUser(name);
         }
+        public int getType() {
+            return m_type;
+        }
     }
 
     public static class User implements Comparable {
         public final static int STATUS_PRESENT = 0;
         public final static int STATUS_AWAY = 1;
-        private static final String m_colours[] = {
-            "black",        // Regular user
-            "#0000aa",      // Mod
-            "rgb(200,0,0)"  // Admin
-        };
         private String m_name;
         private int m_status = 0;
         private int m_flags, m_level;
@@ -162,7 +165,7 @@ public class LobbyWindow extends javax.swing.JFrame {
             return m_name.compareToIgnoreCase(s2);
         }
         public String getPrefix() {
-            String[] prefixes = { "", "+", "%", "@", "@", "~" };
+            String[] prefixes = { "", "+", "%", "@", "&", "~" };
             return prefixes[m_level];
         }
         public void addBattle(int id) {
@@ -202,6 +205,7 @@ public class LobbyWindow extends javax.swing.JFrame {
 
     public void addChannel(Channel channel) {
         m_channels.put(channel.m_id, channel);
+        
         ChatPane c = new ChatPane(channel, this, m_name);
         c.getChat().addMouseListener(new MouseAdapter() {
             @Override
@@ -210,12 +214,20 @@ public class LobbyWindow extends javax.swing.JFrame {
             }
         });
         channel.setChatPane(c);
+
+        if (channel.getType() == Channel.TYPE_BATTLE)
+            return;
+        
         String name = channel.getName();
         c.addMessage(null, "<b>The topic for #"
                 + name + " is: "
                 + channel.getTopic()
                 + "</b>", false);
         tabChats.add("#" + name, c);
+    }
+    
+    public Channel getChannel(int id) {
+        return m_channels.get(id);
     }
 
     public void handleJoinPart(int id, String user, boolean join) {
@@ -227,7 +239,9 @@ public class LobbyWindow extends javax.swing.JFrame {
                 channel.removeUser(user);
             }
         }
-        listUsers.setModel(new UserListModel(channel.getModel().getList()));
+        if (channel.getChatPane() == tabChats.getSelectedComponent()) {
+            listUsers.setModel(new UserListModel(channel.getModel().getList()));
+        }
     }
 
     /** Creates new form LobbyWindow */
@@ -252,39 +266,6 @@ public class LobbyWindow extends javax.swing.JFrame {
     public ServerLink getLink() {
         return m_link;
     }
-
-    /**
-     * Updates a user's status in the user list
-     * @param name The user's name
-     * @param status A constant representing status changes
-     * @param value An extra parameter
-     */
-    /**public void updateUserStatus(String name, Status status, Object value) {
-        switch (status) {
-            case ONLINE:
-                int level = (Integer)value;
-                m_userList.add(new User(name, level));
-                m_userList.sort();
-                break;
-            case OFFLINE:
-                m_userList.remove(name);
-                break;
-            case AWAY:
-                m_userList.setStatus(name, User.STATUS_AWAY);
-                break;
-            case RETURN:
-                m_userList.setStatus(name, User.STATUS_PRESENT);
-                break;
-            case BATTLE_START:
-                String opp = (String)value;
-                m_chat.addMessage("Battle starting", name + " vs. " + opp);
-                break;
-            case BATTLE_END:
-                break;
-        }
-        m_userList = new UserListModel(m_userList.getList());
-        listUsers.setModel(m_userList);
-    }**/
 
     /**
      * Returns the bounds of the main chat pane
@@ -338,7 +319,9 @@ public class LobbyWindow extends javax.swing.JFrame {
         Channel channel = m_channels.get(id);
         if (channel != null) {
             channel.updateUser(user, flags);
-            updateUsers(channel);
+            if (channel.getChatPane() == tabChats.getSelectedComponent()) {
+                updateUsers(channel);
+            }
         }
     }
 
@@ -348,11 +331,22 @@ public class LobbyWindow extends javax.swing.JFrame {
         listUsers.setModel(new UserListModel(model.getList()));
     }
 
+    public void showChannelMessage(Channel channel,
+            String user, String message, boolean encode) {
+        if (channel.getType() == Channel.TYPE_ORDINARY) {
+            channel.getChatPane().addMessage(user, message, encode);
+        } else {
+            // battle chat message
+            BattleWindow wnd = m_link.getBattle(channel.getId());
+            wnd.addMessage(user, message, encode);
+        }
+    }
+
     public void handleChannelMessage(int id, String user, String message) {
         Channel channel = m_channels.get(id);
         if (channel != null) {
             String prefix = channel.getUser(user).getPrefix();
-            channel.getChatPane().addMessage(prefix + user, message, true);
+            showChannelMessage(channel, prefix + user, message, true);
         }
     }
 

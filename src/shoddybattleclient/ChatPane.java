@@ -32,6 +32,12 @@ import shoddybattleclient.utils.HTMLPane;
  */
 public class ChatPane extends javax.swing.JPanel {
 
+    public static class CommandException extends Exception {
+        public CommandException(String message) {
+            super(message);
+        }
+    }
+
     private HTMLPane m_chatPane;
     private LobbyWindow m_lobby;
     private String m_name;
@@ -53,7 +59,8 @@ public class ChatPane extends javax.swing.JPanel {
         return m_channel;
     }
 
-    private void parseCommand(String command, String args) {
+    private void parseCommand(String command, String args)
+            throws CommandException {
         if ("mode".equals(command)) {
             int idx = args.indexOf(' ');
             String action, cmd;
@@ -91,15 +98,14 @@ public class ChatPane extends javax.swing.JPanel {
         throw new InternalError();
     }
 
-    private void parseMode(String action, String users) {
+    private void parseMode(String action, String users) throws CommandException {
         if ("".equals(action) || "help".equals(action)) {
-            addMessage(null, "Usage: /mode +q/a/o/h/v/b/m/i [user1[,user2,...]]");
-            return;
+            throw new CommandException(
+                    "Usage: /mode +q/a/o/h/v/b/m/i [user1[,user2,...]]");
         }
         char char1 = action.charAt(0);
         if ((char1 != '+') && (char1 != '-')) {
-            addMessage(null, "Try '/mode help' for usage");
-            return;
+            throw new CommandException("Try '/mode help' for usage");
         }
         boolean add = (char1 == '+');
         action = action.substring(1);
@@ -122,7 +128,7 @@ public class ChatPane extends javax.swing.JPanel {
                             user, mode, add);
                     break;
                 default:
-                    addMessage(null, "Invalid command: " + action);
+                    throw new CommandException("Invalid command: " + action);
 
             }
         } else {
@@ -148,7 +154,7 @@ public class ChatPane extends javax.swing.JPanel {
         m_chatPane.addMessage(user, message, encode);
     }
 
-    private void sendMessage(String message) {
+    public void sendMessage(String message) throws CommandException {
         message = message.trim();
         if (message.equals("") || txtChat.getForeground().equals(java.awt.Color.GRAY)) {
             return;
@@ -255,14 +261,22 @@ public class ChatPane extends javax.swing.JPanel {
 
     private void txtChatKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtChatKeyReleased
         if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
-            sendMessage(txtChat.getText());
+            try {
+                sendMessage(txtChat.getText());
+            } catch (CommandException e) {
+                addMessage(null, e.getMessage());
+            }
             txtChat.setText(null);
         }
     }//GEN-LAST:event_txtChatKeyReleased
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         String text = txtChat.getText();
-        sendMessage(text);
+        try {
+            sendMessage(text);
+        } catch (CommandException e) {
+            addMessage(null, e.getMessage());
+        }
         txtChat.setText(null);
     }//GEN-LAST:event_jButton1ActionPerformed
 
