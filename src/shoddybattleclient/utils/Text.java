@@ -23,6 +23,7 @@
 package shoddybattleclient.utils;
 import java.io.*;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Reads and allows for retrieval of text from a .lang file
@@ -39,9 +40,21 @@ public class Text {
     public static String getText(int cat, int id, String[] args) {
         String text = m_text.get(cat).get(id);
         for (int i = 0; i < args.length; i++) {
-            String match = "\\$" + (i + 1);
-            text = text.replaceAll(match, args[i]);
+            String match = "$" + (i + 1);
+            text = text.replace(match, args[i]);
         }
+
+        int pos;
+        while ((pos  = text.indexOf("${")) >= 0) {
+            int pos2 = text.indexOf("}", pos);
+            if (pos2 < 0) break;
+            String sub = text.substring(pos + 2, pos2);
+            String[] parts = sub.split(",");
+            String replacement = getText(Integer.parseInt(parts[0]),
+                    Integer.parseInt(parts[1]));
+            text = text.substring(0, pos) + replacement + text.substring(pos2 + 1);
+        }
+
         return text;
     }
 
@@ -101,7 +114,7 @@ public class Text {
     }
 
     public static void main(String[] args) {
-        System.out.println(Text.getText(12, 2, new String[] {"Bearzly", "2"}));
+        System.out.println(Text.getText(5, 0, new String[] {"bearzly", "${3,2}"}));
     }
 
 }
