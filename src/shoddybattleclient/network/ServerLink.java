@@ -768,6 +768,7 @@ public class ServerLink extends Thread {
                 // int32 : field id
                 // byte : party
                 // byte : slot
+                // byte : index
                 // string : user [nick]name
                 public void handle(ServerLink link, DataInputStream is)
                         throws IOException {
@@ -778,6 +779,7 @@ public class ServerLink extends Thread {
 
                     int party = is.read();
                     int slot = is.read();
+                    int index = is.read();
                     String name = is.readUTF();
 
                     String message = wnd.getTrainer(party)
