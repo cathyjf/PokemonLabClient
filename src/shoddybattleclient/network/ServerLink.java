@@ -736,9 +736,10 @@ public class ServerLink extends Thread {
 
                     String move =
                             PokemonMove.getNameFromId(link.m_moveList, idx);
-                    String message = name + " used " + move + "!";
-
+                    name = Text.formatName(name, (party == wnd.getParty()));
                     move = "<font class='move'>" + move + "</font>";
+                    
+                    String message = Text.getText(4, 10, new String[] {name, move});
 
                     wnd.addMessage(null, message, false);
                 }
@@ -762,11 +763,10 @@ public class ServerLink extends Thread {
                     String name = is.readUTF();
 
                     boolean us = (party == wnd.getParty());
-                    String style1 = us ? "self" : "others";
-                    String trainer = "<font class='" + style1 + "'>" + wnd.getTrainer(party) +
-                            "</font>";
+                    String trainer = Text.formatTrainer(wnd.getTrainer(party),
+                            wnd.getParty(), party);
                     name = Text.formatName(name, us);
-                    String message = trainer + " withdrew " + name + "!";
+                    String message = Text.getText(4, 11, new String[] {trainer, name});
                     wnd.addMessage(null, message, false);
                 }
             });
@@ -790,12 +790,15 @@ public class ServerLink extends Thread {
                     int index = is.read();
                     String name = is.readUTF();
 
-                    String trainer = "<font class='trainer'>" + wnd.getTrainer(party) +
-                            "</font>";
-
-                    String message = trainer + " sent out " + name + "!";
-                    wnd.addMessage(null, message, false);
                     wnd.sendOut(party, slot, index, name);
+
+                    String trainer = Text.formatTrainer(wnd.getTrainer(party),
+                            wnd.getParty(), party);
+
+                    name = Text.formatName(name, wnd.getParty() == party);
+
+                    String message = Text.getText(4, 12, new String[] {trainer, name});
+                    wnd.addMessage(null, message, false);
                 }
             });
 
@@ -822,9 +825,10 @@ public class ServerLink extends Thread {
                     int total = is.readShort();
 
                     int percent = 100 * delta / 48;
-                    
-                    String message = name + " lost " + percent
-                            + "% of its health.";
+
+                    name = Text.formatName(name, wnd.getParty() == party);
+
+                    String message = Text.getText(4, 13, new String[] {name, percent + "%"});
                     wnd.addMessage(null, message, false);
                     wnd.updateHealth(party, slot, total);
                 }
@@ -867,8 +871,8 @@ public class ServerLink extends Thread {
                     int party = is.read();
                     int slot = is.read();
                     String name = is.readUTF();
-
-                    String message = name + " fainted!";
+                    name = Text.formatName(name, wnd.getParty() == party);
+                    String message = Text.getText(4, 15, new String[] {name});
                     wnd.addMessage(null, message, false);
                 }
             });

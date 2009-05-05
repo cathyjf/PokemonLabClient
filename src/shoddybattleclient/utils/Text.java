@@ -81,6 +81,18 @@ public class Text {
         return name;
     }
 
+    public static String formatTrainer(String name, int us, int party) {
+        String style;
+        if (party == us) {
+            style = "self";
+        } else if (party == (1 - us)) {
+            style = "opponent";
+        } else {
+            style = "others";
+        }
+        return "<font class='" + style + "'>" + name + "</font>";
+    }
+
     public static String getText(int cat, int id, String[] args) {
         return getText(cat, id, args, null);
     }

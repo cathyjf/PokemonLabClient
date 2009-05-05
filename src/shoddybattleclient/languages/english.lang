@@ -101,6 +101,12 @@
 7: It's super effective!
 8: It's not very effective...
 9: A critical hit!
+10: $1 used $2!
+11: $1 withdrew $2!
+12: $1 sent out $2!
+13: $1 lost $2 of its health!
+14: $1 regained $2 of its health!
+15: $1 fainted!
 
 [status-effects-stat-level]
 0: $1's $2 was raised!
