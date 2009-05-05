@@ -894,7 +894,10 @@ public class ServerLink extends Thread {
 
                     int count = is.readShort();
 
-                    System.out.print("Turn " + count + " begins.");
+                    wnd.addMessage(null, "<b>===============</b>", false);
+                    String message = Text.getText(4, 16,
+                            new String[] { String.valueOf(count) });
+                    wnd.addMessage(null, "<b>" + message + "</b>", false);
                 }
             });
 

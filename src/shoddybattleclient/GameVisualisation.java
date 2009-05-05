@@ -244,8 +244,8 @@ public class GameVisualisation extends JPanel {
         getPokemonForSlot(party, slot).setHealth(total, 48);
     }
 
-    public VisualPokemon getPokemon(int party, int slot) {
-        return getPokemonForSlot(party, slot);
+    public VisualPokemon getPokemon(int party, int index) {
+        return m_parties[party][index];
     }
 
     private void displayInformation(int party, int idx) {
@@ -285,7 +285,6 @@ public class GameVisualisation extends JPanel {
         }
         m_parties[party][index].setSlot(slot);
         m_parties[party][index].setSpecies(name);
-        
     }
 
     @Override

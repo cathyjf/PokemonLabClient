@@ -107,6 +107,7 @@
 13: $1 lost $2 of its health!
 14: $1 regained $2 of its health!
 15: $1 fainted!
+16: Begin turn #$1
 
 [status-effects-stat-level]
 0: $1's $2 was raised!
