@@ -763,11 +763,9 @@ public class ServerLink extends Thread {
 
                     boolean us = (party == wnd.getParty());
                     String style1 = us ? "self" : "others";
-                    String style2 = "pokemon " + (us ? "ally" : "enemey");
                     String trainer = "<font class='" + style1 + "'>" + wnd.getTrainer(party) +
                             "</font>";
-                    name = "<font class='" + style2 + "'>" + name +
-                            "</font>";
+                    name = Text.formatName(name, us);
                     String message = trainer + " withdrew " + name + "!";
                     wnd.addMessage(null, message, false);
                 }

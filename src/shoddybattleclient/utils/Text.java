@@ -67,13 +67,18 @@ public class Text {
                 int party = Integer.parseInt(parts[0]);
                 String name = field.getName(party,
                         Integer.parseInt(parts[1]));
-                String style = (field.getParty() == party) ? "ally" : "enemy";
-                name = "<font class='pokemon " + style + "'>" + name + "</font>";
+                name = formatName(name, field.getParty() == party);
                 text = text.substring(0, pos) + name + text.substring(pos2 + 1);
             }
         }
 
         return text;
+    }
+    
+    public static String formatName(String name, boolean ally) {
+        String style = ally ? "ally" : "enemy";
+        name = "<font class='pokemon-" + style + "'>" + name + "</font>";
+        return name;
     }
 
     public static String getText(int cat, int id, String[] args) {
