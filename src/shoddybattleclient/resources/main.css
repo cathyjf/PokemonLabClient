@@ -1,4 +1,4 @@
-.self, .others {
+.self, .others, .opponent {
 	font-weight: bold;
 }
 
@@ -10,7 +10,29 @@
 	color: blue;
 }
 
+.opponent {
+    color: red;
+}
+
 a {
 	color: blue;
 	text-decoration: underline;
+}
+
+.move {
+    font-weight: bold;
+}
+
+.trainer {
+    font-weight: bold;
+}
+
+.pokemon-ally {
+    font-weight: bold;
+    color: navy;
+}
+
+.pokemon-enemy {
+    font-weight: bold;
+    color: maroon;
 }
