@@ -739,7 +739,8 @@ public class ServerLink extends Thread {
                     name = Text.formatName(name, (party == wnd.getParty()));
                     move = "<font class='move'>" + move + "</font>";
                     
-                    String message = Text.getText(4, 10, new String[] {name, move});
+                    String message = Text.getText(4, 10,
+                            new String[] { name, move });
 
                     wnd.addMessage(null, message, false);
                 }
@@ -766,7 +767,8 @@ public class ServerLink extends Thread {
                     String trainer = Text.formatTrainer(wnd.getTrainer(party),
                             wnd.getParty(), party);
                     name = Text.formatName(name, us);
-                    String message = Text.getText(4, 11, new String[] {trainer, name});
+                    String message = Text.getText(4, 11,
+                            new String[] { trainer, name });
                     wnd.addMessage(null, message, false);
                 }
             });
@@ -797,7 +799,8 @@ public class ServerLink extends Thread {
 
                     name = Text.formatName(name, wnd.getParty() == party);
 
-                    String message = Text.getText(4, 12, new String[] {trainer, name});
+                    String message = Text.getText(4, 12,
+                            new String[] { trainer, name });
                     wnd.addMessage(null, message, false);
                 }
             });
@@ -828,7 +831,8 @@ public class ServerLink extends Thread {
 
                     name = Text.formatName(name, wnd.getParty() == party);
 
-                    String message = Text.getText(4, 13, new String[] {name, percent + "%"});
+                    String message = Text.getText(4, 13,
+                            new String[] { name, percent + "%" });
                     wnd.addMessage(null, message, false);
                     wnd.updateHealth(party, slot, total);
                 }
@@ -872,8 +876,25 @@ public class ServerLink extends Thread {
                     int slot = is.read();
                     String name = is.readUTF();
                     name = Text.formatName(name, wnd.getParty() == party);
-                    String message = Text.getText(4, 15, new String[] {name});
+                    String message = Text.getText(4, 15, new String[] { name });
                     wnd.addMessage(null, message, false);
+                }
+            });
+
+            // BATTLE_BEGIN_TURN
+            new ServerMessage(23, new MessageHandler() {
+                // int32 : field id
+                // int16 : turn count
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException {
+                    int fid = is.readInt();
+
+                    BattleWindow wnd = link.m_battles.get(fid);
+                    if (wnd == null) return;
+
+                    int count = is.readShort();
+
+                    System.out.print("Turn " + count + " begins.");
                 }
             });
 
