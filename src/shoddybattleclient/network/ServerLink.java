@@ -558,10 +558,11 @@ public class ServerLink extends Thread {
                         link.m_lobby.cancelChallenge(user);
                         users = new String[] { user, link.m_name };
                     }
-
+                    //TODO: send maximum team length
                     BattleWindow wnd = new BattleWindow(link,
                             id,
                             mediator.getActivePartySize(),
+                            6,
                             party,
                             users,
                             mediator.getTeam());
@@ -693,8 +694,8 @@ public class ServerLink extends Thread {
                         args[i] = is.readUTF();
                     }
 
-                    String message = Text.getText(category, msg, args);
-                    wnd.addMessage(null, message);
+                    String message = Text.getText(category, msg, args, wnd);
+                    wnd.addMessage(null, message, false);
                 }
             });
 
@@ -736,7 +737,10 @@ public class ServerLink extends Thread {
                     String move =
                             PokemonMove.getNameFromId(link.m_moveList, idx);
                     String message = name + " used " + move + "!";
-                    wnd.addMessage(null, message);
+
+                    move = "<font class='move'>" + move + "</font>";
+
+                    wnd.addMessage(null, message, false);
                 }
             });
 
@@ -757,9 +761,15 @@ public class ServerLink extends Thread {
                     int slot = is.read();
                     String name = is.readUTF();
 
-                    String message = wnd.getTrainer(party)
-                            + " withdrew " + name + "!";
-                    wnd.addMessage(null, message);
+                    boolean us = (party == wnd.getParty());
+                    String style1 = us ? "self" : "others";
+                    String style2 = "pokemon " + (us ? "ally" : "enemey");
+                    String trainer = "<font class='" + style1 + "'>" + wnd.getTrainer(party) +
+                            "</font>";
+                    name = "<font class='" + style2 + "'>" + name +
+                            "</font>";
+                    String message = trainer + " withdrew " + name + "!";
+                    wnd.addMessage(null, message, false);
                 }
             });
 
@@ -782,9 +792,12 @@ public class ServerLink extends Thread {
                     int index = is.read();
                     String name = is.readUTF();
 
-                    String message = wnd.getTrainer(party)
-                            + " sent out " + name + "!";
-                    wnd.addMessage(null, message);
+                    String trainer = "<font class='trainer'>" + wnd.getTrainer(party) +
+                            "</font>";
+
+                    String message = trainer + " sent out " + name + "!";
+                    wnd.addMessage(null, message, false);
+                    wnd.sendOut(party, slot, index, name);
                 }
             });
 
@@ -814,7 +827,7 @@ public class ServerLink extends Thread {
                     
                     String message = name + " lost " + percent
                             + "% of its health.";
-                    wnd.addMessage(null, message);
+                    wnd.addMessage(null, message, false);
                     wnd.updateHealth(party, slot, total);
                 }
             });
@@ -858,7 +871,7 @@ public class ServerLink extends Thread {
                     String name = is.readUTF();
 
                     String message = name + " fainted!";
-                    wnd.addMessage(null, message);
+                    wnd.addMessage(null, message, false);
                 }
             });
 

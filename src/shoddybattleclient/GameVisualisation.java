@@ -60,19 +60,28 @@ public class GameVisualisation extends JPanel {
         private int m_gender;
         private boolean m_shiny;
         private List<String> m_statuses = new ArrayList<String>();
-        private int m_healthN = 100;
-        private int m_healthD = 100;
+        private int m_healthN = 48;
+        private int m_healthD = 48;
         private int[] m_statLevels = new int[6];
         private double[] m_statMultipliers = new double[] {1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
         private boolean m_visible = true;
+        private int m_slot = -1;
 
         public VisualPokemon(String species, int gender, boolean shiny) {
             m_species = species;
             m_gender = gender;
             m_shiny = shiny;
         }
+        public VisualPokemon() {
+            m_species = "???";
+            m_gender = 0;
+            m_shiny = false;
+        }
         public String getSpecies() {
             return m_species;
+        }
+        public void setSpecies(String name) {
+            m_species = name;
         }
         public int getGender() {
             return m_gender;
@@ -111,11 +120,18 @@ public class GameVisualisation extends JPanel {
         public double getStatMultiplier(int i) {
             return m_statMultipliers[i];
         }
+        public void setSlot(int slot) {
+            m_slot = slot;
+        }
+        public int getSlot() {
+            return m_slot;
+        }
     }
 
     private static final Image m_background;
     private static final Image[] m_pokeball = new Image[3];
     private static final Image[] m_arrows = new Image[2];
+    private VisualPokemon[][] m_active;
     private VisualPokemon[][] m_parties;
     private int m_view;
     private int m_selected = -1;
@@ -123,6 +139,8 @@ public class GameVisualisation extends JPanel {
     private Graphics2D m_mouseInput;
     private static final IndexColorModel m_colours;
     private int m_n;
+    //max team length
+    private int m_length;
 
     private int m_tooltipParty = Integer.MAX_VALUE;
     private int m_tooltipPoke = Integer.MAX_VALUE;
@@ -158,10 +176,17 @@ public class GameVisualisation extends JPanel {
         manager.setReshowDelay(0);
     }
     
-    public GameVisualisation(int view, int n) {
+    public GameVisualisation(int view, int n, int length) {
         m_view = view;
-        m_parties = new VisualPokemon[2][n];
+        m_active = new VisualPokemon[2][n];
+        m_parties = new VisualPokemon[2][length];
+        for (int i = 0; i < m_parties.length; i++) {
+            for (int j = 0; j < m_parties[i].length; j++) {
+                m_parties[i][j] = new VisualPokemon();
+            }
+        }
         m_n = n;
+        m_length = length;
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
         MediaTracker tracker = new MediaTracker(this);
         tracker.addImage(m_background, 0);
@@ -204,15 +229,23 @@ public class GameVisualisation extends JPanel {
     }
 
     public void updateStatLevel(int party, int slot, int stat, int level) {
-        m_parties[party][slot].setStatLevel(stat, level);
+        getPokemonForSlot(party, slot).setStatLevel(stat, level);
     }
 
     public void updateStatMultiplier(int party, int slot, int stat, double mult) {
-        m_parties[party][slot].setStatMultiplier(stat, mult);
+        getPokemonForSlot(party, slot).setStatMultiplier(stat, mult);
     }
 
     public void setSpriteVisible(int party, int slot, boolean visible) {
-        m_parties[party][slot].m_visible = visible;
+        m_active[party][slot].m_visible = visible;
+    }
+
+    public void updateHealth(int party, int slot, int total) {
+        getPokemonForSlot(party, slot).setHealth(total, 48);
+    }
+
+    public VisualPokemon getPokemon(int party, int slot) {
+        return getPokemonForSlot(party, slot);
     }
 
     private void displayInformation(int party, int idx) {
@@ -229,25 +262,30 @@ public class GameVisualisation extends JPanel {
 
     }
 
-    public void setParties(VisualPokemon[] party1, VisualPokemon[] party2) {
+    public void setActive(VisualPokemon[] party1, VisualPokemon[] party2) {
         for (int i = 0; i < 2; i++) {
             VisualPokemon[] party = (i == 0) ? party1 : party2;
             for (int j = 0; j < party.length; j++) {
-                m_parties[i][j] = party[j];
+                m_active[i][j] = party[j];
             }
         }
     }
 
-    public void updateHealth(int party, int slot, int num, int denom) {
-        m_parties[party][slot].setHealth(num, denom);
+    private VisualPokemon getPokemonForSlot(int party, int slot) {
+        for (int i = 0; i < m_parties[party].length; i++) {
+            if (m_parties[party][i].getSlot() == slot) return m_parties[party][i];
+        }
+        return null;
     }
 
-    public VisualPokemon getPokemon(int party, int order) {
-        return m_parties[party][order];
-    }
-
-    public void setPokemon(int party, int order, VisualPokemon p) {
-        m_parties[party][order] = p;
+    public void sendOut(int party, int slot, int index, String name) {
+        VisualPokemon p = getPokemonForSlot(party, slot);
+        if (p != null) {
+            p.setSlot(-1);
+        }
+        m_parties[party][index].setSlot(slot);
+        m_parties[party][index].setSpecies(name);
+        
     }
 
     @Override
@@ -269,9 +307,9 @@ public class GameVisualisation extends JPanel {
     public String[] getPokemonNames() {
         String[] ret = new String[m_n * 2];
         int len = m_n;
-        for (int i = 0; i < m_parties.length; i++) {
+        for (int i = 0; i < m_active.length; i++) {
             for (int j = 0; j < len; j++) {
-                VisualPokemon p = m_parties[i][j];
+                VisualPokemon p = m_active[i][j];
                 ret[i * len + j] = (p == null) ? null : p.getSpecies();
             }
         }
@@ -279,7 +317,7 @@ public class GameVisualisation extends JPanel {
     }
 
     public String[] getAllyNames() {
-        VisualPokemon[] party = m_parties[m_view];
+        VisualPokemon[] party = m_active[m_view];
         String[] ret = new String[party.length];
         for (int i = 0; i < party.length; i++) {
             VisualPokemon p = party[i];
@@ -290,7 +328,7 @@ public class GameVisualisation extends JPanel {
 
     @Override
     public JToolTip createToolTip() {
-        VisualPokemon p = m_parties[m_tooltipParty][m_tooltipPoke];
+        VisualPokemon p = getPokemonForSlot(m_tooltipParty, m_tooltipPoke);
         StringBuilder stats = new StringBuilder();
         stats.append("<html>");
         for (int i = 0; i < 6; i++) {
@@ -350,7 +388,7 @@ public class GameVisualisation extends JPanel {
 
     private void paintParty(int idx, Graphics g) {
         Graphics2D g2 = (Graphics2D)g.create();
-        VisualPokemon[] team = m_parties[idx];
+        VisualPokemon[] team = m_active[idx];
         if (team == null) return;
         boolean us = (idx == m_view);
         final int partyBuf = 12;
@@ -362,8 +400,9 @@ public class GameVisualisation extends JPanel {
             try {
                 img = getSprite(p.getSpecies(), !us, p.getGender() != Pokemon.Gender.GENDER_FEMALE.getValue(), p.isShiny(), null);
             } catch (IOException e) {
-                String gender = p.getGender() == 0 ? "Male" : "Female";
+                String gender = p.getGender() == Pokemon.Gender.GENDER_MALE.getValue() ? "Male" : "Female";
                 System.out.println(p.getSpecies() + " " + gender + " sprite not found");
+                continue;
             }
             if (img == null) continue;
             tracker.addImage(img, 0);
@@ -443,7 +482,7 @@ public class GameVisualisation extends JPanel {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Visualisation test");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        final GameVisualisation vis = new GameVisualisation(0, 2);
+        final GameVisualisation vis = new GameVisualisation(0, 2, 6);
         VisualPokemon[] party1 = new VisualPokemon[] {
             new VisualPokemon("Squirtle", 0, false),
             new VisualPokemon("Wartortle", 1, true)
@@ -454,7 +493,7 @@ public class GameVisualisation extends JPanel {
         };
         vis.setSelected(0);
         vis.setTarget(-2);
-        vis.setParties(party1, party2);
+        vis.setActive(party1, party2);
         Dimension d = vis.getPreferredSize();
         frame.setSize(d.width, d.height + 22);
         vis.setSize(d);

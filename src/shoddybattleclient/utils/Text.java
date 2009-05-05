@@ -24,6 +24,7 @@ package shoddybattleclient.utils;
 import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
+import shoddybattleclient.BattleField;
 
 /**
  * Reads and allows for retrieval of text from a .lang file
@@ -37,7 +38,7 @@ public class Text {
         loadText("english.lang");
     }
 
-    public static String getText(int cat, int id, String[] args) {
+    public static String getText(int cat, int id, String[] args, BattleField field) {
         String text = m_text.get(cat).get(id);
         for (int i = 0; i < args.length; i++) {
             String match = "$" + (i + 1);
@@ -45,21 +46,42 @@ public class Text {
         }
 
         int pos;
-        while ((pos  = text.indexOf("${")) >= 0) {
+        String match = "${";
+        while ((pos  = text.indexOf(match)) >= 0) {
             int pos2 = text.indexOf("}", pos);
             if (pos2 < 0) break;
-            String sub = text.substring(pos + 2, pos2);
+            String sub = text.substring(pos + match.length(), pos2);
             String[] parts = sub.split(",");
             String replacement = getText(Integer.parseInt(parts[0]),
                     Integer.parseInt(parts[1]));
             text = text.substring(0, pos) + replacement + text.substring(pos2 + 1);
         }
 
+        match = "$p{";
+        if (field != null) {
+            while ((pos = text.indexOf(match)) >= 0) {
+                int pos2 = text.indexOf("}", pos);
+                if (pos2 < 0) break;
+                String sub = text.substring(pos + match.length(), pos2);
+                String[] parts = sub.split(",");
+                int party = Integer.parseInt(parts[0]);
+                String name = field.getName(party,
+                        Integer.parseInt(parts[1]));
+                String style = (field.getParty() == party) ? "ally" : "enemy";
+                name = "<font class='pokemon " + style + "'>" + name + "</font>";
+                text = text.substring(0, pos) + name + text.substring(pos2 + 1);
+            }
+        }
+
         return text;
     }
 
+    public static String getText(int cat, int id, String[] args) {
+        return getText(cat, id, args, null);
+    }
+
     public static String getText(int cat, int id) {
-        return getText(cat, id, new String[0]);
+        return getText(cat, id, new String[0], null);
     }
 
     public static void loadText(String file) {
@@ -114,7 +136,7 @@ public class Text {
     }
 
     public static void main(String[] args) {
-        System.out.println(Text.getText(5, 0, new String[] {"bearzly", "${3,2}"}));
+        System.out.println(Text.getText(0, 0, new String[0]));
     }
 
 }

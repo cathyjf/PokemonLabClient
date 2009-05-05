@@ -48,7 +48,7 @@ import shoddybattleclient.utils.*;
  *
  * @author ben
  */
-public class BattleWindow extends javax.swing.JFrame {
+public class BattleWindow extends javax.swing.JFrame implements BattleField {
 
     private static enum Action {
         MOVE,
@@ -105,6 +105,7 @@ public class BattleWindow extends javax.swing.JFrame {
         }
         public void setPokemon(Pokemon pokemon) {
             m_pokemon = pokemon;
+            setText((m_pokemon == null) ? null : m_pokemon.species);
         }
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D)g.create();
@@ -115,7 +116,7 @@ public class BattleWindow extends javax.swing.JFrame {
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
             }
             g2.setFont(g2.getFont().deriveFont(Font.BOLD));
-            g2.drawString(m_pokemon.species, 5, getHeight() / 2 - g2.getFontMetrics().getHeight() / 2 + 7);
+            //g2.drawString(m_pokemon.species, 5, getHeight() / 2 - g2.getFontMetrics().getHeight() / 2 + 7);
             g2.dispose();
         }
     }
@@ -137,7 +138,6 @@ public class BattleWindow extends javax.swing.JFrame {
     private SwitchButton[] m_switches;
     private TargetButton[] m_targets = null;
     private GameVisualisation m_visual;
-    // TODO: allow for more health bars in doubles
     private HealthBar[][] m_healthBars;
     private HTMLPane m_chat;
     private ArrayList<PokemonMove> m_moveList;
@@ -157,6 +157,8 @@ public class BattleWindow extends javax.swing.JFrame {
     private boolean m_targeting = false;
     // the number of pokemon on each team
     private int m_n;
+    // the maximum team length
+    private int m_length;
     // the pokemon we are currently selecting for
     private int m_current;
     // the move that we are targeting for
@@ -173,6 +175,7 @@ public class BattleWindow extends javax.swing.JFrame {
     /** Creates new form BattleWindow */
     public BattleWindow(ServerLink link, int fid,
             int n,
+            int length,
             int participant,
             String[] users,
             Pokemon[] team) {
@@ -183,6 +186,7 @@ public class BattleWindow extends javax.swing.JFrame {
         m_link = link;
         m_fid = fid;
         m_n = n;
+        m_length = length;
         m_participant = participant;
         m_users = users;
         m_pokemon = team;
@@ -348,7 +352,7 @@ public class BattleWindow extends javax.swing.JFrame {
     }
 
     private void setupVisual() {
-        m_visual = new GameVisualisation(0, m_n);
+        m_visual = new GameVisualisation(0, m_n, m_length);
         m_visual.setSize(m_visual.getPreferredSize());
         int base = 20;
         int buffer = 5;
@@ -496,9 +500,8 @@ public class BattleWindow extends javax.swing.JFrame {
     public void updateHealth(int party, int slot, int total) {
         if (m_n <= 2) {
             m_healthBars[party][slot].setRatio(total, 48);
-        } else {
-            m_visual.updateHealth(party, slot, total, 48);
         }
+        m_visual.updateHealth(party, slot, total);
     }
 
     public void updateStatLevel(int party, int slot, int stat, int level) {
@@ -510,7 +513,7 @@ public class BattleWindow extends javax.swing.JFrame {
     }
 
     private void updateSwitches() {
-        for (int i = 0; i < m_switches.length; i++) {
+        for (int i = 0; i < m_pokemon.length; i++) {
             Pokemon p = m_pokemon[i];
             m_switches[i].setPokemon(p);
             StringBuilder builder = new StringBuilder();
@@ -532,7 +535,15 @@ public class BattleWindow extends javax.swing.JFrame {
     }
 
     public void setPokemon(VisualPokemon[] p1, VisualPokemon[] p2) {
-        m_visual.setParties(p1, p2);
+        m_visual.setActive(p1, p2);
+    }
+
+    public void sendOut(int party, int slot, int index, String name) {
+        m_visual.sendOut(party, slot, index, name);
+        if (m_n <= 2) {
+            HealthBar bar = m_healthBars[party][slot];
+            bar.setRatio(m_visual.getPokemon(party, slot).getNumerator(), 48);
+        }
     }
 
     public void setForced(boolean forced) {
@@ -544,6 +555,15 @@ public class BattleWindow extends javax.swing.JFrame {
 
     public void setSpriteVisible(int party, int slot, boolean visible) {
         m_visual.setSpriteVisible(party, slot, visible);
+    }
+
+    public String getName(int party, int slot) {
+        VisualPokemon p = m_visual.getPokemon(party, slot);
+        return (p == null) ? null : p.getSpecies();
+    }
+
+    public int getParty() {
+        return m_participant;
     }
 
 
@@ -868,7 +888,7 @@ public class BattleWindow extends javax.swing.JFrame {
                 }
                 TeamFileParser tfp = new TeamFileParser();
                 Pokemon[] pokemon = tfp.parseTeam("/Users/ben/team1.sbt");
-                BattleWindow battle = new BattleWindow(null, 0, 1, 1, new String[] {"bearzly", "Catherine"},
+                BattleWindow battle = new BattleWindow(null, 0, 1, 6, 1, new String[] {"bearzly", "Catherine"},
                         pokemon);
                 battle.setPokemon(new VisualPokemon[] {new VisualPokemon("Wartortle", 1, false)},
                         new VisualPokemon[] {new VisualPokemon("Groudon", 0, true)});
