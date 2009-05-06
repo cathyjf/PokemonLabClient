@@ -271,129 +271,129 @@
 67: $1 must recharge!
 
 [abilities]
-1  Adaptibility
-2  Aftermath
-3  Air Lock
-4  Anger Point
-5  Anticipation
-6  Arena Trap
-7  Bad Dreams
-8  Battle Armor
-9  Blaze
-10  Chlorophyll
-11  Clear Body
-12  Cloud Nine
-13  Color Change
-14  Compoundeyes
-15  Cute Charm
-16  Damp
-17  Download
-18  Drizzle
-19  Drought
-20  Dry Skin
-21  Early Bird
-22  Effect Spore
-23  Filter
-24  Flame Body
-25  Flash Fire
-26  Flower Gift
-27  Forecast
-28  Forewarn
-29  Frisk
-30  Gluttony
-31  Guts
-32  Heatproof
-33  Honey Gather
-34  Huge Power
-35  Hustle
-36  Hydration
-37  Hyper Cutter
-38  Ice Body
-39  Illuminate
-40  Immunity
-41  Inner Focus
-42  Insomnia
-43  Intimidate
-44  Iron Fist
-45  Keen Eye
-46  Klutz
-47  Leaf Guard
-48  Levitate
-49  Lightningrod
-50  Limber
-51  Liquid Ooze
-52  Magic Guard
-53  Magma Armor
-54  Magnet Pull
-55  Marvel Scale
-56  Minus
-57  Mold Breaker
-58  Motor Drive
-59  Multitype
-60  Natural Cure
-61  No Guard
-62  Normalize
-63  Oblivious
-64  Overgrow
-65  Own Tempo
-66  Pickup
-67  Plus
-68  Poison Heal
-69  Poison Point
-70  Pressure
-71  Pure Power
-72  Quick Feet
-73  Rain Dish
-74  Reckless
-75  Rivalry
-76  Rock Head
-77  Rough Skin
-78  Run Away
-79  Sand Stream
-80  Sand Veil
-81  Scrappy
-82  Serene Grace
-83  Shadow Tag
-84  Shed Skin
-85  Shell Armor
-86  Shield Dust
-87  Simple
-88  Skill Link
-89  Slow Start
-90  Sniper
-91  Snow Cloak
-92  Snow Warning
-93  Solar Power
-94  Solid Rock
-95  Soundproof
-96  Speed Boost
-97  Stall
-98  Static
-99  Steadfast
-100  Stench
-101  Sticky Hold
-102  Storm Drain
-103  Sturdy
-104  Suction Cups
-105  Super Luck
-106  Swarm
-107  Swift Swim
-108  Synchronize
-109  Tangled Feet
-110  Technician
-111  Thick Fat
-112  Tinted Lens
-113  Torrent
-114  Trace
-115  Truant
-116  Unaware
-117  Unburden
-118  Vital Spirit
-119  Volt Absorb
-120  Water Absorb
-121  Water Veil
-122  White Smoke
-123  Wonder Guard
+1: Adaptibility
+2: Aftermath
+3: Air Lock
+4: Anger Point
+5: Anticipation
+6: Arena Trap
+7: Bad Dreams
+8: Battle Armor
+9: Blaze
+10: Chlorophyll
+11: Clear Body
+12: Cloud Nine
+13: Color Change
+14: Compoundeyes
+15: Cute Charm
+16: Damp
+17: Download
+18: Drizzle
+19: Drought
+20: Dry Skin
+21: Early Bird
+22: Effect Spore
+23: Filter
+24: Flame Body
+25: Flash Fire
+26: Flower Gift
+27: Forecast
+28: Forewarn
+29: Frisk
+30: Gluttony
+31: Guts
+32: Heatproof
+33: Honey Gather
+34: Huge Power
+35: Hustle
+36: Hydration
+37: Hyper Cutter
+38: Ice Body
+39: Illuminate
+40: Immunity
+41: Inner Focus
+42: Insomnia
+43: Intimidate
+44: Iron Fist
+45: Keen Eye
+46: Klutz
+47: Leaf Guard
+48: Levitate
+49: Lightningrod
+50: Limber
+51: Liquid Ooze
+52: Magic Guard
+53: Magma Armor
+54: Magnet Pull
+55: Marvel Scale
+56: Minus
+57: Mold Breaker
+58: Motor Drive
+59: Multitype
+60: Natural Cure
+61: No Guard
+62: Normalize
+63: Oblivious
+64: Overgrow
+65: Own Tempo
+66: Pickup
+67: Plus
+68: Poison Heal
+69: Poison Point
+70: Pressure
+71: Pure Power
+72: Quick Feet
+73: Rain Dish
+74: Reckless
+75: Rivalry
+76: Rock Head
+77: Rough Skin
+78: Run Away
+79: Sand Stream
+80: Sand Veil
+81: Scrappy
+82: Serene Grace
+83: Shadow Tag
+84: Shed Skin
+85: Shell Armor
+86: Shield Dust
+87: Simple
+88: Skill Link
+89: Slow Start
+90: Sniper
+91: Snow Cloak
+92: Snow Warning
+93: Solar Power
+94: Solid Rock
+95: Soundproof
+96: Speed Boost
+97: Stall
+98: Static
+99: Steadfast
+100: Stench
+101: Sticky Hold
+102: Storm Drain
+103: Sturdy
+104: Suction Cups
+105: Super Luck
+106: Swarm
+107: Swift Swim
+108: Synchronize
+109: Tangled Feet
+110: Technician
+111: Thick Fat
+112: Tinted Lens
+113: Torrent
+114: Trace
+115: Truant
+116: Unaware
+117: Unburden
+118: Vital Spirit
+119: Volt Absorb
+120: Water Absorb
+121: Water Veil
+122: White Smoke
+123: Wonder Guard
 
 [ability-messages]
 0: $1 was hurt by $2's Aftermath!
@@ -426,7 +426,7 @@
 27: TODO: Limber
 28: $1 has Mold Breaker!
 29: $1's Motor Drive increased its speed!
-30: $1's Oblivious prevents attraction! 
+30: $1's Oblivious prevents attraction!
 31: TODO: Own Tempo
 32: $1's Poison Heal restored health!
 33: $1's Poison Point poisoned $2!
