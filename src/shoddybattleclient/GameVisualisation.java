@@ -63,9 +63,10 @@ public class GameVisualisation extends JPanel {
         private int m_healthN = 48;
         private int m_healthD = 48;
         private int[] m_statLevels = new int[6];
-        private double[] m_statMultipliers = new double[] {1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
         private boolean m_visible = true;
         private int m_slot = -1;
+        private boolean m_fainted = false;
+        private Pokemon m_pokemon = null;
 
         public VisualPokemon(String species, int gender, boolean shiny) {
             m_species = species;
@@ -78,6 +79,9 @@ public class GameVisualisation extends JPanel {
             m_shiny = false;
         }
         public String getSpecies() {
+            if (m_pokemon != null) {
+                return m_pokemon.species;
+            }
             return m_species;
         }
         public void setSpecies(String name) {
@@ -114,19 +118,32 @@ public class GameVisualisation extends JPanel {
         public int getStatLevel(int idx) {
             return m_statLevels[idx];
         }
-        public void setStatMultiplier(int i, double mult) {
-            m_statMultipliers[i] = mult;
-        }
-        public double getStatMultiplier(int i) {
-            return m_statMultipliers[i];
-        }
         public void setSlot(int slot) {
             m_slot = slot;
         }
         public int getSlot() {
             return m_slot;
         }
+        public void faint() {
+            m_fainted = true;
+        }
+        public int getState() {
+            if (m_fainted) {
+                return STATE_FAINTED;
+            } else if (m_statuses.size() > 0) {
+                return STATE_STATUSED;
+            } else {
+                return STATE_NORMAL;
+            }
+        }
+        public void setPokemon(Pokemon p) {
+            m_pokemon = p;
+        }
     }
+
+    public static final int STATE_NORMAL = 0;
+    public static final int STATE_STATUSED = 1;
+    public static final int STATE_FAINTED = 2;
 
     private static final Image m_background;
     private static final Image[] m_pokeball = new Image[3];
@@ -152,9 +169,9 @@ public class GameVisualisation extends JPanel {
 
     static {
         m_background = getImageFromResource("background.jpg");
-        m_pokeball[0] = getImageFromResource("pokeball.png");
-        m_pokeball[1] = getImageFromResource("pokeball2.png");
-        m_pokeball[2] = getImageFromResource("pokeball3.png");
+        m_pokeball[STATE_NORMAL] = getImageFromResource("pokeball.png");
+        m_pokeball[STATE_STATUSED] = getImageFromResource("pokeball2.png");
+        m_pokeball[STATE_FAINTED] = getImageFromResource("pokeball3.png");
         m_arrows[0] = getImageFromResource("arrow_green.png");
         m_arrows[1] = getImageFromResource("arrow_red.png");
         
@@ -232,10 +249,6 @@ public class GameVisualisation extends JPanel {
         getPokemonForSlot(party, slot).setStatLevel(stat, level);
     }
 
-    public void updateStatMultiplier(int party, int slot, int stat, double mult) {
-        getPokemonForSlot(party, slot).setStatMultiplier(stat, mult);
-    }
-
     public void setSpriteVisible(int party, int slot, boolean visible) {
         m_active[party][slot].m_visible = visible;
     }
@@ -246,6 +259,11 @@ public class GameVisualisation extends JPanel {
 
     public VisualPokemon getPokemon(int party, int index) {
         return m_parties[party][index];
+    }
+
+    void faint(int party, int slot) {
+        getPokemonForSlot(party, slot).faint();
+        repaint();
     }
 
     private void displayInformation(int party, int idx) {
@@ -271,7 +289,7 @@ public class GameVisualisation extends JPanel {
         }
     }
 
-    private VisualPokemon getPokemonForSlot(int party, int slot) {
+    public VisualPokemon getPokemonForSlot(int party, int slot) {
         for (int i = 0; i < m_parties[party].length; i++) {
             if (m_parties[party][i].getSlot() == slot) return m_parties[party][i];
         }
@@ -285,6 +303,10 @@ public class GameVisualisation extends JPanel {
         }
         m_parties[party][index].setSlot(slot);
         m_parties[party][index].setSpecies(name);
+    }
+
+    public void setPokemon(int party, int index, Pokemon p) {
+        m_parties[party][index].setPokemon(p);
     }
 
     @Override
@@ -305,12 +327,13 @@ public class GameVisualisation extends JPanel {
 
     public String[] getPokemonNames() {
         String[] ret = new String[m_n * 2];
-        int len = m_n;
-        for (int i = 0; i < m_active.length; i++) {
-            for (int j = 0; j < len; j++) {
-                VisualPokemon p = m_active[i][j];
-                ret[i * len + j] = (p == null) ? null : p.getSpecies();
-            }
+        for (int j = 0; j < m_n; j++) {
+            VisualPokemon p = m_active[m_view][j];
+            ret[j] = (p == null) ? null : p.getSpecies();
+        }
+        for (int j = 0; j < m_n; j++) {
+            VisualPokemon p = m_active[1 - m_view][j];
+            ret[m_n + j] = (p == null) ? null : p.getSpecies();
         }
         return ret;
     }
@@ -327,7 +350,8 @@ public class GameVisualisation extends JPanel {
 
     @Override
     public JToolTip createToolTip() {
-        VisualPokemon p = getPokemonForSlot(m_tooltipParty, m_tooltipPoke);
+        VisualPokemon p = m_parties[m_tooltipParty][m_tooltipPoke];
+        if (p == null) return new JToolTip();
         StringBuilder stats = new StringBuilder();
         stats.append("<html>");
         for (int i = 0; i < 6; i++) {
@@ -338,12 +362,6 @@ public class GameVisualisation extends JPanel {
                 if (level != 0) {
                     if (level > 0) stats.append("+");
                     stats.append(level);
-                }
-                double mult = p.getStatMultiplier(i);
-                if (mult != 1.0) {
-                    stats.append(" (");
-                    stats.append(mult);
-                    stats.append("x)");
                 }
             }
             stats.append("<br>");
@@ -380,8 +398,31 @@ public class GameVisualisation extends JPanel {
         m_mouseInput.setColor(Color.WHITE);
         m_mouseInput.fillRect(0, 0, getWidth(), getHeight());
         g2.drawImage(m_background, 0, 0, this);
-        paintParty(1 - m_view, g2);
-        paintParty(m_view, g2);
+        for (int i = 0; i < 2; i++) {
+            paintParty(i, g2);
+            paintPokeballs(i, g2);
+        }
+        g2.dispose();
+    }
+
+    private void paintPokeballs(int idx, Graphics g) {
+        Graphics2D g2 = (Graphics2D)g.create();
+        boolean us = (idx == m_view);
+        int w = m_pokeball[0].getWidth(this);
+        int h = m_pokeball[0].getHeight(this);
+        int baseX = us ? m_background.getWidth(this) - 3 * (w + 3) : 5;
+        int baseY = us ? m_background.getHeight(this) - 2 * (h + 3) : 5;
+        VisualPokemon[] party = m_parties[idx];
+        for (int i = 0; i < party.length; i++) {
+            if (i >= 6) break;
+            int row = i / 3;
+            Image pokeball = m_pokeball[party[i].getState()];
+            int x = baseX + (i % 3) * (w + 3);
+            int y = baseY + row * (h + 3);
+            g2.drawImage(pokeball, x, y, this);
+            m_mouseInput.setColor(new Color(idx, i, 0));
+            m_mouseInput.fillRect(x, y, w, h);
+        }
         g2.dispose();
     }
 
@@ -483,12 +524,12 @@ public class GameVisualisation extends JPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         final GameVisualisation vis = new GameVisualisation(0, 2, 6);
         VisualPokemon[] party1 = new VisualPokemon[] {
-            new VisualPokemon("Squirtle", 0, false),
-            new VisualPokemon("Wartortle", 1, true)
+            new VisualPokemon("Squirtle", Pokemon.Gender.GENDER_MALE.getValue(), false),
+            new VisualPokemon("Wartortle", Pokemon.Gender.GENDER_FEMALE.getValue(), true)
         };
         VisualPokemon[] party2 = new VisualPokemon[] {
-            new VisualPokemon("Blissey", 1, false),
-            new VisualPokemon("Chansey", 1, true)
+            new VisualPokemon("Blissey", Pokemon.Gender.GENDER_FEMALE.getValue(), false),
+            new VisualPokemon("Chansey", Pokemon.Gender.GENDER_FEMALE.getValue(), true)
         };
         vis.setSelected(0);
         vis.setTarget(-2);

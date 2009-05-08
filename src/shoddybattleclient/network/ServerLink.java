@@ -663,11 +663,7 @@ public class ServerLink extends Thread {
                             }
                         }
                     }
-                    if (wnd.getParticipant() == 0) {
-                        wnd.setPokemon(pokemon[0], pokemon[1]);
-                    } else {
-                        wnd.setPokemon(pokemon[1], pokemon[0]);
-                    }
+                    wnd.setPokemon(pokemon[0], pokemon[1]);
                 }
             });
 
@@ -878,6 +874,7 @@ public class ServerLink extends Thread {
                     name = Text.formatName(name, wnd.getParty() == party);
                     String message = Text.getText(4, 15, new String[] { name });
                     wnd.addMessage(null, message, false);
+                    wnd.faint(party, slot);
                 }
             });
 

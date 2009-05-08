@@ -206,7 +206,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             lblPlayer0.setText(users[1]);
             lblPlayer1.setText(users[0]);
         }
-        m_chat = new HTMLPane("Ben");
+        m_chat = new HTMLPane(users[m_participant]);
         scrollChat.add(m_chat);
         scrollChat.setViewportView(m_chat);
 
@@ -222,6 +222,10 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         btnSwitchCancel.setEnabled(false);
         btnMove.setEnabled(false);
         btnMoveCancel.setEnabled(false);
+
+        for (int i = 0; i < m_pokemon.length; i++) {
+            m_visual.setPokemon(m_participant, i, m_pokemon[i]);
+        }
     }
 
     public String getTrainer(int party) {
@@ -352,7 +356,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     }
 
     private void setupVisual() {
-        m_visual = new GameVisualisation(0, m_n, m_length);
+        m_visual = new GameVisualisation(m_participant, m_n, m_length);
         m_visual.setSize(m_visual.getPreferredSize());
         int base = 20;
         int buffer = 5;
@@ -508,8 +512,8 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         m_visual.updateStatLevel(party, slot, stat, level);
     }
 
-    public void updateStatMultiplier(int party, int slot, int stat, double mult) {
-        m_visual.updateStatMultiplier(party, slot, stat, mult);
+    public void faint(int party, int slot) {
+        m_visual.faint(party, slot);
     }
 
     private void updateSwitches() {
@@ -542,7 +546,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         m_visual.sendOut(party, slot, index, name);
         if (m_n <= 2) {
             HealthBar bar = m_healthBars[party][slot];
-            bar.setRatio(m_visual.getPokemon(party, slot).getNumerator(), 48);
+            bar.setRatio(m_visual.getPokemonForSlot(party, slot).getNumerator(), 48);
         }
     }
 
@@ -896,7 +900,6 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
                 battle.requestAction(2, 0);
                 battle.updateHealth(0, 0, 38);
                 battle.updateStatLevel(0, 0, 2, -3);
-                battle.updateStatMultiplier(0, 0, 3, 2.0);
                 battle.setSpriteVisible(0, 0, false);
             }
         });
