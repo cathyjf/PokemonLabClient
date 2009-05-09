@@ -350,7 +350,7 @@ public class GameVisualisation extends JPanel {
 
     @Override
     public JToolTip createToolTip() {
-        VisualPokemon p = m_parties[m_tooltipParty][m_tooltipPoke];
+        VisualPokemon p = getPokemonForSlot(m_tooltipParty, m_tooltipPoke);
         if (p == null) return new JToolTip();
         StringBuilder stats = new StringBuilder();
         stats.append("<html>");
