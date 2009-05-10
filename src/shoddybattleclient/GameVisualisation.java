@@ -350,7 +350,7 @@ public class GameVisualisation extends JPanel {
 
     @Override
     public JToolTip createToolTip() {
-        VisualPokemon p = getPokemonForSlot(m_tooltipParty, m_tooltipPoke);
+        VisualPokemon p = m_parties[m_tooltipParty][m_tooltipPoke];
         if (p == null) return new JToolTip();
         StringBuilder stats = new StringBuilder();
         stats.append("<html>");
@@ -381,7 +381,7 @@ public class GameVisualisation extends JPanel {
         }
         effects.append("</html>");
         int num, denom;
-        if (m_n <= 2) {
+        if (false /*m_n <= 2*/) {
             num = denom = -1;
         } else {
             num = p.getNumerator();
@@ -465,6 +465,13 @@ public class GameVisualisation extends JPanel {
                 x = us ? 45 * (m_n - (i + 1)) - 15 : 220 - 45 * (m_n - (i + 1));
             }
             int index = i + idx * m_n;
+            if (m_view == 1) {
+                if (index > m_n) {
+                    index -= m_n;
+                } else {
+                    index += m_n;
+                }
+            }
             if (us && (m_selected == i)) {
                 g2.drawImage(m_arrows[0], x + w / 2, y - m_arrows[0].getHeight(this), this);
             }
@@ -476,8 +483,17 @@ public class GameVisualisation extends JPanel {
             m_mouseInput.setColor(new Color(idx, 0, 1));
             m_mouseInput.fillRect(x - partyBuf, y - partyBuf, w + partyBuf * 2,
                     h + partyBuf * 2);
-            m_mouseInput.setColor(new Color(idx, i, 0));
-            m_mouseInput.fillRect(x, y, w, h);
+            int pos = -1;
+            for (int j = 0; j < m_parties[idx].length; j++) {
+                if (m_parties[idx][j].getSlot() == i) {
+                    pos = j;
+                    break;
+                }
+            }
+            if (pos != -1) {
+                m_mouseInput.setColor(new Color(idx, pos, 0));
+                m_mouseInput.fillRect(x, y, w, h);
+            }
         }
         g2.dispose();
     }
