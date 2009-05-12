@@ -72,7 +72,7 @@ public class MoveTableModel extends AbstractTableModel {
             case 3: return row.m_type;
             case 4: return row.m_pp;
             case 5: return row.m_power;
-            case 6: return row.m_accuracy;
+            case 6: return (row.m_accuracy == 0) ? "---" : row.m_accuracy;
         }
         assert false;
         return null;
