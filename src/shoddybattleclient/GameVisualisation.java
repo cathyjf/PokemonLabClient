@@ -287,6 +287,7 @@ public class GameVisualisation extends JPanel {
                 m_active[i][j] = party[j];
             }
         }
+        repaint();
     }
 
     public VisualPokemon getPokemonForSlot(int party, int slot) {
