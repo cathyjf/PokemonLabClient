@@ -337,7 +337,9 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
                     }
                 }
             });
-            if ((idx == m_current) || (names[i] == null)) button.setEnabled(false);
+            if ((idx == m_current) || (names[i] == null)) {
+                button.setEnabled(false);
+            }
             m_targets[i] = button;
             bg.add(button);
             panelMoves.add(button);

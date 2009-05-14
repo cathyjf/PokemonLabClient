@@ -127,6 +127,9 @@ public class GameVisualisation extends JPanel {
         public void faint() {
             m_fainted = true;
         }
+        public boolean isFainted() {
+            return m_fainted;
+        }
         public int getState() {
             if (m_fainted) {
                 return STATE_FAINTED;
@@ -330,11 +333,15 @@ public class GameVisualisation extends JPanel {
         String[] ret = new String[m_n * 2];
         for (int j = 0; j < m_n; j++) {
             VisualPokemon p = m_active[m_view][j];
-            ret[j] = (p == null) ? null : p.getSpecies();
+            if ((p != null) && !p.isFainted()) {
+                ret[j] = p.getSpecies();
+            }
         }
         for (int j = 0; j < m_n; j++) {
             VisualPokemon p = m_active[1 - m_view][j];
-            ret[m_n + j] = (p == null) ? null : p.getSpecies();
+            if ((p != null) && !p.isFainted()) {
+                ret[m_n + j] = p.getSpecies();
+            }
         }
         return ret;
     }
@@ -344,7 +351,9 @@ public class GameVisualisation extends JPanel {
         String[] ret = new String[party.length];
         for (int i = 0; i < party.length; i++) {
             VisualPokemon p = party[i];
-            ret[i] = (p == null) ? null : p.getSpecies();
+            if ((p != null) && !p.isFainted()) {
+                ret[i] = p.getSpecies();
+            }
         }
         return ret;
     }
@@ -506,7 +515,7 @@ public class GameVisualisation extends JPanel {
         String gender = male ? "m" : "f";
         String path = prefix + shininess + "/" + gender + name.replaceAll("[ '\\.]", "").toLowerCase() + ".png";
         //TODO: change storage location
-        String qualified = "/Users/ben/sprites/" + path;
+        String qualified = "/home/Catherine/.shoddybattle/" + path;
         File f = new File(qualified);
         String[] repositories = new String[] {"http://shoddybattle.com/dpsprites/", repository};
         if (!f.exists()) {
@@ -580,6 +589,6 @@ public class GameVisualisation extends JPanel {
                 }
             }
 
-        });//.start();
+        }).start();
     }
 }
