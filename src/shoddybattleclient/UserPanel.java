@@ -71,6 +71,7 @@ public class UserPanel extends javax.swing.JPanel {
         }
         @Override
         protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
             g.drawImage(m_image, 0, 0, this);
         }
     }
