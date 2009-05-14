@@ -268,7 +268,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
 
         ButtonGroup switchButtons = new ButtonGroup();
         panelSwitch.setLayout(new GridLayout(3, 2));
-        m_switches = new SwitchButton[6];
+        m_switches = new SwitchButton[m_pokemon.length];
         for (int i = 0; i < m_switches.length; i++) {
             final int idx = i;
             final SwitchButton button = new SwitchButton();
