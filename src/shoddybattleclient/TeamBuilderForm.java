@@ -357,6 +357,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
 
         chkShiny.setText("Shiny?");
         chkShiny.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        chkShiny.setOpaque(false);
 
         jPanel2.setOpaque(false);
 
@@ -529,9 +530,9 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                 .addContainerGap(29, Short.MAX_VALUE))
         );
 
-        jPanel2Layout.linkSize(new java.awt.Component[] {evAtk, evDef, evHp, evSpAtk, evSpDef, evSpd}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
-
         jPanel2Layout.linkSize(new java.awt.Component[] {cmbAbility, cmbNature}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
+
+        jPanel2Layout.linkSize(new java.awt.Component[] {evAtk, evDef, evHp, evSpAtk, evSpDef, evSpd}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
 
         jPanel2Layout.linkSize(new java.awt.Component[] {ivAtk, ivDef, ivHp, ivSpAtk, ivSpDef, ivSpd}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
 
@@ -638,7 +639,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                         .add(cmbGender, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 128, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(chkShiny)
-                        .add(0, 0, Short.MAX_VALUE))
+                        .add(0, 80, Short.MAX_VALUE))
                     .add(layout.createSequentialGroup()
                         .add(jLabel28)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
