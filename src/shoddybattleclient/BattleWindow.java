@@ -91,7 +91,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             g2.setFont(g2.getFont().deriveFont(Font.PLAIN).deriveFont(12f));
             int y = getHeight() - g2.getFontMetrics().getHeight();
             g2.drawString(m_move.type, 10, y);
-            String pp = getPp() + "/" + m_move.maxPp;
+            String pp = getPp() + "/" + m_maxPp[m_i][m_j];
             int left = getWidth() - g2.getFontMetrics().stringWidth(pp) - 5;
             g2.drawString(pp, left, y);
             g2.dispose();
@@ -141,6 +141,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     private HealthBar[][] m_healthBars;
     private HTMLPane m_chat;
     private ArrayList<PokemonMove> m_moveList;
+    private int[][] m_maxPp;
     // Your Pokemon in this match
     private Pokemon[] m_pokemon;
     // Users in this match
@@ -223,8 +224,19 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         btnMove.setEnabled(false);
         btnMoveCancel.setEnabled(false);
 
+        m_maxPp = new int[m_pokemon.length][Pokemon.MOVE_COUNT];
         for (int i = 0; i < m_pokemon.length; i++) {
             m_visual.setPokemon(m_participant, i, m_pokemon[i]);
+            for (int j = 0; j < m_pokemon[i].moves.length; j++) {
+                String move = m_pokemon[i].moves[j];
+                for (PokemonMove m : m_moveList) {
+                    if (m.name.equals(move)) {
+                        m_maxPp[i][j] = m.maxPp * (5 + m_pokemon[i].ppUps[j]) / 5;
+                        m.pp = m_maxPp[i][j];
+                        break;
+                    }
+                }
+            }
         }
     }
 

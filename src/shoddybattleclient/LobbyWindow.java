@@ -33,6 +33,7 @@ import javax.swing.*;
 import java.util.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import shoddybattleclient.ChallengeNotifier.Challenge;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.network.ServerLink.ChallengeMediator;
 import shoddybattleclient.utils.UserListModel;
@@ -257,7 +258,9 @@ public class LobbyWindow extends javax.swing.JFrame {
         tabChats.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 Component comp = tabChats.getSelectedComponent();
-                if (!(comp instanceof ChatPane)) return;
+                boolean isChat = comp instanceof ChatPane;
+                m_notifier.setVisible(isChat);
+                if (!isChat) return;
                 ChatPane c = (ChatPane)comp;
                 listUsers.setModel(c.getChannel().getModel());
             }
@@ -357,6 +360,17 @@ public class LobbyWindow extends javax.swing.JFrame {
         tabChats.removeTabAt(index);
     }
 
+    public void openUserPanel(String user, boolean incoming, Challenge c) {
+        int index = tabChats.getTabCount();
+        UserPanel panel = new UserPanel(user, m_link, index);
+        tabChats.add(user, panel);
+        tabChats.setSelectedComponent(panel);
+        if (incoming) {
+            panel.setIncoming();
+            panel.setOptions(c);
+        }
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -435,10 +449,7 @@ public class LobbyWindow extends javax.swing.JFrame {
             // todo: internationalisation
             JOptionPane.showMessageDialog(this, "You cannot challenge yourself.");
         } else {
-            int index = tabChats.getTabCount();
-            UserPanel panel = new UserPanel(opponent, m_link, index);
-            tabChats.add(opponent, panel);
-            tabChats.setSelectedComponent(panel);
+            openUserPanel(opponent, false, null);
         }
 }//GEN-LAST:event_btnChallengeActionPerformed
 

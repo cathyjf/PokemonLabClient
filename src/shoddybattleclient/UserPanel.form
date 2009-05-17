@@ -85,7 +85,6 @@
         </Component>
         <Component class="javax.swing.JLabel" name="lblMessage">
           <Properties>
-            <Property name="text" type="java.lang.String" value="battle??"/>
             <Property name="verticalAlignment" type="int" value="1"/>
           </Properties>
         </Component>
@@ -223,6 +222,7 @@
                     <StringItem index="5" value="6"/>
                   </StringArray>
                 </Property>
+                <Property name="selectedIndex" type="int" value="1"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel4">
@@ -278,6 +278,7 @@
             <Component class="javax.swing.JButton" name="btnChallenge">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Challenge"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnChallengeActionPerformed"/>

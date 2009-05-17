@@ -34,7 +34,6 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JComponent;
-import javax.swing.PopupFactory;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.network.ServerLink.ChallengeMediator;
 import shoddybattleclient.shoddybattle.Pokemon;
@@ -48,7 +47,6 @@ public class ChallengeNotifier extends JComponent {
     public static class Challenge {
         private String m_name;
         private boolean m_incoming;
-        private boolean m_popup = false;
         private Pokemon[] m_team = null;
         private int m_generation = 0;
         private int m_n = 0;
@@ -71,11 +69,11 @@ public class ChallengeNotifier extends JComponent {
         public boolean isIncoming() {
             return m_incoming;
         }
-        public boolean popupActive() {
-            return m_popup;
+        public int getN() {
+            return m_n;
         }
-        public void setPopup(boolean active) {
-            m_popup = active;
+        public int getGeneration() {
+            return m_generation;
         }
 
         private ChallengeMediator getMediator() {
@@ -110,7 +108,6 @@ public class ChallengeNotifier extends JComponent {
     private LobbyWindow m_parent;
     private List<Challenge> m_challenges = new ArrayList<Challenge>();
     private Image m_img;
-    private PopupFactory m_factory = PopupFactory.getSharedInstance();
 
     public ChallengeNotifier(LobbyWindow parent) {
         m_parent = parent;
@@ -219,10 +216,12 @@ public class ChallengeNotifier extends JComponent {
             if (imgRect.contains(point)) {
                 //clicked the close icon
                 removeChallenge(c.getId());
+                m_parent.cancelChallenge(c.getId());
+                m_parent.getLink().resolveChallenge(c.getName(), false, null);
                 return;
             } else if (fullRect.contains(point)) {
                 //clicked somewhere else on the notification
-                new IncomingChallenge(m_parent, c).setVisible(true);
+                m_parent.openUserPanel(c.getName(), true, c);
             }
         }
     }

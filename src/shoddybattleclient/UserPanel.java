@@ -25,7 +25,6 @@ package shoddybattleclient;
 
 import java.awt.Dimension;
 import java.awt.FileDialog;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -33,6 +32,7 @@ import java.awt.MediaTracker;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import shoddybattleclient.ChallengeNotifier.Challenge;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.network.ServerLink.ChallengeMediator;
 import shoddybattleclient.shoddybattle.Pokemon;
@@ -80,6 +80,8 @@ public class UserPanel extends javax.swing.JPanel {
     private String m_opponent;
     private int m_idx;
     private Pokemon[] m_team;
+    private boolean m_incoming = false;
+    private Challenge m_challenge;
 
     /** Creates new form UserPanel */
     public UserPanel(String name, ServerLink link, int index) {
@@ -93,6 +95,20 @@ public class UserPanel extends javax.swing.JPanel {
             panelSprites.add(new SpritePanel(null, null, false, null));
         }
         lblMessage.setText("<html>I am a polymath so don't challenge me unless you want to lose</html>");
+    }
+
+    public void setIncoming() {
+        btnChallenge.setText("Accept");
+        cmbRules.setEnabled(false);
+        cmbN.setEnabled(false);
+        cmbGen.setEnabled(false);
+        m_incoming = true;
+    }
+
+    public void setOptions(Challenge c) {
+        cmbN.setSelectedIndex(c.getN() - 1);
+        cmbGen.setSelectedIndex(c.getGeneration());
+        m_challenge = c;
     }
 
     /** This method is called from within the constructor to
@@ -128,7 +144,6 @@ public class UserPanel extends javax.swing.JPanel {
         lblName.setFont(new java.awt.Font("Lucida Grande", 1, 16));
         lblName.setText("bearzly");
 
-        lblMessage.setText("battle??");
         lblMessage.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         jLabel3.setFont(new java.awt.Font("Lucida Grande", 1, 13));
@@ -168,6 +183,7 @@ public class UserPanel extends javax.swing.JPanel {
         jLabel2.setText("Pokemon per side:");
 
         cmbN.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5", "6" }));
+        cmbN.setSelectedIndex(1);
 
         jLabel4.setFont(new java.awt.Font("Lucida Grande", 1, 13));
         jLabel4.setText("Generation:");
@@ -196,6 +212,7 @@ public class UserPanel extends javax.swing.JPanel {
         });
 
         btnChallenge.setText("Challenge");
+        btnChallenge.setEnabled(false);
         btnChallenge.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnChallengeActionPerformed(evt);
@@ -297,29 +314,33 @@ public class UserPanel extends javax.swing.JPanel {
 
     private void btnChallengeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChallengeActionPerformed
         if (m_team == null) return;
-        m_link.postChallenge(new ChallengeMediator() {
-            public Pokemon[] getTeam() {
-                return m_team;
-            }
-            public void informResolved(boolean accepted) {
-                if (accepted) {
-                    m_link.postChallengeTeam(m_opponent, m_team);
-                } else {
-                    // todo: internationalisation
-                    JOptionPane.showMessageDialog(UserPanel.this,
-                            m_opponent + " rejected the challenge.");
+        if (m_incoming) {
+            m_link.resolveChallenge(m_opponent, true, m_team);
+        } else {
+            m_link.postChallenge(new ChallengeMediator() {
+                public Pokemon[] getTeam() {
+                    return m_team;
                 }
-            }
-            public String getOpponent() {
-                return m_opponent;
-            }
-            public int getGeneration() {
-                return cmbGen.getSelectedIndex();
-            }
-            public int getActivePartySize() {
-                return Integer.parseInt((String)cmbN.getSelectedItem());
-            }
-        });
+                public void informResolved(boolean accepted) {
+                    if (accepted) {
+                        m_link.postChallengeTeam(m_opponent, m_team);
+                    } else {
+                        // todo: internationalisation
+                        JOptionPane.showMessageDialog(UserPanel.this,
+                                m_opponent + " rejected the challenge.");
+                    }
+                }
+                public String getOpponent() {
+                    return m_opponent;
+                }
+                public int getGeneration() {
+                    return cmbGen.getSelectedIndex();
+                }
+                public int getActivePartySize() {
+                    return Integer.parseInt((String)cmbN.getSelectedItem());
+                }
+            });
+        }
         m_link.getLobby().closeTab(m_idx);
     }//GEN-LAST:event_btnChallengeActionPerformed
 
@@ -341,6 +362,10 @@ public class UserPanel extends javax.swing.JPanel {
             }
             btnChallenge.setEnabled(true);
         }
+        if (m_challenge != null) {
+            m_challenge.setTeam(m_team);
+        }
+
     }//GEN-LAST:event_btnLoadActionPerformed
 
 

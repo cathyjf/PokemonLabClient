@@ -83,7 +83,8 @@ public class HealthBar extends JPanel {
         g2.setFont(new Font(null, Font.BOLD, 20));
         FontMetrics metrics = g2.getFontMetrics();
         String str;
-        if (m_denominator == 100) {
+        //TODO: display preference
+        if (true /*m_denominator == 100*/) {
             str = (int)(ratio * 100) + "%";
         } else {
             str = m_numerator + "/" + m_denominator;
