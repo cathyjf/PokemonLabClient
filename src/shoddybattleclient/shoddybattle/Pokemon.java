@@ -112,13 +112,14 @@ public class Pokemon {
 
     public static int calculateStat(Pokemon pokemon, int i,
             PokemonSpecies species, PokemonNature nature)  {
+        int base = species.getBase(i);
         int common =
-                (int)((int)(((2.0 * species.getBase(i))
+                (int)((int)(((2.0 * base)
                 + pokemon.ivs[i]
                 + (pokemon.evs[i] / 4.0)))
                 * (pokemon.level / 100.0));
         if (i == Pokemon.S_HP) {
-            if (species.getName().equals("Shedinja")) {
+            if (base == 1) {
                 // Shedinja always has 1 hp.
                 return 1;
             } else {
