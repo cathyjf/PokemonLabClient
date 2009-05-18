@@ -191,22 +191,9 @@ public class TeamBuilderForm extends javax.swing.JPanel {
     }
 
     public int calculateStat(int i)  {
-        int common =
-                (int)((int)(((2.0 * m_species.getBase(i))
-                + m_pokemon.ivs[i]
-                + (m_pokemon.evs[i] / 4.0)))
-                * (m_pokemon.level / 100.0));
-        if (i == Pokemon.S_HP) {
-            if (m_species.getName().equals("Shedinja")) {
-                // Shedinja always has 1 hp.
-                return 1;
-            } else {
-                return common + 10 + m_pokemon.level;
-            }
-        }
-        PokemonNature n = PokemonNature.getNature((String)cmbNature.getSelectedItem());
-        double effect = (n == null) ? 1.0 : n.getEffect(i);
-        return (int)((common + 5) * effect);
+        PokemonNature n =
+                PokemonNature.getNature((String)cmbNature.getSelectedItem());
+        return Pokemon.calculateStat(m_pokemon, i, m_species, n);
     }
 
     private void updateStat(int idx) {

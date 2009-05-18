@@ -655,11 +655,12 @@ public class ServerLink extends Thread {
                             if (id != -1) {
                                 int gender = is.read();
                                 boolean shiny = (is.read() != 0);
-                                VisualPokemon p = new VisualPokemon(
-                                        PokemonSpecies.getNameFromId(
-                                        link.m_speciesList, id),
+                                String species = PokemonSpecies.getNameFromId(
+                                        link.m_speciesList, id);
+                                VisualPokemon p = new VisualPokemon(species,
                                         gender, shiny);
                                 pokemon[i][j] = p;
+                                wnd.setSpecies(i, j, species);
                             }
                         }
                     }
@@ -771,11 +772,14 @@ public class ServerLink extends Thread {
 
             // BATTLE_SEND_OUT
             new ServerMessage(19, new MessageHandler() {
-                // int32 : field id
-                // byte : party
-                // byte : slot
-                // byte : index
+                // int32  : field id
+                // byte   : party
+                // byte   : slot
+                // byte   : index
                 // string : user [nick]name
+                // int16  : species id
+                // byte   : gender
+                // byte   : level
                 public void handle(ServerLink link, DataInputStream is)
                         throws IOException {
                     int fid = is.readInt();
@@ -787,6 +791,20 @@ public class ServerLink extends Thread {
                     int slot = is.read();
                     int index = is.read();
                     String name = is.readUTF();
+                    int speciesId = is.readShort();
+                    int gender = is.readUnsignedByte();
+                    int level = is.readUnsignedByte();
+
+                    String species =
+                            PokemonSpecies.getNameFromId(link.m_speciesList,
+                            speciesId);
+
+                    if (gender != 0) {
+                        species += " ";
+                        boolean male = (gender ==
+                                Pokemon.Gender.GENDER_MALE.getValue());
+                        species += male ? '\u2642' : '\u2640';
+                    }
 
                     wnd.sendOut(party, slot, index, name);
 
@@ -796,7 +814,10 @@ public class ServerLink extends Thread {
                     name = Text.formatName(name, wnd.getParty() == party);
 
                     String message = Text.getText(4, 12,
-                            new String[] { trainer, name });
+                            new String[] { trainer,
+                                name,
+                                String.valueOf(level),
+                                species });
                     wnd.addMessage(null, message, false);
                 }
             });
@@ -806,9 +827,9 @@ public class ServerLink extends Thread {
                 // int32  : field id
                 // byte   : party
                 // byte   : slot
-                // string : pokemon [nick]name
                 // int16  : delta health in [0, 48]
                 // int16  : new total health [0, 48]
+                // int16  : denominator
                 public void handle(ServerLink link, DataInputStream is)
                         throws IOException {
                     int fid = is.readInt();
@@ -818,19 +839,33 @@ public class ServerLink extends Thread {
 
                     int party = is.read();
                     int slot = is.read();
-                    String name = is.readUTF();
-
                     int delta = is.readShort();
                     int total = is.readShort();
+                    int denominator = is.readShort();
 
-                    int percent = 100 * delta / 48;
+                    // Update the health bars.
+                    wnd.updateHealth(party, slot, total, denominator);
 
-                    name = Text.formatName(name, wnd.getParty() == party);
+                    boolean ally = wnd.getParty() == party;
+                    String name = Text.formatName(
+                            wnd.getNameForSlot(party, slot),
+                            ally);
+                    String number;
+
+                    if (ally) {
+                        // If the pokemon is on our team, we can show its
+                        // exact health change.
+                        number = delta + "/" + denominator;
+                    } else {
+                        // If the pokemon is an enemy, we only know the
+                        // approximate health change.
+                        int percent = 100 * delta / denominator;
+                        number = percent + "%";
+                    }
 
                     String message = Text.getText(4, 13,
-                            new String[] { name, percent + "%" });
+                            new String[] { name, number });
                     wnd.addMessage(null, message, false);
-                    wnd.updateHealth(party, slot, total);
                 }
             });
 
@@ -932,6 +967,14 @@ public class ServerLink extends Thread {
             new HashMap<String, ChallengeMediator>();
     private Map<Integer, BattleWindow> m_battles =
             new HashMap<Integer, BattleWindow>();
+
+    public List<PokemonSpecies> getSpeciesList() {
+        return m_speciesList;
+    }
+
+    public List<PokemonMove> getMoveList() {
+        return m_moveList;
+    }
 
     public ServerLink(String host, int port)
             throws IOException, UnknownHostException {

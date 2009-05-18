@@ -35,6 +35,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
@@ -140,7 +141,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     private GameVisualisation m_visual;
     private HealthBar[][] m_healthBars;
     private HTMLPane m_chat;
-    private ArrayList<PokemonMove> m_moveList;
+    private List<PokemonMove> m_moveList;
     private int[][] m_maxPp;
     // Your Pokemon in this match
     private Pokemon[] m_pokemon;
@@ -198,8 +199,11 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             }
         }
 
-        listUsers.setModel(new UserListModel(new ArrayList()));
-        setUsers(users);
+        // -- temp ---
+        listUsers.setListData(users);
+        //setUsers(users);
+        // -- end temp ---
+
         if (m_participant == 0) {
             lblPlayer0.setText(users[0]);
             lblPlayer1.setText(users[1]);
@@ -211,8 +215,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         scrollChat.add(m_chat);
         scrollChat.setViewportView(m_chat);
 
-        MoveListParser mlp = new MoveListParser();
-        m_moveList = mlp.parseDocument(BattleWindow.class.getResource("resources/moves2.xml").toString());
+        m_moveList = m_link.getMoveList();
 
         createButtons();
         setupVisual();
@@ -226,7 +229,11 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
 
         m_maxPp = new int[m_pokemon.length][Pokemon.MOVE_COUNT];
         for (int i = 0; i < m_pokemon.length; i++) {
-            m_visual.setPokemon(m_participant, i, m_pokemon[i]);
+            Pokemon poke = m_pokemon[i];
+            m_visual.setPokemon(m_participant, i, poke);
+            VisualPokemon p = m_visual.getPokemon(m_participant, i);
+            int hp = poke.calculateStat(Pokemon.S_HP, m_link.getSpeciesList());
+            p.setHealth(hp, hp);
             for (int j = 0; j < m_pokemon[i].moves.length; j++) {
                 String move = m_pokemon[i].moves[j];
                 for (PokemonMove m : m_moveList) {
@@ -379,12 +386,16 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         m_visual.setLocation(x, base + healthHeight + buffer);
         int p1 = 1 - m_participant;
         int p2 = m_participant;
+
+        // TODO: The parameter to the HealthBar constructor will need to be
+        //       adjusted once spectator functionality is done.
+        
         if (m_n == 1) {
             m_healthBars = new HealthBar[2][1];
-            m_healthBars[p1][0] = new HealthBar();
+            m_healthBars[p1][0] = new HealthBar(false);
             m_healthBars[p1][0].setLocation(x, base);
             m_healthBars[p1][0].setSize(m_visual.getWidth(), healthHeight);
-            m_healthBars[p2][0] = new HealthBar();
+            m_healthBars[p2][0] = new HealthBar(true);
             m_healthBars[p2][0].setLocation(x, base + healthHeight + (2 * buffer) + m_visual.getHeight());
             m_healthBars[p2][0].setSize(m_visual.getWidth(), healthHeight);
             add(m_healthBars[0][0]);
@@ -392,16 +403,16 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         } else if (m_n == 2) {
             final int w = m_visual.getWidth() / 2;
             m_healthBars = new HealthBar[2][2];
-            m_healthBars[p1][1] = new HealthBar();
+            m_healthBars[p1][1] = new HealthBar(false);
             m_healthBars[p1][1].setLocation(x, base);
             m_healthBars[p1][1].setSize(w, healthHeight);
-            m_healthBars[p1][0] = new HealthBar();
+            m_healthBars[p1][0] = new HealthBar(false);
             m_healthBars[p1][0].setLocation(x + w, base);
             m_healthBars[p1][0].setSize(w, healthHeight);
-            m_healthBars[p2][1] = new HealthBar();
+            m_healthBars[p2][1] = new HealthBar(true);
             m_healthBars[p2][1].setLocation(x, base + healthHeight + (2 * buffer) + m_visual.getHeight());
             m_healthBars[p2][1].setSize(w, healthHeight);
-            m_healthBars[p2][0] = new HealthBar();
+            m_healthBars[p2][0] = new HealthBar(true);
             m_healthBars[p2][0].setLocation(x + w, base + healthHeight + (2 * buffer) + m_visual.getHeight());
             m_healthBars[p2][0].setSize(w, healthHeight);
             add(m_healthBars[0][0]);
@@ -515,11 +526,11 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         }
     }
 
-    public void updateHealth(int party, int slot, int total) {
+    public void updateHealth(int party, int slot, int total, int denominator) {
         if (m_n <= 2) {
-            m_healthBars[party][slot].setRatio(total, 48);
+            m_healthBars[party][slot].setRatio(total, denominator);
         }
-        m_visual.updateHealth(party, slot, total);
+        m_visual.updateHealth(party, slot, total, denominator);
     }
 
     public void updateStatLevel(int party, int slot, int stat, int level) {
@@ -552,6 +563,10 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         }
     }
 
+    public void setSpecies(int party, int slot, String species) {
+        m_visual.setSpecies(party, slot, species);
+    }
+
     public void setPokemon(VisualPokemon[] p1, VisualPokemon[] p2) {
         m_visual.setActive(p1, p2);
     }
@@ -560,14 +575,15 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         m_visual.sendOut(party, slot, index, name);
         if (m_n <= 2) {
             HealthBar bar = m_healthBars[party][slot];
-            bar.setRatio(m_visual.getPokemonForSlot(party, slot).getNumerator(), 48);
+            VisualPokemon p = m_visual.getPokemonForSlot(party, slot);
+            bar.setRatio(p.getNumerator(), p.getDenominator());
         }
     }
 
     public void setForced(boolean forced) {
         m_forced = forced;
         if (forced) {
-            setValidMoves(new boolean[] {false, false, false, false});
+            setValidMoves(new boolean[] { false, false, false, false });
         }
     }
 
@@ -575,9 +591,14 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         m_visual.setSpriteVisible(party, slot, visible);
     }
 
-    public String getName(int party, int slot) {
-        VisualPokemon p = m_visual.getPokemon(party, slot);
-        return (p == null) ? null : p.getSpecies();
+    public String getNameForSlot(int party, int slot) {
+        VisualPokemon p = m_visual.getPokemonForSlot(party, slot);
+        return (p != null) ? p.getName() : null;
+    }
+
+    public String getName(int party, int index) {
+        VisualPokemon p = m_visual.getPokemon(party, index);
+        return (p == null) ? null : p.getName();
     }
 
     public int getParty() {
@@ -912,7 +933,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
                         new VisualPokemon[] {new VisualPokemon("Groudon", 0, true)});
                 battle.setVisible(true);
                 battle.requestAction(2, 0);
-                battle.updateHealth(0, 0, 38);
+                battle.updateHealth(0, 0, 38, 48);
                 battle.updateStatLevel(0, 0, 2, -3);
                 battle.setSpriteVisible(0, 0, false);
             }

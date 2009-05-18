@@ -34,7 +34,7 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="scrollMoves" pref="405" max="32767" attributes="0"/>
+                  <Component id="scrollMoves" pref="467" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="cmbItem" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -197,7 +197,6 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Shiny?"/>
         <Property name="horizontalTextPosition" type="int" value="2"/>
-        <Property name="opaque" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Container class="javax.swing.JPanel" name="jPanel2">

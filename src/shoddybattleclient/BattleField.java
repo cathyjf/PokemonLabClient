@@ -28,7 +28,13 @@ package shoddybattleclient;
  */
 public interface BattleField {
 
-    public String getName(int party, int slot);
+    /**
+     * Get the nickname, or the species name if the pokemon has no nickname,
+     * of the pokemon at the given index in the given party. Note that an index
+     * is in [0, max team length - 1].
+     */
+    public String getName(int party, int index);
+
     public int getParty();
 
 }

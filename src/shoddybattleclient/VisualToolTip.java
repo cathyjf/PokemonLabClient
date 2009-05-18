@@ -36,7 +36,8 @@ import javax.swing.JPanel;
 public class VisualToolTip extends javax.swing.JPanel {
 
     /** Creates new form VisualToolTip */
-    public VisualToolTip(String name, String stats, String effects, int num, int denom) {
+    public VisualToolTip(String name, String stats, String effects,
+            int num, int denom, boolean exact) {
         initComponents();
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(5, 5, 5, 5);
@@ -52,7 +53,7 @@ public class VisualToolTip extends javax.swing.JPanel {
         add(lblName, c);
 
         if ((num >= 0) && (denom > 0)) {
-            HealthBar bar = new HealthBar();
+            HealthBar bar = new HealthBar(exact);
             bar.setRatio(num, denom);
             c.gridx = 0;
             c.gridy = 1;
@@ -93,7 +94,7 @@ public class VisualToolTip extends javax.swing.JPanel {
 
     public static void main(String[] args) {
         javax.swing.JFrame frame = new javax.swing.JFrame("test");
-        frame.add(new VisualToolTip("Bulba", "test1", "test2", 4, 6));
+        frame.add(new VisualToolTip("Bulba", "test1", "test2", 4, 6, true));
         frame.setSize(200, 200);
         frame.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);

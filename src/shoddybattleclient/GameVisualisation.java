@@ -57,6 +57,7 @@ public class GameVisualisation extends JPanel {
 
     public static class VisualPokemon {
         private String m_species;
+        private String m_name;
         private int m_gender;
         private boolean m_shiny;
         private List<String> m_statuses = new ArrayList<String>();
@@ -83,6 +84,12 @@ public class GameVisualisation extends JPanel {
                 return m_pokemon.species;
             }
             return m_species;
+        }
+        public void setName(String name) {
+            m_name = name;
+        }
+        public String getName() {
+            return m_name;
         }
         public void setSpecies(String name) {
             m_species = name;
@@ -256,8 +263,8 @@ public class GameVisualisation extends JPanel {
         m_active[party][slot].m_visible = visible;
     }
 
-    public void updateHealth(int party, int slot, int total) {
-        getPokemonForSlot(party, slot).setHealth(total, 48);
+    public void updateHealth(int party, int slot, int total, int denominator) {
+        getPokemonForSlot(party, slot).setHealth(total, denominator);
     }
 
     public VisualPokemon getPokemon(int party, int index) {
@@ -295,9 +302,17 @@ public class GameVisualisation extends JPanel {
 
     public VisualPokemon getPokemonForSlot(int party, int slot) {
         for (int i = 0; i < m_parties[party].length; i++) {
-            if (m_parties[party][i].getSlot() == slot) return m_parties[party][i];
+            if (m_parties[party][i].getSlot() == slot)
+                return m_parties[party][i];
         }
         return null;
+    }
+
+    public void setSpecies(int party, int slot, String species) {
+        VisualPokemon p = getPokemonForSlot(party, slot);
+        if (p != null) {
+            p.setSpecies(species);
+        }
     }
 
     public void sendOut(int party, int slot, int index, String name) {
@@ -306,7 +321,7 @@ public class GameVisualisation extends JPanel {
             p.setSlot(-1);
         }
         m_parties[party][index].setSlot(slot);
-        m_parties[party][index].setSpecies(name);
+        m_parties[party][index].setName(name);
     }
 
     public void setPokemon(int party, int index, Pokemon p) {
@@ -397,8 +412,9 @@ public class GameVisualisation extends JPanel {
             num = p.getNumerator();
             denom = p.getDenominator();
         }
+        // TODO: adjust final parameter for spectator support
         VisualToolTip vt = new VisualToolTip(p.getSpecies(), stats.toString(),
-                effects.toString(), num, denom);
+                effects.toString(), num, denom, m_tooltipParty == m_view);
         return new JCustomTooltip(this, vt);
     }
 
@@ -515,7 +531,7 @@ public class GameVisualisation extends JPanel {
         String gender = male ? "m" : "f";
         String path = prefix + shininess + "/" + gender + name.replaceAll("[ '\\.]", "").toLowerCase() + ".png";
         //TODO: change storage location
-        String qualified = "/Users/ben/sprites" + path;
+        String qualified = "/home/Catherine/.shoddybattle/" + path;
         File f = new File(qualified);
         String[] repositories = new String[] {"http://shoddybattle.com/dpsprites/", repository};
         if (!f.exists()) {

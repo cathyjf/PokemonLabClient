@@ -21,6 +21,9 @@
  */
 
 package shoddybattleclient.shoddybattle;
+
+import java.util.List;
+
 /**
  *
  * @author ben
@@ -98,6 +101,32 @@ public class Pokemon {
 
     public String toString() {
         return this.species;
+    }
+    
+    public int calculateStat(int i, List<PokemonSpecies> list) {
+        PokemonSpecies s =
+                list.get(PokemonSpecies.getIdFromName(list, species));
+        PokemonNature n = PokemonNature.getNature(nature);
+        return calculateStat(this, i, s, n);
+    }
+
+    public static int calculateStat(Pokemon pokemon, int i,
+            PokemonSpecies species, PokemonNature nature)  {
+        int common =
+                (int)((int)(((2.0 * species.getBase(i))
+                + pokemon.ivs[i]
+                + (pokemon.evs[i] / 4.0)))
+                * (pokemon.level / 100.0));
+        if (i == Pokemon.S_HP) {
+            if (species.getName().equals("Shedinja")) {
+                // Shedinja always has 1 hp.
+                return 1;
+            } else {
+                return common + 10 + pokemon.level;
+            }
+        }
+        double effect = (nature == null) ? 1.0 : nature.getEffect(i);
+        return (int)((common + 5) * effect);
     }
 
     public static String getStatName(int idx) {

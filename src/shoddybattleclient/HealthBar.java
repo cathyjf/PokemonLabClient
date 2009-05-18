@@ -32,6 +32,7 @@ public class HealthBar extends JPanel {
     private static final Image m_image;
     private int m_numerator = 100;
     private int m_denominator = 100;
+    private boolean m_fraction;
     
     static {
         m_image = Toolkit
@@ -41,7 +42,8 @@ public class HealthBar extends JPanel {
     }
     
     /** Creates a new instance of HealthBar */
-    public HealthBar() {
+    public HealthBar(boolean fraction) {
+        m_fraction = fraction;
         MediaTracker tracker = new MediaTracker(this);
         tracker.addImage(m_image, 0);
         try {
@@ -84,7 +86,7 @@ public class HealthBar extends JPanel {
         FontMetrics metrics = g2.getFontMetrics();
         String str;
         //TODO: display preference
-        if (true /*m_denominator == 100*/) {
+        if (!m_fraction) {
             str = (int)(ratio * 100) + "%";
         } else {
             str = m_numerator + "/" + m_denominator;
@@ -99,7 +101,7 @@ public class HealthBar extends JPanel {
         JFrame frame = new JFrame("Testing HealthBar");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(230, 70);
-        final HealthBar health = new HealthBar();
+        final HealthBar health = new HealthBar(true);
         health.setRatio(6, 48);
         frame.getContentPane().add(health);
         health.setSize(frame.getSize());
