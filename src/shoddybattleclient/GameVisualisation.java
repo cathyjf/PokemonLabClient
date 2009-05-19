@@ -484,7 +484,7 @@ public class GameVisualisation extends JPanel {
             if (m_n == 1) {
                 x = us ? 30 : 190 - w / 2;
             } else if (m_n == 2) {
-                x = us ? 70 : 210 - w / 2;
+                x = us ? 70 : 220 - w / 2;
                 x -= us ? 70 * i : 50 * i;
             } else {
                 //get ugly
@@ -531,7 +531,7 @@ public class GameVisualisation extends JPanel {
         String gender = male ? "m" : "f";
         String path = prefix + shininess + "/" + gender + name.replaceAll("[ '\\.]", "").toLowerCase() + ".png";
         //TODO: change storage location
-        String qualified = "/home/Catherine/.shoddybattle/" + path;
+        String qualified = "/Users/ben/sprites/" + path;
         File f = new File(qualified);
         String[] repositories = new String[] {"http://shoddybattle.com/dpsprites/", repository};
         if (!f.exists()) {
