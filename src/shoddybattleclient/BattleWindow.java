@@ -382,7 +382,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         int base = 20;
         int buffer = 5;
         int healthHeight = 35;
-        int x = 20;
+        int x = 10;
         m_visual.setLocation(x, base + healthHeight + buffer);
         int p1 = 1 - m_participant;
         int p2 = m_participant;
@@ -622,12 +622,14 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         tabAction = new javax.swing.JTabbedPane();
         jPanel4 = new javax.swing.JPanel();
         panelMoves = new javax.swing.JPanel();
-        btnMove = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
         btnMoveCancel = new javax.swing.JButton();
+        btnMove = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         panelSwitch = new javax.swing.JPanel();
-        btnSwitch = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
         btnSwitchCancel = new javax.swing.JButton();
+        btnSwitch = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         listUsers = new javax.swing.JList();
         scrollChat = new javax.swing.JScrollPane();
@@ -666,19 +668,14 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         panelMoves.setLayout(panelMovesLayout);
         panelMovesLayout.setHorizontalGroup(
             panelMovesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 342, Short.MAX_VALUE)
+            .add(0, 358, Short.MAX_VALUE)
         );
         panelMovesLayout.setVerticalGroup(
             panelMovesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 123, Short.MAX_VALUE)
+            .add(0, 153, Short.MAX_VALUE)
         );
 
-        btnMove.setText("Attack");
-        btnMove.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMoveActionPerformed(evt);
-            }
-        });
+        jPanel1.setLayout(new java.awt.GridLayout(1, 2));
 
         btnMoveCancel.setText("Cancel");
         btnMoveCancel.addActionListener(new java.awt.event.ActionListener() {
@@ -686,29 +683,31 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
                 btnMoveCancelActionPerformed(evt);
             }
         });
+        jPanel1.add(btnMoveCancel);
+
+        btnMove.setText("Attack");
+        btnMove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMoveActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnMove);
 
         org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel4Layout.createSequentialGroup()
-                .add(btnMove, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 165, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(btnMoveCancel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 177, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
             .add(panelMoves, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 358, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel4Layout.createSequentialGroup()
                 .add(panelMoves, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(btnMove)
-                    .add(btnMoveCancel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 29, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(7, 7, 7)
+                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
-
-        jPanel4Layout.linkSize(new java.awt.Component[] {btnMove, btnMoveCancel}, org.jdesktop.layout.GroupLayout.VERTICAL);
 
         tabAction.addTab("Move", jPanel4);
 
@@ -720,19 +719,14 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         panelSwitch.setLayout(panelSwitchLayout);
         panelSwitchLayout.setHorizontalGroup(
             panelSwitchLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 342, Short.MAX_VALUE)
+            .add(0, 358, Short.MAX_VALUE)
         );
         panelSwitchLayout.setVerticalGroup(
             panelSwitchLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 123, Short.MAX_VALUE)
+            .add(0, 153, Short.MAX_VALUE)
         );
 
-        btnSwitch.setText("Switch");
-        btnSwitch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSwitchActionPerformed(evt);
-            }
-        });
+        jPanel2.setLayout(new java.awt.GridLayout(1, 2));
 
         btnSwitchCancel.setText("Cancel");
         btnSwitchCancel.addActionListener(new java.awt.event.ActionListener() {
@@ -740,29 +734,31 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
                 btnSwitchCancelActionPerformed(evt);
             }
         });
+        jPanel2.add(btnSwitchCancel);
+
+        btnSwitch.setText("Switch");
+        btnSwitch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSwitchActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnSwitch);
 
         org.jdesktop.layout.GroupLayout jPanel3Layout = new org.jdesktop.layout.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel3Layout.createSequentialGroup()
-                .add(btnSwitch, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 165, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(btnSwitchCancel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE))
             .add(panelSwitch, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 358, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel3Layout.createSequentialGroup()
                 .add(panelSwitch, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(btnSwitch)
-                    .add(btnSwitchCancel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 29, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(7, 7, 7)
+                .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
-
-        jPanel3Layout.linkSize(new java.awt.Component[] {btnSwitch, btnSwitchCancel}, org.jdesktop.layout.GroupLayout.VERTICAL);
 
         tabAction.addTab("Switch", jPanel3);
 
@@ -787,15 +783,14 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(layout.createSequentialGroup()
                                 .add(lblPlayer1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 113, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .add(91, 91, 91)
-                                .add(lblClock1)
-                                .add(7, 7, 7))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 80, Short.MAX_VALUE)
+                                .add(lblClock1))
                             .add(layout.createSequentialGroup()
                                 .add(lblPlayer0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
-                                .add(88, 88, 88)
-                                .add(lblClock0)
-                                .add(10, 10, 10)))
-                        .add(jScrollPane1, 0, 0, Short.MAX_VALUE)
+                                .add(80, 80, 80)
+                                .add(lblClock0)))
+                        .add(32, 32, 32)
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 87, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .add(7, 7, 7))
                     .add(tabAction, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 363, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -818,17 +813,15 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
                 .add(4, 4, 4)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .add(scrollChat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
+                        .add(scrollChat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(txtChat, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(layout.createSequentialGroup()
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 244, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                             .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                                 .add(lblPlayer0)
-                                .add(lblClock0)))
+                                .add(lblClock0))
+                            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 244, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(tabAction, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 222, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
@@ -954,6 +947,8 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     private javax.swing.JButton btnMoveCancel;
     private javax.swing.JButton btnSwitch;
     private javax.swing.JButton btnSwitchCancel;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
