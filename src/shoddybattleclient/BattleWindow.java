@@ -401,19 +401,19 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             add(m_healthBars[0][0]);
             add(m_healthBars[1][0]);
         } else if (m_n == 2) {
-            final int w = m_visual.getWidth() / 2;
+            final int w = m_visual.getWidth() / 2 - 5;
             m_healthBars = new HealthBar[2][2];
             m_healthBars[p1][1] = new HealthBar(false);
             m_healthBars[p1][1].setLocation(x, base);
             m_healthBars[p1][1].setSize(w, healthHeight);
             m_healthBars[p1][0] = new HealthBar(false);
-            m_healthBars[p1][0].setLocation(x + w, base);
+            m_healthBars[p1][0].setLocation(x + w + 10, base);
             m_healthBars[p1][0].setSize(w, healthHeight);
             m_healthBars[p2][1] = new HealthBar(true);
             m_healthBars[p2][1].setLocation(x, base + healthHeight + (2 * buffer) + m_visual.getHeight());
             m_healthBars[p2][1].setSize(w, healthHeight);
             m_healthBars[p2][0] = new HealthBar(true);
-            m_healthBars[p2][0].setLocation(x + w, base + healthHeight + (2 * buffer) + m_visual.getHeight());
+            m_healthBars[p2][0].setLocation(x + w + 10, base + healthHeight + (2 * buffer) + m_visual.getHeight());
             m_healthBars[p2][0].setSize(w, healthHeight);
             add(m_healthBars[0][0]);
             add(m_healthBars[0][1]);
@@ -564,6 +564,9 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     }
 
     public void setSpecies(int party, int slot, String species) {
+        if (m_n == 2) {
+            m_healthBars[party][slot].setToolTipText(species);
+        }
         m_visual.setSpecies(party, slot, species);
     }
 
@@ -663,11 +666,11 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         panelMoves.setLayout(panelMovesLayout);
         panelMovesLayout.setHorizontalGroup(
             panelMovesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 319, Short.MAX_VALUE)
+            .add(0, 342, Short.MAX_VALUE)
         );
         panelMovesLayout.setVerticalGroup(
             panelMovesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 117, Short.MAX_VALUE)
+            .add(0, 123, Short.MAX_VALUE)
         );
 
         btnMove.setText("Attack");
@@ -691,7 +694,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             .add(jPanel4Layout.createSequentialGroup()
                 .add(btnMove, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 165, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(btnMoveCancel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE))
+                .add(btnMoveCancel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 177, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
             .add(panelMoves, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
@@ -717,11 +720,11 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         panelSwitch.setLayout(panelSwitchLayout);
         panelSwitchLayout.setHorizontalGroup(
             panelSwitchLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 319, Short.MAX_VALUE)
+            .add(0, 342, Short.MAX_VALUE)
         );
         panelSwitchLayout.setVerticalGroup(
             panelSwitchLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 117, Short.MAX_VALUE)
+            .add(0, 123, Short.MAX_VALUE)
         );
 
         btnSwitch.setText("Switch");
@@ -745,7 +748,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             .add(jPanel3Layout.createSequentialGroup()
                 .add(btnSwitch, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 165, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(btnSwitchCancel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE))
+                .add(btnSwitchCancel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE))
             .add(panelSwitch, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
@@ -778,22 +781,27 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(29, 29, 29)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(tabAction, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 340, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 82, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                    .add(layout.createSequentialGroup()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(layout.createSequentialGroup()
+                                .add(lblPlayer1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 113, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .add(91, 91, 91)
+                                .add(lblClock1)
+                                .add(7, 7, 7))
+                            .add(layout.createSequentialGroup()
+                                .add(lblPlayer0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
+                                .add(88, 88, 88)
+                                .add(lblClock0)
+                                .add(10, 10, 10)))
+                        .add(jScrollPane1, 0, 0, Short.MAX_VALUE)
+                        .add(7, 7, 7))
+                    .add(tabAction, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 363, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(scrollChat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE)
-                    .add(txtChat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(lblPlayer0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
-                            .add(lblPlayer1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 113, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(lblClock1)
-                            .add(lblClock0))))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(txtChat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+                    .add(scrollChat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -804,24 +812,25 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .addContainerGap()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(lblPlayer1)
+                    .add(lblClock1))
+                .add(4, 4, 4)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(lblClock0)
-                            .add(lblPlayer0))
-                        .add(6, 6, 6)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(lblClock1)
-                            .add(lblPlayer1))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(scrollChat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 382, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(scrollChat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(txtChat, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                     .add(layout.createSequentialGroup()
-                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 230, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(18, 18, 18)
-                        .add(tabAction, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 216, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                            .add(layout.createSequentialGroup()
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 244, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                .add(lblPlayer0)
+                                .add(lblClock0)))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(tabAction, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 222, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
