@@ -22,6 +22,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  *
@@ -51,6 +53,12 @@ public class HealthBar extends JPanel {
         } catch (InterruptedException e) {
 
         }
+        addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                m_fraction = !m_fraction;
+                repaint();
+            }
+        });
     }
     
     public void setRatio(int numerator, int denominator) {
