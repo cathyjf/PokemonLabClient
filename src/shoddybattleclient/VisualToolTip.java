@@ -23,6 +23,7 @@
 
 package shoddybattleclient;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.BorderFactory;
@@ -39,6 +40,7 @@ public class VisualToolTip extends javax.swing.JPanel {
     public VisualToolTip(String name, String stats, String effects,
             int num, int denom, boolean exact) {
         initComponents();
+        setBorder(BorderFactory.createLineBorder(Color.BLACK));
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(5, 5, 5, 5);
         c.weightx = 0.5;
