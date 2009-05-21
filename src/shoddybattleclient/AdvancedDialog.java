@@ -122,6 +122,7 @@ public class AdvancedDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectActionPerformed
+        WelcomeWindow.connect(txtHost.getText(), Integer.parseInt(txtPort.getText()));
         m_parent.dispose();
         this.dispose();
     }//GEN-LAST:event_btnConnectActionPerformed

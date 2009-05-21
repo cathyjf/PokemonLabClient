@@ -91,20 +91,16 @@ public class WelcomeWindow extends javax.swing.JFrame {
         lstServers.setCellRenderer(new ServerListRenderer());
     }
 
-    private void connect(int index) {
-        ServerListEntry sle =
-                (ServerListEntry)lstServers.getModel().getElementAt(index);
-        
-        //new ServerConnect("test server", "this is a test").setVisible(true);
+    public static boolean connect(String host, int port) {
         ServerLink link;
         try {
-            link = new ServerLink(sle.getHost(), sle.getPort());
+            link = new ServerLink(host, port);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, e.getMessage());
-            return;
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            return false;
         }
         link.start();
-        dispose();
+        return true;
     }
 
 
@@ -208,13 +204,24 @@ public class WelcomeWindow extends javax.swing.JFrame {
 
     private void lstServersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstServersMouseClicked
         if ((evt.getClickCount() == 2) && (evt.getButton() == MouseEvent.BUTTON1)) {
-            int index = lstServers.locationToIndex(evt.getPoint());
-            connect(index);
+            ServerListEntry sle = (ServerListEntry)lstServers.getModel()
+                    .getElementAt(lstServers.getSelectedIndex());
+            if (sle != null) {
+                if (connect(sle.getHost(), sle.getPort())) {
+                    dispose();
+                }
+            }
         }
     }//GEN-LAST:event_lstServersMouseClicked
 
     private void btnConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectActionPerformed
-        connect(lstServers.getSelectedIndex());
+        ServerListEntry sle = (ServerListEntry)lstServers.getModel()
+                .getElementAt(lstServers.getSelectedIndex());
+        if (sle != null) {
+            if (connect(sle.getHost(), sle.getPort())) {
+                dispose();
+            }
+        }
 }//GEN-LAST:event_btnConnectActionPerformed
 
     private void btnAdvancedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdvancedActionPerformed
@@ -228,6 +235,7 @@ public class WelcomeWindow extends javax.swing.JFrame {
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            //UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             System.setProperty("apple.laf.useScreenMenuBar", "true");
         } catch (Exception e) {
             
