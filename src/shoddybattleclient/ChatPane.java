@@ -156,7 +156,7 @@ public class ChatPane extends javax.swing.JPanel {
 
     public void sendMessage(String message) throws CommandException {
         message = message.trim();
-        if (message.equals("") || txtChat.getForeground().equals(java.awt.Color.GRAY)) {
+        if (message.equals("")) {
             return;
         }
 

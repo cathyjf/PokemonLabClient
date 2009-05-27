@@ -42,6 +42,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -155,7 +156,9 @@ public class GameVisualisation extends JPanel {
     public static final int STATE_STATUSED = 1;
     public static final int STATE_FAINTED = 2;
 
-    private static final Image m_background;
+    private static final int BACKGROUND_COUNT = 23;
+
+    private Image m_background;
     private static final Image[] m_pokeball = new Image[3];
     private static final Image[] m_arrows = new Image[2];
     private VisualPokemon[][] m_active;
@@ -178,7 +181,6 @@ public class GameVisualisation extends JPanel {
     }
 
     static {
-        m_background = getImageFromResource("background.jpg");
         m_pokeball[STATE_NORMAL] = getImageFromResource("pokeball.png");
         m_pokeball[STATE_STATUSED] = getImageFromResource("pokeball2.png");
         m_pokeball[STATE_FAINTED] = getImageFromResource("pokeball3.png");
@@ -215,6 +217,8 @@ public class GameVisualisation extends JPanel {
         m_n = n;
         m_length = length;
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        int background = new Random().nextInt(BACKGROUND_COUNT) + 1;
+        m_background = getImageFromResource("backgrounds/background" + background + ".png");
         MediaTracker tracker = new MediaTracker(this);
         tracker.addImage(m_background, 0);
         tracker.addImage(m_pokeball[0], 1);
@@ -480,9 +484,9 @@ public class GameVisualisation extends JPanel {
             int h = img.getHeight(this);
             int w = img.getWidth(this);
             int x;
-            int y = us ? m_background.getHeight(this) - h : 90 - h;
+            int y = us ? m_background.getHeight(this) - h : 88 - h;
             if (m_n == 1) {
-                x = us ? 30 : 190 - w / 2;
+                x = us ? 64 - (w / 2) : m_background.getWidth(this) - 64 - (w / 2);
             } else if (m_n == 2) {
                 x = us ? 70 : 220 - w / 2;
                 x -= us ? 70 * i : 50 * i;
@@ -564,14 +568,12 @@ public class GameVisualisation extends JPanel {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Visualisation test");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        final GameVisualisation vis = new GameVisualisation(0, 2, 6);
+        final GameVisualisation vis = new GameVisualisation(0, 1, 6);
         VisualPokemon[] party1 = new VisualPokemon[] {
-            new VisualPokemon("Squirtle", Pokemon.Gender.GENDER_MALE.getValue(), false),
-            new VisualPokemon("Wartortle", Pokemon.Gender.GENDER_FEMALE.getValue(), true)
+            new VisualPokemon("Squirtle", Pokemon.Gender.GENDER_MALE.getValue(), false)
         };
         VisualPokemon[] party2 = new VisualPokemon[] {
-            new VisualPokemon("Blissey", Pokemon.Gender.GENDER_FEMALE.getValue(), false),
-            new VisualPokemon("Chansey", Pokemon.Gender.GENDER_FEMALE.getValue(), true)
+            new VisualPokemon("Blissey", Pokemon.Gender.GENDER_FEMALE.getValue(), false)
         };
         vis.setSelected(0);
         vis.setTarget(-2);
