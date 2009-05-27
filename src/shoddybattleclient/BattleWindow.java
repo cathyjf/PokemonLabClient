@@ -183,7 +183,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             Pokemon[] team) {
         initComponents();
 
-        setTitle(users[0] + " vs. " + users[1] + " - Shoddy Battle");
+        setTitle(users[0] + " v. " + users[1] + " - Shoddy Battle");
 
         m_link = link;
         m_fid = fid;
@@ -880,6 +880,9 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             if (selected != -1) {
                 sendAction(Action.MOVE, m_selectedMove, selected);
             }
+        } else if (m_forced) {
+            // Forced move.
+            m_link.sendMoveAction(m_fid, -1, -1);
         } else {
             for (int i = 0; i < m_moveButtons.length; i++) {
                 if (m_moveButtons[i].isSelected() &&
