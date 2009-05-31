@@ -171,6 +171,10 @@ public class ChallengeNotifier extends JComponent {
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D)g.create();
         Rectangle r = m_parent.getChatBounds();
+        if (r == null) {
+            setVisible(false);
+            return;
+        }
         int x = (int) r.getX() + 1;
         int w = getW();
 

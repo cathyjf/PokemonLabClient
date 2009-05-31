@@ -492,7 +492,7 @@ public class GameVisualisation extends JPanel {
                 x -= us ? 70 * i : 50 * i;
             } else {
                 //get ugly
-                x = us ? 45 * (m_n - (i + 1)) - 15 : 220 - 45 * (m_n - (i + 1));
+                x = us ? 45 * (m_n - (i + 1)) - 15 : 215 - 45 * i;
             }
             int index = i + idx * m_n;
             if (m_view == 1) {
@@ -568,12 +568,16 @@ public class GameVisualisation extends JPanel {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Visualisation test");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        final GameVisualisation vis = new GameVisualisation(0, 1, 6);
+        final GameVisualisation vis = new GameVisualisation(0, 3, 6);
         VisualPokemon[] party1 = new VisualPokemon[] {
-            new VisualPokemon("Squirtle", Pokemon.Gender.GENDER_MALE.getValue(), false)
+            new VisualPokemon("Squirtle", Pokemon.Gender.GENDER_MALE.getValue(), false),
+            new VisualPokemon("Wartortle", Pokemon.Gender.GENDER_MALE.getValue(), false),
+            new VisualPokemon("Blastoise", Pokemon.Gender.GENDER_MALE.getValue(), false)
         };
         VisualPokemon[] party2 = new VisualPokemon[] {
-            new VisualPokemon("Blissey", Pokemon.Gender.GENDER_FEMALE.getValue(), false)
+            new VisualPokemon("Blissey", Pokemon.Gender.GENDER_FEMALE.getValue(), false),
+            new VisualPokemon("Togekiss", Pokemon.Gender.GENDER_FEMALE.getValue(), false),
+            new VisualPokemon("Tyranitar", Pokemon.Gender.GENDER_FEMALE.getValue(), false)
         };
         vis.setSelected(0);
         vis.setTarget(-2);
@@ -602,7 +606,7 @@ public class GameVisualisation extends JPanel {
                         } catch (Exception e) {
 
                         }
-                        if (++i > 3) i = -3;
+                        if (++i > 5) i = -3;
                     }
                 }
             }

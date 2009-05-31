@@ -277,7 +277,9 @@ public class LobbyWindow extends javax.swing.JFrame {
      * Returns the bounds of the main chat pane
      */
     public Rectangle getChatBounds() {
-        ChatPane chat = (ChatPane)tabChats.getComponentAt(0);
+        Component c = tabChats.getComponentAt(0);
+        if (!(c instanceof ChatPane)) return null;
+        ChatPane chat = (ChatPane)c;
         Point p = chat.getPane().getLocation();
         Point p2 = chat.getLocation();
         Point p3 = tabChats.getLocation();
