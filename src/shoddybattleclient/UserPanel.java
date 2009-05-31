@@ -169,7 +169,7 @@ public class UserPanel extends javax.swing.JPanel {
                 .add(lblMessage, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 91, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jLabel3)
-                .addContainerGap(106, Short.MAX_VALUE))
+                .addContainerGap(110, Short.MAX_VALUE))
         );
 
         jPanel2.setOpaque(false);
@@ -197,7 +197,7 @@ public class UserPanel extends javax.swing.JPanel {
         panelSprites.setLayout(panelSpritesLayout);
         panelSpritesLayout.setHorizontalGroup(
             panelSpritesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 184, Short.MAX_VALUE)
+            .add(0, 199, Short.MAX_VALUE)
         );
         panelSpritesLayout.setVerticalGroup(
             panelSpritesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -229,7 +229,7 @@ public class UserPanel extends javax.swing.JPanel {
                         .addContainerGap()
                         .add(btnLoad, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 84, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                        .add(btnChallenge, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE))
+                        .add(btnChallenge, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE))
                     .add(jPanel2Layout.createSequentialGroup()
                         .add(20, 20, 20)
                         .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
@@ -238,16 +238,16 @@ public class UserPanel extends javax.swing.JPanel {
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(jLabel4)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(cmbGen, 0, 105, Short.MAX_VALUE))
+                                .add(cmbGen, 0, 113, Short.MAX_VALUE))
                             .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel2Layout.createSequentialGroup()
                                 .add(jLabel1)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(cmbRules, 0, 143, Short.MAX_VALUE))
+                                .add(cmbRules, 0, 151, Short.MAX_VALUE))
                             .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel2Layout.createSequentialGroup()
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(jLabel2)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(cmbN, 0, 59, Short.MAX_VALUE)))))
+                                .add(cmbN, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 67, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))))
                 .add(166, 166, 166))
         );
         jPanel2Layout.setVerticalGroup(
@@ -281,11 +281,11 @@ public class UserPanel extends javax.swing.JPanel {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 237, Short.MAX_VALUE)
+            .add(0, 250, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 203, Short.MAX_VALUE)
+            .add(0, 214, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Advanced", jPanel3);
