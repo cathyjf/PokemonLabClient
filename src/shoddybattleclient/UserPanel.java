@@ -67,7 +67,7 @@ public class UserPanel extends javax.swing.JPanel {
         }
         @Override
         public Dimension getPreferredSize() {
-            return new Dimension(32, 32);
+            return new Dimension(40, 40);
         }
         @Override
         protected void paintComponent(Graphics g) {
@@ -146,7 +146,7 @@ public class UserPanel extends javax.swing.JPanel {
 
         lblMessage.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
-        jLabel3.setFont(new java.awt.Font("Lucida Grande", 1, 13));
+        jLabel3.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
         jLabel3.setText("Rankings:");
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
@@ -156,9 +156,9 @@ public class UserPanel extends javax.swing.JPanel {
             .add(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(lblMessage, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
-                    .add(jLabel3)
-                    .add(lblName))
+                    .add(lblMessage, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+                    .add(lblName)
+                    .add(jLabel3))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -166,10 +166,10 @@ public class UserPanel extends javax.swing.JPanel {
             .add(jPanel1Layout.createSequentialGroup()
                 .add(lblName)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(lblMessage, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 91, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(lblMessage, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 135, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jLabel3)
-                .addContainerGap(110, Short.MAX_VALUE))
+                .addContainerGap(113, Short.MAX_VALUE))
         );
 
         jPanel2.setOpaque(false);
@@ -197,11 +197,11 @@ public class UserPanel extends javax.swing.JPanel {
         panelSprites.setLayout(panelSpritesLayout);
         panelSpritesLayout.setHorizontalGroup(
             panelSpritesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 199, Short.MAX_VALUE)
+            .add(0, 192, Short.MAX_VALUE)
         );
         panelSpritesLayout.setVerticalGroup(
             panelSpritesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 58, Short.MAX_VALUE)
+            .add(0, 101, Short.MAX_VALUE)
         );
 
         btnLoad.setText("Load");
@@ -266,11 +266,11 @@ public class UserPanel extends javax.swing.JPanel {
                     .add(cmbGen))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(panelSprites, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(btnLoad)
                     .add(btnChallenge))
-                .add(78, 78, 78))
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Basic", jPanel2);
@@ -281,11 +281,11 @@ public class UserPanel extends javax.swing.JPanel {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 250, Short.MAX_VALUE)
+            .add(0, 240, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 214, Short.MAX_VALUE)
+            .add(0, 254, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Advanced", jPanel3);
@@ -298,16 +298,16 @@ public class UserPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 258, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 261, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 249, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
