@@ -299,6 +299,24 @@ public class LobbyWindow extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Takes some letters and returns the closest username in the current channel
+     */
+    public String autocompleteUser(String str) {
+        UserListModel model = (UserListModel)listUsers.getModel();
+        List<User> list = model.getList();
+        Collections.sort(list, new Comparator<User>() {
+            public int compare(User u1, User u2) {
+                return u1.getName().compareToIgnoreCase(u2.getName());
+            }
+        });
+        for (User u : list) {
+            String name = u.m_name;
+            if (name.startsWith(str)) return name;
+        }
+        return null;
+    }
+
     public void addChallenge(String name, boolean incoming, int gen, int n) {
         m_notifier.addChallenge(name, incoming, gen, n);
     }

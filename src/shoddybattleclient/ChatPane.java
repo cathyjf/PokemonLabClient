@@ -23,6 +23,7 @@
 
 package shoddybattleclient;
 
+import java.awt.event.KeyEvent;
 import javax.swing.JScrollPane;
 import shoddybattleclient.utils.HTMLPane;
 
@@ -49,6 +50,7 @@ public class ChatPane extends javax.swing.JPanel {
         m_lobby = lobby;
         m_name = name;
         initComponents();
+        txtChat.setFocusTraversalKeysEnabled(false);
         m_chatPane = new HTMLPane(name);
         scrollChat.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollChat.add(m_chatPane);
@@ -247,13 +249,24 @@ public class ChatPane extends javax.swing.JPanel {
     }//GEN-LAST:event_txtChatFocusLost
 
     private void txtChatKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtChatKeyReleased
-        if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+        String msg = txtChat.getText();
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             try {
-                sendMessage(txtChat.getText());
+                sendMessage(msg);
             } catch (CommandException e) {
                 addMessage(null, e.getMessage());
             }
             txtChat.setText(null);
+        } else if (evt.getKeyCode() == KeyEvent.VK_TAB) {
+            if ("".equals(msg)) return;
+            int idx = msg.lastIndexOf(" ");
+            String sub = msg.substring(idx + 1, msg.length() - 1);
+            if ("".equals(sub)) return;
+            String newStr = m_lobby.autocompleteUser(sub);
+            if (newStr != null){
+                msg = msg.substring(0, idx + 1) + newStr;
+                txtChat.setText(msg);
+            }
         }
     }//GEN-LAST:event_txtChatKeyReleased
 
