@@ -280,6 +280,9 @@
 66: $1 was subjected to Torment!
 67: Charge
 68: $1 is charging power!
+69: Disable
+70: $1's $2 was disabled!
+71: $1's $2 is disabled!
 
 [battle-messages-charge]
 0: $1 takes in sunlight!    // Solarbeam
