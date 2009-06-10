@@ -24,6 +24,9 @@
 package shoddybattleclient;
 
 import java.awt.event.KeyEvent;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import javax.swing.JScrollPane;
 import shoddybattleclient.utils.HTMLPane;
 
@@ -43,6 +46,8 @@ public class ChatPane extends javax.swing.JPanel {
     private LobbyWindow m_lobby;
     private String m_name;
     private LobbyWindow.Channel m_channel;
+    private String m_sub;
+    private int m_tabCount = 0;
 
     /** Creates new form ChatPane */
     public ChatPane(LobbyWindow.Channel c, LobbyWindow lobby, String name) {
@@ -250,22 +255,41 @@ public class ChatPane extends javax.swing.JPanel {
 
     private void txtChatKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtChatKeyReleased
         String msg = txtChat.getText();
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            try {
-                sendMessage(msg);
-            } catch (CommandException e) {
-                addMessage(null, e.getMessage());
-            }
-            txtChat.setText(null);
-        } else if (evt.getKeyCode() == KeyEvent.VK_TAB) {
+
+        if (evt.getKeyCode() == KeyEvent.VK_TAB) {
             if ("".equals(msg)) return;
             int idx = msg.lastIndexOf(" ");
-            String sub = msg.substring(idx + 1, msg.length() - 1);
-            if ("".equals(sub)) return;
-            String newStr = m_lobby.autocompleteUser(sub);
+            if (m_tabCount == 0) {
+                m_sub = msg.substring(idx + 1);
+                if ("".equals(m_sub)) return;
+            }
+            List<String> names = m_lobby.autocompleteUser(m_sub);
+            Collections.sort(names, new Comparator<String>() {
+                public int compare(String o1, String o2) {
+                    return o1.compareToIgnoreCase(o2);
+                }
+            });
+            int size = names.size();
+            if (size == 0) return;
+            int index = m_tabCount;
+            while (index >= size) {
+                index -= size;
+            }
+            String newStr = names.get(index);
             if (newStr != null){
                 msg = msg.substring(0, idx + 1) + newStr;
                 txtChat.setText(msg);
+            }
+            m_tabCount++;
+        } else {
+            m_tabCount = 0;
+            if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+                try {
+                    sendMessage(msg);
+                } catch (CommandException e) {
+                    addMessage(null, e.getMessage());
+                }
+                txtChat.setText(null);
             }
         }
     }//GEN-LAST:event_txtChatKeyReleased
