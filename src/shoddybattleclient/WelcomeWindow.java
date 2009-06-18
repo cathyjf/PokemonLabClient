@@ -79,7 +79,7 @@ public class WelcomeWindow extends javax.swing.JFrame {
     public WelcomeWindow() {
         initComponents();
         ServerListEntry sle = new ServerListEntry("Test Server",
-                "This is only for testing", "localhost",
+                "This is only for testing", "colin.shoddybattle.com",
                 8446, 220, 250);
         ServerListEntry sle2 = new ServerListEntry("Smogon", 
                 "Official server of smogon.com", "shoddy.smogon.com",

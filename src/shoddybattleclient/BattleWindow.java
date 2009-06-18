@@ -41,6 +41,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
 import shoddybattleclient.ChatPane.CommandException;
 import shoddybattleclient.GameVisualisation.VisualPokemon;
+import shoddybattleclient.LobbyWindow.User;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.shoddybattle.*;
 import shoddybattleclient.utils.*;
@@ -364,10 +365,6 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             panelMoves.add(button);
         }
         panelMoves.repaint();
-    }
-
-    public void setUsers(String[] users) {
-        listUsers.setModel(new UserListModel(new ArrayList(Arrays.asList(users))));
     }
 
     private void setMoves(int i) {

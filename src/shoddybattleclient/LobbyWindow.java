@@ -305,7 +305,7 @@ public class LobbyWindow extends javax.swing.JFrame {
     public List<String> autocompleteUser(String str) {
         UserListModel model = (UserListModel)listUsers.getModel();
         List<User> list = model.getList();
-        List<String> ret = new ArrayList();
+        List<String> ret = new ArrayList<String>();
         System.out.println(str);
         for (User u : list) {
             String name = u.m_name;
