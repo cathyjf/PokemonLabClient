@@ -19,7 +19,7 @@ import java.awt.Component;
  * @author Daniel F. Savarese
  * @author Catherine James Fitzpatrick
  */
-public class JButtonTable extends JTable {
+public class JButtonTable extends SortableJTable {
     
     /**
      * Set up this table so that it can be used to render JButtons in cells.

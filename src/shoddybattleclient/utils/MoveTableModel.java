@@ -145,6 +145,22 @@ public class MoveTableModel extends AbstractTableModel {
             case 2:
                 row.m_category = (String)value;
                 break;
+            case 3:
+                row.m_type = (String)value;
+                break;
+            case 4:
+                row.m_pp = (Integer)value;
+                break;
+            case 5:
+                row.m_power = (Integer)value;
+                break;
+            case 6:
+                try {
+                    int acc = (Integer)value;
+                    row.m_accuracy = acc;
+                } catch (Exception e) {
+                    row.m_accuracy = 0;
+                }
             default:
                 assert false;
         }
