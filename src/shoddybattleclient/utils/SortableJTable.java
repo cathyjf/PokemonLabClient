@@ -41,6 +41,12 @@ public class SortableJTable extends JTable {
         SORTED_DES
     }
 
+    //A table model that can be sorted on a column index
+    public interface SortableTableModel {
+        //sort this model based on this index, and if it should be reversed
+        public void sort(int col, boolean reverse);
+    }
+
     private Map<Integer, SortStatus> m_sortStatus = new HashMap<Integer, SortStatus>();
 
     public SortableJTable() {
@@ -49,43 +55,23 @@ public class SortableJTable extends JTable {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int idx = header.getColumnModel().getColumnIndexAtX(e.getX());
-                SortableJTable.this.sort(idx);
+                sort(idx);
+                
             }
         });
     }
 
     // sorts the table by the specified column index
-    private void sort(final int col) {
-        final TableModel model = this.getModel();
-        int numRows = model.getRowCount();
-        int numCols = model.getColumnCount();
-        List<Comparable[]> rows = new ArrayList<Comparable[]>();
-        for (int i = 0; i < numRows; i++) {
-            Comparable[] values = new Comparable[numCols];
-            for (int j = 0; j < numCols; j++) {
-                values[j] = (Comparable)model.getValueAt(i, j);
-            }
-            rows.add(values);
-        }
-        Collections.sort(rows, new Comparator<Comparable[]>() {
-            public int compare(Comparable[] arg0, Comparable[] arg1) {
-                Comparable val0 = arg0[col];
-                Comparable val1 = arg1[col];
-                if ("---".equals(val0)) val0 = new Integer(0);
-                if ("---".equals(val1)) val1 = new Integer(0);
-                int comp = val0.compareTo(val1);
-                if (Boolean.class.equals(val0.getClass())
-                        || Integer.class.equals(val0.getClass())) {
-                    comp = -comp;
-                }
-                return comp;
-            }
-        });
-
+    private void sort(int col) {
+        TableModel model = getModel();
+        if (!(model instanceof SortableTableModel)) return;
+        SortableTableModel sModel = (SortableTableModel)model;
+        
+        boolean reverse = false;
         if (m_sortStatus.containsKey(col)) {
             if (m_sortStatus.get(col).equals(SortStatus.SORTED_ASC)) {
                 m_sortStatus.put(col, SortStatus.SORTED_DES);
-                Collections.reverse(rows);
+                reverse = true;
             } else {
                 m_sortStatus.put(col, SortStatus.SORTED_ASC);
             }
@@ -93,11 +79,6 @@ public class SortableJTable extends JTable {
             m_sortStatus.put(col, SortStatus.SORTED_ASC);
         }
 
-        for (int i = 0; i < rows.size(); i++) {
-            Comparable[] c = rows.get(i);
-            for (int j = 0; j < c.length; j++) {
-                model.setValueAt(c[j], i, j);
-            }
-        }
+        sModel.sort(col, reverse);
     }
 }

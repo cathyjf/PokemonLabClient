@@ -21,13 +21,14 @@ package shoddybattleclient.utils;
 import javax.swing.table.*;
 import java.util.*;
 import shoddybattleclient.shoddybattle.PokemonMove;
+import shoddybattleclient.utils.SortableJTable.SortableTableModel;
 
 /**
  *
  * @author Catherine
  * @author Ben
  */
-public class MoveTableModel extends AbstractTableModel {
+public class MoveTableModel extends AbstractTableModel implements SortableTableModel {
     
     private TableRow[] m_row;
     private ArrayList<String> m_selected = new ArrayList<String>();
@@ -230,5 +231,32 @@ public class MoveTableModel extends AbstractTableModel {
         }
         return null;
     }
-    
+
+    public void sort(final int col, boolean reverse) {
+
+        List<TableRow> rows = Arrays.asList(m_row);
+        Collections.sort(rows, new Comparator<TableRow>() {
+            public int compare(TableRow t1, TableRow t2) {
+                switch(col) {
+                    case 0:
+                        return -(t1.m_enabled.compareTo(t2.m_enabled));
+                    case 1:
+                        return t1.m_move.compareTo(t2.m_move);
+                    case 2:
+                        return t1.m_category.compareTo(t2.m_category);
+                    case 3:
+                        return t1.m_type.compareTo(t2.m_type);
+                    case 4:
+                        return -(t1.m_pp.compareTo(t2.m_pp));
+                    case 5:
+                        return -(t1.m_power.compareTo(t2.m_power));
+                    case 6:
+                        return -(t1.m_accuracy.compareTo(t2.m_accuracy));
+                }
+                assert false;
+                return 0;
+            }
+        });
+        if (reverse) Collections.reverse(rows);
+    }
 }
