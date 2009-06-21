@@ -49,6 +49,10 @@ public class ChatPane extends javax.swing.JPanel {
     private String m_sub;
     private int m_tabCount = 0;
 
+    public LobbyWindow getLobby() {
+        return m_lobby;
+    }
+
     /** Creates new form ChatPane */
     public ChatPane(LobbyWindow.Channel c, LobbyWindow lobby, String name) {
         m_channel = c;
@@ -84,22 +88,18 @@ public class ChatPane extends javax.swing.JPanel {
 
     private int getMode(char c) {
         switch (c) {
-            case 'q':
-                return 0;
             case 'a':
-                return 1;
+                return 0;
             case 'o':
-                return 2;
-            case 'h':
-                return 3;
+                return 1;
             case 'v':
-                return 4;
+                return 2;
             case 'b':
-                return 5;
+                return 3;
             case 'm':
-                return 6;
+                return 4;
             case 'i':
-                return 7;
+                return 5;
             // todo: idle?
         }
         throw new InternalError();
@@ -108,7 +108,7 @@ public class ChatPane extends javax.swing.JPanel {
     private void parseMode(String action, String users) throws CommandException {
         if ("".equals(action) || "help".equals(action)) {
             throw new CommandException(
-                    "Usage: /mode +q/a/o/h/v/b/m/i [user1[,user2,...]]");
+                    "Usage: /mode +a/o/v/b/m/i [user1[,user2,...]]");
         }
         char char1 = action.charAt(0);
         if ((char1 != '+') && (char1 != '-')) {
@@ -122,10 +122,8 @@ public class ChatPane extends javax.swing.JPanel {
             System.out.println(verb + " " + action + " to " + user);
             char c = action.charAt(0);
             switch (c) {
-                case 'q':
                 case 'a':
                 case 'o':
-                case 'h':
                 case 'v':
                 case 'b':
                 case 'm':

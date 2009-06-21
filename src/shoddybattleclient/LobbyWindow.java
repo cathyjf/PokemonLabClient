@@ -45,13 +45,15 @@ import shoddybattleclient.utils.*;
 public class LobbyWindow extends javax.swing.JFrame {
 
     public static class Channel {
-        public static final int OWNER = 1;      // +q
-        public static final int PROTECTED = 2;  // +a
-        public static final int OP = 4;         // +o
-        public static final int HALF_OP = 8;    // +h
-        public static final int VOICE = 16;     // +v
-        public static final int IDLE = 32;      // inactive
-        public static final int BUSY = 64;      // ("ignoring challenges")
+        public static final int PROTECTED = 1; // +a
+        public static final int OP = 2;        // +o
+        public static final int VOICE = 4;     // +v
+        public static final int MUTE = 8;      // +b
+        public static final int IDLE = 16;     // inactive
+        public static final int BUSY = 32;     // ("ignoring challenges")
+
+        public static final String[] MODES =
+                { "a", "o", "v", "b", "", "" }; // TODO: last two
 
         public static final int TYPE_ORDINARY = 0;
         public static final int TYPE_BATTLE = 1;
@@ -78,16 +80,14 @@ public class LobbyWindow extends javax.swing.JFrame {
         }
 
         public static int getLevel(int flags) {
-            if ((flags & OWNER) != 0)
-                return 5;
             if ((flags & PROTECTED) != 0)
-                return 4;
-            if ((flags & OP) != 0)
                 return 3;
-            if ((flags & HALF_OP) != 0)
+            if ((flags & OP) != 0)
                 return 2;
             if ((flags & VOICE) != 0)
                 return 1;
+            if ((flags & MUTE) != 0)
+                return -1;
             return 0;
         }
 
@@ -104,8 +104,37 @@ public class LobbyWindow extends javax.swing.JFrame {
         public void removeUser(String name) {
             m_users.remove(name);
         }
-        public void updateUser(String name, int flags) {
-            m_users.setLevel(name, flags);
+        public void updateUser(String setter, String name, int flags) {
+            User user = getUser(name);
+            int old = user.getFlags();
+            int diff = old ^ flags;
+            if (diff == 0)
+                return;
+            // TODO: Put these messages in english.lang.
+            StringBuilder builder = new StringBuilder("<b> *** ");
+            if (setter.length() != 0) {
+                builder.append(setter + " sets mode ");
+            } else {
+                builder.append("Mode ");
+            }
+            String last = null;
+            for (int i = 0; i < 4; ++i) {
+                int bit = 1 << i;
+                if ((diff & bit) != 0) {
+                    String prefix = ((old & bit) != 0) ? "-" : "+";
+                    if (!prefix.equals(last)) {
+                        builder.append(prefix);
+                    }
+                    last = prefix;
+                    builder.append(MODES[i]);
+                }
+            }
+            builder.append(" ");
+            builder.append(name);
+            builder.append(".</b>");
+            m_chat.getLobby().showChannelMessage(this, null,
+                    new String(builder), false);
+            user.setLevel(flags);
         }
         public void sort() {
             m_users.sort();
@@ -143,9 +172,12 @@ public class LobbyWindow extends javax.swing.JFrame {
             m_flags = flags;
             m_level = Channel.getLevel(flags);
         }
-
-        public void setLevel(int level) {
-            m_level = Channel.getLevel(level);
+        public int getFlags() {
+            return m_flags;
+        }
+        public void setLevel(int flags) {
+            m_flags = flags;
+            m_level = Channel.getLevel(flags);
         }
         public void setStatus(int status) {
             m_status = status;
@@ -167,7 +199,7 @@ public class LobbyWindow extends javax.swing.JFrame {
             return m_name.compareToIgnoreCase(s2);
         }
         public String getPrefix() {
-            String[] prefixes = { "", "+", "%", "@", "&", "~" };
+            String[] prefixes = { "", "+", "@", "&" };
             return prefixes[m_level];
         }
         public void addBattle(int id) {
@@ -182,10 +214,14 @@ public class LobbyWindow extends javax.swing.JFrame {
         }
         @Override
         public String toString() {
-            String colour = "rgb(0, 0, 0)"; // black for now
-            String style = (m_battles.size() > 0) ? "font-style: italic;" : "";
-            return "<html><font style='color: "
+            if (m_level != -1) {
+                String colour = "rgb(0, 0, 0)"; // black for now
+                String style = (m_battles.size() > 0) ? "font-style: italic;" : "";
+                return "<html><font style='color: "
                     + colour + style + "'>" + getPrefix()
+                    + m_name + "</font></html>";
+            }
+            return "<html><font style='text-decoration: line-through;'>"
                     + m_name + "</font></html>";
         }
     }
@@ -341,10 +377,10 @@ public class LobbyWindow extends javax.swing.JFrame {
         return m_name;
     }
 
-    public void handleUpdateStatus(int id, String user, int flags) {
+    public void handleUpdateStatus(int id, String setter, String user, int flags) {
         Channel channel = m_channels.get(id);
         if (channel != null) {
-            channel.updateUser(user, flags);
+            channel.updateUser(setter, user, flags);
             if (channel.getChatPane() == tabChats.getSelectedComponent()) {
                 updateUsers(channel);
             }

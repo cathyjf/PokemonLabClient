@@ -446,15 +446,17 @@ public class ServerLink extends Thread {
 
             // CHANNEL_STATUS
             new ServerMessage(6, new MessageHandler() {
-                // int32 : channel id
+                // int32  : channel id
+                // string : the person who set the mode
                 // string : user
-                // int32 : flags
+                // int32  : flags
                 public void handle(ServerLink link, DataInputStream is)
                         throws IOException {
                     int id = is.readInt();
+                    String setter = is.readUTF();
                     String user = is.readUTF();
                     int flags = is.readInt();
-                    link.m_lobby.handleUpdateStatus(id, user, flags);
+                    link.m_lobby.handleUpdateStatus(id, setter, user, flags);
                 }
             });
 
