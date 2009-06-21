@@ -36,7 +36,7 @@ import javax.swing.event.ChangeListener;
 import shoddybattleclient.ChallengeNotifier.Challenge;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.network.ServerLink.ChallengeMediator;
-import shoddybattleclient.utils.UserListModel;
+import shoddybattleclient.utils.*;
 
 /**
  *
@@ -403,7 +403,7 @@ public class LobbyWindow extends javax.swing.JFrame {
         btnChallenge = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         listUsers = new javax.swing.JList();
-        tabChats = new javax.swing.JTabbedPane();
+        tabChats = new CloseableTabbedPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setLocationByPlatform(true);
