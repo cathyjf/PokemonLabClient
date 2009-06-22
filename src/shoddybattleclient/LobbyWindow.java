@@ -400,7 +400,9 @@ public class LobbyWindow extends javax.swing.JFrame {
         } else {
             // battle chat message
             BattleWindow wnd = m_link.getBattle(channel.getId());
-            wnd.addMessage(user, message, encode);
+            if (wnd != null) {
+                wnd.addMessage(user, message, encode);
+            }
         }
     }
 
