@@ -24,8 +24,10 @@
 package shoddybattleclient;
 
 import java.awt.Component;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URL;
@@ -58,6 +60,8 @@ public class LobbyWindow extends javax.swing.JFrame {
         public static final int TYPE_ORDINARY = 0;
         public static final int TYPE_BATTLE = 1;
 
+        private static final ImageIcon[] m_icons = new ImageIcon[3];
+
         private int m_id;
         private int m_type;
         private String m_name;
@@ -66,6 +70,18 @@ public class LobbyWindow extends javax.swing.JFrame {
         private ChatPane m_chat;
         private UserListModel m_users =
                 new UserListModel(new ArrayList<User>());
+
+        public static ImageIcon getModeIcon(String file) {
+            return new ImageIcon(Toolkit.getDefaultToolkit()
+                    .createImage(GameVisualisation.class.getResource(
+                    "resources/modes/" + file)));
+        }
+
+        static {
+            m_icons[0] = getModeIcon("voice.png");
+            m_icons[1] = getModeIcon("operator.png");
+            m_icons[2] = getModeIcon("protected.png");
+        }
 
         public void setChatPane(ChatPane c) {
             m_chat = c;
@@ -98,12 +114,15 @@ public class LobbyWindow extends javax.swing.JFrame {
             m_topic = topic;
             m_flags = flags;
         }
+
         public void addUser(String name, int flags) {
             m_users.add(new User(name, flags));
         }
+
         public void removeUser(String name) {
             m_users.remove(name);
         }
+
         public void updateUser(String setter, String name, int flags) {
             User user = getUser(name);
             int old = user.getFlags();
@@ -136,24 +155,62 @@ public class LobbyWindow extends javax.swing.JFrame {
                     new String(builder), false);
             user.setLevel(flags);
         }
+        
+        class UserCellRenderer extends JLabel implements ListCellRenderer {
+            public Component getListCellRendererComponent(JList list,
+                    Object value, int index, boolean isSelected,
+                    boolean cellHasFocus) {
+                User user = getUser(value.toString());
+                setText(user.getHtml());
+                int level = user.getLevel();
+                if (level > 0) {
+                    setIcon(m_icons[level - 1]);
+                } else {
+                    setIcon(null);
+                }
+                if (isSelected) {
+                    setBackground(list.getSelectionBackground());
+                    setForeground(list.getSelectionForeground());
+                } else {
+                    setBackground(list.getBackground());
+                    setForeground(list.getForeground());
+                }
+                setEnabled(list.isEnabled());
+                setFont(list.getFont());
+                setOpaque(true);
+                return this;
+            }
+
+        }
+
+        public ListCellRenderer getRenderer() {
+            return new UserCellRenderer();
+        }
+
         public void sort() {
             m_users.sort();
         }
+
         public String getTopic() {
             return m_topic;
         }
+
         public void setTopic(String topic) {
             m_topic = topic;
         }
+
         public String getName() {
             return m_name;
         }
+
         int getId() {
             return m_id;
         }
+
         public User getUser(String name) {
             return m_users.getUser(name);
         }
+
         public int getType() {
             return m_type;
         }
@@ -178,6 +235,9 @@ public class LobbyWindow extends javax.swing.JFrame {
         public void setLevel(int flags) {
             m_flags = flags;
             m_level = Channel.getLevel(flags);
+        }
+        public int getLevel() {
+            return m_level;
         }
         public void setStatus(int status) {
             m_status = status;
@@ -214,12 +274,14 @@ public class LobbyWindow extends javax.swing.JFrame {
         }
         @Override
         public String toString() {
+            return m_name;
+        }
+        public String getHtml() {
             if (m_level != -1) {
                 String colour = "rgb(0, 0, 0)"; // black for now
                 String style = (m_battles.size() > 0) ? "font-style: italic;" : "";
                 return "<html><font style='color: "
-                    + colour + style + "'>" + getPrefix()
-                    + m_name + "</font></html>";
+                    + colour + style + "'>" + m_name + "</font></html>";
             }
             return "<html><font style='text-decoration: line-through;'>"
                     + m_name + "</font></html>";
@@ -298,7 +360,9 @@ public class LobbyWindow extends javax.swing.JFrame {
                 m_notifier.setVisible(isChat);
                 if (!isChat) return;
                 ChatPane c = (ChatPane)comp;
-                listUsers.setModel(c.getChannel().getModel());
+                Channel channel = c.getChannel();
+                listUsers.setModel(channel.getModel());
+                listUsers.setCellRenderer(channel.getRenderer());
             }
         });
 
