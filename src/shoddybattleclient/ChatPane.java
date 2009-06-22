@@ -119,7 +119,7 @@ public class ChatPane extends javax.swing.JPanel {
         if (action.length() == 1) {
             String user = users;
             String verb = add ? "Adding" : "Removing";
-            System.out.println(verb + " " + action + " to " + user);
+            //System.out.println(verb + " " + action + " to " + user);
             char c = action.charAt(0);
             switch (c) {
                 case 'a':

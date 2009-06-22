@@ -25,7 +25,6 @@ package shoddybattleclient;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -213,10 +212,10 @@ public class LobbyWindow extends javax.swing.JFrame {
      * the background
      */
     public static class ColourMap {
-        private static final int BRIGHTNESS_DELTA = 125000;
+        private static final int BRIGHTNESS_DELTA = 0;//100000;
         private static final int COLOUR_DELTA = 500;
 
-        private static final Random m_random = new Random(314159);
+        private static final Random m_random = new Random(System.currentTimeMillis());
         private static final Color[] m_colours = new Color[255];
         private static int getBrightness(Color c) {
             return c.getRed() * 299 + c.getGreen() * 587 + c.getBlue() * 114;
@@ -331,7 +330,7 @@ public class LobbyWindow extends javax.swing.JFrame {
                 int b = c.getBlue();
                 String colour = "rgb(" + r + "," + g + "," + b + ")";
                 String style = (m_battles.size() > 0) ? "font-style: italic;" : "";
-                return "<font style='color: "
+                return "<font class='name' style='color: "
                     + colour + style + "'>" + m_name + "</font>";
             }
             return "<font style='text-decoration: line-through;'>"
@@ -454,14 +453,13 @@ public class LobbyWindow extends javax.swing.JFrame {
      * Takes some letters and returns a list of matching usernames
      */
     public List<String> autocompleteUser(String str) {
+        str = str.toLowerCase();
         UserListModel model = (UserListModel)listUsers.getModel();
         List<User> list = model.getList();
         List<String> ret = new ArrayList<String>();
-        System.out.println(str);
         for (User u : list) {
             String name = u.m_name;
-            if (name.startsWith(str)) {
-                System.out.println(name);
+            if (name.toLowerCase().startsWith(str)) {
                 ret.add(name);
             }
         }

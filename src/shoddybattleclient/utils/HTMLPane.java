@@ -25,7 +25,6 @@ import java.awt.Color;
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
@@ -108,11 +107,10 @@ public class HTMLPane extends JTextPane {
         msg = msg.replaceAll("&#32;", " ")
                         .replaceAll("\\b([^ ]*&#58;&#47;&#47;[^ ]+)",
                             "<a href=\"$1\">$1</a>");
-        msg = "<div>" + msg + "</div>";
         HTMLDocument doc = (HTMLDocument)getDocument();
         HTMLEditorKit kit = (HTMLEditorKit)getEditorKit();
         try {
-            kit.insertHTML(doc, doc.getLength(), msg, 1, 0, HTML.Tag.DIV);
+            kit.insertHTML(doc, doc.getLength(), msg, 1, 0, null);
             if (++m_lines > MAXIMUM_LINES) {
                 int position = 0;
                 int index;
@@ -155,6 +153,10 @@ public class HTMLPane extends JTextPane {
         pane.addMessage("Ben", "I am a polymath");
         pane.addMessage("Catherine", "I agree wholeheartedly");
         pane.addMessage("Catherine", "check out http://cathyisnotapolymath.com");
+        pane.addMessage(null, "<b>=========================</b>", false);
+        pane.addMessage(null, "<b>Begin turn #1</b>", false);
+        pane.addMessage(null, "<b>=========================</b>", false);
+        pane.addMessage("Ben", "<hr>'s are ugly");
         frame.setVisible(true);
         /*new Thread(new Runnable() {
             public void run() {
