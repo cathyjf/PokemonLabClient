@@ -100,12 +100,7 @@ public class HTMLPane extends JTextPane {
         //buffer.append(f.format(d));
         //buffer.append("] ");
         if (user != null) {
-            String style = user.equals(m_user) ? "self" : "others";
-            buffer.append("<font class=\"");
-            buffer.append(style);
-            buffer.append("\">");
-            buffer.append(htmlEntityEncode(user));
-            buffer.append("</font>");
+            buffer.append(user);
             buffer.append(": ");
         }
         buffer.append(message);

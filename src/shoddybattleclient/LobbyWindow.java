@@ -23,6 +23,7 @@
 
 package shoddybattleclient;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Image;
 import java.awt.Point;
@@ -68,6 +69,8 @@ public class LobbyWindow extends javax.swing.JFrame {
         private String m_topic;
         private int m_flags;
         private ChatPane m_chat;
+        // TOOD: Do not assume the background is white.
+        private ColourMap m_colours = new ColourMap(Color.WHITE);
         private UserListModel m_users =
                 new UserListModel(new ArrayList<User>());
 
@@ -86,15 +89,12 @@ public class LobbyWindow extends javax.swing.JFrame {
         public void setChatPane(ChatPane c) {
             m_chat = c;
         }
-        
         public ChatPane getChatPane() {
             return m_chat;
         }
-
         public UserListModel getModel() {
             return m_users;
         }
-
         public static int getLevel(int flags) {
             if ((flags & PROTECTED) != 0)
                 return 3;
@@ -106,7 +106,6 @@ public class LobbyWindow extends javax.swing.JFrame {
                 return -1;
             return 0;
         }
-
         public Channel(int id, int type, String name, String topic, int flags) {
             m_id = id;
             m_type = type;
@@ -114,15 +113,12 @@ public class LobbyWindow extends javax.swing.JFrame {
             m_topic = topic;
             m_flags = flags;
         }
-
         public void addUser(String name, int flags) {
             m_users.add(new User(name, flags));
         }
-
         public void removeUser(String name) {
             m_users.remove(name);
         }
-
         public void updateUser(String setter, String name, int flags) {
             User user = getUser(name);
             int old = user.getFlags();
@@ -155,13 +151,16 @@ public class LobbyWindow extends javax.swing.JFrame {
                     new String(builder), false);
             user.setLevel(flags);
         }
+        public String getUserHtml(User user) {
+            return user.getHtml(m_colours.getColour(user.getName()));
+        }
         
         class UserCellRenderer extends JLabel implements ListCellRenderer {
             public Component getListCellRendererComponent(JList list,
                     Object value, int index, boolean isSelected,
                     boolean cellHasFocus) {
-                User user = getUser(value.toString());
-                setText(user.getHtml());
+                User user = (User)value;
+                setText("<html>" + getUserHtml(user) + "</html>");
                 int level = user.getLevel();
                 if (level > 0) {
                     setIcon(m_icons[level - 1]);
@@ -186,33 +185,82 @@ public class LobbyWindow extends javax.swing.JFrame {
         public ListCellRenderer getRenderer() {
             return new UserCellRenderer();
         }
-
         public void sort() {
             m_users.sort();
         }
-
         public String getTopic() {
             return m_topic;
         }
-
         public void setTopic(String topic) {
             m_topic = topic;
         }
-
         public String getName() {
             return m_name;
         }
-
         int getId() {
             return m_id;
         }
-
         public User getUser(String name) {
             return m_users.getUser(name);
         }
-
         public int getType() {
             return m_type;
+        }
+    }
+
+    /**
+     * Algorithm for assigning to each string a colour that contrasts well with
+     * the background
+     */
+    public static class ColourMap {
+        private static final int BRIGHTNESS_DELTA = 125000;
+        private static final int COLOUR_DELTA = 500;
+
+        private static final Random m_random = new Random(314159);
+        private static final Color[] m_colours = new Color[255];
+        private static int getBrightness(Color c) {
+            return c.getRed() * 299 + c.getGreen() * 587 + c.getBlue() * 114;
+        }
+        private static int getDifference(Color c1, Color c2) {
+            int r1 = c1.getRed();
+            int g1 = c1.getGreen();
+            int b1 = c1.getBlue();
+            int r2 = c2.getRed();
+            int g2 = c2.getGreen();
+            int b2 = c2.getBlue();
+            return Math.max(r1, r2) - Math.min(r1, r2)
+                    + Math.max(g1, g2) - Math.min(g1, g2)
+                    + Math.max(b1, b2) - Math.min(b1, b2);
+        }
+        private static Color getColour() {
+            int r = m_random.nextInt(256);
+            int g = m_random.nextInt(256);
+            int b = m_random.nextInt(256);
+            return new Color(r, g, b);
+        }
+        private static Color getVisibleColour(Color background) {
+            while (true) {
+                Color c = getColour();
+                int b = getBrightness(c);
+                int delta = Math.abs(b - getBrightness(background));
+                if ((delta > BRIGHTNESS_DELTA)
+                        && (getDifference(c, background) > COLOUR_DELTA))
+                    return c;
+            }
+        }
+        public ColourMap(Color background) {
+            Set set = new HashSet();
+            for (int i = 0; i < m_colours.length; ++i) {
+                Color c = getVisibleColour(background);
+                while (set.contains(c)) {
+                    c = getVisibleColour(background);
+                }
+                set.add(c);
+            }
+            set.toArray(m_colours);
+        }
+        public Color getColour(Object key) {
+            return m_colours[Math.abs(key.hashCode() % m_colours.length)];
         }
     }
 
@@ -276,15 +324,18 @@ public class LobbyWindow extends javax.swing.JFrame {
         public String toString() {
             return m_name;
         }
-        public String getHtml() {
+        public String getHtml(Color c) {
             if (m_level != -1) {
-                String colour = "rgb(0, 0, 0)"; // black for now
+                int r = c.getRed();
+                int g = c.getGreen();
+                int b = c.getBlue();
+                String colour = "rgb(" + r + "," + g + "," + b + ")";
                 String style = (m_battles.size() > 0) ? "font-style: italic;" : "";
-                return "<html><font style='color: "
-                    + colour + style + "'>" + m_name + "</font></html>";
+                return "<font style='color: "
+                    + colour + style + "'>" + m_name + "</font>";
             }
-            return "<html><font style='text-decoration: line-through;'>"
-                    + m_name + "</font></html>";
+            return "<font style='text-decoration: line-through;'>"
+                    + m_name + "</font>";
         }
     }
 
@@ -473,8 +524,10 @@ public class LobbyWindow extends javax.swing.JFrame {
     public void handleChannelMessage(int id, String user, String message) {
         Channel channel = m_channels.get(id);
         if (channel != null) {
-            String prefix = channel.getUser(user).getPrefix();
-            showChannelMessage(channel, prefix + user, message, true);
+            User u = channel.getUser(user);
+            String prefix = u.getPrefix();
+            showChannelMessage(channel,
+                    prefix + channel.getUserHtml(u), message, true);
         }
     }
 
