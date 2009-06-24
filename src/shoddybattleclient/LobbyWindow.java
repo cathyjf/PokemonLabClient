@@ -69,7 +69,7 @@ public class LobbyWindow extends javax.swing.JFrame {
         private int m_flags;
         private ChatPane m_chat;
         // TOOD: Do not assume the background is white.
-        private ColourMap m_colours = new ColourMap(Color.WHITE);
+        private static ColourMap m_colours = new ColourMap(Color.WHITE);
         private UserListModel m_users =
                 new UserListModel(new ArrayList<User>());
 
@@ -124,30 +124,28 @@ public class LobbyWindow extends javax.swing.JFrame {
             int diff = old ^ flags;
             if (diff == 0)
                 return;
-            // TODO: Put these messages in english.lang.
-            StringBuilder builder = new StringBuilder("<b> *** ");
-            if (setter.length() != 0) {
-                builder.append(setter + " sets mode ");
-            } else {
-                builder.append("Mode ");
-            }
+            StringBuilder modes = new StringBuilder();
             String last = null;
             for (int i = 0; i < 4; ++i) {
                 int bit = 1 << i;
                 if ((diff & bit) != 0) {
                     String prefix = ((old & bit) != 0) ? "-" : "+";
                     if (!prefix.equals(last)) {
-                        builder.append(prefix);
+                        modes.append(prefix);
                     }
                     last = prefix;
-                    builder.append(MODES[i]);
+                    modes.append(MODES[i]);
                 }
             }
-            builder.append(" ");
-            builder.append(name);
-            builder.append(".</b>");
+            String msg;
+            if (setter.length() > 0) {
+                msg = Text.getText(26, 0, new String[] {setter, modes.toString(), name});
+            } else {
+                msg = Text.getText(26, 1, new String[] {modes.toString(), name});
+            }
+            msg = "<font class='mode'>" + msg + "</font>";
             m_chat.getLobby().showChannelMessage(this, null,
-                    new String(builder), false);
+                    msg, false);
             user.setLevel(flags);
         }
         public String getUserHtml(User user) {
@@ -212,10 +210,10 @@ public class LobbyWindow extends javax.swing.JFrame {
      * the background
      */
     public static class ColourMap {
-        private static final int BRIGHTNESS_DELTA = 0;//100000;
+        private static final int BRIGHTNESS_DELTA = 40000;//100000;
         private static final int COLOUR_DELTA = 500;
 
-        private static final Random m_random = new Random(System.currentTimeMillis());
+        private static final Random m_random = new Random(2718281);
         private static final Color[] m_colours = new Color[255];
         private static int getBrightness(Color c) {
             return c.getRed() * 299 + c.getGreen() * 587 + c.getBlue() * 114;
@@ -333,7 +331,7 @@ public class LobbyWindow extends javax.swing.JFrame {
                 return "<font class='name' style='color: "
                     + colour + style + "'>" + m_name + "</font>";
             }
-            return "<font style='text-decoration: line-through;'>"
+            return "<font class='mute'>"
                     + m_name + "</font>";
         }
     }

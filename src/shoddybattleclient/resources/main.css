@@ -36,3 +36,11 @@ a {
     font-weight: bold;
     color: maroon;
 }
+
+.muted {
+    text-decoration: line-through;
+}
+
+.mode {
+    font-weight: bold;
+}
