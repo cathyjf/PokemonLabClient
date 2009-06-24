@@ -76,7 +76,7 @@ public class CloseableTabIcon extends Component implements Icon {
         g2.drawString(m_text, x, top);
         if (m_highlight) {
             g2.setColor(new Color(200, 200, 200, 200));
-            g2.fillOval(x + m_strWidth + BUFFER - 4, top - 11, 15, 15);
+            g2.fillOval(x + m_strWidth + BUFFER - 3, top - 10, 13, 13);
         }
         g2.drawImage(m_x, x + m_strWidth + BUFFER, top - 7, c);
         g2.dispose();
