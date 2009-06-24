@@ -128,6 +128,12 @@ public class ServerConnect extends javax.swing.JFrame {
 
         jLabel3.setText("Password:");
 
+        txtLoginName.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtLoginNameKeyPressed(evt);
+            }
+        });
+
         cmdLogIn.setText("Log In");
         cmdLogIn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -154,8 +160,8 @@ public class ServerConnect extends javax.swing.JFrame {
                             .add(jLabel3))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(txtLoginPassword, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
-                            .add(txtLoginName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)))
+                            .add(txtLoginPassword, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
+                            .add(txtLoginName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)))
                     .add(cmdLogIn))
                 .addContainerGap())
         );
@@ -184,10 +190,28 @@ public class ServerConnect extends javax.swing.JFrame {
 
         jLabel5.setText("Password:");
 
+        txtRegisterName.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtRegisterNameKeyPressed(evt);
+            }
+        });
+
         cmdRegister.setText("Register");
         cmdRegister.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmdRegisterActionPerformed(evt);
+            }
+        });
+
+        txtRegisterPassword.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtRegisterPasswordKeyPressed(evt);
+            }
+        });
+
+        txtRegisterConfirm.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtRegisterConfirmKeyPressed(evt);
             }
         });
 
@@ -207,9 +231,9 @@ public class ServerConnect extends javax.swing.JFrame {
                             .add(jLabel1))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, txtRegisterPassword, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, txtRegisterName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
-                            .add(txtRegisterConfirm, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)))
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, txtRegisterPassword, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, txtRegisterName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
+                            .add(txtRegisterConfirm, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)))
                     .add(cmdRegister))
                 .addContainerGap())
         );
@@ -320,6 +344,10 @@ public class ServerConnect extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this,
                 "Error: User name must be shorter than 19 characters.");
     }
+
+    public void informAlreadyLoggedIn() {
+        JOptionPane.showMessageDialog(this, "Error: You are already logged onto this server.");
+    }
     
     public void informRegisterSuccess() {
         // todo: internationalisation
@@ -361,6 +389,24 @@ public class ServerConnect extends javax.swing.JFrame {
             cmdLogInActionPerformed(null);
         }
     }//GEN-LAST:event_txtLoginPasswordKeyPressed
+
+    private void txtLoginNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtLoginNameKeyPressed
+        txtLoginPasswordKeyPressed(evt);
+    }//GEN-LAST:event_txtLoginNameKeyPressed
+
+    private void txtRegisterNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRegisterNameKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            cmdRegisterActionPerformed(null);
+        }
+    }//GEN-LAST:event_txtRegisterNameKeyPressed
+
+    private void txtRegisterPasswordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRegisterPasswordKeyPressed
+        txtRegisterNameKeyPressed(evt);
+    }//GEN-LAST:event_txtRegisterPasswordKeyPressed
+
+    private void txtRegisterConfirmKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRegisterConfirmKeyPressed
+        txtRegisterNameKeyPressed(evt);
+    }//GEN-LAST:event_txtRegisterConfirmKeyPressed
 
     /**
     * @param args the command line arguments

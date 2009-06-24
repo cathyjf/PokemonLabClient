@@ -551,10 +551,30 @@ public class LobbyWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenu2 = new javax.swing.JMenu();
         btnChallenge = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         listUsers = new javax.swing.JList();
         tabChats = new CloseableTabbedPane();
+        jMenuBar2 = new javax.swing.JMenuBar();
+        jMenu3 = new javax.swing.JMenu();
+        mnuJoinMain = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JSeparator();
+        mnuLeaveServer = new javax.swing.JMenuItem();
+        mnuQuit = new javax.swing.JMenuItem();
+        jMenu4 = new javax.swing.JMenu();
+        chkAway = new javax.swing.JCheckBoxMenuItem();
+        chkIgnoreChallenge = new javax.swing.JCheckBoxMenuItem();
+        jSeparator1 = new javax.swing.JSeparator();
+        mnuPersonalMessage = new javax.swing.JMenuItem();
+
+        jMenu1.setText("File");
+        jMenuBar1.add(jMenu1);
+
+        jMenu2.setText("Edit");
+        jMenuBar1.add(jMenu2);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setLocationByPlatform(true);
@@ -572,6 +592,56 @@ public class LobbyWindow extends javax.swing.JFrame {
         });
 
         jScrollPane1.setViewportView(listUsers);
+
+        jMenu3.setText("File");
+
+        mnuJoinMain.setText("Join #main");
+        mnuJoinMain.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuJoinMainActionPerformed(evt);
+            }
+        });
+        jMenu3.add(mnuJoinMain);
+        jMenu3.add(jSeparator2);
+
+        mnuLeaveServer.setText("Leave Server");
+        mnuLeaveServer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuLeaveServerActionPerformed(evt);
+            }
+        });
+        jMenu3.add(mnuLeaveServer);
+
+        mnuQuit.setText("Quit");
+        mnuQuit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuQuitActionPerformed(evt);
+            }
+        });
+        jMenu3.add(mnuQuit);
+
+        jMenuBar2.add(jMenu3);
+
+        jMenu4.setText("Status");
+
+        chkAway.setText("Away");
+        jMenu4.add(chkAway);
+
+        chkIgnoreChallenge.setText("Ignoring Challenges");
+        jMenu4.add(chkIgnoreChallenge);
+        jMenu4.add(jSeparator1);
+
+        mnuPersonalMessage.setText("Personal Message");
+        mnuPersonalMessage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuPersonalMessageActionPerformed(evt);
+            }
+        });
+        jMenu4.add(mnuPersonalMessage);
+
+        jMenuBar2.add(jMenu4);
+
+        setJMenuBar(jMenuBar2);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -592,10 +662,10 @@ public class LobbyWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(layout.createSequentialGroup()
-                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
                         .add(9, 9, 9)
                         .add(btnChallenge))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, tabChats, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, tabChats, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 361, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -603,9 +673,7 @@ public class LobbyWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        int response = JOptionPane.showConfirmDialog(this, "Are you sure you " +
-                "want to leave this server?", "Disconnecting...", JOptionPane.YES_NO_OPTION);
-        if (response == JOptionPane.YES_OPTION) {
+        if (confirmLeave()) {
             this.dispose();
             m_link.close();
             new WelcomeWindow().setVisible(true);
@@ -624,6 +692,31 @@ public class LobbyWindow extends javax.swing.JFrame {
         }
 }//GEN-LAST:event_btnChallengeActionPerformed
 
+    private void mnuPersonalMessageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuPersonalMessageActionPerformed
+        new PersonalMessageDialog(m_link).setVisible(true);
+    }//GEN-LAST:event_mnuPersonalMessageActionPerformed
+
+    private void mnuQuitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuQuitActionPerformed
+        if (confirmLeave()) {
+            System.exit(0);
+        }
+    }//GEN-LAST:event_mnuQuitActionPerformed
+
+    private void mnuLeaveServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLeaveServerActionPerformed
+        formWindowClosing(null);
+    }//GEN-LAST:event_mnuLeaveServerActionPerformed
+
+    private void mnuJoinMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuJoinMainActionPerformed
+        m_link.joinChannel("main");
+    }//GEN-LAST:event_mnuJoinMainActionPerformed
+
+    // prompts the user to confirm that they wish to leave the server
+    private boolean confirmLeave() {
+        int response = JOptionPane.showConfirmDialog(this, "Are you sure you " +
+                "want to leave this server?", "Disconnecting...", JOptionPane.YES_NO_OPTION);
+        return (response == JOptionPane.YES_OPTION);
+    }
+
     /**
     * @param args the command line arguments
     */
@@ -638,8 +731,22 @@ public class LobbyWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChallenge;
+    private javax.swing.JCheckBoxMenuItem chkAway;
+    private javax.swing.JCheckBoxMenuItem chkIgnoreChallenge;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenu jMenu4;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuBar jMenuBar2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JList listUsers;
+    private javax.swing.JMenuItem mnuJoinMain;
+    private javax.swing.JMenuItem mnuLeaveServer;
+    private javax.swing.JMenuItem mnuPersonalMessage;
+    private javax.swing.JMenuItem mnuQuit;
     private javax.swing.JTabbedPane tabChats;
     // End of variables declaration//GEN-END:variables
 

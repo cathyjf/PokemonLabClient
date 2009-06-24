@@ -103,8 +103,8 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="txtLoginPassword" pref="195" max="32767" attributes="1"/>
-                                  <Component id="txtLoginName" alignment="0" pref="195" max="32767" attributes="1"/>
+                                  <Component id="txtLoginPassword" pref="227" max="32767" attributes="1"/>
+                                  <Component id="txtLoginName" alignment="0" pref="227" max="32767" attributes="1"/>
                               </Group>
                           </Group>
                           <Component id="cmdLogIn" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -145,6 +145,9 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtLoginName">
+              <Events>
+                <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtLoginNameKeyPressed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="cmdLogIn">
               <Properties>
@@ -190,9 +193,9 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="txtRegisterPassword" alignment="0" pref="195" max="32767" attributes="1"/>
-                                  <Component id="txtRegisterName" alignment="0" pref="195" max="32767" attributes="1"/>
-                                  <Component id="txtRegisterConfirm" alignment="1" pref="195" max="32767" attributes="1"/>
+                                  <Component id="txtRegisterPassword" alignment="0" pref="227" max="32767" attributes="1"/>
+                                  <Component id="txtRegisterName" alignment="0" pref="227" max="32767" attributes="1"/>
+                                  <Component id="txtRegisterConfirm" alignment="1" pref="227" max="32767" attributes="1"/>
                               </Group>
                           </Group>
                           <Component id="cmdRegister" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -238,6 +241,9 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtRegisterName">
+              <Events>
+                <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtRegisterNameKeyPressed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="cmdRegister">
               <Properties>
@@ -248,8 +254,14 @@
               </Events>
             </Component>
             <Component class="javax.swing.JPasswordField" name="txtRegisterPassword">
+              <Events>
+                <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtRegisterPasswordKeyPressed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JPasswordField" name="txtRegisterConfirm">
+              <Events>
+                <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtRegisterConfirmKeyPressed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel1">
               <Properties>
