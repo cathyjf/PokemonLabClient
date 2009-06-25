@@ -151,6 +151,10 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab {
         }
     }
 
+    public String getOpponent() {
+        return m_opponent;
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is

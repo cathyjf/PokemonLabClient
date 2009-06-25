@@ -25,6 +25,7 @@ package shoddybattleclient.utils;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.util.*;
 
 /**
  *
@@ -38,9 +39,25 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener, M
         public boolean informClosed();
     }
 
+    public interface TabCloseListener {
+        public void tabClosed(Component c);
+    }
+
+    private java.util.List<TabCloseListener> m_listeners = new ArrayList<TabCloseListener>();
+
     public CloseableTabbedPane() {
         addMouseListener(this);
         addMouseMotionListener(this);
+    }
+
+    public void addTabCloseListener(TabCloseListener lst) {
+        m_listeners.add(lst);
+    }
+
+    public void removeTabCloseListener(TabCloseListener val) {
+        for (TabCloseListener lst : m_listeners) {
+            if (lst.equals(val)) m_listeners.remove(lst);
+        }
     }
 
     @Override
@@ -62,6 +79,9 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener, M
             if (!cTab.informClosed()) return;
         }
         super.removeTabAt(idx);
+        for (TabCloseListener lst : m_listeners) {
+            lst.tabClosed(tab);
+        }
     }
 
     public void mouseReleased(MouseEvent e) {

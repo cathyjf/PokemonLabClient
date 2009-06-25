@@ -164,6 +164,8 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     // the move that we are targeting for
     private int m_selectedMove = -1;
 
+    private boolean m_finished = false;
+
     public int getPartySize() {
         return m_n;
     }
@@ -255,11 +257,16 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
 
     public void informVictory(int party) {
         // todo: improve this
+        m_finished = true;
+        String msg;
         if (party == -1) {
-            addMessage(null, "It's a draw!");
+            msg = "It's a draw!";
         } else {
-            addMessage(null, m_users[party] + " wins!");
+            msg = Text.formatTrainer(m_users[party], m_participant, party) + " wins!";
         }
+        msg = Text.addClass(msg, "victory");
+        addMessage(null, msg, false);
+        System.out.println(msg);
     }
 
     private void createButtons() {
@@ -854,6 +861,10 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     }//GEN-LAST:event_txtChatKeyReleased
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        if (m_finished) {
+            dispose();
+            return;
+        }
         int result = JOptionPane.showConfirmDialog(this, "Leaving will cause you " +
                 "to forfeit this battle. Are you sure you want to leave?",
                 "Leaving Battle", JOptionPane.YES_NO_OPTION);

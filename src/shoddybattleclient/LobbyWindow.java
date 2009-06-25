@@ -37,12 +37,13 @@ import javax.swing.event.ChangeListener;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.network.ServerLink.ChallengeMediator;
 import shoddybattleclient.utils.*;
+import shoddybattleclient.utils.CloseableTabbedPane.TabCloseListener;
 
 /**
  *
  * @author ben
  */
-public class LobbyWindow extends javax.swing.JFrame {
+public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener {
 
     public static class Channel {
         public static final int PROTECTED = 1; // +a
@@ -401,6 +402,8 @@ public class LobbyWindow extends javax.swing.JFrame {
                 listUsers.setCellRenderer(channel.getRenderer());
             }
         });
+        
+        ((CloseableTabbedPane)tabChats).addTabCloseListener(this);
 
         setTitle("Shoddy Battle - " + userName);
 
@@ -554,6 +557,13 @@ public class LobbyWindow extends javax.swing.JFrame {
 
     public void openUserPanel(String user, int generation, int n) {
         openUserPanel(user, true, generation, n);
+    }
+
+    public void tabClosed(Component c) {
+        if (c instanceof UserPanel) {
+            UserPanel panel = (UserPanel)c;
+            m_userPanels.remove(panel.getOpponent());
+        }
     }
 
     /** This method is called from within the constructor to

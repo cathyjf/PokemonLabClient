@@ -93,6 +93,10 @@ public class Text {
         return "<font class='" + style + "'>" + name + "</font>";
     }
 
+    public static String addClass(String txt, String cls) {
+        return "<b class='" + cls + "'>" + txt + "</b>";
+    }
+
     public static String getText(int cat, int id, String[] args) {
         return getText(cat, id, args, null);
     }
