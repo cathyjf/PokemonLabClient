@@ -28,13 +28,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import javax.swing.JScrollPane;
+import shoddybattleclient.utils.CloseableTabbedPane.CloseableTab;
 import shoddybattleclient.utils.HTMLPane;
 
 /**
  *
  * @author ben
  */
-public class ChatPane extends javax.swing.JPanel {
+public class ChatPane extends javax.swing.JPanel implements CloseableTab {
 
     public static class CommandException extends Exception {
         public CommandException(String message) {
@@ -118,8 +119,6 @@ public class ChatPane extends javax.swing.JPanel {
         action = action.substring(1);
         if (action.length() == 1) {
             String user = users;
-            String verb = add ? "Adding" : "Removing";
-            //System.out.println(verb + " " + action + " to " + user);
             char c = action.charAt(0);
             switch (c) {
                 case 'a':
@@ -188,6 +187,11 @@ public class ChatPane extends javax.swing.JPanel {
 
     public HTMLPane getChat() {
         return m_chatPane;
+    }
+
+    public boolean informClosed() {
+        //todo: leave this channel
+        return true;
     }
 
     /** This method is called from within the constructor to

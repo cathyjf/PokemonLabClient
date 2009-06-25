@@ -28,14 +28,12 @@ import java.awt.Component;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.KeyEvent;
 import java.net.URL;
 import javax.swing.*;
 import java.util.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import shoddybattleclient.ChallengeNotifier.Challenge;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.network.ServerLink.ChallengeMediator;
 import shoddybattleclient.utils.*;
@@ -331,16 +329,15 @@ public class LobbyWindow extends javax.swing.JFrame {
                 return "<font class='name' style='color: "
                     + colour + style + "'>" + m_name + "</font>";
             }
-            return "<font class='mute'>"
+            return "<font class='muted'>"
                     + m_name + "</font>";
         }
     }
 
-    //private ChatPane m_chat;
-    private ChallengeNotifier m_notifier;
     private String m_name;
     private ServerLink m_link;
     private Map<Integer, Channel> m_channels = new HashMap<Integer, Channel>();
+    private Map<String, UserPanel>  m_userPanels = new HashMap<String, UserPanel>();
 
     public Channel getChannel(String name) {
         for (Channel i : m_channels.values()) {
@@ -355,12 +352,6 @@ public class LobbyWindow extends javax.swing.JFrame {
         m_channels.put(channel.m_id, channel);
         
         ChatPane c = new ChatPane(channel, this, m_name);
-        c.getChat().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                m_notifier.processClick(e);
-            }
-        });
         channel.setChatPane(c);
 
         if (channel.getType() == Channel.TYPE_BATTLE)
@@ -398,14 +389,11 @@ public class LobbyWindow extends javax.swing.JFrame {
         m_link = link;
         m_link.setLobbyWindow(this);
         m_name = userName;
-        m_notifier = new ChallengeNotifier(this);
-        setGlassPane(m_notifier);
 
         tabChats.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 Component comp = tabChats.getSelectedComponent();
                 boolean isChat = comp instanceof ChatPane;
-                m_notifier.setVisible(isChat);
                 if (!isChat) return;
                 ChatPane c = (ChatPane)comp;
                 Channel channel = c.getChannel();
@@ -415,6 +403,12 @@ public class LobbyWindow extends javax.swing.JFrame {
         });
 
         setTitle("Shoddy Battle - " + userName);
+
+        mnuQuit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,
+              Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+
+        mnuLeaveServer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W,
+              Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     }
 
     public ServerLink getLink() {
@@ -465,19 +459,20 @@ public class LobbyWindow extends javax.swing.JFrame {
     }
 
     public void addChallenge(String name, boolean incoming, int gen, int n) {
-        m_notifier.addChallenge(name, incoming, gen, n);
+        openUserPanel(name, gen, n);
     }
 
     public ChallengeMediator getChallengeMediator(String name) {
-        return m_notifier.getMediator(name);
+        UserPanel panel = m_userPanels.get(name);
+        if (panel != null) {
+            return panel.getMediator();
+        } else {
+            return null;
+        }
     }
 
     public void cancelChallenge(String name) {
-        m_notifier.removeChallenge(name);
-    }
-
-    public void cancelChallenge(int id) {
-        m_notifier.removeChallenge(id);
+        
     }
 
     public ChatPane getChat() {
@@ -531,15 +526,34 @@ public class LobbyWindow extends javax.swing.JFrame {
         tabChats.removeTabAt(index);
     }
 
-    public void openUserPanel(String user, boolean incoming, Challenge c) {
-        int index = tabChats.getTabCount();
-        UserPanel panel = new UserPanel(user, m_link, index);
-        tabChats.add(user, panel);
-        tabChats.setSelectedComponent(panel);
+    public void openUserPanel(String user, boolean incoming, int generation, int n) {
+        UserPanel panel = m_userPanels.get(user);
+        if (panel == null) {
+            int index = tabChats.getTabCount();
+            panel = new UserPanel(user, m_link, index);
+            tabChats.add(user, panel);
+            m_userPanels.put(user, panel);
+        }
         if (incoming) {
             panel.setIncoming();
-            panel.setOptions(c);
+            panel.setOptions(n, generation);
+        } else {
+            tabChats.setSelectedComponent(panel);
         }
+    }
+
+    public void removeUserPanel(String user) {
+        UserPanel panel = m_userPanels.get(user);
+        panel.close();
+        m_userPanels.remove(user);
+    }
+
+    public void openUserPanel(String user) {
+        openUserPanel(user, false, 0, 0);
+    }
+
+    public void openUserPanel(String user, int generation, int n) {
+        openUserPanel(user, true, generation, n);
     }
 
     /** This method is called from within the constructor to
@@ -688,7 +702,7 @@ public class LobbyWindow extends javax.swing.JFrame {
             // todo: internationalisation
             JOptionPane.showMessageDialog(this, "You cannot challenge yourself.");
         } else {
-            openUserPanel(opponent, false, null);
+            openUserPanel(opponent);
         }
 }//GEN-LAST:event_btnChallengeActionPerformed
 

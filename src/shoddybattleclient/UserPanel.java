@@ -32,18 +32,18 @@ import java.awt.MediaTracker;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import shoddybattleclient.ChallengeNotifier.Challenge;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.network.ServerLink.ChallengeMediator;
 import shoddybattleclient.shoddybattle.Pokemon;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
+import shoddybattleclient.utils.CloseableTabbedPane.CloseableTab;
 import shoddybattleclient.utils.TeamFileParser;
 
 /**
  *
  * @author ben
  */
-public class UserPanel extends javax.swing.JPanel {
+public class UserPanel extends javax.swing.JPanel implements CloseableTab {
 
     private static class SpritePanel extends JPanel {
         private Image m_image;
@@ -81,7 +81,9 @@ public class UserPanel extends javax.swing.JPanel {
     private int m_idx;
     private Pokemon[] m_team;
     private boolean m_incoming = false;
-    private Challenge m_challenge;
+    private int m_n;
+    private int m_generation;
+    private boolean m_waiting = false;
 
     /** Creates new form UserPanel */
     public UserPanel(String name, ServerLink link, int index) {
@@ -105,10 +107,48 @@ public class UserPanel extends javax.swing.JPanel {
         m_incoming = true;
     }
 
-    public void setOptions(Challenge c) {
-        cmbN.setSelectedIndex(c.getN() - 1);
-        cmbGen.setSelectedIndex(c.getGeneration());
-        m_challenge = c;
+    public void setOptions(int n, int generation) {
+        if (m_waiting) return;
+        m_n = n;
+        m_generation = generation;
+        cmbN.setSelectedIndex(n - 1);
+        cmbGen.setSelectedIndex(generation);
+    }
+
+    public ChallengeMediator getMediator() {
+        return new ChallengeMediator() {
+            public Pokemon[] getTeam() {
+                return m_team;
+            }
+            public void informResolved(boolean accepted) {
+                close();
+            }
+            public String getOpponent() {
+                return m_opponent;
+            }
+            public int getGeneration() {
+                return m_generation;
+            }
+            public int getActivePartySize() {
+                return m_n;
+            }
+        };
+    }
+
+    public void close() {
+        m_link.getLobby().closeTab(m_idx);
+    }
+
+    public boolean informClosed() {
+        if (m_waiting) {
+            return JOptionPane.showConfirmDialog(this,
+                    "Are you sure you wish to cancel your challenge?") == JOptionPane.YES_OPTION;
+        } else {
+            if (m_incoming) {
+                m_link.resolveChallenge(m_opponent, false, null);
+            }
+            return true;
+        }
     }
 
     /** This method is called from within the constructor to
@@ -325,7 +365,10 @@ public class UserPanel extends javax.swing.JPanel {
                         // todo: internationalisation
                         JOptionPane.showMessageDialog(UserPanel.this,
                                 m_opponent + " rejected the challenge.");
+                        m_waiting = false;
+                        close();
                     }
+                    m_waiting = false;
                 }
                 public String getOpponent() {
                     return m_opponent;
@@ -337,8 +380,10 @@ public class UserPanel extends javax.swing.JPanel {
                     return Integer.parseInt((String)cmbN.getSelectedItem());
                 }
             });
+            btnChallenge.setEnabled(false);
+            btnLoad.setEnabled(false);
+            m_waiting = true;
         }
-        m_link.getLobby().closeTab(m_idx);
     }//GEN-LAST:event_btnChallengeActionPerformed
 
     private void btnLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadActionPerformed
@@ -359,10 +404,6 @@ public class UserPanel extends javax.swing.JPanel {
             }
             btnChallenge.setEnabled(true);
         }
-        if (m_challenge != null) {
-            m_challenge.setTeam(m_team);
-        }
-
     }//GEN-LAST:event_btnLoadActionPerformed
 
 

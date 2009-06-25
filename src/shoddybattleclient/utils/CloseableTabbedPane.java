@@ -32,6 +32,12 @@ import javax.swing.*;
  */
 public class CloseableTabbedPane extends JTabbedPane implements MouseListener, MouseMotionListener {
 
+    public interface CloseableTab {
+        // Tell a tab that it is closing
+        // Return whether it should continue to close
+        public boolean informClosed();
+    }
+
     public CloseableTabbedPane() {
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -46,6 +52,16 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener, M
 
     private int indexAt(MouseEvent e) {
         return getUI().tabForCoordinate(this, e.getX(), e.getY());
+    }
+
+    @Override
+    public void removeTabAt(int idx) {
+        Component tab = getComponentAt(idx);
+        if (tab instanceof CloseableTab) {
+            CloseableTab cTab = (CloseableTab)tab;
+            if (!cTab.informClosed()) return;
+        }
+        super.removeTabAt(idx);
     }
 
     public void mouseReleased(MouseEvent e) {

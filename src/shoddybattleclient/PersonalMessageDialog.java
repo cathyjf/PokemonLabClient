@@ -66,6 +66,7 @@ public class PersonalMessageDialog extends javax.swing.JFrame {
         lblLimit = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setLocationByPlatform(true);
 
         lblInfo.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 

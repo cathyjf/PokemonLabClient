@@ -570,6 +570,7 @@ public class ServerLink extends Thread {
                             mediator.getTeam());
 
                     link.m_battles.put(id, wnd);
+                    link.m_lobby.removeUserPanel(user);
 
                     wnd.setVisible(true);
                 }
@@ -854,6 +855,9 @@ public class ServerLink extends Thread {
                             ally);
                     String number;
 
+                    int id = (delta > 0) ? 13 : 14;
+                    delta = Math.abs(delta);
+
                     if (ally) {
                         // If the pokemon is on our team, we can show its
                         // exact health change.
@@ -865,7 +869,7 @@ public class ServerLink extends Thread {
                         number = percent + "%";
                     }
 
-                    String message = Text.getText(4, 13,
+                    String message = Text.getText(4, id,
                             new String[] { name, number });
                     wnd.addMessage(null, message, false);
                 }
