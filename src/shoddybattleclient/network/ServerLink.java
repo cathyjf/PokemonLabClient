@@ -395,6 +395,9 @@ public class ServerLink extends Thread {
                         case 7:
                             conn.informSuccessfulLogin();
                             break;
+                        case 8:
+                            conn.informAlreadyLoggedIn();
+                            break;
                     }
                 }
             });
