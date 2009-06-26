@@ -987,7 +987,9 @@ public class ServerLink extends Thread {
 
     public ServerLink(String host, int port)
             throws IOException, UnknownHostException {
-        m_socket = new Socket(InetAddress.getByName(host), port);
+        m_socket = new Socket();
+        m_socket.bind(null);
+        m_socket.connect(new InetSocketAddress(host, port), 5000);
         m_input = new DataInputStream(m_socket.getInputStream());
         m_output = new DataOutputStream(m_socket.getOutputStream());
     }

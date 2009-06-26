@@ -39,6 +39,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
 import shoddybattleclient.ChatPane.CommandException;
 import shoddybattleclient.GameVisualisation.VisualPokemon;
+import shoddybattleclient.LobbyWindow.Channel;
+import shoddybattleclient.LobbyWindow.Channel.UserCellRenderer;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.shoddybattle.*;
 import shoddybattleclient.utils.*;
@@ -164,7 +166,11 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     // the move that we are targeting for
     private int m_selectedMove = -1;
 
+    // whether the battle is finished
     private boolean m_finished = false;
+
+    // the underlying channel
+    private Channel m_channel;
 
     public int getPartySize() {
         return m_n;
@@ -192,6 +198,11 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         m_participant = participant;
         m_users = users;
         m_pokemon = team;
+
+        m_channel = m_link.getLobby().getChannel(fid);
+        listUsers.setModel(m_channel.getModel());
+        listUsers.setCellRenderer(m_channel.getRenderer());
+
         m_pp = new int[m_pokemon.length][Pokemon.MOVE_COUNT];
         for (int i = 0; i < m_pp.length; ++i) {
             for (int j = 0; j < Pokemon.MOVE_COUNT; ++j) {
@@ -199,10 +210,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             }
         }
 
-        // -- temp ---
-        listUsers.setListData(users);
-        //setUsers(users);
-        // -- end temp ---
+        
 
         if (m_participant == 0) {
             lblPlayer0.setText(users[0]);
@@ -247,6 +255,11 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         }
     }
 
+    public void refreshUsers() {
+        listUsers.setModel(m_channel.getModel());
+        listUsers.setCellRenderer(m_channel.getRenderer());
+    }
+
     public String getTrainer(int party) {
         return m_users[party];
     }
@@ -266,7 +279,6 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         }
         msg = Text.addClass(msg, "victory");
         addMessage(null, msg, false);
-        System.out.println(msg);
     }
 
     private void createButtons() {

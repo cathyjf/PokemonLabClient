@@ -355,9 +355,9 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         ChatPane c = new ChatPane(channel, this, m_name);
         channel.setChatPane(c);
 
-        if (channel.getType() == Channel.TYPE_BATTLE)
+        if (channel.getType() == Channel.TYPE_BATTLE) {
             return;
-        
+        }
         String name = channel.getName();
         c.addMessage(null, "<b>The topic for #"
                 + name + " is: "
@@ -416,24 +416,6 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
 
     public ServerLink getLink() {
         return m_link;
-    }
-
-    /**
-     * Returns the bounds of the main chat pane
-     */
-    public Rectangle getChatBounds() {
-        Component c = tabChats.getComponentAt(0);
-        if (!(c instanceof ChatPane)) return null;
-        ChatPane chat = (ChatPane)c;
-        Point p = chat.getPane().getLocation();
-        Point p2 = chat.getLocation();
-        Point p3 = tabChats.getLocation();
-        JScrollPane pane = chat.getPane();
-        int w = pane.getWidth() - pane.getVerticalScrollBar().getWidth();
-        int h = pane.getHeight();
-        int x = p.x + p2.x + p3.x;
-        int y = p.y + p2.y + p3.y;
-        return new Rectangle(x, y, w, h);
     }
 
     public static void viewWebPage(URL page) {

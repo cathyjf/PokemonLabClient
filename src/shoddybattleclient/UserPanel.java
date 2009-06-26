@@ -142,7 +142,8 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab {
     public boolean informClosed() {
         if (m_waiting) {
             return JOptionPane.showConfirmDialog(this,
-                    "Are you sure you wish to cancel your challenge?") == JOptionPane.YES_OPTION;
+                    "Are you sure you wish to cancel your challenge?", "Cancel Challenge",
+                     JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
         } else {
             if (m_incoming) {
                 m_link.resolveChallenge(m_opponent, false, null);
