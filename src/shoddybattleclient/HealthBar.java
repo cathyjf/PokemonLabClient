@@ -18,10 +18,12 @@
  */
 
 package shoddybattleclient;
+import java.awt.event.ActionEvent;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -29,13 +31,15 @@ import java.awt.event.MouseEvent;
  *
  * @author Catherine
  */
-public class HealthBar extends JPanel {
+public class HealthBar extends JPanel implements ActionListener {
     
     private static final Image m_image;
     private int m_numerator = 100;
     private int m_denominator = 100;
     private boolean m_fraction;
-    
+    private double m_ratio = 1.0;
+    private Timer m_timer = new Timer(20, this);
+
     static {
         m_image = Toolkit
                 .getDefaultToolkit()
@@ -61,11 +65,23 @@ public class HealthBar extends JPanel {
         });
     }
     
-    public void setRatio(int numerator, int denominator) {
+    public void setRatio(int numerator, int denominator, boolean animate) {
+        if (!m_timer.isRunning()) {
+            m_ratio = getRatio();
+        }
         if (numerator < 0) numerator = 0;
         m_numerator = numerator;
         m_denominator = denominator;
+        if (animate) {
+            m_timer.start();
+        } else {
+            m_ratio = getRatio();
+        }
         repaint();
+    }
+
+    public void setRatio(int num, int denom) {
+        setRatio(num, denom, true);
     }
 
     private double getRatio() {
@@ -84,7 +100,7 @@ public class HealthBar extends JPanel {
         int height = getHeight();
         g2.setColor(getBackground());
         g2.fillRect(0, 0, width, height);
-        double ratio = getRatio();
+        double ratio = m_ratio;
         int x = (int)((double)width * ratio);
         g2.drawImage(m_image, 0, 0, x, height, this);
         g2.setColor(Color.BLACK);
@@ -110,12 +126,26 @@ public class HealthBar extends JPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(230, 70);
         final HealthBar health = new HealthBar(true);
-        health.setRatio(6, 48);
+        health.setRatio(6, 48, true);
         frame.getContentPane().add(health);
         health.setSize(frame.getSize());
         health.setVisible(true);
         health.setLocation(0, 0);
         frame.setVisible(true);
+    }
+
+    public void actionPerformed(ActionEvent arg0) {
+        double ratio = getRatio();
+        if (m_ratio > ratio) {
+            m_ratio -= 0.02;
+            if (m_ratio < ratio) m_ratio = ratio;
+        } else if (m_ratio < ratio) {
+            m_ratio += 0.02;
+            if (m_ratio > ratio) m_ratio = ratio;
+        } else {
+            m_timer.stop();
+        }
+        repaint();
     }
     
 }

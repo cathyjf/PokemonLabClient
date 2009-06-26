@@ -592,7 +592,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         if (m_n <= 2) {
             HealthBar bar = m_healthBars[party][slot];
             VisualPokemon p = m_visual.getPokemonForSlot(party, slot);
-            bar.setRatio(p.getNumerator(), p.getDenominator());
+            bar.setRatio(p.getNumerator(), p.getDenominator(), false);
         }
     }
 
