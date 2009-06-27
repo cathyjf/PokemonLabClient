@@ -133,7 +133,7 @@
                       <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
                       <Component id="btnChallenge" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="tabChats" alignment="0" pref="361" max="32767" attributes="2"/>
+                  <Component id="tabChats" alignment="0" pref="363" max="32767" attributes="2"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>

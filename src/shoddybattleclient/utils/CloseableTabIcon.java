@@ -23,6 +23,8 @@
 package shoddybattleclient.utils;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 import shoddybattleclient.GameVisualisation;
 
@@ -30,19 +32,26 @@ import shoddybattleclient.GameVisualisation;
  *
  * @author ben
  */
-public class CloseableTabIcon extends Component implements Icon {
+public class CloseableTabIcon implements Icon, ActionListener {
 
+    private static final Color COLOR_NORMAL = Color.BLACK;
+    private static final Color COLOR_FLASH = Color.RED;
+
+    private CloseableTabbedPane m_parent;
     private String m_text;
     private int m_strWidth;
     private static int m_iconH;
     private static int m_iconW;
     private boolean m_highlight = false;
+    private Timer m_timer = new Timer(500, this);
+    private Color m_textColour = COLOR_NORMAL;
 
     private final static Image m_x = GameVisualisation.getImageFromResource("x.gif");
 
     public static final int BUFFER = 6;
 
-    public CloseableTabIcon(JTabbedPane parent, String text, FontMetrics metrics) {
+    public CloseableTabIcon(CloseableTabbedPane parent, String text, FontMetrics metrics) {
+        m_parent = parent;
         m_text = text;
         m_strWidth = metrics.stringWidth(text);
 
@@ -72,11 +81,16 @@ public class CloseableTabIcon extends Component implements Icon {
         final int top = y + 7;
         Graphics2D g2 = (Graphics2D)g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setColor(Color.BLACK);
+        g2.setColor(m_textColour);
         g2.drawString(m_text, x, top);
         if (m_highlight) {
-            g2.setColor(new Color(200, 200, 200, 200));
-            g2.fillOval(x + m_strWidth + BUFFER - 3, top - 10, 13, 13);
+            int l = x + m_strWidth + BUFFER - 3;
+            int t = top - 10;
+            int r = 13;
+            g2.setColor(new Color(235, 235, 235));
+            g2.fillOval(l, t, r, r);
+            g2.setColor(new Color(200, 200, 200));
+            g2.drawOval(l, t, r, r);
         }
         g2.drawImage(m_x, x + m_strWidth + BUFFER, top - 7, c);
         g2.dispose();
@@ -88,5 +102,24 @@ public class CloseableTabIcon extends Component implements Icon {
 
     public int getIconHeight() {
         return m_iconH;
+    }
+
+    private void repaint() {
+        m_parent.repaint(this);
+    }
+
+    public void setFlashing(boolean flashing) {
+        if (flashing) {
+            m_timer.start();
+        } else {
+            m_textColour = COLOR_NORMAL;
+            m_timer.stop();
+            repaint();
+        }
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        m_textColour = (m_textColour == COLOR_NORMAL) ? COLOR_FLASH : COLOR_NORMAL;
+        repaint();
     }
 }

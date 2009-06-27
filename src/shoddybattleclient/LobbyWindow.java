@@ -399,6 +399,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
 
         tabChats.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
+                ((CloseableTabbedPane)tabChats).setFlashingAt(tabChats.getSelectedIndex(), false);
                 Component comp = tabChats.getSelectedComponent();
                 boolean isChat = comp instanceof ChatPane;
                 if (!isChat) return;
@@ -450,7 +451,10 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
     }
 
     public void addChallenge(String name, boolean incoming, int gen, int n) {
-        openUserPanel(name, gen, n);
+        UserPanel panel = openUserPanel(name, gen, n);
+        CloseableTabbedPane closeable = (CloseableTabbedPane)tabChats;
+        int idx = closeable.indexOfComponent(panel);
+        closeable.setFlashingAt(idx, true);
     }
 
     public ChallengeMediator getChallengeMediator(String name) {
@@ -523,7 +527,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         tabChats.removeTabAt(index);
     }
 
-    public void openUserPanel(String user, boolean incoming, int generation, int n) {
+    public UserPanel openUserPanel(String user, boolean incoming, int generation, int n) {
         UserPanel panel = m_userPanels.get(user);
         if (panel == null) {
             int index = tabChats.getTabCount();
@@ -537,6 +541,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         } else {
             tabChats.setSelectedComponent(panel);
         }
+        return panel;
     }
 
     public void removeUserPanel(String user) {
@@ -549,8 +554,8 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         openUserPanel(user, false, 0, 0);
     }
 
-    public void openUserPanel(String user, int generation, int n) {
-        openUserPanel(user, true, generation, n);
+    public UserPanel openUserPanel(String user, int generation, int n) {
+        return openUserPanel(user, true, generation, n);
     }
 
     public void tabClosed(Component c) {

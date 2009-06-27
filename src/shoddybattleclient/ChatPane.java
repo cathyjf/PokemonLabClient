@@ -61,7 +61,7 @@ public class ChatPane extends javax.swing.JPanel implements CloseableTab {
         m_name = name;
         initComponents();
         txtChat.setFocusTraversalKeysEnabled(false);
-        m_chatPane = new HTMLPane(name);
+        m_chatPane = new HTMLPane();
         scrollChat.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollChat.add(m_chatPane);
         scrollChat.setViewportView(m_chatPane);

@@ -36,15 +36,13 @@ import shoddybattleclient.LobbyWindow;
  */
 public class HTMLPane extends JTextPane {
 
-    private static final int MAXIMUM_LINES = 150;
+    private static final int MAXIMUM_LINES = 500;
 
-    private String m_user;
+
     private int m_lines = 0;
-    private int m_actualLines = 0;
 
-    public HTMLPane(String name) {
+    public HTMLPane() {
         super();
-        m_user = name;
         setContentType("text/html");
         setEditable(false);
         setBackground(Color.WHITE);
@@ -125,6 +123,7 @@ public class HTMLPane extends JTextPane {
                 }
                 doc.remove(0, position);
             }
+            //doc.dump(new java.io.PrintStream(new java.io.FileOutputStream("out.txt")));
         } catch (Exception e) {
             
         }
@@ -146,7 +145,7 @@ public class HTMLPane extends JTextPane {
         frame.setSize(500, 300);
         frame.setLayout(new java.awt.GridLayout(1, 1));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        final HTMLPane pane = new HTMLPane("Ben");
+        final HTMLPane pane = new HTMLPane();
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setViewportView(pane);
         frame.add(scrollPane);

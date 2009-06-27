@@ -87,7 +87,10 @@ public class WelcomeWindow extends javax.swing.JFrame {
         ServerListEntry sle3 = new ServerListEntry("Pokemonexperte",
                 "A german server.", "shoddy.pokemonexperte.com",
                 1234, 5, 250);
-        lstServers.setModel(new ServerListModel(new ServerListEntry[] {sle,sle2,sle3}));
+        ServerListEntry sle4 = new ServerListEntry("Local Server",
+                "This is only for testing", "localhost",
+                8446, 221, 250);
+        lstServers.setModel(new ServerListModel(new ServerListEntry[] {sle,sle2,sle3, sle4}));
         lstServers.setCellRenderer(new ServerListRenderer());
     }
 

@@ -84,6 +84,18 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener, M
         }
     }
 
+    public void setFlashingAt(int idx, boolean flashing) {
+        CloseableTabIcon icon = (CloseableTabIcon)getIconAt(idx);
+        if (icon != null) icon.setFlashing(flashing);
+    }
+
+    public void repaint(Icon icon) {
+        int idx = this.indexOfTab(icon);
+        if (idx != -1) {
+            repaint(getBoundsAt(idx));
+        }
+    }
+
     public void mouseReleased(MouseEvent e) {
         int tabIndex = indexAt(e);
         if (tabIndex == -1) return;
