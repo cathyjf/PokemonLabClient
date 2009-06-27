@@ -504,7 +504,8 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
             channel.getChatPane().addMessage(user, message, encode);
         } else {
             // battle chat message
-            updateBattleUsers(channel.getId());
+            BattleWindow wnd = m_link.getBattle(channel.getId());
+            if (wnd != null) wnd.addMessage(user, message, encode);
         }
     }
 
