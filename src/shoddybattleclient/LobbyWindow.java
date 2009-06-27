@@ -382,6 +382,10 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         if (channel.getChatPane() == tabChats.getSelectedComponent()) {
             listUsers.setModel(new UserListModel(channel.getModel().getList()));
         }
+        if (channel.getType() == Channel.TYPE_BATTLE) {
+            BattleWindow wnd = m_link.getBattle(channel.getId());
+            if (wnd != null) wnd.refreshUsers();
+        }
     }
 
     /** Creates new form LobbyWindow */
