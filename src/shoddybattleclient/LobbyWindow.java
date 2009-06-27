@@ -474,12 +474,20 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         return m_name;
     }
 
+    private void updateBattleUsers(int id) {
+        BattleWindow wnd = m_link.getBattle(id);
+        if (wnd != null) wnd.refreshUsers();
+    }
+
     public void handleUpdateStatus(int id, String setter, String user, int flags) {
         Channel channel = m_channels.get(id);
         if (channel != null) {
             channel.updateUser(setter, user, flags);
             if (channel.getChatPane() == tabChats.getSelectedComponent()) {
                 updateUsers(channel);
+            }
+            if (channel.getType() == Channel.TYPE_BATTLE) {
+                updateBattleUsers(channel.getId());
             }
         }
     }
@@ -496,10 +504,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
             channel.getChatPane().addMessage(user, message, encode);
         } else {
             // battle chat message
-            BattleWindow wnd = m_link.getBattle(channel.getId());
-            if (wnd != null) {
-                wnd.addMessage(user, message, encode);
-            }
+            updateBattleUsers(channel.getId());
         }
     }
 
