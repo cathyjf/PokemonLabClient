@@ -138,9 +138,11 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
             }
             String msg;
             if (setter.length() > 0) {
-                msg = Text.getText(26, 0, new String[] {setter, modes.toString(), name});
+                msg = Text.getText(26, 0, new String[] {
+                    setter, modes.toString(), name });
             } else {
-                msg = Text.getText(26, 1, new String[] {modes.toString(), name});
+                msg = Text.getText(26, 1, new String[] {
+                    modes.toString(), name });
             }
             msg = "<font class='mode'>" + msg + "</font>";
             m_chat.getLobby().showChannelMessage(this, null,
