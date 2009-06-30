@@ -73,6 +73,7 @@ public class ChatPane extends javax.swing.JPanel implements CloseableTab {
 
     private void parseCommand(String command, String args)
             throws CommandException {
+        command = command.toLowerCase();
         if ("mode".equals(command)) {
             int idx = args.indexOf(' ');
             String action, cmd;
@@ -84,6 +85,22 @@ public class ChatPane extends javax.swing.JPanel implements CloseableTab {
                 cmd = args.substring(idx + 1);
             }
             parseMode(action.toLowerCase(), cmd);
+        } else if ("ignore".equals(command)) {
+            if ("".equals(args.trim())) throw new CommandException("Usage: /ignore name");
+            boolean success = Preference.ignore(args);
+            if (!success) {
+                addMessage(null, "You are already ignoring " + args);
+            } else {
+                addMessage(null, "You are now ignoring " + args);
+            }
+        } else if ("unignore".equals(command)) {
+            if ("".equals(args.trim())) throw new CommandException("Usage: /unignore name");
+            boolean success = Preference.unignore(args);
+            if (!success) {
+                addMessage(null, "You are not ignoring " + args);
+            } else {
+                addMessage(null, "You are no longer ignoring " + args);
+            }
         }
     }
 
@@ -289,7 +306,8 @@ public class ChatPane extends javax.swing.JPanel implements CloseableTab {
                 try {
                     sendMessage(msg);
                 } catch (CommandException e) {
-                    addMessage(null, e.getMessage());
+                    String str = "<font class='help'>" + e.getMessage() + "</font>";
+                    addMessage(null, str, false);
                 }
                 txtChat.setText(null);
             }

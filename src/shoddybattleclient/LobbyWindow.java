@@ -399,6 +399,10 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
 
         tabChats.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
+                if (tabChats.getSelectedIndex() == -1) {
+                    listUsers.setModel(new UserListModel(new ArrayList()));
+                    return;
+                }
                 ((CloseableTabbedPane)tabChats).setFlashingAt(tabChats.getSelectedIndex(), false);
                 Component comp = tabChats.getSelectedComponent();
                 boolean isChat = comp instanceof ChatPane;
@@ -451,6 +455,10 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
     }
 
     public void addChallenge(String name, boolean incoming, int gen, int n) {
+        if (Preference.ignoring(name)) {
+            m_link.resolveChallenge(name, false, null);
+            return;
+        }
         UserPanel panel = openUserPanel(name, gen, n);
         CloseableTabbedPane closeable = (CloseableTabbedPane)tabChats;
         int idx = closeable.indexOfComponent(panel);
@@ -514,6 +522,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
     }
 
     public void handleChannelMessage(int id, String user, String message) {
+        if (Preference.ignoring(user) && !user.equals(m_name)) return;
         Channel channel = m_channels.get(id);
         if (channel != null) {
             User u = channel.getUser(user);

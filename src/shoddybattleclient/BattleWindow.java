@@ -220,6 +220,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             lblPlayer1.setText(users[0]);
         }
         m_chat = new HTMLPane();
+        m_chat.setTimeStampsEnabled(false);
         scrollChat.add(m_chat);
         scrollChat.setViewportView(m_chat);
 

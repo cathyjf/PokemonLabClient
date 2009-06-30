@@ -1,13 +1,13 @@
 .self, .others, .opponent, .name {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 .self {
-	color: green;
+    color: green;
 }
 
 .others {
-	color: blue;
+    color: blue;
 }
 
 .opponent {
@@ -15,8 +15,8 @@
 }
 
 a {
-	color: blue;
-	text-decoration: underline;
+    color: blue;
+    text-decoration: underline;
 }
 
 .move {
@@ -47,4 +47,21 @@ a {
 
 .victory {
     font-size: x-large;
+}
+
+.help {
+    font-style: italic;
+}
+
+.timestamp {
+    color: rgb(70, 70, 70);
+    font-size: 10pt;
+}
+
+body {
+    font-size: 11pt;
+}
+
+.health-change {
+    
 }

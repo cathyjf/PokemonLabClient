@@ -23,8 +23,8 @@
 package shoddybattleclient.utils;
 import java.io.*;
 import java.util.*;
-import java.util.regex.Pattern;
 import shoddybattleclient.BattleField;
+import shoddybattleclient.Preference.HealthDisplay;
 
 /**
  * Reads and allows for retrieval of text from a .lang file
@@ -93,8 +93,21 @@ public class Text {
         return "<font class='" + style + "'>" + name + "</font>";
     }
 
+    //retarded html 3.2
     public static String addClass(String txt, String cls) {
         return "<b class='" + cls + "'>" + txt + "</b>";
+    }
+
+    public static String formatHealthChange(int delta, int denom, HealthDisplay disp) {
+        String str;
+        if (disp.equals(HealthDisplay.EXACT)) {
+            str = delta + "/" + denom;
+        } else if (disp.equals(HealthDisplay.PERCENT)) {
+            str = (delta * 100 / denom) + "%";
+        } else {
+            str = delta + "/" + denom + " (" + (delta * 100 / denom) + "%)";
+        }
+        return "<font class='health-change'>" + str + "</font>";
     }
 
     public static String getText(int cat, int id, String[] args) {

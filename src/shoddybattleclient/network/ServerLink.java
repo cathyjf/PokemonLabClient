@@ -35,6 +35,8 @@ import shoddybattleclient.BattleWindow;
 import shoddybattleclient.ChatPane;
 import shoddybattleclient.GameVisualisation.VisualPokemon;
 import shoddybattleclient.LobbyWindow;
+import shoddybattleclient.Preference;
+import shoddybattleclient.Preference.HealthDisplay;
 import shoddybattleclient.ServerConnect;
 import shoddybattleclient.shoddybattle.Pokemon;
 import shoddybattleclient.shoddybattle.PokemonMove;
@@ -861,16 +863,8 @@ public class ServerLink extends Thread {
                     int id = (delta > 0) ? 13 : 14;
                     delta = Math.abs(delta);
 
-                    if (ally) {
-                        // If the pokemon is on our team, we can show its
-                        // exact health change.
-                        number = delta + "/" + denominator;
-                    } else {
-                        // If the pokemon is an enemy, we only know the
-                        // approximate health change.
-                        int percent = 100 * delta / denominator;
-                        number = percent + "%";
-                    }
+                    number = Text.formatHealthChange(delta, denominator,
+                            Preference.getHealthDisplay(ally));
 
                     String message = Text.getText(4, id,
                             new String[] { name, number });

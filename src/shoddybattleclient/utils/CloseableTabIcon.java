@@ -86,7 +86,7 @@ public class CloseableTabIcon implements Icon, ActionListener {
         if (m_highlight) {
             int l = x + m_strWidth + BUFFER - 3;
             int t = top - 10;
-            int r = 13;
+            int r = 12;
             g2.setColor(new Color(235, 235, 235));
             g2.fillOval(l, t, r, r);
             g2.setColor(new Color(200, 200, 200));

@@ -22,6 +22,8 @@
 
 package shoddybattleclient.utils;
 import java.awt.Color;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -29,6 +31,7 @@ import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 import shoddybattleclient.LobbyWindow;
+import shoddybattleclient.Preference;
 
 /**
  *
@@ -40,9 +43,11 @@ public class HTMLPane extends JTextPane {
 
 
     private int m_lines = 0;
+    private boolean m_timestamps = false;
 
     public HTMLPane() {
         super();
+        m_timestamps = Preference.timeStampsEnabled();
         setContentType("text/html");
         setEditable(false);
         setBackground(Color.WHITE);
@@ -60,6 +65,10 @@ public class HTMLPane extends JTextPane {
                 }
             }
         });
+    }
+
+    public void setTimeStampsEnabled(boolean enabled) {
+        m_timestamps = enabled;
     }
 
     /**
@@ -91,11 +100,15 @@ public class HTMLPane extends JTextPane {
             message = htmlEntityEncode(message);
         }
         StringBuffer buffer = new StringBuffer();
-        //Date d = new Date();
-        //SimpleDateFormat f = new SimpleDateFormat("H:mm:ss");
-        //buffer.append("[");
-        //buffer.append(f.format(d));
-        //buffer.append("] ");
+        if (m_timestamps) {
+            Date d = new Date();
+            String format = Preference.getTimeStampFormat();
+            format = htmlEntityEncode(format);
+            SimpleDateFormat f = new SimpleDateFormat(format);
+            buffer.append("<font class='timestamp'>");
+            buffer.append(f.format(d));
+            buffer.append("</font>");
+        }
         if (user != null) {
             buffer.append(user);
             buffer.append(": ");
