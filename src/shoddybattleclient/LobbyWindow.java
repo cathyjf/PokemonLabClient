@@ -418,9 +418,10 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
 
         setTitle("Shoddy Battle - " + userName);
 
+        mnuPreferences.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
+              Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         mnuQuit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,
               Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-
         mnuLeaveServer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W,
               Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     }
@@ -555,7 +556,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
 
     public void removeUserPanel(String user) {
         UserPanel panel = m_userPanels.get(user);
-        panel.close();
+        this.closeTab(tabChats.indexOfComponent(panel));
         m_userPanels.remove(user);
     }
 
@@ -594,6 +595,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         jMenu3 = new javax.swing.JMenu();
         mnuJoinMain = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JSeparator();
+        mnuPreferences = new javax.swing.JMenuItem();
         mnuLeaveServer = new javax.swing.JMenuItem();
         mnuQuit = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
@@ -635,6 +637,14 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         });
         jMenu3.add(mnuJoinMain);
         jMenu3.add(jSeparator2);
+
+        mnuPreferences.setText("Preferences");
+        mnuPreferences.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuPreferencesActionPerformed(evt);
+            }
+        });
+        jMenu3.add(mnuPreferences);
 
         mnuLeaveServer.setText("Leave Server");
         mnuLeaveServer.addActionListener(new java.awt.event.ActionListener() {
@@ -694,10 +704,10 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(layout.createSequentialGroup()
-                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
                         .add(9, 9, 9)
                         .add(btnChallenge))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, tabChats, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 361, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, tabChats, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 363, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -742,6 +752,10 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         m_link.joinChannel("main");
     }//GEN-LAST:event_mnuJoinMainActionPerformed
 
+    private void mnuPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuPreferencesActionPerformed
+        new PreferencePane().setVisible(true);
+    }//GEN-LAST:event_mnuPreferencesActionPerformed
+
     // prompts the user to confirm that they wish to leave the server
     private boolean confirmLeave() {
         int response = JOptionPane.showConfirmDialog(this, "Are you sure you " +
@@ -778,6 +792,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
     private javax.swing.JMenuItem mnuJoinMain;
     private javax.swing.JMenuItem mnuLeaveServer;
     private javax.swing.JMenuItem mnuPersonalMessage;
+    private javax.swing.JMenuItem mnuPreferences;
     private javax.swing.JMenuItem mnuQuit;
     private javax.swing.JTabbedPane tabChats;
     // End of variables declaration//GEN-END:variables

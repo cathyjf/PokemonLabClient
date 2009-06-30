@@ -101,13 +101,17 @@ public class HTMLPane extends JTextPane {
         }
         StringBuffer buffer = new StringBuffer();
         if (m_timestamps) {
-            Date d = new Date();
-            String format = Preference.getTimeStampFormat();
-            format = htmlEntityEncode(format);
-            SimpleDateFormat f = new SimpleDateFormat(format);
-            buffer.append("<font class='timestamp'>");
-            buffer.append(f.format(d));
-            buffer.append("</font>");
+            try {
+                Date d = new Date();
+                String format = Preference.getTimeStampFormat();
+                format = htmlEntityEncode(format);
+                SimpleDateFormat f = new SimpleDateFormat(format);
+                buffer.append("<font class='timestamp'>");
+                buffer.append(f.format(d));
+                buffer.append("</font>");
+            } catch (Exception e) {
+                
+            }
         }
         if (user != null) {
             buffer.append(user);

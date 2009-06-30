@@ -125,6 +125,7 @@ public class WelcomeWindow extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         cmdTeamBuilder = new javax.swing.JMenuItem();
+        mnuPreferences = new javax.swing.JMenuItem();
 
         jButton1.setText("jButton1");
 
@@ -165,6 +166,14 @@ public class WelcomeWindow extends javax.swing.JFrame {
         });
         jMenu1.add(cmdTeamBuilder);
 
+        mnuPreferences.setText("Preferences");
+        mnuPreferences.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuPreferencesActionPerformed(evt);
+            }
+        });
+        jMenu1.add(mnuPreferences);
+
         jMenuBar1.add(jMenu1);
 
         setJMenuBar(jMenuBar1);
@@ -176,12 +185,12 @@ public class WelcomeWindow extends javax.swing.JFrame {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(serverListPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
+                    .add(serverListPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(btnConnect)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(btnAdvanced)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 39, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 73, Short.MAX_VALUE)
                         .add(btnRefresh)))
                 .addContainerGap())
         );
@@ -231,6 +240,10 @@ public class WelcomeWindow extends javax.swing.JFrame {
         new AdvancedDialog(this).setVisible(true);
 }//GEN-LAST:event_btnAdvancedActionPerformed
 
+    private void mnuPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuPreferencesActionPerformed
+        new PreferencePane().setVisible(true);
+    }//GEN-LAST:event_mnuPreferencesActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -262,6 +275,7 @@ public class WelcomeWindow extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JList lstServers;
+    private javax.swing.JMenuItem mnuPreferences;
     private javax.swing.JScrollPane serverListPane;
     // End of variables declaration//GEN-END:variables
 
