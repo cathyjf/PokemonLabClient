@@ -207,7 +207,7 @@ public class ChatPane extends javax.swing.JPanel implements CloseableTab {
     }
 
     public boolean informClosed() {
-        //todo: leave this channel
+        m_lobby.getLink().partChannel(m_channel.getId());
         return true;
     }
 

@@ -874,14 +874,14 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     }//GEN-LAST:event_txtChatKeyReleased
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        if (m_finished) {
-            dispose();
-            return;
-        }
-        int result = JOptionPane.showConfirmDialog(this, "Leaving will cause you " +
+        int result = -1;
+        if (!m_finished) {
+            result = JOptionPane.showConfirmDialog(this, "Leaving will cause you " +
                 "to forfeit this battle. Are you sure you want to leave?",
                 "Leaving Battle", JOptionPane.YES_NO_OPTION);
-        if (result == JOptionPane.OK_OPTION) {
+        }
+        if ((result == -1) || (result == JOptionPane.YES_OPTION)) {
+            m_link.partChannel(m_channel.getId());
             dispose();
         }
     }//GEN-LAST:event_formWindowClosing
