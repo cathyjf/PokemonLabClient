@@ -272,6 +272,17 @@ public class ServerLink extends Thread {
         }
     }
 
+    public static class PartChannelMessage extends OutMessage {
+        public PartChannelMessage(int channel) {
+            super(11);
+            try {
+                m_stream.write(channel);
+            } catch (Exception e) {
+                
+            }
+        }
+    }
+
     public static abstract class MessageHandler {
         /**
          * Handle a message from the server by reading values from the
@@ -1036,6 +1047,10 @@ public class ServerLink extends Thread {
 
     public void joinChannel(String name) {
         sendMessage(new JoinChannel(name));
+    }
+
+    public void partChannel(int channel) {
+        sendMessage(new PartChannelMessage(channel));
     }
 
     public void sendChannelMessage(int id, String message) {
