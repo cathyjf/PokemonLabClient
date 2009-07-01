@@ -276,7 +276,7 @@ public class ServerLink extends Thread {
         public PartChannelMessage(int channel) {
             super(11);
             try {
-                m_stream.write(channel);
+                m_stream.writeInt(channel);
             } catch (Exception e) {
                 
             }
