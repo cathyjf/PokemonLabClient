@@ -42,6 +42,7 @@ public class PreferencePane extends javax.swing.JFrame {
         chkTimestamps.setSelected(Preference.timeStampsEnabled());
         txtTimestampFormat.setText(Preference.getTimeStampFormat());
         txtTimestampFormat.setEnabled(chkTimestamps.isSelected());
+        chkAnimateHealth.setSelected(Preference.animateHealthBars());
 
         txtIgnored.setText(Preference.getIgnoredUsersStr());
 
@@ -76,6 +77,7 @@ public class PreferencePane extends javax.swing.JFrame {
         cmbOppHealth = new javax.swing.JComboBox();
         lblUserHealth = new javax.swing.JLabel();
         lblEnemyHealth = new javax.swing.JLabel();
+        chkAnimateHealth = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -175,15 +177,24 @@ public class PreferencePane extends javax.swing.JFrame {
             }
         });
 
+        chkAnimateHealth.setText("Animate health bars?");
+        chkAnimateHealth.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkAnimateHealthActionPerformed(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .add(chkAnimateHealth))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                     .add(cmbOppHealth, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -203,11 +214,14 @@ public class PreferencePane extends javax.swing.JFrame {
                     .add(lblUserHealth, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 27, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jLabel5)
+                    .add(jPanel2Layout.createSequentialGroup()
+                        .add(jLabel5)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(chkAnimateHealth))
                     .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                         .add(cmbOppHealth, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .add(lblEnemyHealth, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 27, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(185, Short.MAX_VALUE))
+                .addContainerGap(167, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Battle", jPanel2);
@@ -267,6 +281,10 @@ public class PreferencePane extends javax.swing.JFrame {
         Preference.setIgnoredUsers(txtIgnored.getText());
     }//GEN-LAST:event_txtIgnoredCaretUpdate
 
+    private void chkAnimateHealthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkAnimateHealthActionPerformed
+        Preference.setAnimateHealthBars(chkAnimateHealth.isSelected());
+    }//GEN-LAST:event_chkAnimateHealthActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -279,6 +297,7 @@ public class PreferencePane extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox chkAnimateHealth;
     private javax.swing.JCheckBox chkTimestamps;
     private javax.swing.JComboBox cmbOppHealth;
     private javax.swing.JComboBox cmbUserHealth;

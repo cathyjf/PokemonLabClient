@@ -41,6 +41,7 @@ public class Preference {
     private static final String TIME_STAMPS_ENABLED = "timeStampsEnabled";
     private static final String TIME_STAMP_FORMAT = "timeStampFormat";
     private static final String IGNORED_USERS = "ignoredUsers";
+    private static final String ANIMATE_HEALTH_BARS = "animateHealthBars";
 
     public static enum HealthDisplay {
         EXACT ("Exact"),
@@ -81,6 +82,12 @@ public class Preference {
     }
     public static String getTimeStampFormat() {
         return m_prefs.get(TIME_STAMP_FORMAT, "[h:mm:ss]  ");
+    }
+    public static void setAnimateHealthBars(boolean animate) {
+        m_prefs.putBoolean(ANIMATE_HEALTH_BARS, animate);
+    }
+    public static boolean animateHealthBars() {
+        return m_prefs.getBoolean(ANIMATE_HEALTH_BARS, true);
     }
     public static void setIgnoredUsers(String users) {
         m_prefs.put(IGNORED_USERS, users);
