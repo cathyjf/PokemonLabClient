@@ -23,6 +23,9 @@
 
 package shoddybattleclient;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import shoddybattleclient.network.ServerLink;
@@ -258,6 +261,14 @@ public class WelcomeWindow extends javax.swing.JFrame {
         }
 
         Text.loadText("english.lang");
+
+        System.setErr(new PrintStream(new OutputStream() {
+            ErrorBox m_box = new ErrorBox();
+            @Override
+            public void write(int b) throws IOException {
+                m_box.append(b);
+            }
+        }));
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
