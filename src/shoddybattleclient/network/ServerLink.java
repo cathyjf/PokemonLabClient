@@ -31,6 +31,7 @@ import java.util.concurrent.*;
 import java.security.*;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import shoddybattleclient.BattlePanel;
 import shoddybattleclient.BattleWindow;
 import shoddybattleclient.ChatPane;
 import shoddybattleclient.GameVisualisation.VisualPokemon;
@@ -283,6 +284,12 @@ public class ServerLink extends Thread {
         }
     }
 
+    public static class RequestChannelListMessage extends OutMessage {
+        public RequestChannelListMessage() {
+            super(12);
+        }
+    }
+
     public static abstract class MessageHandler {
         /**
          * Handle a message from the server by reading values from the
@@ -486,15 +493,37 @@ public class ServerLink extends Thread {
                 //      int32  : population
                 public void handle(ServerLink link, DataInputStream is)
                         throws IOException {
+                    List<BattlePanel.Battle> battles =
+                            new ArrayList<BattlePanel.Battle>();
+
                     int count = is.readInt();
                     for (int i = 0; i < count; ++i) {
                         String name = is.readUTF();
                         int type = is.read();
                         String topic = is.readUTF();
                         int population = is.readInt();
-                        System.out.println(name + ", "
-                                + topic + ", " + population);
+
+                        if (type == 1) {
+                            // it's a battle
+                            BattlePanel.Battle battle =
+                                    new BattlePanel.Battle();
+                            battle.id = Integer.valueOf(name).intValue();
+                            battle.population = population;
+                            String[] parts = topic.split(",");
+                            battle.players =
+                                    new String[] { parts[0], parts[1] };
+                            battle.generation =
+                                    Integer.valueOf(parts[2]).intValue();
+                            battle.n = Integer.valueOf(parts[3]).intValue();
+                            // TODO: ladder
+                            battles.add(battle);
+                        }
                     }
+
+                    BattlePanel.Battle[] arr =
+                            (BattlePanel.Battle[])battles.toArray(
+                                    new BattlePanel.Battle[battles.size()]);
+                    link.m_lobby.getBattlePanel().setBattles(arr);
                 }
             });
 
@@ -1051,6 +1080,10 @@ public class ServerLink extends Thread {
 
     public void partChannel(int channel) {
         sendMessage(new PartChannelMessage(channel));
+    }
+
+    public void requestChannelList() {
+        sendMessage(new RequestChannelListMessage());
     }
 
     public void sendChannelMessage(int id, String message) {

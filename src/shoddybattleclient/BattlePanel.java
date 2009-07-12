@@ -14,6 +14,7 @@ package shoddybattleclient;
 import shoddybattleclient.utils.*;
 import javax.swing.*;
 import javax.swing.table.TableColumnModel;
+import shoddybattleclient.network.ServerLink;
 
 /**
  *
@@ -21,20 +22,40 @@ import javax.swing.table.TableColumnModel;
  */
 public class BattlePanel extends javax.swing.JPanel {
 
+    public static class Battle {
+        public int id;
+        public String[] players;
+        public int generation;
+        public int n;
+        public int ladder;
+        public int population;
+    }
+
     private BattleTableModel m_model = new BattleTableModel();
+    private ServerLink m_link;
 
     /** Creates new form BattlePanel */
-    public BattlePanel() {
+    public BattlePanel(ServerLink link) {
         initComponents();
+        m_link = link;
 
-        m_model.addBattle(153234, 0, "bearzly", "Catherine", 2, 8);
-        m_model.addBattle(23523, 1, "DougJustDoug", "chaos", 1, 6);
         tblBattles.setModel(m_model);
         TableColumnModel cols = tblBattles.getColumnModel();
         cols.getColumn(1).setMaxWidth(120);
         cols.getColumn(2).setMaxWidth(30);
         cols.getColumn(3).setMaxWidth(50);
-        System.out.println(tblBattles.getClass().toString());
+    }
+
+    public void setBattles(Battle[] battles) {
+        m_model = new BattleTableModel();
+        for (int i = 0; i < battles.length; ++i) {
+            Battle battle = battles[i];
+            // NOTE: 'generation' is unused for now.
+            m_model.addBattle(battle.id, battle.ladder,
+                    battle.players[0], battle.players[1],
+                    battle.n, battle.population);
+        }
+        tblBattles.setModel(m_model);
     }
 
     /** This method is called from within the constructor to
@@ -62,6 +83,11 @@ public class BattlePanel extends javax.swing.JPanel {
         jScrollPane1.setViewportView(tblBattles);
 
         btnRefresh.setText("Refresh");
+        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshActionPerformed(evt);
+            }
+        });
 
         btnJoin.setText("Join");
         btnJoin.addActionListener(new java.awt.event.ActionListener() {
@@ -105,6 +131,10 @@ public class BattlePanel extends javax.swing.JPanel {
         System.out.println(m_model.getId(idx));
     }//GEN-LAST:event_btnJoinActionPerformed
 
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+        m_link.requestChannelList();
+    }//GEN-LAST:event_btnRefreshActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnJoin;
@@ -117,7 +147,7 @@ public class BattlePanel extends javax.swing.JPanel {
         JFrame frame = new JFrame("Battle Panel");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(500, 500);
-        frame.add(new BattlePanel());
+        //frame.add(new BattlePanel());
         frame.setVisible(true);
     }
 }

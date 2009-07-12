@@ -210,7 +210,7 @@ public class MoveTableModel extends AbstractTableModel implements SortableTableM
             }
             TableRow row = new TableRow(
                     m.damageClass, m.name, m.type, m.pp, m.power, m.accuracy);
-            if (!set.contains(row)) list.add(row);
+            if (!list.contains(row)) list.add(row);
         }
         Collections.sort(list, new Comparator<TableRow>() {
             public int compare(TableRow o1, TableRow o2) {

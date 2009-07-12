@@ -247,7 +247,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
             }
         }
         public ColourMap(Color background) {
-            Set set = new HashSet();
+            Set<Color> set = new HashSet<Color>();
             for (int i = 0; i < m_colours.length; ++i) {
                 Color c = getVisibleColour(background);
                 while (set.contains(c)) {
@@ -341,6 +341,11 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
     private ServerLink m_link;
     private Map<Integer, Channel> m_channels = new HashMap<Integer, Channel>();
     private Map<String, UserPanel>  m_userPanels = new HashMap<String, UserPanel>();
+    private BattlePanel m_battlePanel;
+
+    public BattlePanel getBattlePanel() {
+        return m_battlePanel;
+    }
 
     public Channel getChannel(String name) {
         for (Channel i : m_channels.values()) {
@@ -395,12 +400,13 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         initComponents();
         m_link = link;
         m_link.setLobbyWindow(this);
+        m_battlePanel = new BattlePanel(m_link);
         m_name = userName;
 
         tabChats.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 if (tabChats.getSelectedIndex() == -1) {
-                    listUsers.setModel(new UserListModel(new ArrayList()));
+                    listUsers.setModel(new UserListModel(new ArrayList<User>()));
                     return;
                 }
                 ((CloseableTabbedPane)tabChats).setFlashingAt(tabChats.getSelectedIndex(), false);
@@ -476,7 +482,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
     }
 
     public void cancelChallenge(String name) {
-        
+
     }
 
     public ChatPane getChat() {
@@ -594,6 +600,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         jMenuBar2 = new javax.swing.JMenuBar();
         jMenu3 = new javax.swing.JMenu();
         mnuJoinMain = new javax.swing.JMenuItem();
+        mnuBattleList = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JSeparator();
         mnuPreferences = new javax.swing.JMenuItem();
         mnuLeaveServer = new javax.swing.JMenuItem();
@@ -636,6 +643,14 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
             }
         });
         jMenu3.add(mnuJoinMain);
+
+        mnuBattleList.setText("Battle List");
+        mnuBattleList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuBattleListActionPerformed(evt);
+            }
+        });
+        jMenu3.add(mnuBattleList);
         jMenu3.add(jSeparator2);
 
         mnuPreferences.setText("Preferences");
@@ -756,6 +771,12 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         new PreferencePane().setVisible(true);
     }//GEN-LAST:event_mnuPreferencesActionPerformed
 
+    private void mnuBattleListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuBattleListActionPerformed
+        tabChats.add("Battles", m_battlePanel);
+        tabChats.setSelectedComponent(m_battlePanel);
+        m_link.requestChannelList();
+    }//GEN-LAST:event_mnuBattleListActionPerformed
+
     // prompts the user to confirm that they wish to leave the server
     private boolean confirmLeave() {
         int response = JOptionPane.showConfirmDialog(this, "Are you sure you " +
@@ -789,6 +810,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JList listUsers;
+    private javax.swing.JMenuItem mnuBattleList;
     private javax.swing.JMenuItem mnuJoinMain;
     private javax.swing.JMenuItem mnuLeaveServer;
     private javax.swing.JMenuItem mnuPersonalMessage;
