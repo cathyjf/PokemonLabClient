@@ -504,7 +504,7 @@ public class ServerLink extends Thread {
                         int population = is.readInt();
 
                         if (type == 1) {
-                            // it's a battle
+                            // It's a battle.
                             BattlePanel.Battle battle =
                                     new BattlePanel.Battle();
                             battle.id = Integer.valueOf(name).intValue();
@@ -605,7 +605,7 @@ public class ServerLink extends Thread {
                         link.m_lobby.cancelChallenge(user);
                         users = new String[] { user, link.m_name };
                     }
-                    //TODO: send maximum team length
+                    // TODO: send maximum team length
                     BattleWindow wnd = new BattleWindow(link,
                             id,
                             mediator.getActivePartySize(),
@@ -973,6 +973,82 @@ public class ServerLink extends Thread {
                     String message = Text.getText(4, 16,
                             new String[] { String.valueOf(count) });
                     wnd.addMessage(null, "<b>" + message + "</b>", false);
+                }
+            });
+
+            // SPECTATOR BEGIN
+            new ServerMessage(24, new MessageHandler() {
+                // int32  : field id
+                // string : first player
+                // string : second player
+                // byte   : active party size
+                // byte   : maximum party size
+                //
+                // for 0...1:
+                //     byte : party size
+                //     for 0...party size:
+                //         int16 : slot the pokemon is in or -1 if no slot
+                //         if slot != -1:
+                //             string : the nickname of the pokemon
+                //             int16  : species id
+                //             if species != -1:
+                //                 byte : gender
+                //                 byte : whether the pokemon is shiny
+                //         byte : whether the pokemon is fainted
+                //         if not fainted:
+                //             byte : present hp in [0, 48]
+                //             // TODO: statuses, stat levels, etc.
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException {
+                    int fid = is.readInt();
+                    String[] player = new String[2];
+                    player[0] = is.readUTF();
+                    player[1] = is.readUTF();
+                    int n = is.read();
+                    int max = is.read();
+
+                    BattleWindow battle =
+                            new BattleWindow(link, fid, n, max, player);
+                    link.m_battles.put(fid, battle);
+
+                    VisualPokemon[][] active = new VisualPokemon[2][n];
+
+                    for (int i = 0; i < 2; ++i) {
+                        int size = is.readUnsignedByte();
+                        for (int j = 0; j < size; ++j) {
+                            VisualPokemon p = battle.getPokemon(i, j);
+                            int slot = is.readShort();
+                            if (slot != -1) {
+                                String name = is.readUTF();
+                                int id = is.readShort();
+                                if (id != -1) {
+                                    int gender = is.read();
+                                    boolean shiny = (is.read() != 0);
+                                    String species = PokemonSpecies.getNameFromId(
+                                            link.m_speciesList, id);
+                                    VisualPokemon visual =
+                                            new VisualPokemon(species,
+                                            gender, shiny);
+                                    active[i][slot] = visual;
+                                    battle.setSpecies(i, slot, species);
+                                    battle.sendOut(i, slot, j, name);
+                                }
+                            }
+                            boolean fainted = (is.read() != 0);
+                            if (fainted) {
+                                p.faint();
+                                p.setHealth(0, 48);
+                            } else {
+                                int hp = is.read();
+                                p.setHealth(hp, 48);
+                                
+                                // TODO: statuses, stat levels, etc.
+                            }
+                        }
+                    }
+
+                    battle.setPokemon(active[0], active[1]);
+                    battle.setVisible(true);
                 }
             });
 

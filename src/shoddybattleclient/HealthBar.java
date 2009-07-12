@@ -64,6 +64,11 @@ public class HealthBar extends JPanel implements ActionListener {
             }
         });
     }
+
+    public void setFraction(boolean fraction) {
+        m_fraction = fraction;
+        repaint();
+    }
     
     public void setRatio(int numerator, int denominator, boolean animate) {
         if (!m_timer.isRunning()) {

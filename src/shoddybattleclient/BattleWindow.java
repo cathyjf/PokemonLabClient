@@ -180,6 +180,14 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         return m_participant;
     }
 
+    /**
+     * Constructor for spectators.
+     */
+    public BattleWindow(ServerLink link, int fid,
+            int n, int length, String[] users) {
+        this(link, fid, n, length, 0, users, null);
+    }
+
     /** Creates new form BattleWindow */
     public BattleWindow(ServerLink link, int fid,
             int n,
@@ -202,16 +210,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         m_channel = m_link.getLobby().getChannel(fid);
         listUsers.setModel(m_channel.getModel());
         listUsers.setCellRenderer(m_channel.getRenderer());
-
-        m_pp = new int[m_pokemon.length][Pokemon.MOVE_COUNT];
-        for (int i = 0; i < m_pp.length; ++i) {
-            for (int j = 0; j < Pokemon.MOVE_COUNT; ++j) {
-                m_pp[i][j] = -1;
-            }
-        }
-
         
-
         if (m_participant == 0) {
             lblPlayer0.setText(users[0]);
             lblPlayer1.setText(users[1]);
@@ -226,8 +225,34 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
 
         m_moveList = m_link.getMoveList();
 
-        createButtons();
         setupVisual();
+
+        if (m_pokemon != null) {
+            preparePlayer();
+        } else {
+            // We are spectating.
+
+            // Hide the whole action area for now. Maybe we can come up with
+            // a better use of this space later.
+            tabAction.removeAll();
+
+            // Set all of the health bars to use percents.
+            if (m_healthBars != null) {
+                for (HealthBar[] i : m_healthBars) {
+                    for (HealthBar j : i) {
+                        j.setFraction(false);
+                    }
+                }
+            }
+        }
+    }
+
+    public VisualPokemon getPokemon(int party, int idx) {
+        return m_visual.getPokemon(party, idx);
+    }
+
+    private void preparePlayer() {
+        createButtons();
         setMoves(0);
         updateSwitches();
 
@@ -235,6 +260,13 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         btnSwitchCancel.setEnabled(false);
         btnMove.setEnabled(false);
         btnMoveCancel.setEnabled(false);
+
+        m_pp = new int[m_pokemon.length][Pokemon.MOVE_COUNT];
+        for (int i = 0; i < m_pp.length; ++i) {
+            for (int j = 0; j < Pokemon.MOVE_COUNT; ++j) {
+                m_pp[i][j] = -1;
+            }
+        }
 
         m_maxPp = new int[m_pokemon.length][Pokemon.MOVE_COUNT];
         for (int i = 0; i < m_pokemon.length; i++) {
@@ -400,9 +432,6 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         m_visual.setLocation(x, base + healthHeight + buffer);
         int p1 = 1 - m_participant;
         int p2 = m_participant;
-
-        // TODO: The parameter to the HealthBar constructor will need to be
-        //       adjusted once spectator functionality is done.
         
         if (m_n == 1) {
             m_healthBars = new HealthBar[2][1];
@@ -875,7 +904,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         int result = -1;
-        if (!m_finished) {
+        if (!m_finished && (m_pokemon != null)) {
             result = JOptionPane.showConfirmDialog(this, "Leaving will cause you " +
                 "to forfeit this battle. Are you sure you want to leave?",
                 "Leaving Battle", JOptionPane.YES_NO_OPTION);
@@ -951,9 +980,8 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
                     
                 }
                 TeamFileParser tfp = new TeamFileParser();
-                Pokemon[] pokemon = tfp.parseTeam("/Users/ben/team1.sbt");
-                BattleWindow battle = new BattleWindow(null, 0, 1, 6, 1, new String[] {"bearzly", "Catherine"},
-                        pokemon);
+                //Pokemon[] pokemon = tfp.parseTeam("/Users/ben/team1.sbt");
+                BattleWindow battle = new BattleWindow(null, 0, 1, 6, new String[] { "bearzly", "Catherine" });
                 battle.setPokemon(new VisualPokemon[] {new VisualPokemon("Wartortle", 1, false)},
                         new VisualPokemon[] {new VisualPokemon("Groudon", 0, true)});
                 battle.setVisible(true);

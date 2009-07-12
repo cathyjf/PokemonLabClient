@@ -65,7 +65,7 @@ public class BattleTableModel extends AbstractTableModel implements SortableTabl
         TableRow row = m_rows.get(rowIndex);
         switch (columnIndex) {
             case 0:
-                return row.m_user1 + " vs " + row.m_user2;
+                return row.m_user1 + " v. " + row.m_user2;
             case 1:
                 //todo: ladder names from server
                 return row.m_ladder;

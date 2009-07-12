@@ -128,7 +128,10 @@ public class BattlePanel extends javax.swing.JPanel {
 
     private void btnJoinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJoinActionPerformed
         int idx = tblBattles.getSelectedRow();
-        System.out.println(m_model.getId(idx));
+        int fid = m_model.getId(idx);
+        if (fid != -1) {
+            m_link.joinChannel(String.valueOf(fid));
+        }
     }//GEN-LAST:event_btnJoinActionPerformed
 
     private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed

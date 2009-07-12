@@ -56,7 +56,7 @@ public class VisualToolTip extends javax.swing.JPanel {
 
         if ((num >= 0) && (denom > 0)) {
             HealthBar bar = new HealthBar(exact);
-            bar.setRatio(num, denom);
+            bar.setRatio(num, denom, false);
             c.gridx = 0;
             c.gridy = 1;
             c.ipady = 20;
