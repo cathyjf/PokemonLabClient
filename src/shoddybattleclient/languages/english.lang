@@ -173,6 +173,7 @@
 0: Attract
 1: $1 is in love with foe $2!
 2: $1 is immobilised by love!
+3: $1 became infatuated with $2!
 
 [field-effects-spikes]
 0: Spikes - $1
@@ -187,15 +188,16 @@
 [weather-hail]
 0: Hail
 1: Hail began to fall!
-2: The hail continues to fall.
+2: Hail continues to fall.
 3: $1 is pelted by hail!
 4: The hail stopped.
 
 [weather-rain]
 0: Rain
 1: Rain began to fall!
-2: The rain continues to fall.
-3: The rain stopped.
+2: Rain continues to fall.
+3: // unused
+4: The rain stopped.
 
 [weather-sandstorm]
 0: Sandstorm
@@ -207,12 +209,13 @@
 [weather-sun]
 0: Sun
 1: The sun began to shine!
-2: The sun continues to shine.
-3: The sun faded.
+2: The sunlight is strong.
+3: $1 is hurt by its $2!
+4: The sun faded.
 
 [battle-messages-unique]
 0: Hit $1 time(s)!
-1: $1 was cured of paralysis!
+1: $1 was cured of $2!
 2: But nothing happened!
 3: Coins scattered everywhere!
 5: $1 fell asleep and became healthy! //rest if you have a status effect
@@ -276,7 +279,7 @@
 57: $1 must recharge!
 58: $1 was hit by recoil!
 59: $1 absorbed health!
-60: It reduced the PP of the foe's $2's $3 by $4!
+60: It reduced the PP of the foe's $1's $2 by $3!
 61: $1 is trying to take its foe with it!
 62: $1 took $2 with it!
 63: Focus Energy
@@ -558,7 +561,7 @@
 39: $1 shed its skin!
 40: $1 can't get going due to its Slow Start!
 41: $1's Snow Warning whipped up a hailstorm!
-42: $1's $2 blocks $3 //soundproof and cacophony
+42: $1's $2 blocks $3! //soundproof and cacophony
 43: $1's Speed Boost raised its speed!
 44: $1's Static paralysed $2!
 45: TODO: Steadfast
