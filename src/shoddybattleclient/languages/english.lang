@@ -176,14 +176,14 @@
 3: $1 became infatuated with $2!
 
 [field-effects-spikes]
-0: Spikes
-1: Toxic Spikes
-2: Stealth Rock
+0: Spikes were scattered around the foe's team!
+1: Pointed stones float in the air around your foe's team!
+2: Toxic Spikes were scattered around the foe's team!
 3: $1 was hurt by Spikes!
 4: $1 absorbed the Toxic Spikes!
 5: $1 was poisoned by the Toxic Spikes!
-6: Pointed stones dug into $1!
-7: Pointed stones float in the air around your foe's team!
+6: $1 was badly poisoned by the Toxic Spikes!
+7: Pointed stones dug into $1!
 
 [weather-hail]
 0: Hail
