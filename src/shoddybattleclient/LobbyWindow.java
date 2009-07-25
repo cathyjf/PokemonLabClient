@@ -25,8 +25,6 @@ package shoddybattleclient;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.net.URL;
@@ -263,8 +261,6 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
     }
 
     public static class User implements Comparable {
-        public final static int STATUS_PRESENT = 0;
-        public final static int STATUS_AWAY = 1;
         private String m_name;
         private int m_status = 0;
         private int m_flags, m_level;
@@ -411,12 +407,15 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
                 }
                 ((CloseableTabbedPane)tabChats).setFlashingAt(tabChats.getSelectedIndex(), false);
                 Component comp = tabChats.getSelectedComponent();
-                boolean isChat = comp instanceof ChatPane;
-                if (!isChat) return;
-                ChatPane c = (ChatPane)comp;
-                Channel channel = c.getChannel();
-                listUsers.setModel(channel.getModel());
-                listUsers.setCellRenderer(channel.getRenderer());
+                if (comp instanceof ChatPane) {
+                    ChatPane c = (ChatPane)comp;
+                    Channel channel = c.getChannel();
+                    listUsers.setModel(channel.getModel());
+                    listUsers.setCellRenderer(channel.getRenderer());
+                } else if (comp instanceof BattlePanel) {
+                    BattlePanel panel = (BattlePanel)comp;
+                    m_link.requestChannelList();
+                }
             }
         });
         

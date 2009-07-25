@@ -23,6 +23,7 @@
 
 package shoddybattleclient;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -36,12 +37,25 @@ import java.util.prefs.Preferences;
 public class Preference {
     private static final Preferences m_prefs = Preferences.userRoot();
 
+    private static final String STORAGE_LOCATION = "storageLocation";
     private static final String USER_HEALTH_DISPLAY = "userHealthDisplay";
     private static final String OPPONENT_HEALTH_DISPLAY = "opponentHealthDisplay";
     private static final String TIME_STAMPS_ENABLED = "timeStampsEnabled";
     private static final String TIME_STAMP_FORMAT = "timeStampFormat";
     private static final String IGNORED_USERS = "ignoredUsers";
     private static final String ANIMATE_HEALTH_BARS = "animateHealthBars";
+
+    public static void setStorageLocation(String loc) {
+        m_prefs.put(STORAGE_LOCATION, loc);
+    }
+    
+    public static String getStorageLocation() {
+        String path = m_prefs.get(STORAGE_LOCATION, null);
+        if (path != null) {
+            if (!path.endsWith(File.separator)) path += File.separator;
+        }
+        return path;
+    }
 
     public static enum HealthDisplay {
         EXACT ("Exact"),

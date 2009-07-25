@@ -248,7 +248,7 @@ public class WelcomeWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_mnuPreferencesActionPerformed
 
     /**
-    * @param args the command line arguments
+    * Main entry point for Shoddy Battle 2
     */
     public static void main(String args[]) {
 
@@ -261,6 +261,11 @@ public class WelcomeWindow extends javax.swing.JFrame {
         }
 
         Text.loadText("english.lang");
+
+
+        if (Preference.getStorageLocation() == null) {
+            FirstLaunch.initialiseLocalStorage();
+        }
 
         System.setErr(new PrintStream(new OutputStream() {
             ErrorBox m_box = new ErrorBox();

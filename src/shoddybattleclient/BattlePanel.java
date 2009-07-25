@@ -1,12 +1,24 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
  * BattlePanel.java
  *
  * Created on Jun 20, 2009, 2:48:59 PM
+ *
+ * This file is a part of Shoddy Battle.
+ * Copyright (C) 2009  Catherine Fitzpatrick and Benjamin Gwin
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program; if not, visit the Free Software Foundation, Inc.
+ * online at http://gnu.org.
  */
 
 package shoddybattleclient;
@@ -40,10 +52,6 @@ public class BattlePanel extends javax.swing.JPanel {
         m_link = link;
 
         tblBattles.setModel(m_model);
-        TableColumnModel cols = tblBattles.getColumnModel();
-        cols.getColumn(1).setMaxWidth(120);
-        cols.getColumn(2).setMaxWidth(30);
-        cols.getColumn(3).setMaxWidth(50);
     }
 
     public void setBattles(Battle[] battles) {
@@ -56,6 +64,10 @@ public class BattlePanel extends javax.swing.JPanel {
                     battle.n, battle.population);
         }
         tblBattles.setModel(m_model);
+        TableColumnModel cols = tblBattles.getColumnModel();
+        cols.getColumn(1).setMaxWidth(150);
+        cols.getColumn(2).setMaxWidth(50);
+        cols.getColumn(3).setMaxWidth(50);
     }
 
     /** This method is called from within the constructor to
@@ -150,7 +162,15 @@ public class BattlePanel extends javax.swing.JPanel {
         JFrame frame = new JFrame("Battle Panel");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(500, 500);
-        //frame.add(new BattlePanel());
+        BattlePanel panel = new BattlePanel(null);
+        frame.add(panel);
+        Battle b = new Battle();
+        b.id = 10;
+        b.ladder = 2;
+        b.n = 2;
+        b.population = 3;
+        b.players = new String[] {"bearzly", "Catherine"};
+        panel.setBattles(new Battle[] {b});
         frame.setVisible(true);
     }
 }

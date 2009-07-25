@@ -534,8 +534,7 @@ public class GameVisualisation extends JPanel {
         String prefix = front ? "front" : "back";
         String gender = male ? "m" : "f";
         String path = prefix + shininess + "/" + gender + name.replaceAll("[ '\\.]", "").toLowerCase() + ".png";
-        //TODO: change storage location
-        String qualified = "C:\\Users\\Benjamin\\My Documents\\sprites" + path;
+        String qualified = Preference.getStorageLocation() + path;
         File f = new File(qualified);
         String[] repositories = new String[] {"http://shoddybattle.com/dpsprites/", repository};
         if (!f.exists()) {
