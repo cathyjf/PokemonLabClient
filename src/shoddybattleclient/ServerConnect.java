@@ -72,7 +72,7 @@ public class ServerConnect extends javax.swing.JFrame {
         // temporary
         link.loadMoves(
                 ServerConnect.class.getResource(
-                "resources/moves2.xml").toString());
+                "resources/moves.xml").toString());
         link.loadSpecies(
                 ServerConnect.class.getResource(
                 "resources/species.xml").toString());

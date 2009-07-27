@@ -54,7 +54,7 @@ public class TeamBuilder extends javax.swing.JFrame {
         initComponents();
         long t1 = System.currentTimeMillis();
         MoveListParser mlp = new MoveListParser();
-        m_moves = mlp.parseDocument(TeamBuilder.class.getResource("resources/moves2.xml").toString());
+        m_moves = mlp.parseDocument(TeamBuilder.class.getResource("resources/moves.xml").toString());
         SpeciesListParser parser = new SpeciesListParser();
         m_species = parser.parseDocument(TeamBuilder.class.getResource("resources/species.xml").toString());
         long t2 = System.currentTimeMillis();
