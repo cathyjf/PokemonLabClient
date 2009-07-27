@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.utils.*;
@@ -270,8 +271,12 @@ public class WelcomeWindow extends javax.swing.JFrame {
         System.setErr(new PrintStream(new OutputStream() {
             ErrorBox m_box = new ErrorBox();
             @Override
-            public void write(int b) throws IOException {
-                m_box.append(b);
+            public void write(final int b) throws IOException {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        m_box.append(b);
+                    }
+                });
             }
         }));
 

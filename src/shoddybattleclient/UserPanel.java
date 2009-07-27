@@ -29,6 +29,7 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.MediaTracker;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -36,6 +37,7 @@ import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.network.ServerLink.ChallengeMediator;
 import shoddybattleclient.shoddybattle.Pokemon;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
+import shoddybattleclient.shoddybattle.PokemonSpecies;
 import shoddybattleclient.utils.CloseableTabbedPane.CloseableTab;
 import shoddybattleclient.utils.TeamFileParser;
 
@@ -47,15 +49,11 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab {
 
     private static class SpritePanel extends JPanel {
         private Image m_image;
-        public SpritePanel(String species, Gender g, boolean shiny, String repository) {
+        public SpritePanel(String species, int speciesId, Gender g, boolean shiny) {
             setBorder(BorderFactory.createEtchedBorder());
-            try {
-                m_image = GameVisualisation.getSprite(species, true,
-                      g != Gender.GENDER_FEMALE, shiny, repository);
-                //m_image = m_image.getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-            } catch (Exception e) {
-                m_image = null;
-            }
+            m_image = GameVisualisation.getSprite(speciesId, true,
+                    !Gender.GENDER_FEMALE.equals(g), shiny);
+            if (m_image == null) return;
             MediaTracker tracker = new MediaTracker(this);
             tracker.addImage(m_image, 0);
             try {
@@ -94,7 +92,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab {
         m_idx = index;
         panelSprites.setLayout(new GridLayout(2, 3));
         for (int i = 0; i < 6; i++) {
-            panelSprites.add(new SpritePanel(null, null, false, null));
+            panelSprites.add(new SpritePanel(null, -1, null, false));
         }
         lblMessage.setText("<html>I am a polymath so don't challenge me unless you want to lose</html>");
     }
@@ -401,10 +399,11 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab {
         if (m_team != null) {
             panelSprites.removeAll();
             panelSprites.repaint();
+            List<PokemonSpecies> speciesList = m_link.getSpeciesList();
             for (int i = 0; i < m_team.length; i++) {
                 Pokemon p = m_team[i];
-                //TODO: repository
-                SpritePanel panel = new SpritePanel(p.species, p.gender, p.shiny, null);
+                SpritePanel panel = new SpritePanel(p.species, 
+                        PokemonSpecies.getIdFromName(speciesList, p.species), p.gender, p.shiny);
                 panelSprites.add(panel);
             }
             btnChallenge.setEnabled(true);

@@ -40,7 +40,6 @@ import javax.swing.JToggleButton;
 import shoddybattleclient.ChatPane.CommandException;
 import shoddybattleclient.GameVisualisation.VisualPokemon;
 import shoddybattleclient.LobbyWindow.Channel;
-import shoddybattleclient.LobbyWindow.Channel.UserCellRenderer;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.shoddybattle.*;
 import shoddybattleclient.utils.*;
@@ -423,7 +422,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     }
 
     private void setupVisual() {
-        m_visual = new GameVisualisation(m_participant, m_n, m_length);
+        m_visual = new GameVisualisation(m_participant, m_n, m_length, m_link.getSpeciesList());
         m_visual.setSize(m_visual.getPreferredSize());
         int base = 20;
         int buffer = 5;

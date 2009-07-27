@@ -44,6 +44,7 @@ public class Preference {
     private static final String TIME_STAMP_FORMAT = "timeStampFormat";
     private static final String IGNORED_USERS = "ignoredUsers";
     private static final String ANIMATE_HEALTH_BARS = "animateHealthBars";
+    private static final String SPRITE_DIRECTORIES = "spriteDirectories";
 
     public static void setStorageLocation(String loc) {
         m_prefs.put(STORAGE_LOCATION, loc);
@@ -170,5 +171,22 @@ public class Preference {
             if (s.equalsIgnoreCase(user)) return true;
         }
         return false;
+    }
+
+    public static String getSpriteLocation() {
+        return getStorageLocation() + "sprites/";
+    }
+    public static void setSpriteDirectories(String[] dirs) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < dirs.length; i++) {
+            builder.append(dirs[i]);
+            builder.append(",");
+        }
+        builder.deleteCharAt(builder.length() - 1);
+        System.out.println(builder.toString());
+        m_prefs.put(SPRITE_DIRECTORIES, builder.toString());
+    }
+    public static String[] getSpriteDirectories() {
+        return m_prefs.get(SPRITE_DIRECTORIES, "platinum,dp").split(",");
     }
 }

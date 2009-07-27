@@ -31,15 +31,13 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -47,8 +45,10 @@ import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JToolTip;
+import javax.swing.Timer;
 import javax.swing.ToolTipManager;
 import shoddybattleclient.shoddybattle.Pokemon;
+import shoddybattleclient.shoddybattle.PokemonSpecies;
 
 /**
  *
@@ -69,6 +69,7 @@ public class GameVisualisation extends JPanel {
         private int m_slot = -1;
         private boolean m_fainted = false;
         private Pokemon m_pokemon = null;
+        private int m_frame = 1;
 
         public VisualPokemon(String species, int gender, boolean shiny) {
             m_species = species;
@@ -150,6 +151,12 @@ public class GameVisualisation extends JPanel {
         public void setPokemon(Pokemon p) {
             m_pokemon = p;
         }
+        public void toggleFrame() {
+            m_frame = (m_frame == 1) ? 2 : 1;
+        }
+        public int getFrame() {
+            return m_frame;
+        }
     }
 
     public static final int STATE_NORMAL = 0;
@@ -168,6 +175,7 @@ public class GameVisualisation extends JPanel {
     private int m_target = Integer.MAX_VALUE;
     private Graphics2D m_mouseInput;
     private static final IndexColorModel m_colours;
+    private final List<PokemonSpecies> m_speciesList;
     private int m_n;
     //max team length
     private int m_length;
@@ -205,10 +213,11 @@ public class GameVisualisation extends JPanel {
         manager.setReshowDelay(0);
     }
     
-    public GameVisualisation(int view, int n, int length) {
+    public GameVisualisation(int view, int n, int length, List<PokemonSpecies> speciesList) {
         m_view = view;
         m_active = new VisualPokemon[2][n];
         m_parties = new VisualPokemon[2][length];
+        m_speciesList = speciesList;
         for (int i = 0; i < m_parties.length; i++) {
             for (int j = 0; j < m_parties[i].length; j++) {
                 m_parties[i][j] = new VisualPokemon();
@@ -319,13 +328,32 @@ public class GameVisualisation extends JPanel {
         }
     }
 
-    public void sendOut(int party, int slot, int index, String name) {
+    public void sendOut(final int party, final int slot, int index, String name) {
         VisualPokemon p = getPokemonForSlot(party, slot);
         if (p != null) {
             p.setSlot(-1);
         }
-        m_parties[party][index].setSlot(slot);
-        m_parties[party][index].setName(name);
+        VisualPokemon newPoke = m_parties[party][index];
+        newPoke.setSlot(slot);
+        newPoke.setName(name);
+        Timer t = new Timer(400, new ActionListener() {
+            private boolean m_first = true;
+            public void actionPerformed(ActionEvent e) {
+                VisualPokemon p = m_active[party][slot];
+                if (p == null) return;
+                Timer t = (Timer)e.getSource();
+                if (m_first) {
+                    t.setDelay(300);
+                    m_first = false;
+                } else {
+                    t.stop();
+                    t = null;
+                }
+                p.toggleFrame();
+                repaint();
+            }
+        });
+        t.start();
     }
 
     public void setPokemon(int party, int index, Pokemon p) {
@@ -466,14 +494,8 @@ public class GameVisualisation extends JPanel {
         for (int i = m_n - 1; i >= 0; i--) {
             VisualPokemon p = team[i];
             if (p == null) continue;
-            Image img = null;
-            try {
-                img = getSprite(p.getSpecies(), !us, p.getGender() != Pokemon.Gender.GENDER_FEMALE.getValue(), p.isShiny(), null);
-            } catch (IOException e) {
-                String gender = p.getGender() == Pokemon.Gender.GENDER_MALE.getValue() ? "Male" : "Female";
-                System.out.println(p.getSpecies() + " " + gender + " sprite not found");
-                continue;
-            }
+            Image img = getSprite(p.getSpecies(), !us,
+                    p.getGender() != Pokemon.Gender.GENDER_FEMALE.getValue(), p.isShiny(), p.getFrame());
             if (img == null) continue;
             tracker.addImage(img, 0);
             try {
@@ -528,46 +550,63 @@ public class GameVisualisation extends JPanel {
         g2.dispose();
     }
 
-    public static Image getSprite(String name, boolean front, boolean male, 
-            boolean shiny, String repository) throws IOException {
-        String shininess = shiny ? "shiny" : "normal";
+    private static String createPath(int number, boolean front, boolean male, boolean shiny,
+            String repo, int frame) {
         String prefix = front ? "front" : "back";
-        String gender = male ? "m" : "f";
-        String path = prefix + shininess + "/" + gender + name.replaceAll("[ '\\.]", "").toLowerCase() + ".png";
-        String qualified = Preference.getStorageLocation() + path;
-        File f = new File(qualified);
-        String[] repositories = new String[] {"http://shoddybattle.com/dpsprites/", repository};
-        if (!f.exists()) {
-            for (int i = 0; i < repositories.length; i++) {
-                URL url = new URL(repositories[i] + path);
-                InputStream input;
-                try {
-                    input = url.openStream();
-                } catch (IOException e) {
-                    continue;
-                }
-                f.getParentFile().mkdirs();
-                FileOutputStream output = new FileOutputStream(f);
-                byte[] bytes = new byte[255];
-                while (true) {
-                    int read = input.read(bytes);
-                    if (read == -1)
-                        break;
-                    output.write(bytes, 0, read);
-                }
-                output.flush();
-                output.close();
-                input.close();
-                break;
-            }
+        String shininess = shiny ? "shiny" : "normal";
+        String gender = male ? "" : "f";
+        String fr = frame == 1 ? "" : String.valueOf(frame);
+        String path = repo + "/" + prefix + "/" + shininess + fr + "/" + number + gender + ".png";
+        return Preference.getSpriteLocation() + path;
+    }
+
+    private static String getSpritePath(int number, boolean front, boolean male,
+            boolean shiny, String repo, int frame) {
+        //look for the correct sprite, then the opposite gender, then the first frames
+        File f = new File(createPath(number, front, male, shiny, repo, frame));
+        if (f.exists()) return f.toString();
+        f = new File(createPath(number, front, !male, shiny, repo, frame));
+        if (f.exists()) return f.toString();
+        f = new File(createPath(number, front, male, shiny, repo, 1));
+        if (f.exists()) return f.toString();
+        f = new File(createPath(number, front, !male, shiny, repo, 1));
+        if (f.exists()) return f.toString();
+        return null;
+    }
+
+    public static Image getSprite(int number, boolean front, boolean male,
+            boolean shiny, int frame) {
+        String[] repositories = Preference.getSpriteDirectories();
+        String qualified = null;
+        for (int i = 0; i < repositories.length; i++) {
+            qualified = getSpritePath(number, front, male, shiny, repositories[i], frame);
+            if (qualified != null) break;
         }
+
+        if (qualified == null) return null;
         return Toolkit.getDefaultToolkit().createImage(qualified);
+    }
+
+    public static Image getSprite(int number, boolean front, boolean male,
+            boolean shiny) {
+        return getSprite(number, front, male, shiny, 1);
+    }
+    public Image getSprite(String name, boolean front, boolean male,
+            boolean shiny, int frame) {
+        int number = PokemonSpecies.getIdFromName(m_speciesList, name);
+        return getSprite(number, front, male, shiny, frame);
+    }
+
+    public Image getSprite(String name, boolean front, boolean male, boolean shiny) {
+        return getSprite(name, front, male, shiny, 1);
     }
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Visualisation test");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        final GameVisualisation vis = new GameVisualisation(0, 3, 6);
+        ArrayList<PokemonSpecies> species = new SpeciesListParser().parseDocument(
+                GameVisualisation.class.getResource("resources/species.xml").toString());
+        final GameVisualisation vis = new GameVisualisation(0, 3, 6, species);
         VisualPokemon[] party1 = new VisualPokemon[] {
             new VisualPokemon("Squirtle", Pokemon.Gender.GENDER_MALE.getValue(), false),
             new VisualPokemon("Wartortle", Pokemon.Gender.GENDER_MALE.getValue(), false),
