@@ -86,6 +86,7 @@ public class PreferencePane extends javax.swing.JFrame {
 
     private void initSpritePanel() {
         File path = new File(Preference.getSpriteLocation());
+        path.mkdirs();
         List<SpritePackage> packages = new ArrayList();
         File[] dirs = path.listFiles();
         for (int i = 0; i < dirs.length; i++) {
