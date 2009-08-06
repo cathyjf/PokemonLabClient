@@ -69,6 +69,9 @@ public class FirstLaunch extends javax.swing.JFrame {
             new FirstLaunch().setVisible(true);
             return;
         }
+        File f = new File(path);
+        f.mkdirs();
+        new File(f, "sprites").mkdirs();
         Preference.setStorageLocation(path);
     }
 
@@ -189,6 +192,9 @@ public class FirstLaunch extends javax.swing.JFrame {
             return;
         }
         dispose();
+        File f = new File(path);
+        f.mkdirs();
+        new File(f, "sprites").mkdirs();
         Preference.setStorageLocation(path);
     }//GEN-LAST:event_btnContinueActionPerformed
 

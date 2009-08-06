@@ -23,6 +23,8 @@
 
 package shoddybattleclient;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,6 +33,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,7 +43,9 @@ import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.ListModel;
+import javax.swing.SwingUtilities;
 import shoddybattleclient.Preference.HealthDisplay;
+import shoddybattleclient.utils.SwingWorker;
 import shoddybattleclient.utils.Text;
 import shoddybattleclient.utils.bzip2.CBZip2InputStream;
 import shoddybattleclient.utils.tar.TarEntry;
@@ -63,6 +68,83 @@ public class PreferencePane extends javax.swing.JFrame {
         public String getDir() { return m_dir; }
         @Override
         public String toString() { return m_name; }
+    }
+
+    enum SpriteLink {
+        NA ("N/A", ""),
+        DP ("DP", "http://shoddybattle.com/sprites/dp.tar.bz2"),
+        PLATINUM ("Platinum", "http://shoddybattle.com/sprites/platinum.tar.bz2");
+        private String m_str;
+        private String m_url;
+        SpriteLink(String str, String url) {
+            m_str = str;
+            m_url = url;
+        }
+        public String toString() {
+            return m_str;
+        }
+    }
+
+    private class SpriteDownloader extends SwingWorker<Void, Integer> {
+        private InputStream m_is;
+        private int m_max;
+        private int m_total = 0;
+        public SpriteDownloader(InputStream is, int max) {
+            m_is = is;
+            m_max = max;
+        }
+
+        @Override
+        protected Void doInBackground() {
+            try {
+                try {
+                    //discard first two bytes to make the bzip library work
+                    m_is.read();
+                    m_is.read();
+                    TarInputStream tar = new TarInputStream(new CBZip2InputStream(m_is));
+                    TarEntry entry;
+                    while ((entry = tar.getNextEntry()) != null) {
+                        File file = new File(new File(Preference.getSpriteLocation()), entry.getName());
+                        if (file.exists()) {
+                            JOptionPane.showMessageDialog(PreferencePane.this,
+                                    "A package with this name is already installed.");
+                            m_is.close();
+                            tar.close();
+                            return null;
+                        }
+                        if (entry.isDirectory()) {
+                            file.mkdirs();
+                        } else {
+                            file.createNewFile();
+                            FileOutputStream out = new FileOutputStream(file);
+                            byte[] bytes = new byte[512];
+                            int length;
+                            while ((length = tar.read(bytes)) != -1) {
+                                out.write(bytes, 0, length);
+                                m_total += length;
+                                int progress = (int)(100.0 * m_total / m_max);
+                                if (progress > 100) progress = 100;
+                                setProgress(progress);
+                            }
+                            out.flush();
+                            out.close();
+                        }
+                    }
+                    tar.close();
+                } finally {
+                    m_is.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        public void done() {
+            PreferencePane.this.initSpritePanel();
+        }
+
     }
 
     /** Creates new form PreferencePane */
@@ -125,6 +207,7 @@ public class PreferencePane extends javax.swing.JFrame {
         });
         lstPackages.setModel(
                 new DefaultComboBoxModel(packages.toArray(new SpritePackage[packages.size()])));
+        cmbSpriteDefaults.setModel(new DefaultComboBoxModel(SpriteLink.values()));
     }
 
     private void saveSpriteDirectories() {
@@ -170,6 +253,13 @@ public class PreferencePane extends javax.swing.JFrame {
         btnDown = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
         btnAdd = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        progress = new javax.swing.JProgressBar();
+        jLabel8 = new javax.swing.JLabel();
+        cmbSpriteDefaults = new javax.swing.JComboBox();
+        jLabel9 = new javax.swing.JLabel();
+        txtURL = new javax.swing.JTextField();
+        txtProgress = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Preferences");
@@ -247,7 +337,7 @@ public class PreferencePane extends javax.swing.JFrame {
                     .add(txtIgnored, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jLabel3)
-                .addContainerGap(98, Short.MAX_VALUE))
+                .addContainerGap(141, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Chat", jPanel1);
@@ -284,18 +374,19 @@ public class PreferencePane extends javax.swing.JFrame {
             .add(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .add(jPanel2Layout.createSequentialGroup()
+                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                            .add(cmbOppHealth, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(cmbUserHealth, 0, 93, Short.MAX_VALUE))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                            .add(lblEnemyHealth, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
+                            .add(lblUserHealth, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)))
                     .add(chkAnimateHealth))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(cmbOppHealth, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(cmbUserHealth, 0, 93, Short.MAX_VALUE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(lblEnemyHealth, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
-                    .add(lblUserHealth, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -307,14 +398,13 @@ public class PreferencePane extends javax.swing.JFrame {
                     .add(lblUserHealth, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 27, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel2Layout.createSequentialGroup()
-                        .add(jLabel5)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(chkAnimateHealth))
+                    .add(jLabel5)
                     .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                         .add(cmbOppHealth, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .add(lblEnemyHealth, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 27, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(133, Short.MAX_VALUE))
+                .add(26, 26, 26)
+                .add(chkAnimateHealth)
+                .addContainerGap(145, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Battle", jPanel2);
@@ -329,6 +419,7 @@ public class PreferencePane extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(lstPackages);
 
+        jLabel6.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
         jLabel6.setText("Installed Packages:");
 
         btnUp.setText("^");
@@ -362,40 +453,90 @@ public class PreferencePane extends javax.swing.JFrame {
             }
         });
 
+        jLabel7.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel7.setText("Add New:");
+
+        jLabel8.setText("Choose a default:");
+
+        jLabel9.setText("Or provide a URL:");
+
+        txtURL.setText("http://");
+
+        txtProgress.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
+
         org.jdesktop.layout.GroupLayout jPanel3Layout = new org.jdesktop.layout.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel3Layout.createSequentialGroup()
-                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 150, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 128, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jLabel6))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel3Layout.createSequentialGroup()
+                        .add(btnDelete)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 123, Short.MAX_VALUE)
+                        .add(btnAdd, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 84, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(jPanel3Layout.createSequentialGroup()
                         .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(btnDelete)
-                            .add(btnAdd, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 84, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(btnDown)
-                            .add(btnUp)))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel6))
-                .addContainerGap(191, Short.MAX_VALUE))
+                            .add(btnUp)
+                            .add(btnDown))
+                        .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(jPanel3Layout.createSequentialGroup()
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(jLabel7)
+                                    .add(jLabel8)))
+                            .add(jPanel3Layout.createSequentialGroup()
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(jLabel9)
+                                    .add(txtURL, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
+                                    .add(cmbSpriteDefaults, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 139, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                            .add(jPanel3Layout.createSequentialGroup()
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(txtProgress)
+                                    .add(progress, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE))))))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel3Layout.createSequentialGroup()
-                .add(jLabel6)
+                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel6)
+                    .add(jLabel7))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jPanel3Layout.createSequentialGroup()
-                        .add(btnUp)
+                        .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(btnUp, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 29, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jLabel8))
+                        .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(jPanel3Layout.createSequentialGroup()
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(btnDown))
+                            .add(jPanel3Layout.createSequentialGroup()
+                                .add(29, 29, 29)
+                                .add(jLabel9)))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(btnDown)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 55, Short.MAX_VALUE)
-                        .add(btnDelete)
+                        .add(txtURL, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 57, Short.MAX_VALUE)
+                        .add(txtProgress)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(btnAdd))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE))
+                        .add(progress, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(btnAdd)
+                            .add(btnDelete)))
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE))
                 .addContainerGap())
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel3Layout.createSequentialGroup()
+                .add(47, 47, 47)
+                .add(cmbSpriteDefaults, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(180, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Sprites", jPanel3);
@@ -410,8 +551,7 @@ public class PreferencePane extends javax.swing.JFrame {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
-                .addContainerGap())
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE))
         );
 
         pack();
@@ -504,86 +644,48 @@ public class PreferencePane extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        String s = JOptionPane.showInputDialog(this, "Enter a URL for the desired package", "http://");
+        SpriteLink link = (SpriteLink)cmbSpriteDefaults.getSelectedItem();
+        String s;
+        if ((link == null) || !"".equals(link.m_url)) {
+            s = link.m_url;
+        } else {
+            s = txtURL.getText();
+        }
         URL url = null;
+        URLConnection conn = null;
+        int length = -1;
         try {
             url = new URL(s);
+            conn = url.openConnection();
+            length = conn.getContentLength();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Invalid URL");
             return;
         }
-        InputStream input;
+
+        final InputStream input;
         try {
-            input = url.openStream();
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Failed to connect");
-            return;
-        }
-        File f = new File(Preference.getSpriteLocation() + url.getFile());
-        FileOutputStream out = null;
-        try {
-            out = new FileOutputStream(f);
+            input = conn.getInputStream();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Could not save file");
+            JOptionPane.showMessageDialog(this, "Failed to open input stream");
             return;
         }
-        byte[] bytes = new byte[256];
-        while (true) {
-            int read = -1;
-            try {
-                read = input.read(bytes);
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, "Download failed");
-                break;
+
+        SpriteDownloader task = new SpriteDownloader(input, length);
+        task.addPropertyChangeListener(new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+                Object val = evt.getNewValue();
+                if ("progress".equals(evt.getPropertyName())) {
+                    int intVal = (Integer)val;
+                    progress.setValue(intVal);
+                    txtProgress.setText(intVal + "% complete");
+                }
             }
-            if (read == -1) break;
-            try {
-                out.write(bytes, 0, read);
-            } catch (IOException ex) {
-                
-            }
-        }
-        try {
-            input.close();
-            out.flush();
-            out.close();
-        } catch (IOException e) {
-            
-        }
-        try {
-            extractTarBz2(f);
-            f.delete();
-            initSpritePanel();
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Failed to extract sprites");
-            e.printStackTrace();
-        }
+        });
+        task.execute();
+
     }//GEN-LAST:event_btnAddActionPerformed
 
-    private void extractTarBz2(File f) throws IOException {
-        FileInputStream fis = new FileInputStream(f);
-        //discard first two bytes to make the bzip library work
-        fis.read();
-        fis.read();
-        TarInputStream tar = new TarInputStream(new CBZip2InputStream(fis));
-        TarEntry entry;
-        while ((entry = tar.getNextEntry()) != null) {
-            File file = new File(new File(Preference.getSpriteLocation()), entry.getName());
-            if (entry.isDirectory()) {
-                file.mkdirs();
-            } else {
-                FileOutputStream out = new FileOutputStream(file);
-                byte[] bytes = new byte[256];
-                int length;
-                while ((length = tar.read(bytes)) != -1) {
-                    out.write(bytes, 0, length);
-                }
-                out.flush();
-                out.close();
-            }
-        }
-        tar.close();
-    }
 
     private void deleteDirectory(File f) {
         File[] files = f.listFiles();
@@ -616,6 +718,7 @@ public class PreferencePane extends javax.swing.JFrame {
     private javax.swing.JCheckBox chkAnimateHealth;
     private javax.swing.JCheckBox chkTimestamps;
     private javax.swing.JComboBox cmbOppHealth;
+    private javax.swing.JComboBox cmbSpriteDefaults;
     private javax.swing.JComboBox cmbUserHealth;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -623,6 +726,9 @@ public class PreferencePane extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -632,8 +738,11 @@ public class PreferencePane extends javax.swing.JFrame {
     private javax.swing.JLabel lblTimestampInfo;
     private javax.swing.JLabel lblUserHealth;
     private javax.swing.JList lstPackages;
+    private javax.swing.JProgressBar progress;
     private javax.swing.JTextField txtIgnored;
+    private javax.swing.JLabel txtProgress;
     private javax.swing.JTextField txtTimestampFormat;
+    private javax.swing.JTextField txtURL;
     // End of variables declaration//GEN-END:variables
 
 }
