@@ -22,15 +22,25 @@
 
 package shoddybattleclient;
 
+import java.awt.FileDialog;
+import javax.swing.JOptionPane;
+import shoddybattleclient.UserPanel.TeamBox;
+import shoddybattleclient.network.ServerLink;
+import shoddybattleclient.shoddybattle.Pokemon;
+
 /**
  *
  * @author ben
  */
 public class FindPanel extends javax.swing.JPanel {
 
+    private ServerLink m_link;
+    private Pokemon[] m_team;
+
     /** Creates new form FindPanel */
-    public FindPanel() {
+    public FindPanel(ServerLink link) {
         initComponents();
+        m_link = link;
     }
 
     /** This method is called from within the constructor to
@@ -45,13 +55,17 @@ public class FindPanel extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         cmbLadder = new javax.swing.JComboBox();
         jPanel4 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnFind = new javax.swing.JButton();
+        btnCancel = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
-        jButton4 = new javax.swing.JButton();
-        panelSprites = new javax.swing.JPanel();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        btnLoad = new javax.swing.JButton();
+        panelSprites = new TeamBox();
+        chkRated = new javax.swing.JCheckBox();
+        jLabel3 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtBans = new javax.swing.JTextArea();
+        jLabel4 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jLabel2 = new javax.swing.JLabel();
 
@@ -62,53 +76,62 @@ public class FindPanel extends javax.swing.JPanel {
 
         cmbLadder.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Standard", "Uber", "UU", "Suspect" }));
 
+        jPanel4.setOpaque(false);
         jPanel4.setLayout(new java.awt.GridLayout(1, 2, 2, 0));
 
-        jButton2.setText("Find");
-        jPanel4.add(jButton2);
+        btnFind.setText("Find");
+        btnFind.setEnabled(false);
+        jPanel4.add(btnFind);
 
-        jButton3.setText("Cancel");
-        jButton3.setEnabled(false);
-        jPanel4.add(jButton3);
+        btnCancel.setText("Cancel");
+        btnCancel.setEnabled(false);
+        jPanel4.add(btnCancel);
 
         jPanel5.setLayout(new java.awt.GridLayout(1, 2));
 
-        jButton4.setText("Load Team");
+        btnLoad.setText("Load Team");
+        btnLoad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoadActionPerformed(evt);
+            }
+        });
 
         panelSprites.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         panelSprites.setOpaque(false);
+        panelSprites.setLayout(new java.awt.GridLayout(2, 3));
 
-        org.jdesktop.layout.GroupLayout panelSpritesLayout = new org.jdesktop.layout.GroupLayout(panelSprites);
-        panelSprites.setLayout(panelSpritesLayout);
-        panelSpritesLayout.setHorizontalGroup(
-            panelSpritesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 186, Short.MAX_VALUE)
-        );
-        panelSpritesLayout.setVerticalGroup(
-            panelSpritesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 89, Short.MAX_VALUE)
-        );
+        chkRated.setSelected(true);
+        chkRated.setText("Rated?");
 
-        jCheckBox1.setSelected(true);
-        jCheckBox1.setText("Rated?");
-        jCheckBox1.setOpaque(false);
+        jLabel3.setFont(new java.awt.Font("Lucida Grande", 0, 12)); // NOI18N
+        jLabel3.setText("Ban List:");
+
+        txtBans.setColumns(14);
+        txtBans.setEditable(false);
+        txtBans.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+        txtBans.setRows(3);
+        jScrollPane2.setViewportView(txtBans);
+
+        jLabel4.setFont(new java.awt.Font("Lucida Grande", 0, 12)); // NOI18N
+        jLabel4.setText("Clauses:");
 
         jTextArea1.setColumns(14);
         jTextArea1.setEditable(false);
-        jTextArea1.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        jTextArea1.setRows(3);
+        jScrollPane3.setViewportView(jTextArea1);
 
-        jLabel2.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-        jLabel2.setText("Rules:");
+        jLabel2.setFont(new java.awt.Font("Lucida Grande", 0, 12)); // NOI18N
+        jLabel2.setText("<html>This is some information about this ladder</html>");
+        jLabel2.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+            .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                    .add(jPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(panelSprites, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(jLabel1)
@@ -116,55 +139,85 @@ public class FindPanel extends javax.swing.JPanel {
                         .add(cmbLadder, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 134, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                     .add(jPanel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(layout.createSequentialGroup()
-                        .add(jCheckBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 72, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(chkRated, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 72, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jButton4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .add(btnLoad, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel2)
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE))
+                    .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
+                    .add(jLabel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel3)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel4))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(cmbLadder, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel2))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                        .add(jPanel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 75, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(jCheckBox1)
-                            .add(jButton4))
+                            .add(cmbLadder, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(panelSprites, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(18, 18, 18)
-                        .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE))
-                .addContainerGap())
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                            .add(layout.createSequentialGroup()
+                                .add(jPanel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                    .add(chkRated)
+                                    .add(btnLoad))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(panelSprites, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                            .add(layout.createSequentialGroup()
+                                .add(48, 48, 48)
+                                .add(jLabel3)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .add(3, 3, 3)
+                                .add(jLabel4)))))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jScrollPane3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(7, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadActionPerformed
+        FileDialog fd = new FileDialog(m_link.getLobby(), "Choose a team to load", FileDialog.LOAD);
+        fd.setVisible(true);
+        if (fd.getFile() == null) return;
+        String file = fd.getDirectory() + fd.getFile();
+        TeamBox box = (TeamBox)panelSprites;
+        m_team = box.loadFromTeam(file, m_link.getSpeciesList());
+        if (m_team != null) {
+            btnFind.setEnabled(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Selected team file could not be loaded");
+        }
+    }//GEN-LAST:event_btnLoadActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnFind;
+    private javax.swing.JButton btnLoad;
+    private javax.swing.JCheckBox chkRated;
     private javax.swing.JComboBox cmbLadder;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JPanel panelSprites;
+    private javax.swing.JTextArea txtBans;
     // End of variables declaration//GEN-END:variables
 
 }

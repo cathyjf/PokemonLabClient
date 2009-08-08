@@ -338,6 +338,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
     private Map<Integer, Channel> m_channels = new HashMap<Integer, Channel>();
     private Map<String, UserPanel>  m_userPanels = new HashMap<String, UserPanel>();
     private BattlePanel m_battlePanel;
+    private FindPanel m_findPanel;
 
     public BattlePanel getBattlePanel() {
         return m_battlePanel;
@@ -397,6 +398,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         m_link = link;
         m_link.setLobbyWindow(this);
         m_battlePanel = new BattlePanel(m_link);
+        m_findPanel = new FindPanel(m_link);
         m_name = userName;
 
         tabChats.addChangeListener(new ChangeListener() {
@@ -600,6 +602,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         jMenu3 = new javax.swing.JMenu();
         mnuJoinMain = new javax.swing.JMenuItem();
         mnuBattleList = new javax.swing.JMenuItem();
+        mnuFind = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JSeparator();
         mnuPreferences = new javax.swing.JMenuItem();
         mnuLeaveServer = new javax.swing.JMenuItem();
@@ -650,6 +653,14 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
             }
         });
         jMenu3.add(mnuBattleList);
+
+        mnuFind.setText("Find");
+        mnuFind.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuFindActionPerformed(evt);
+            }
+        });
+        jMenu3.add(mnuFind);
         jMenu3.add(jSeparator2);
 
         mnuPreferences.setText("Preferences");
@@ -776,6 +787,11 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         m_link.requestChannelList();
     }//GEN-LAST:event_mnuBattleListActionPerformed
 
+    private void mnuFindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFindActionPerformed
+        tabChats.add("Find", m_findPanel);
+        tabChats.setSelectedComponent(m_findPanel);
+    }//GEN-LAST:event_mnuFindActionPerformed
+
     // prompts the user to confirm that they wish to leave the server
     private boolean confirmLeave() {
         int response = JOptionPane.showConfirmDialog(this, "Are you sure you " +
@@ -810,6 +826,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JList listUsers;
     private javax.swing.JMenuItem mnuBattleList;
+    private javax.swing.JMenuItem mnuFind;
     private javax.swing.JMenuItem mnuJoinMain;
     private javax.swing.JMenuItem mnuLeaveServer;
     private javax.swing.JMenuItem mnuPersonalMessage;

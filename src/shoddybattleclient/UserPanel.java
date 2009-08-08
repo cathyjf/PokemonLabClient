@@ -26,7 +26,6 @@ package shoddybattleclient;
 import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.Graphics;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.util.List;
@@ -46,6 +45,38 @@ import shoddybattleclient.utils.TeamFileParser;
  * @author ben
  */
 public class UserPanel extends javax.swing.JPanel implements CloseableTab {
+
+    public static class TeamBox extends JPanel {
+        public TeamBox() {
+            reset();
+        }
+
+        private void reset() {
+            this.removeAll();
+            for (int i = 0; i < 6; i++) {
+                this.add(new SpritePanel(null, -1, null, false));
+            }
+        }
+
+        /**
+         * Initialises the sprites from a team file and returns the team
+         */
+        public Pokemon[] loadFromTeam(String file, List<PokemonSpecies> speciesList) {
+            TeamFileParser tfp = new TeamFileParser();
+            Pokemon[] team = tfp.parseTeam(file);
+            if (team != null) {
+                this.removeAll();
+                this.repaint();
+                for (int i = 0; i < team.length; i++) {
+                    Pokemon p = team[i];
+                    SpritePanel panel = new SpritePanel(p.species,
+                            PokemonSpecies.getIdFromName(speciesList, p.species), p.gender, p.shiny);
+                    this.add(panel);
+                }
+            }
+            return team;
+        }
+    }
 
     private static class SpritePanel extends JPanel {
         private Image m_image;
@@ -90,10 +121,6 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab {
         m_opponent = name;
         m_link = link;
         m_idx = index;
-        panelSprites.setLayout(new GridLayout(2, 3));
-        for (int i = 0; i < 6; i++) {
-            panelSprites.add(new SpritePanel(null, -1, null, false));
-        }
         lblMessage.setText("<html>I am a polymath so don't challenge me unless you want to lose</html>");
     }
 
@@ -175,7 +202,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab {
         cmbN = new javax.swing.JComboBox();
         jLabel4 = new javax.swing.JLabel();
         cmbGen = new javax.swing.JComboBox();
-        panelSprites = new javax.swing.JPanel();
+        panelSprites = new TeamBox();
         btnLoad = new javax.swing.JButton();
         btnChallenge = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
@@ -235,17 +262,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab {
 
         panelSprites.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         panelSprites.setOpaque(false);
-
-        org.jdesktop.layout.GroupLayout panelSpritesLayout = new org.jdesktop.layout.GroupLayout(panelSprites);
-        panelSprites.setLayout(panelSpritesLayout);
-        panelSpritesLayout.setHorizontalGroup(
-            panelSpritesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 193, Short.MAX_VALUE)
-        );
-        panelSpritesLayout.setVerticalGroup(
-            panelSpritesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 101, Short.MAX_VALUE)
-        );
+        panelSprites.setLayout(new java.awt.GridLayout(2, 3));
 
         btnLoad.setText("Load");
         btnLoad.addActionListener(new java.awt.event.ActionListener() {
@@ -273,7 +290,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab {
                         .add(btnLoad, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 76, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(btnChallenge, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, panelSprites, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, panelSprites, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel2Layout.createSequentialGroup()
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jLabel4)
@@ -394,19 +411,12 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab {
         fd.setVisible(true);
         if (fd.getFile() == null) return;
         String file = fd.getDirectory() + fd.getFile();
-        TeamFileParser tfp = new TeamFileParser();
-        m_team = tfp.parseTeam(file);
+        TeamBox box = (TeamBox)panelSprites;
+        m_team = box.loadFromTeam(file, m_link.getSpeciesList());
         if (m_team != null) {
-            panelSprites.removeAll();
-            panelSprites.repaint();
-            List<PokemonSpecies> speciesList = m_link.getSpeciesList();
-            for (int i = 0; i < m_team.length; i++) {
-                Pokemon p = m_team[i];
-                SpritePanel panel = new SpritePanel(p.species, 
-                        PokemonSpecies.getIdFromName(speciesList, p.species), p.gender, p.shiny);
-                panelSprites.add(panel);
-            }
             btnChallenge.setEnabled(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Selected team file could not be loaded");
         }
     }//GEN-LAST:event_btnLoadActionPerformed
 
