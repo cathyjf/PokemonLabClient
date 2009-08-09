@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.prefs.Preferences;
+import javax.swing.JFileChooser;
 
 /**
  *
@@ -45,6 +46,9 @@ public class Preference {
     private static final String IGNORED_USERS = "ignoredUsers";
     private static final String ANIMATE_HEALTH_BARS = "animateHealthBars";
     private static final String SPRITE_DIRECTORIES = "spriteDirectories";
+    private static final String LOG_DIRECTORY = "logDirectory";
+    private static final String AUTOSAVE_CHAT_LOGS = "autosaveChatLogs";
+    private static final String BATTLE_LOGS = "battleLogs";
 
     public static void setStorageLocation(String loc) {
         m_prefs.put(STORAGE_LOCATION, loc);
@@ -188,5 +192,41 @@ public class Preference {
     }
     public static String[] getSpriteDirectories() {
         return m_prefs.get(SPRITE_DIRECTORIES, "platinum,dp").split(",");
+    }
+
+    public static String getLogDirectory() {
+        String file = m_prefs.get(LOG_DIRECTORY, new JFileChooser().getCurrentDirectory().toString());
+        if (!file.endsWith("/")) file += "/";
+        return file;
+    }
+    public static void setLogDirectory(String dir) {
+        m_prefs.put(LOG_DIRECTORY, dir);
+    }
+
+    public static boolean getAutosaveChatLogs() {
+        return m_prefs.getBoolean(AUTOSAVE_CHAT_LOGS, false);
+    }
+    public static void setAutosaveChatLogs(boolean save) {
+        m_prefs.putBoolean(AUTOSAVE_CHAT_LOGS, save);
+    }
+
+    public static enum LogOption {
+        NEVER_SAVE ("Never save logs"),
+        PROMPT ("Prompt me to save logs"),
+        ALWAYS_SAVE ("Always save logs");
+        private String m_text;
+        LogOption(String text) {
+            m_text = text;
+        }
+        public String toString() {
+            return m_text;
+        }
+    }
+    public static LogOption getBattleLogOption() {
+        int idx = m_prefs.getInt(BATTLE_LOGS, LogOption.NEVER_SAVE.ordinal());
+        return LogOption.values()[idx];
+    }
+    public static void setBattleLogOption(int opt) {
+        m_prefs.putInt(BATTLE_LOGS, opt);
     }
 }

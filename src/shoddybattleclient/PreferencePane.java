@@ -27,7 +27,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -41,10 +40,11 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.ListModel;
-import javax.swing.SwingUtilities;
 import shoddybattleclient.Preference.HealthDisplay;
+import shoddybattleclient.Preference.LogOption;
 import shoddybattleclient.utils.SwingWorker;
 import shoddybattleclient.utils.Text;
 import shoddybattleclient.utils.bzip2.CBZip2InputStream;
@@ -150,20 +150,32 @@ public class PreferencePane extends javax.swing.JFrame {
     /** Creates new form PreferencePane */
     public PreferencePane() {
         initComponents();
+        initChatPanel();
+        initBattlePanel();
+        initSpritePanel();
+    }
 
+    private void initChatPanel() {
         chkTimestamps.setSelected(Preference.timeStampsEnabled());
         txtTimestampFormat.setText(Preference.getTimeStampFormat());
         txtTimestampFormat.setEnabled(chkTimestamps.isSelected());
-        chkAnimateHealth.setSelected(Preference.animateHealthBars());
 
         txtIgnored.setText(Preference.getIgnoredUsersStr());
+
+        txtLogDir.setText(Preference.getLogDirectory());
+        chkSaveChatLogs.setSelected(Preference.getAutosaveChatLogs());
+    }
+
+    private void initBattlePanel() {
+        chkAnimateHealth.setSelected(Preference.animateHealthBars());
 
         cmbUserHealth.setModel(new DefaultComboBoxModel(Preference.HealthDisplay.values()));
         cmbUserHealth.setSelectedItem(Preference.getHealthDisplay(true));
         cmbOppHealth.setModel(new DefaultComboBoxModel(Preference.HealthDisplay.values()));
         cmbOppHealth.setSelectedItem(Preference.getHealthDisplay(false));
 
-        initSpritePanel();
+        cmbBattleLogOption.setModel(new DefaultComboBoxModel(LogOption.values()));
+        cmbBattleLogOption.setSelectedItem(Preference.getBattleLogOption());
     }
 
     private void initSpritePanel() {
@@ -237,6 +249,10 @@ public class PreferencePane extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         txtIgnored = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        txtLogDir = new javax.swing.JTextField();
+        btnBrowseLogDir = new javax.swing.JButton();
+        chkSaveChatLogs = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -245,6 +261,8 @@ public class PreferencePane extends javax.swing.JFrame {
         lblUserHealth = new javax.swing.JLabel();
         lblEnemyHealth = new javax.swing.JLabel();
         chkAnimateHealth = new javax.swing.JCheckBox();
+        jLabel11 = new javax.swing.JLabel();
+        cmbBattleLogOption = new javax.swing.JComboBox();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         lstPackages = new javax.swing.JList();
@@ -282,7 +300,7 @@ public class PreferencePane extends javax.swing.JFrame {
             }
         });
 
-        lblTimestampInfo.setFont(new java.awt.Font("Lucida Grande", 1, 10));
+        lblTimestampInfo.setFont(new java.awt.Font("Lucida Grande", 1, 10)); // NOI18N
         lblTimestampInfo.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
 
         jLabel2.setText("Ignored Users:");
@@ -296,6 +314,28 @@ public class PreferencePane extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Lucida Grande", 1, 10));
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel3.setText("Type user names separated by commas");
+
+        jLabel10.setText("Log Directory:");
+
+        txtLogDir.addCaretListener(new javax.swing.event.CaretListener() {
+            public void caretUpdate(javax.swing.event.CaretEvent evt) {
+                txtLogDirCaretUpdate(evt);
+            }
+        });
+
+        btnBrowseLogDir.setText("Browse");
+        btnBrowseLogDir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBrowseLogDirActionPerformed(evt);
+            }
+        });
+
+        chkSaveChatLogs.setText("Automatically save chat logs?");
+        chkSaveChatLogs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkSaveChatLogsActionPerformed(evt);
+            }
+        });
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -319,7 +359,17 @@ public class PreferencePane extends javax.swing.JFrame {
                         .add(txtIgnored, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE))
                     .add(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
-                        .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)))
+                        .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE))
+                    .add(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jLabel10)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(txtLogDir, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(btnBrowseLogDir))
+                    .add(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(chkSaveChatLogs)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -337,7 +387,14 @@ public class PreferencePane extends javax.swing.JFrame {
                     .add(txtIgnored, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jLabel3)
-                .addContainerGap(141, Short.MAX_VALUE))
+                .add(26, 26, 26)
+                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel10)
+                    .add(txtLogDir, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(btnBrowseLogDir))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(chkSaveChatLogs)
+                .addContainerGap(56, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Chat", jPanel1);
@@ -367,26 +424,40 @@ public class PreferencePane extends javax.swing.JFrame {
             }
         });
 
+        jLabel11.setText("Battle logs:");
+
+        cmbBattleLogOption.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbBattleLogOptionActionPerformed(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jPanel2Layout.createSequentialGroup()
-                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap()
+                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(jPanel2Layout.createSequentialGroup()
+                                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                                    .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                                    .add(cmbOppHealth, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .add(cmbUserHealth, 0, 93, Short.MAX_VALUE))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                                    .add(lblEnemyHealth, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
+                                    .add(lblUserHealth, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)))
+                            .add(chkAnimateHealth)))
+                    .add(jPanel2Layout.createSequentialGroup()
+                        .add(jLabel11)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                            .add(cmbOppHealth, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(cmbUserHealth, 0, 93, Short.MAX_VALUE))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(lblEnemyHealth, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
-                            .add(lblUserHealth, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)))
-                    .add(chkAnimateHealth))
+                        .add(cmbBattleLogOption, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 264, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -404,7 +475,11 @@ public class PreferencePane extends javax.swing.JFrame {
                         .add(lblEnemyHealth, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 27, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .add(26, 26, 26)
                 .add(chkAnimateHealth)
-                .addContainerGap(145, Short.MAX_VALUE))
+                .add(18, 18, 18)
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel11)
+                    .add(cmbBattleLogOption, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(100, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Battle", jPanel2);
@@ -419,7 +494,7 @@ public class PreferencePane extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(lstPackages);
 
-        jLabel6.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Lucida Grande", 1, 13));
         jLabel6.setText("Installed Packages:");
 
         btnUp.setText("^");
@@ -453,7 +528,7 @@ public class PreferencePane extends javax.swing.JFrame {
             }
         });
 
-        jLabel7.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Lucida Grande", 1, 13));
         jLabel7.setText("Add New:");
 
         jLabel8.setText("Choose a default:");
@@ -462,7 +537,7 @@ public class PreferencePane extends javax.swing.JFrame {
 
         txtURL.setText("http://");
 
-        txtProgress.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
+        txtProgress.setFont(new java.awt.Font("Lucida Grande", 0, 10));
 
         org.jdesktop.layout.GroupLayout jPanel3Layout = new org.jdesktop.layout.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -483,60 +558,53 @@ public class PreferencePane extends javax.swing.JFrame {
                         .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(btnUp)
                             .add(btnDown))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jPanel3Layout.createSequentialGroup()
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(jLabel7)
-                                    .add(jLabel8)))
-                            .add(jPanel3Layout.createSequentialGroup()
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(jLabel9)
-                                    .add(txtURL, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
-                                    .add(cmbSpriteDefaults, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 139, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                            .add(jPanel3Layout.createSequentialGroup()
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(txtProgress)
-                                    .add(progress, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE))))))
+                            .add(jLabel7)
+                            .add(jLabel8)
+                            .add(jLabel9)
+                            .add(txtURL, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
+                            .add(cmbSpriteDefaults, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 139, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(txtProgress)
+                            .add(progress, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel3Layout.createSequentialGroup()
-                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel6)
-                    .add(jLabel7))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jPanel3Layout.createSequentialGroup()
                         .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(btnUp, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 29, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jLabel8))
+                            .add(jLabel6)
+                            .add(jLabel7))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(jPanel3Layout.createSequentialGroup()
+                                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                    .add(btnUp, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 29, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                    .add(jLabel8))
+                                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(jPanel3Layout.createSequentialGroup()
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(btnDown))
+                                    .add(jPanel3Layout.createSequentialGroup()
+                                        .add(29, 29, 29)
+                                        .add(jLabel9)))
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(btnDown))
-                            .add(jPanel3Layout.createSequentialGroup()
-                                .add(29, 29, 29)
-                                .add(jLabel9)))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(txtURL, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 57, Short.MAX_VALUE)
-                        .add(txtProgress)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(progress, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(btnAdd)
-                            .add(btnDelete)))
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE))
+                                .add(txtURL, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 57, Short.MAX_VALUE)
+                                .add(txtProgress)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(progress, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                    .add(btnAdd)
+                                    .add(btnDelete)))
+                            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)))
+                    .add(jPanel3Layout.createSequentialGroup()
+                        .add(47, 47, 47)
+                        .add(cmbSpriteDefaults, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel3Layout.createSequentialGroup()
-                .add(47, 47, 47)
-                .add(cmbSpriteDefaults, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(180, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Sprites", jPanel3);
@@ -686,6 +754,28 @@ public class PreferencePane extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnAddActionPerformed
 
+    private void chkSaveChatLogsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkSaveChatLogsActionPerformed
+        Preference.setAutosaveChatLogs(chkSaveChatLogs.isSelected());
+    }//GEN-LAST:event_chkSaveChatLogsActionPerformed
+
+    private void txtLogDirCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txtLogDirCaretUpdate
+        Preference.setLogDirectory(txtLogDir.getText());
+    }//GEN-LAST:event_txtLogDirCaretUpdate
+
+    private void btnBrowseLogDirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBrowseLogDirActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        if (chooser.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+        txtLogDir.setText(chooser.getSelectedFile().toString());
+        txtLogDirCaretUpdate(null);
+    }//GEN-LAST:event_btnBrowseLogDirActionPerformed
+
+    private void cmbBattleLogOptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbBattleLogOptionActionPerformed
+        Preference.setBattleLogOption(cmbBattleLogOption.getSelectedIndex());
+    }//GEN-LAST:event_cmbBattleLogOptionActionPerformed
+
 
     private void deleteDirectory(File f) {
         File[] files = f.listFiles();
@@ -712,15 +802,20 @@ public class PreferencePane extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnBrowseLogDir;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnDown;
     private javax.swing.JButton btnUp;
     private javax.swing.JCheckBox chkAnimateHealth;
+    private javax.swing.JCheckBox chkSaveChatLogs;
     private javax.swing.JCheckBox chkTimestamps;
+    private javax.swing.JComboBox cmbBattleLogOption;
     private javax.swing.JComboBox cmbOppHealth;
     private javax.swing.JComboBox cmbSpriteDefaults;
     private javax.swing.JComboBox cmbUserHealth;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -740,6 +835,7 @@ public class PreferencePane extends javax.swing.JFrame {
     private javax.swing.JList lstPackages;
     private javax.swing.JProgressBar progress;
     private javax.swing.JTextField txtIgnored;
+    private javax.swing.JTextField txtLogDir;
     private javax.swing.JLabel txtProgress;
     private javax.swing.JTextField txtTimestampFormat;
     private javax.swing.JTextField txtURL;
