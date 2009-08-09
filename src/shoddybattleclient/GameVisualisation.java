@@ -552,12 +552,18 @@ public class GameVisualisation extends JPanel {
 
     private static String createPath(int number, boolean front, boolean male, boolean shiny,
             String repo, int frame) {
-        String prefix = front ? "front" : "back";
-        String shininess = shiny ? "shiny" : "normal";
-        String gender = male ? "" : "f";
-        String fr = frame == 1 ? "" : String.valueOf(frame);
-        String path = repo + "/" + prefix + "/" + shininess + fr + "/" + number + gender + ".png";
-        return Preference.getSpriteLocation() + path;
+        StringBuilder builder = new StringBuilder(Preference.getSpriteLocation());
+        builder.append(repo);
+        builder.append("/");
+        builder.append(front ? "front" : "back");
+        builder.append("/");
+        builder.append(shiny ? "shiny" : "normal");
+        builder.append(frame == 1 ? "" : String.valueOf(frame));
+        builder.append("/");
+        builder.append(number);
+        builder.append(male ? "" : "f");
+        builder.append(".png");
+        return builder.toString();
     }
 
     private static String getSpritePath(int number, boolean front, boolean male,
