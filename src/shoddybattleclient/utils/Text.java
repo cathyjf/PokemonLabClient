@@ -22,9 +22,12 @@
 
 package shoddybattleclient.utils;
 import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.*;
 import shoddybattleclient.BattleField;
 import shoddybattleclient.Preference.HealthDisplay;
+import shoddybattleclient.WelcomeWindow;
 
 /**
  * Reads and allows for retrieval of text from a .lang file
@@ -120,10 +123,12 @@ public class Text {
 
     public static void loadText(String file) {
         Scanner s = null;
+        InputStream is = Text.class.getResourceAsStream("/shoddybattleclient/languages/" + file);
+
         try {
-            s = new Scanner(new File(Text.class.getResource("../languages/" + file).getFile()));
-        } catch (FileNotFoundException e) {
-            System.out.println("Failed to load language file");
+            s = new Scanner(is);
+        } catch (Exception e) {
+            System.err.println("Failed to load language file");
             return;
         }
         int category =  -1;

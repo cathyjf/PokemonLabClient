@@ -54,7 +54,7 @@ public class HTMLPane extends JTextPane {
         setOpaque(true);
         HTMLEditorKit kit = new HTMLEditorKit();
         StyleSheet css = new StyleSheet();
-        css.importStyleSheet(HTMLPane.class.getResource("../resources/main.css"));
+        css.importStyleSheet(HTMLPane.class.getResource("/shoddybattleclient/resources/main.css"));
         kit.setStyleSheet(css);
         setEditorKit(kit);
 
