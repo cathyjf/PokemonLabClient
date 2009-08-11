@@ -184,6 +184,9 @@
 5: $1 was poisoned by the Toxic Spikes!
 6: $1 was badly poisoned by the Toxic Spikes!
 7: Pointed stones dug into $1!
+8: Toxic Spikes
+9: Spikes
+10: Stealth Rock
 
 [weather-hail]
 0: Hail
@@ -232,7 +235,7 @@
 16: $1 copied its opponent's ability!
 17: $1 copied the opponent's stat changes!
 18: $1 was released!
-19: $1 blew away the spikes!
+19: $1 blew away the $2!
 20: The wall shattered!
 21: $1 became the centre of attention!
 
@@ -252,8 +255,6 @@
 29: Taunt // for status effect listing
 
 31: $1 consumed $2's $3 //bug bite
-32: $1 got an encore!
-33: $1's encore ended.
 
 35: $1's power was weakened!
 36: $1 unleashed energy!
@@ -350,8 +351,6 @@
 
 119: Power Trick
 120: $1 swapped its stats!
-121: $1 caused an uproar!
-122: $1 calmed down.
 
 123: Lucky Chant
 124: $1's lucky chant shielded its team from critical hits!
@@ -383,6 +382,21 @@
 144: $1 absorbed nutrients with its roots!
 
 145: $1 protected itself!
+
+146: $1 got a $2! // Recycle
+147: $1 used $2's $3! // Pluck
+
+148: $1 can't use $2 after Imprison!
+149: $1 braced itself!
+150: $1 endured the hit!
+
+151: Uproar
+152: $1 caused an uproar!
+153: $1 calmed down.
+
+154: Encore
+155: $1 got an encore!
+156: $1's encore ended.
 
 [battle-messages-charge]
 0: $1 takes in sunlight!    // Solarbeam
@@ -544,7 +558,7 @@
 20: $1 absorbed the hail!
 21: $1's Immunity prevents poisoning!
 22: $1's $2 kept it awake!
-23: $1's Intimidate cut $2's attack
+23: $1's Intimidate cut $2's attack!
 24: TODO: Leaf Guard
 25: $1 makes ground moves miss with Levitate!
 26: $1's $2 drew the attack! //lightningrod and storm drain
@@ -569,7 +583,7 @@
 45: TODO: Steadfast
 46: $1 held on with its Sticky Hold!
 47: $1 held Sturdy!
-48: $1's Synchronize $2 $3!
+48: $1's Synchronize activated!
 49: $1's Tangled Feet raised its evasion!
 50: $1 traced $2's $3!
 51: $1 is loafing around!
@@ -577,9 +591,13 @@
 53: $1's Water Veil prevents burns!
 54: $1 avoided damage with Wonder Guard!
 55: $1 sucked up liquid ooze!
+56: $1's Ice Body restored its health a little!
+57: $1's Dry Skin restored its health a little!
+58: $1 finally got its act together!
 
-[items-messages]
+[item-messages]
 0: $1's leftovers restored its health a little!
+1: $1's $2 cured its $3!
 
 [client-messages]
 0: *** $1 sets mode $2 $3
