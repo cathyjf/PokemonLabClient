@@ -22,12 +22,9 @@
 
 package shoddybattleclient.utils;
 import java.io.*;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.*;
 import shoddybattleclient.BattleField;
 import shoddybattleclient.Preference.HealthDisplay;
-import shoddybattleclient.WelcomeWindow;
 
 /**
  * Reads and allows for retrieval of text from a .lang file
@@ -42,7 +39,12 @@ public class Text {
     }
 
     public static String getText(int cat, int id, String[] args, BattleField field) {
-        String text = m_text.get(cat).get(id);
+        Map<Integer, String> map = m_text.get(cat);
+        if ((map == null) || !map.containsKey(id)) {
+            System.out.println("Missing message: " + cat + "," + id);
+            return "";
+        }
+        String text = map.get(id);
         for (int i = 0; i < args.length; i++) {
             String match = "$" + (i + 1);
             text = text.replace(match, args[i]);

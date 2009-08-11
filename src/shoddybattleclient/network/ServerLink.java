@@ -900,7 +900,7 @@ public class ServerLink extends Thread {
                             ally);
                     String number;
 
-                    int id = (delta > 0) ? 13 : 14;
+                    int id = (delta >= 0) ? 13 : 14;
                     delta = Math.abs(delta);
 
                     number = Text.formatHealthChange(delta, denominator,
