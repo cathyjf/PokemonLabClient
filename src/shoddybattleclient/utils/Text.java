@@ -115,6 +115,11 @@ public class Text {
         return "<font class='health-change'>" + str + "</font>";
     }
 
+    //strips HTML tags from a string
+    public static String stripTags(String s) {
+        return s.replaceAll("\\<.*?\\>", "");
+    }
+
     public static String getText(int cat, int id, String[] args) {
         return getText(cat, id, args, null);
     }

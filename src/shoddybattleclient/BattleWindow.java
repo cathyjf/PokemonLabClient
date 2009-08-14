@@ -25,6 +25,7 @@ package shoddybattleclient;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.FileDialog;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -33,6 +34,12 @@ import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
@@ -40,6 +47,7 @@ import javax.swing.JToggleButton;
 import shoddybattleclient.ChatPane.CommandException;
 import shoddybattleclient.GameVisualisation.VisualPokemon;
 import shoddybattleclient.LobbyWindow.Channel;
+import shoddybattleclient.Preference.LogOption;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.shoddybattle.*;
 import shoddybattleclient.utils.*;
@@ -141,6 +149,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     private HealthBar[][] m_healthBars;
     private HTMLPane m_chat;
     private List<PokemonMove> m_moveList;
+    private StringBuilder m_log = new StringBuilder();
     private int[][] m_maxPp;
     // Your Pokemon in this match
     private Pokemon[] m_pokemon;
@@ -650,6 +659,38 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         return m_participant;
     }
 
+    public String getLadder() {
+        //todo: implement this
+        return "Standard";
+    }
+
+    private File getDefaultLogPath() {
+        String path = Preference.getLogDirectory();
+        path += "battles" + File.separator + getLadder() + File.separator;
+        String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        path += date + File.separator;
+        path += m_users[0] + " vs " + m_users[1];
+        File f = new File(path + ".txt");
+        int num = 1;
+        while (f.exists()) {
+            f = new File(path + " " + num + ".txt");
+        }
+        return f;
+    }
+
+    private void saveLog(String path) {
+        File f = new File(path);
+        f.getParentFile().mkdirs();
+        try {
+            PrintWriter writer = new PrintWriter(new FileWriter(f));
+            writer.print(m_log.toString());
+            writer.flush();
+            writer.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Failed to save log file " + path);
+        }
+    }
+
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -888,6 +929,15 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
 
     public void addMessage(String user, String message, boolean encode) {
         m_chat.addMessage(user, message, encode);
+
+        if (!encode) message = Text.stripTags(message);
+        String str = message;
+        if (user != null) {
+            user = Text.stripTags(user);
+            str = user + ": " + message;
+        }
+        m_log.append(str);
+        m_log.append("\n");
     }
 
     private void txtChatKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtChatKeyReleased
@@ -909,6 +959,31 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
                 "Leaving Battle", JOptionPane.YES_NO_OPTION);
         }
         if ((result == -1) || (result == JOptionPane.YES_OPTION)) {
+            LogOption opt = Preference.getBattleLogOption();
+            boolean save = (LogOption.ALWAYS_SAVE.equals(opt));
+            File path = getDefaultLogPath();
+            if (!save && (LogOption.PROMPT.equals(opt))) {
+                String options[] = new String[] {"Yes, to default", "Yes, to...", "No"};
+                int option = JOptionPane.showOptionDialog(this, "Would you like " +
+                        "to save this battle log?", "Save Log?", JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                save = (option < 2);
+                if (option == 1) {
+                    FileDialog fd = new FileDialog(this, "Save log to file...", FileDialog.SAVE);
+                    fd.setDirectory(path.getParent());
+                    fd.setFile(path.getName());
+                    fd.setVisible(true);
+                    String file = fd.getDirectory() + fd.getFile();
+                    if (file != null) {
+                        path = new File(file);
+                    } else {
+                        save = false;
+                    }
+                }
+            }
+            if (save) {
+                saveLog(path.toString());
+            }
             m_link.partChannel(m_channel.getId());
             dispose();
         }

@@ -24,12 +24,21 @@
 package shoddybattleclient;
 
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import javax.swing.JScrollPane;
+import shoddybattleclient.LobbyWindow.Channel;
 import shoddybattleclient.utils.CloseableTabbedPane.CloseableTab;
 import shoddybattleclient.utils.HTMLPane;
+import shoddybattleclient.utils.Text;
 
 /**
  *
@@ -43,12 +52,19 @@ public class ChatPane extends javax.swing.JPanel implements CloseableTab {
         }
     }
 
+    private static boolean m_logging = Preference.getAutosaveChatLogs();
+
+    private static final GregorianCalendar CALENDAR = new GregorianCalendar();
+
     private HTMLPane m_chatPane;
     private LobbyWindow m_lobby;
     private String m_name;
     private LobbyWindow.Channel m_channel;
     private String m_sub;
     private int m_tabCount = 0;
+    //hour of the last message received
+    private int m_lastTime = CALENDAR.get(Calendar.HOUR);
+    private PrintWriter m_log;
 
     public LobbyWindow getLobby() {
         return m_lobby;
@@ -65,6 +81,28 @@ public class ChatPane extends javax.swing.JPanel implements CloseableTab {
         scrollChat.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollChat.add(m_chatPane);
         scrollChat.setViewportView(m_chatPane);
+
+        initLogging();
+    }
+
+    private File getLogDir() {
+        String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        String dir = Preference.getLogDirectory() + "chat";
+        return new File(dir, date);
+    }
+
+    private void initLogging() {
+        if (m_channel.getType() == Channel.TYPE_BATTLE) return;
+        File dir = getLogDir();
+        dir.mkdirs();
+        File f = new File(dir, m_channel.getName() + ".txt");
+        FileWriter out = null;
+        try {
+            out = new FileWriter(f, true);
+            m_log = new PrintWriter(out, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public LobbyWindow.Channel getChannel() {
@@ -173,6 +211,25 @@ public class ChatPane extends javax.swing.JPanel implements CloseableTab {
 
     public void addMessage(String user, String message, boolean encode) {
         m_chatPane.addMessage(user, message, encode);
+
+        //open new log file if it is a new day
+        int newTime = CALENDAR.get(Calendar.HOUR);
+        if (newTime < m_lastTime) {
+            initLogging();
+        }
+        m_lastTime = newTime;
+        
+        if (m_logging && (m_log != null)) {
+            if (!encode) message = Text.stripTags(message);
+            String out = message;
+            if (user != null) {
+                user = Text.stripTags(user);
+                out = user + ": " + message;
+            }
+            String timestamp = new SimpleDateFormat("[hh:mm:ss] ").format(new Date());
+            out = timestamp + out;
+            m_log.println(out);
+        }
     }
 
     public void sendMessage(String message) throws CommandException {
