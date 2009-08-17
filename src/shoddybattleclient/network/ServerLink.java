@@ -1052,6 +1052,31 @@ public class ServerLink extends Thread {
                 }
             });
 
+            // BATTLE_SET_MOVE
+            new ServerMessage(25, new MessageHandler() {
+                // int32  : field id
+                // byte   : pokemon
+                // byte   : move slot
+                // int16  : new move
+                // byte   : pp
+                // byte   : max pp
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException {
+                    int fid = is.readInt();
+
+                    BattleWindow wnd = link.m_battles.get(fid);
+                    if (wnd == null) return;
+
+                    int i = is.readUnsignedByte();
+                    int j = is.readUnsignedByte();
+                    int move = is.readShort();
+                    int pp = is.readUnsignedByte();
+                    int maxPp = is.readUnsignedByte();
+
+                    wnd.setPokemonMove(i, j, move, pp, maxPp);
+                }
+            });
+
             // add additional messages here
         }
 

@@ -309,6 +309,13 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         m_pp[pokemon][move] = pp;
     }
 
+    public void setPokemonMove(int i, int j, int move, int pp, int maxPp) {
+        String name = PokemonMove.getNameFromId(m_moveList, move);
+        m_pokemon[i].moves[j] = name;
+        m_pp[i][j] = pp;
+        m_maxPp[i][j] = maxPp;
+    }
+
     public void informVictory(int party) {
         // todo: improve this
         m_finished = true;
