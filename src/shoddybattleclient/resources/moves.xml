@@ -1,25 +1,19 @@
-<shoddybattle>
+<?xml version="1.0" encoding="UTF-8" ?>
 
-<move name="Absorb" id="0">
+<shoddybattle>
+<move id="0" name="Absorb">
 <type>Grass</type>
 <class>Special</class>
 <power>20</power>
 <accuracy>1.00</accuracy>
 <pp>25</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Acid" id="1">
+<move id="1" name="Acid">
 <type>Poison</type>
 <class>Special</class>
 <power>40</power>
@@ -27,17 +21,11 @@
 <pp>30</pp>
 <target>Enemies</target>
 <flags>
-	<protect/>
-	<memorable/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.1]]);
-]]>
-</init>
 </move>
-
-<move name="Acid Armor" id="2">
+<move id="2" name="Acid Armor">
 <type>Poison</type>
 <class>Other</class>
 <power>0</power>
@@ -45,64 +33,49 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.1]]);
 <pp>40</pp>
 <target>User</target>
 <flags>
-	<snatch/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-user.applyStatus(user, new StatChangeEffect(Stat.DEFENCE, 2));
-]]>
-</use>
 </move>
-
-<move name="Acupressure" id="3">
+<move id="3" name="Acupressure">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>30</pp>
-<target>User</target>
+<target>User or ally</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Aerial Ace" id="4">
+<move id="4" name="Aerial Ace">
 <type>Flying</type>
 <class>Physical</class>
 <power>60</power>
 <accuracy>0</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Aeroblast" id="5">
+<move id="5" name="Aeroblast">
 <type>Flying</type>
 <class>Special</class>
 <power>100</power>
 <accuracy>0.95</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<high-critical/>
+    <protect/>
+    <memorable/>
+    <flinch/>
+    <high-critical/>
 </flags>
 </move>
-
-<move name="Agility" id="6">
+<move id="6" name="Agility">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
@@ -110,16 +83,10 @@ user.applyStatus(user, new StatChangeEffect(Stat.DEFENCE, 2));
 <pp>30</pp>
 <target>User</target>
 <flags>
-	<snatch/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-user.applyStatus(user, new StatChangeEffect(Stat.SPEED, 2));
-]]>
-</use>
 </move>
-
-<move name="Air Cutter" id="7">
+<move id="7" name="Air Cutter">
 <type>Flying</type>
 <class>Special</class>
 <power>55</power>
@@ -127,34 +94,26 @@ user.applyStatus(user, new StatChangeEffect(Stat.SPEED, 2));
 <pp>25</pp>
 <target>Enemies</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<high-critical/>
+    <protect/>
+    <memorable/>
+    <flinch/>
+    <high-critical/>
 </flags>
 </move>
-
-<move name="Air Slash" id="8">
+<move id="8" name="Air Slash">
 <type>Flying</type>
 <class>Special</class>
 <power>75</power>
 <accuracy>0.95</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Amnesia" id="9">
+<move id="9" name="Amnesia">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
@@ -162,51 +121,37 @@ user.applyStatus(user, new StatChangeEffect(Stat.SPEED, 2));
 <pp>20</pp>
 <target>User</target>
 <flags>
-	<snatch/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-user.applyStatus(user, new StatChangeEffect(Stat.SPDEFENCE, 2));
-]]>
-</use>
 </move>
-
-<move name="Ancientpower" id="10">
+<move id="10" name="Ancientpower">
 <type>Rock</type>
 <class>Special</class>
 <power>60</power>
 <accuracy>1.00</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Aqua Jet" id="11">
+<move id="11" name="Aqua Jet">
 <type>Water</type>
 <class>Physical</class>
 <priority>1</priority>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Aqua Ring" id="12">
+<move id="12" name="Aqua Ring">
 <type>Water</type>
 <class>Other</class>
 <power>0</power>
@@ -214,58 +159,37 @@ user.applyStatus(user, new StatChangeEffect(Stat.SPDEFENCE, 2));
 <pp>20</pp>
 <target>User</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Aqua Tail" id="13">
+<move id="13" name="Aqua Tail">
 <type>Water</type>
 <class>Physical</class>
 <power>90</power>
 <accuracy>0.90</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Arm Thrust" id="14">
+<move id="14" name="Arm Thrust">
 <type>Fighting</type>
 <class>Physical</class>
 <power>15</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Aromatherapy" id="15">
+<move id="15" name="Aromatherapy">
 <type>Grass</type>
 <class>Other</class>
 <power>0</power>
@@ -273,184 +197,127 @@ user.applyStatus(user, new StatChangeEffect(Stat.SPDEFENCE, 2));
 <pp>5</pp>
 <target>Allies</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Assist" id="16">
+<move id="16" name="Assist">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>20</pp>
-<target>Lastenemy</target>
+<target>None</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Assurance" id="17">
+<move id="17" name="Assurance">
 <type>Dark</type>
 <class>Physical</class>
 <power>50</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Astonish" id="18">
+<move id="18" name="Astonish">
 <type>Ghost</type>
 <class>Physical</class>
 <power>30</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Attack Order" id="19">
+<move id="19" name="Attack Order">
 <type>Bug</type>
 <class>Physical</class>
 <power>90</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<high-critical/>
+    <protect/>
+    <memorable/>
+    <flinch/>
+    <high-critical/>
 </flags>
 </move>
-
-<move name="Attract" id="20">
+<move id="20" name="Attract">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Aura Sphere" id="21">
+<move id="21" name="Aura Sphere">
 <type>Fighting</type>
 <class>Special</class>
 <power>90</power>
 <accuracy>0</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Aurora Beam" id="22">
+<move id="22" name="Aurora Beam">
 <type>Ice</type>
 <class>Special</class>
 <power>65</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.ATTACK, -1), 0.1]]);
-]]>
-</init>
 </move>
-
-<move name="Avalanche" id="23">
+<move id="23" name="Avalanche">
 <type>Ice</type>
 <class>Physical</class>
 <priority>-4</priority>
 <power>60</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Barrage" id="24">
+<move id="24" name="Barrage">
 <type>Normal</type>
 <class>Physical</class>
 <power>15</power>
 <accuracy>0.85</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Barrier" id="25">
+<move id="25" name="Barrier">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
@@ -458,16 +325,10 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.ATTACK, -1), 0.1]]);
 <pp>30</pp>
 <target>User</target>
 <flags>
-	<snatch/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-user.applyStatus(user, new StatChangeEffect(Stat.DEFENCE, 2));
-]]>
-</use>
 </move>
-
-<move name="Baton Pass" id="26">
+<move id="26" name="Baton Pass">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -475,36 +336,22 @@ user.applyStatus(user, new StatChangeEffect(Stat.DEFENCE, 2));
 <pp>40</pp>
 <target>User</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Beat Up" id="27">
+<move id="27" name="Beat Up">
 <type>Dark</type>
 <class>Physical</class>
 <power>10</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Belly Drum" id="28">
+<move id="28" name="Belly Drum">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -512,17 +359,10 @@ user.applyStatus(user, new StatChangeEffect(Stat.DEFENCE, 2));
 <pp>10</pp>
 <target>User</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Bide" id="29">
+<move id="29" name="Bide">
 <type>Normal</type>
 <class>Physical</class>
 <priority>1</priority>
@@ -531,100 +371,65 @@ user.applyStatus(user, new StatChangeEffect(Stat.DEFENCE, 2));
 <pp>10</pp>
 <target>User</target>
 <flags>
-	<contact/>
-	<protect/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Bind" id="30">
+<move id="30" name="Bind">
 <type>Normal</type>
 <class>Physical</class>
 <power>15</power>
 <accuracy>0.75</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Bite" id="31">
+<move id="31" name="Bite">
 <type>Dark</type>
 <class>Physical</class>
 <power>60</power>
 <accuracy>1.00</accuracy>
 <pp>25</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Blast Burn" id="32">
+<move id="32" name="Blast Burn">
 <type>Fire</type>
 <class>Special</class>
 <power>150</power>
 <accuracy>0.90</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Blaze Kick" id="33">
+<move id="33" name="Blaze Kick">
 <type>Fire</type>
 <class>Physical</class>
 <power>85</power>
 <accuracy>0.90</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Blizzard" id="34">
+<move id="34" name="Blizzard">
 <type>Ice</type>
 <class>Special</class>
 <power>120</power>
@@ -632,199 +437,130 @@ user.applyStatus(user, new StatChangeEffect(Stat.DEFENCE, 2));
 <pp>5</pp>
 <target>Enemies</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Block" id="35">
+<move id="35" name="Block">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Body Slam" id="36">
+<move id="36" name="Body Slam">
 <type>Normal</type>
 <class>Physical</class>
 <power>85</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[ParalysisEffect, 0.3]]);
-]]>
-</init>
 </move>
-
-<move name="Bone Club" id="37">
+<move id="37" name="Bone Club">
 <type>Ground</type>
 <class>Physical</class>
 <power>65</power>
 <accuracy>0.85</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Bone Rush" id="38">
+<move id="38" name="Bone Rush">
 <type>Ground</type>
 <class>Physical</class>
 <power>25</power>
 <accuracy>0.80</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Bonemerang" id="39">
+<move id="39" name="Bonemerang">
 <type>Ground</type>
 <class>Physical</class>
 <power>50</power>
 <accuracy>0.90</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Bounce" id="40">
+<move id="40" name="Bounce">
 <type>Flying</type>
 <class>Physical</class>
 <power>85</power>
 <accuracy>0.85</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Brave Bird" id="41">
+<move id="41" name="Brave Bird">
 <type>Flying</type>
 <class>Physical</class>
 <power>120</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Brick Break" id="42">
+<move id="42" name="Brick Break">
 <type>Fighting</type>
 <class>Physical</class>
 <power>75</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Brine" id="43">
+<move id="43" name="Brine">
 <type>Water</type>
 <class>Special</class>
 <power>65</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Bubble" id="44">
+<move id="44" name="Bubble">
 <type>Water</type>
 <class>Special</class>
 <power>20</power>
@@ -832,74 +568,50 @@ makeStatusMove(this, [[ParalysisEffect, 0.3]]);
 <pp>30</pp>
 <target>Enemies</target>
 <flags>
-	<protect/>
-	<memorable/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.SPEED, -1), 0.1]]);
-]]>
-</init>
 </move>
-
-<move name="Bubblebeam" id="45">
+<move id="45" name="Bubblebeam">
 <type>Water</type>
 <class>Special</class>
 <power>65</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.SPEED, -1), 0.1]]);
-]]>
-</init>
 </move>
-
-<move name="Bug Bite" id="46">
+<move id="46" name="Bug Bite">
 <type>Bug</type>
 <class>Physical</class>
 <power>60</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Bug Buzz" id="47">
+<move id="47" name="Bug Buzz">
 <type>Bug</type>
 <class>Special</class>
 <power>90</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
+    <protect/>
+    <memorable/>
+    <sound/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.1]]);
-]]>
-</init>
 </move>
-
-<move name="Bulk Up" id="48">
+<move id="48" name="Bulk Up">
 <type>Fighting</type>
 <class>Other</class>
 <power>0</power>
@@ -907,53 +619,38 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.1]]);
 <pp>20</pp>
 <target>User</target>
 <flags>
-	<snatch/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-user.applyStatus(user, new StatChangeEffect(Stat.ATTACK, 1));
-user.applyStatus(user, new StatChangeEffect(Stat.DEFENCE, 1));
-]]>
-</use>
 </move>
-
-<move name="Bullet Punch" id="49">
+<move id="49" name="Bullet Punch">
 <type>Steel</type>
 <class>Physical</class>
 <priority>1</priority>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>30</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Bullet Seed" id="50">
+<move id="50" name="Bullet Seed">
 <type>Grass</type>
 <class>Physical</class>
 <power>10</power>
 <accuracy>1.00</accuracy>
 <pp>30</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Calm Mind" id="51">
+<move id="51" name="Calm Mind">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
@@ -961,17 +658,10 @@ user.applyStatus(user, new StatChangeEffect(Stat.DEFENCE, 1));
 <pp>20</pp>
 <target>User</target>
 <flags>
-	<snatch/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-user.applyStatus(user, new StatChangeEffect(Stat.SPATTACK, 1));
-user.applyStatus(user, new StatChangeEffect(Stat.SPDEFENCE, 1));
-]]>
-</use>
 </move>
-
-<move name="Camouflage" id="52">
+<move id="52" name="Camouflage">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -979,17 +669,10 @@ user.applyStatus(user, new StatChangeEffect(Stat.SPDEFENCE, 1));
 <pp>20</pp>
 <target>User</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Captivate" id="53">
+<move id="53" name="Captivate">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -997,19 +680,12 @@ user.applyStatus(user, new StatChangeEffect(Stat.SPDEFENCE, 1));
 <pp>20</pp>
 <target>Enemies</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Charge" id="54">
+<move id="54" name="Charge">
 <type>Electric</type>
 <class>Other</class>
 <power>0</power>
@@ -1017,195 +693,128 @@ user.applyStatus(user, new StatChangeEffect(Stat.SPDEFENCE, 1));
 <pp>20</pp>
 <target>User</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Charge Beam" id="55">
+<move id="55" name="Charge Beam">
 <type>Electric</type>
 <class>Special</class>
 <power>50</power>
 <accuracy>0.90</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Charm" id="56">
+<move id="56" name="Charm">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.ATTACK, -2)]]);
-]]>
-</init>
 </move>
-
-<move name="Chatter" id="57">
+<move id="57" name="Chatter">
 <type>Flying</type>
 <class>Special</class>
 <power>60</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<unimplemented/>
+    <protect/>
+    <sound/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Clamp" id="58">
+<move id="58" name="Clamp">
 <type>Water</type>
 <class>Physical</class>
 <power>35</power>
 <accuracy>0.75</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Close Combat" id="59">
+<move id="59" name="Close Combat">
 <type>Fighting</type>
 <class>Physical</class>
 <power>120</power>
 <accuracy>1.00</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Comet Punch" id="60">
+<move id="60" name="Comet Punch">
 <type>Normal</type>
 <class>Physical</class>
 <power>18</power>
 <accuracy>0.85</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Confuse Ray" id="61">
+<move id="61" name="Confuse Ray">
 <type>Ghost</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Confusion" id="62">
+<move id="62" name="Confusion">
 <type>Psychic</type>
 <class>Special</class>
 <power>50</power>
 <accuracy>1.00</accuracy>
 <pp>25</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Constrict" id="63">
+<move id="63" name="Constrict">
 <type>Normal</type>
 <class>Physical</class>
 <power>10</power>
 <accuracy>1.00</accuracy>
 <pp>35</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.SPEED, -1), 0.1]]);
-]]>
-</init>
 </move>
-
-<move name="Conversion" id="64">
+<move id="64" name="Conversion">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -1213,16 +822,9 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPEED, -1), 0.1]]);
 <pp>30</pp>
 <target>User</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Conversion 2" id="65">
+<move id="65" name="Conversion 2">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -1230,33 +832,19 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPEED, -1), 0.1]]);
 <pp>30</pp>
 <target>User</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Copycat" id="66">
+<move id="66" name="Copycat">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>20</pp>
-<target>Lastenemy</target>
+<target>None</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Cosmic Power" id="67">
+<move id="67" name="Cosmic Power">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
@@ -1264,237 +852,177 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPEED, -1), 0.1]]);
 <pp>20</pp>
 <target>User</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Cotton Spore" id="68">
+<move id="68" name="Cotton Spore">
 <type>Grass</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0.85</accuracy>
 <pp>40</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.SPEED, -2)]]);
-]]>
-</init>
 </move>
-
-<move name="Counter" id="69">
+<move id="69" name="Counter">
 <type>Fighting</type>
 <class>Physical</class>
 <priority>-5</priority>
 <power>1</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Lastenemy</target>
+<target>None</target>
 <flags>
-	<contact/>
+    <contact/>
 </flags>
-<init>
-makeCounterMove(this, MoveClass.PHYSICAL, 2);
-</init>
 </move>
-
-<move name="Covet" id="70">
+<move id="70" name="Covet">
 <type>Normal</type>
 <class>Physical</class>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>40</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Crabhammer" id="71">
+<move id="71" name="Crabhammer">
 <type>Water</type>
 <class>Physical</class>
 <power>90</power>
 <accuracy>0.85</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<high-critical/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
+    <high-critical/>
 </flags>
 </move>
-
-<move name="Cross Chop" id="72">
+<move id="72" name="Cross Chop">
 <type>Fighting</type>
 <class>Physical</class>
 <power>100</power>
 <accuracy>0.80</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<high-critical/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
+    <high-critical/>
 </flags>
 </move>
-
-<move name="Cross Poison" id="73">
+<move id="73" name="Cross Poison">
 <type>Poison</type>
 <class>Physical</class>
 <power>70</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
-	<high-critical/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
+    <high-critical/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Crunch" id="74">
+<move id="74" name="Crunch">
 <type>Dark</type>
 <class>Physical</class>
 <power>80</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.DEFENCE, -1), 0.2]]);
-]]>
-</init>
 </move>
-
-<move name="Crush Claw" id="75">
+<move id="75" name="Crush Claw">
 <type>Normal</type>
 <class>Physical</class>
 <power>75</power>
 <accuracy>0.95</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.DEFENCE, -1), 0.5]]);
-]]>
-</init>
 </move>
-
-<move name="Crush Grip" id="76">
+<move id="76" name="Crush Grip">
 <type>Normal</type>
 <class>Physical</class>
 <power>1</power>
 <accuracy>1.00</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Curse" id="77">
+<move id="77" name="Curse">
 <type>Typeless</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<!--
+    Note: Curse always has single non-user target for the purpose of failure
+          due to lack of a target. However, when selecting a move, Curse
+          appears to be user target if the user's type does not include Ghost;
+          in fact, a random target is silently chosen from among the available
+          enemies.
+-->
+<target>Non-user</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Cut" id="78">
+<move id="78" name="Cut">
 <type>Normal</type>
 <class>Physical</class>
 <power>50</power>
 <accuracy>0.95</accuracy>
 <pp>30</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Dark Pulse" id="79">
+<move id="79" name="Dark Pulse">
 <type>Dark</type>
 <class>Special</class>
 <power>80</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Dark Void" id="80">
+<move id="80" name="Dark Void">
 <type>Dark</type>
 <class>Other</class>
 <power>0</power>
@@ -1502,16 +1030,12 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.DEFENCE, -1), 0.5]]);
 <pp>10</pp>
 <target>Enemies</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<init>
-makeStatusMove(this, [[SleepEffect]]);
-</init>
 </move>
-
-<move name="Defend Order" id="81">
+<move id="81" name="Defend Order">
 <type>Bug</type>
 <class>Other</class>
 <power>0</power>
@@ -1519,17 +1043,10 @@ makeStatusMove(this, [[SleepEffect]]);
 <pp>10</pp>
 <target>User</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Defense Curl" id="82">
+<move id="82" name="Defense Curl">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -1537,36 +1054,22 @@ makeStatusMove(this, [[SleepEffect]]);
 <pp>40</pp>
 <target>User</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Defog" id="83">
+<move id="83" name="Defog">
 <type>Flying</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Destiny Bond" id="84">
+<move id="84" name="Destiny Bond">
 <type>Ghost</type>
 <class>Other</class>
 <power>0</power>
@@ -1574,16 +1077,9 @@ makeStatusMove(this, [[SleepEffect]]);
 <pp>5</pp>
 <target>User</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Detect" id="85">
+<move id="85" name="Detect">
 <type>Fighting</type>
 <class>Other</class>
 <priority>3</priority>
@@ -1592,56 +1088,35 @@ makeStatusMove(this, [[SleepEffect]]);
 <pp>5</pp>
 <target>User</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Dig" id="86">
+<move id="86" name="Dig">
 <type>Ground</type>
 <class>Physical</class>
 <power>80</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Disable" id="87">
+<move id="87" name="Disable">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0.80</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Discharge" id="88">
+<move id="88" name="Discharge">
 <type>Electric</type>
 <class>Special</class>
 <power>80</power>
@@ -1649,118 +1124,78 @@ makeStatusMove(this, [[SleepEffect]]);
 <pp>15</pp>
 <target>Others</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[ParalysisEffect, 0.3]]);
-]]>
-</init>
 </move>
-
-<move name="Dive" id="89">
+<move id="89" name="Dive">
 <type>Water</type>
 <class>Physical</class>
 <power>80</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Dizzy Punch" id="90">
+<move id="90" name="Dizzy Punch">
 <type>Normal</type>
 <class>Physical</class>
 <power>70</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Doom Desire" id="91">
+<move id="91" name="Doom Desire">
 <type>Steel</type>
 <class>Special</class>
 <power>120</power>
 <accuracy>0.85</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<unimplemented/>
+    <no-critical/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Double Hit" id="92">
+<move id="92" name="Double Hit">
 <type>Normal</type>
 <class>Physical</class>
 <power>35</power>
 <accuracy>0.90</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Double Kick" id="93">
+<move id="93" name="Double Kick">
 <type>Fighting</type>
 <class>Physical</class>
 <power>30</power>
 <accuracy>1.00</accuracy>
 <pp>30</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Double Team" id="94">
+<move id="94" name="Double Team">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -1768,93 +1203,65 @@ makeStatusMove(this, [[ParalysisEffect, 0.3]]);
 <pp>15</pp>
 <target>User</target>
 <flags>
-	<snatch/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-user.applyStatus(user, new StatChangeEffect(Stat.EVASION, 1));
-]]>
-</use>
 </move>
-
-<move name="Double-edge" id="95">
+<move id="95" name="Double-edge">
 <type>Normal</type>
 <class>Physical</class>
 <power>120</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Doubleslap" id="96">
+<move id="96" name="Doubleslap">
 <type>Normal</type>
 <class>Physical</class>
 <power>15</power>
 <accuracy>0.85</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Draco Meteor" id="97">
+<move id="97" name="Draco Meteor">
 <type>Dragon</type>
 <class>Special</class>
 <power>140</power>
 <accuracy>0.90</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Dragon Claw" id="98">
+<move id="98" name="Dragon Claw">
 <type>Dragon</type>
 <class>Physical</class>
 <power>80</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Dragon Dance" id="99">
+<move id="99" name="Dragon Dance">
 <type>Dragon</type>
 <class>Other</class>
 <power>0</power>
@@ -1862,185 +1269,129 @@ user.applyStatus(user, new StatChangeEffect(Stat.EVASION, 1));
 <pp>20</pp>
 <target>User</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Dragon Pulse" id="100">
+<move id="100" name="Dragon Pulse">
 <type>Dragon</type>
 <class>Special</class>
 <power>90</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Dragon Rage" id="101">
+<move id="101" name="Dragon Rage">
 <type>Dragon</type>
 <class>Special</class>
 <power>1</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Dragon Rush" id="102">
+<move id="102" name="Dragon Rush">
 <type>Dragon</type>
 <class>Physical</class>
 <power>100</power>
 <accuracy>0.75</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Dragonbreath" id="103">
+<move id="103" name="Dragonbreath">
 <type>Dragon</type>
 <class>Special</class>
 <power>60</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[ParalysisEffect, 0.3]]);
-]]>
-</init>
 </move>
-
-<move name="Drain Punch" id="104">
+<move id="104" name="Drain Punch">
 <type>Fighting</type>
 <class>Physical</class>
 <power>60</power>
 <accuracy>1.00</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Dream Eater" id="105">
+<move id="105" name="Dream Eater">
 <type>Psychic</type>
 <class>Special</class>
 <power>100</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Drill Peck" id="106">
+<move id="106" name="Drill Peck">
 <type>Flying</type>
 <class>Physical</class>
 <power>80</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Dynamicpunch" id="107">
+<move id="107" name="Dynamicpunch">
 <type>Fighting</type>
 <class>Physical</class>
 <power>100</power>
 <accuracy>0.50</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Earth Power" id="108">
+<move id="108" name="Earth Power">
 <type>Ground</type>
 <class>Special</class>
 <power>90</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.1]]);
-]]>
-</init>
 </move>
-
-<move name="Earthquake" id="109">
+<move id="109" name="Earthquake">
 <type>Ground</type>
 <class>Physical</class>
 <power>100</power>
@@ -2048,105 +1399,75 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.1]]);
 <pp>10</pp>
 <target>Others</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Egg Bomb" id="110">
+<move id="110" name="Egg Bomb">
 <type>Normal</type>
 <class>Physical</class>
 <power>100</power>
 <accuracy>0.75</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Embargo" id="111">
+<move id="111" name="Embargo">
 <type>Dark</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Ember" id="112">
+<move id="112" name="Ember">
 <type>Fire</type>
 <class>Special</class>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>25</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Encore" id="113">
+<move id="113" name="Encore">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Endeavor" id="114">
+<move id="114" name="Endeavor">
 <type>Normal</type>
 <class>Physical</class>
 <power>1</power>
 <accuracy>1.00</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Endure" id="115">
+<move id="115" name="Endure">
 <type>Normal</type>
 <class>Other</class>
 <priority>3</priority>
@@ -2155,34 +1476,21 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.1]]);
 <pp>10</pp>
 <target>User</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Energy Ball" id="116">
+<move id="116" name="Energy Ball">
 <type>Grass</type>
 <class>Special</class>
 <power>80</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.1]]);
-]]>
-</init>
 </move>
-
-<move name="Eruption" id="117">
+<move id="117" name="Eruption">
 <type>Fire</type>
 <class>Special</class>
 <power>150</power>
@@ -2190,19 +1498,12 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.1]]);
 <pp>5</pp>
 <target>Enemies</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Explosion" id="118">
+<move id="118" name="Explosion">
 <type>Normal</type>
 <class>Physical</class>
 <power>250</power>
@@ -2210,482 +1511,324 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.1]]);
 <pp>5</pp>
 <target>Others</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Extrasensory" id="119">
+<move id="119" name="Extrasensory">
 <type>Psychic</type>
 <class>Special</class>
 <power>80</power>
 <accuracy>1.00</accuracy>
 <pp>30</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Extremespeed" id="120">
+<move id="120" name="Extremespeed">
 <type>Normal</type>
 <class>Physical</class>
 <priority>1</priority>
 <power>80</power>
 <accuracy>1.00</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Facade" id="121">
+<move id="121" name="Facade">
 <type>Normal</type>
 <class>Physical</class>
 <power>70</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Faint Attack" id="122">
+<move id="122" name="Faint Attack">
 <type>Dark</type>
 <class>Physical</class>
 <power>60</power>
 <accuracy>0</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Fake Out" id="123">
+<move id="123" name="Fake Out">
 <type>Normal</type>
 <class>Physical</class>
 <priority>1</priority>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Fake Tears" id="124">
+<move id="124" name="Fake Tears">
 <type>Dark</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -2)]]);
-]]>
-</init>
 </move>
-
-<move name="False Swipe" id="125">
+<move id="125" name="False Swipe">
 <type>Normal</type>
 <class>Physical</class>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>40</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Featherdance" id="126">
+<move id="126" name="Featherdance">
 <type>Flying</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.ATTACK, -2)]]);
-]]>
-</init>
 </move>
-
-<move name="Feint" id="127">
+<move id="127" name="Feint">
 <type>Normal</type>
 <class>Physical</class>
 <priority>2</priority>
 <power>50</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Fire Blast" id="128">
+<move id="128" name="Fire Blast">
 <type>Fire</type>
 <class>Special</class>
 <power>120</power>
 <accuracy>0.85</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Fire Fang" id="129">
+<move id="129" name="Fire Fang">
 <type>Fire</type>
 <class>Physical</class>
 <power>65</power>
 <accuracy>0.95</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Fire Punch" id="130">
+<move id="130" name="Fire Punch">
 <type>Fire</type>
 <class>Physical</class>
 <power>75</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Fire Spin" id="131">
+<move id="131" name="Fire Spin">
 <type>Fire</type>
 <class>Special</class>
 <power>15</power>
 <accuracy>0.70</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Fissure" id="132">
+<move id="132" name="Fissure">
 <type>Ground</type>
 <class>Physical</class>
 <power>1</power>
 <accuracy>0.30</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Flail" id="133">
+<move id="133" name="Flail">
 <type>Normal</type>
 <class>Physical</class>
 <power>1</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Flame Wheel" id="134">
+<move id="134" name="Flame Wheel">
 <type>Fire</type>
 <class>Physical</class>
 <power>60</power>
 <accuracy>1.00</accuracy>
 <pp>25</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Flamethrower" id="135">
+<move id="135" name="Flamethrower">
 <type>Fire</type>
 <class>Special</class>
 <power>95</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Flare Blitz" id="136">
+<move id="136" name="Flare Blitz">
 <type>Fire</type>
 <class>Physical</class>
 <power>120</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Flash" id="137">
+<move id="137" name="Flash">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.ACCURACY, -1)]]);
-]]>
-</init>
 </move>
-
-<move name="Flash Cannon" id="138">
+<move id="138" name="Flash Cannon">
 <type>Steel</type>
 <class>Special</class>
 <power>80</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.1]]);
-]]>
-</init>
 </move>
-
-<move name="Flatter" id="139">
+<move id="139" name="Flatter">
 <type>Dark</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Fling" id="140">
+<move id="140" name="Fling">
 <type>Dark</type>
 <class>Physical</class>
 <power>1</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Fly" id="141">
+<move id="141" name="Fly">
 <type>Flying</type>
 <class>Physical</class>
 <power>90</power>
 <accuracy>0.95</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Focus Blast" id="142">
+<move id="142" name="Focus Blast">
 <type>Fighting</type>
 <class>Special</class>
 <power>120</power>
 <accuracy>0.70</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.1]]);
-]]>
-</init>
 </move>
-
-<move name="Focus Energy" id="143">
+<move id="143" name="Focus Energy">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -2693,37 +1836,23 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.1]]);
 <pp>30</pp>
 <target>User</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Focus Punch" id="144">
+<move id="144" name="Focus Punch">
 <type>Fighting</type>
 <class>Physical</class>
 <priority>-3</priority>
 <power>150</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Follow Me" id="145">
+<move id="145" name="Follow Me">
 <type>Normal</type>
 <class>Other</class>
 <priority>3</priority>
@@ -2732,287 +1861,207 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.1]]);
 <pp>20</pp>
 <target>User</target>
 <flags>
-	<unimplemented/>
+    <unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Force Palm" id="146">
+<move id="146" name="Force Palm">
 <type>Fighting</type>
 <class>Physical</class>
 <power>60</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[ParalysisEffect, 0.3]]);
-]]>
-</init>
 </move>
-
-<move name="Foresight" id="147">
+<move id="147" name="Foresight">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>40</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Frenzy Plant" id="148">
+<move id="148" name="Frenzy Plant">
 <type>Grass</type>
 <class>Special</class>
 <power>150</power>
 <accuracy>0.90</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Frustration" id="149">
+<move id="149" name="Frustration">
 <type>Normal</type>
 <class>Physical</class>
 <power>1</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Fury Attack" id="150">
+<move id="150" name="Fury Attack">
 <type>Normal</type>
 <class>Physical</class>
 <power>15</power>
 <accuracy>0.85</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Fury Cutter" id="151">
+<move id="151" name="Fury Cutter">
 <type>Bug</type>
 <class>Physical</class>
 <power>10</power>
 <accuracy>0.95</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
+<attemptHit>
 <![CDATA[
-
+if (field.attemptHit(this, user, target))
+    return true;
+var effect = user.getStatus("FuryCutterEffect");
+if (effect) {
+    user.removeStatus(effect);
+}
+return false;
 ]]>
-</use>
+</attemptHit>
 </move>
-
-<move name="Fury Swipes" id="152">
+<move id="152" name="Fury Swipes">
 <type>Normal</type>
 <class>Physical</class>
 <power>18</power>
 <accuracy>0.80</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Future Sight" id="153">
+<move id="153" name="Future Sight">
 <type>Psychic</type>
 <class>Special</class>
 <power>80</power>
 <accuracy>0.90</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<unimplemented/>
+    <no-critical/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Gastro Acid" id="154">
+<move id="154" name="Gastro Acid">
 <type>Poison</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Giga Drain" id="155">
+<move id="155" name="Giga Drain">
 <type>Grass</type>
 <class>Special</class>
 <power>60</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Giga Impact" id="156">
+<move id="156" name="Giga Impact">
 <type>Normal</type>
 <class>Physical</class>
 <power>150</power>
 <accuracy>0.90</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Glare" id="157">
+<move id="157" name="Glare">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0.75</accuracy>
 <pp>30</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[ParalysisEffect]]);
-]]>
-</init>
 </move>
-
-<move name="Grass Knot" id="158">
+<move id="158" name="Grass Knot">
 <type>Grass</type>
 <class>Special</class>
 <power>1</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Grasswhistle" id="159">
+<move id="159" name="Grasswhistle">
 <type>Grass</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0.55</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
+    <sound/>
 </flags>
-<init>
-makeStatusMove(this, [[SleepEffect]]);
-</init>
 </move>
-
-<move name="Gravity" id="160">
+<move id="160" name="Gravity">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
@@ -3020,16 +2069,10 @@ makeStatusMove(this, [[SleepEffect]]);
 <pp>5</pp>
 <target>All</target>
 <flags>
-	<unimplemented/>
+    <unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Growl" id="161">
+<move id="161" name="Growl">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -3037,18 +2080,13 @@ makeStatusMove(this, [[SleepEffect]]);
 <pp>40</pp>
 <target>Enemies</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
+    <sound/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.ATTACK, -1)]]);
-]]>
-</init>
 </move>
-
-<move name="Growth" id="162">
+<move id="162" name="Growth">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -3056,16 +2094,10 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.ATTACK, -1)]]);
 <pp>40</pp>
 <target>User</target>
 <flags>
-	<snatch/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-user.applyStatus(user, new StatChangeEffect(Stat.SPATTACK, 1));
-]]>
-</use>
 </move>
-
-<move name="Grudge" id="163">
+<move id="163" name="Grudge">
 <type>Ghost</type>
 <class>Other</class>
 <power>0</power>
@@ -3073,109 +2105,74 @@ user.applyStatus(user, new StatChangeEffect(Stat.SPATTACK, 1));
 <pp>5</pp>
 <target>User</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Guard Swap" id="164">
+<move id="164" name="Guard Swap">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Guillotine" id="165">
+<move id="165" name="Guillotine">
 <type>Normal</type>
 <class>Physical</class>
 <power>1</power>
 <accuracy>0.30</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Gunk Shot" id="166">
+<move id="166" name="Gunk Shot">
 <type>Poison</type>
 <class>Physical</class>
 <power>120</power>
 <accuracy>0.70</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[PoisonEffect, 0.3]]);
-]]>
-</init>
 </move>
-
-<move name="Gust" id="167">
+<move id="167" name="Gust">
 <type>Flying</type>
 <class>Special</class>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>35</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Gyro Ball" id="168">
+<move id="168" name="Gyro Ball">
 <type>Steel</type>
 <class>Physical</class>
 <power>1</power>
 <accuracy>1.00</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Hail" id="169">
+<move id="169" name="Hail">
 <type>Ice</type>
 <class>Other</class>
 <power>0</power>
@@ -3183,38 +2180,23 @@ makeStatusMove(this, [[PoisonEffect, 0.3]]);
 <pp>10</pp>
 <target>All</target>
 <flags>
-	<protect/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Hammer Arm" id="170">
+<move id="170" name="Hammer Arm">
 <type>Fighting</type>
 <class>Physical</class>
 <power>100</power>
 <accuracy>0.90</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Harden" id="171">
+<move id="171" name="Harden">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -3222,16 +2204,10 @@ makeStatusMove(this, [[PoisonEffect, 0.3]]);
 <pp>30</pp>
 <target>User</target>
 <flags>
-	<snatch/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-user.applyStatus(user, new StatChangeEffect(Stat.DEFENCE, 1));
-]]>
-</use>
 </move>
-
-<move name="Haze" id="172">
+<move id="172" name="Haze">
 <type>Ice</type>
 <class>Other</class>
 <power>0</power>
@@ -3239,57 +2215,39 @@ user.applyStatus(user, new StatChangeEffect(Stat.DEFENCE, 1));
 <pp>30</pp>
 <target>All</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
+<!--
+    TODO: This move might have a message in prepareSelf.
+-->
 </move>
-
-<move name="Head Smash" id="173">
+<move id="173" name="Head Smash">
 <type>Rock</type>
 <class>Physical</class>
 <power>150</power>
 <accuracy>0.80</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Headbutt" id="174">
+<move id="174" name="Headbutt">
 <type>Normal</type>
 <class>Physical</class>
 <power>70</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Heal Bell" id="175">
+<move id="175" name="Heal Bell">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -3297,17 +2255,11 @@ user.applyStatus(user, new StatChangeEffect(Stat.DEFENCE, 1));
 <pp>5</pp>
 <target>Allies</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
+    <sound/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Heal Block" id="176">
+<move id="176" name="Heal Block">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
@@ -3315,18 +2267,11 @@ user.applyStatus(user, new StatChangeEffect(Stat.DEFENCE, 1));
 <pp>15</pp>
 <target>Enemies</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Heal Order" id="177">
+<move id="177" name="Heal Order">
 <type>Bug</type>
 <class>Other</class>
 <power>0</power>
@@ -3334,17 +2279,10 @@ user.applyStatus(user, new StatChangeEffect(Stat.DEFENCE, 1));
 <pp>10</pp>
 <target>User</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Healing Wish" id="178">
+<move id="178" name="Healing Wish">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
@@ -3352,35 +2290,21 @@ user.applyStatus(user, new StatChangeEffect(Stat.DEFENCE, 1));
 <pp>10</pp>
 <target>User</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Heart Swap" id="179">
+<move id="179" name="Heart Swap">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Heat Wave" id="180">
+<move id="180" name="Heat Wave">
 <type>Fire</type>
 <class>Special</class>
 <power>100</power>
@@ -3388,18 +2312,11 @@ user.applyStatus(user, new StatChangeEffect(Stat.DEFENCE, 1));
 <pp>10</pp>
 <target>Enemies</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Helping Hand" id="181">
+<move id="181" name="Helping Hand">
 <type>Normal</type>
 <class>Other</class>
 <priority>5</priority>
@@ -3408,92 +2325,63 @@ user.applyStatus(user, new StatChangeEffect(Stat.DEFENCE, 1));
 <pp>20</pp>
 <target>Ally</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Hi Jump Kick" id="182">
+<move id="182" name="Hi Jump Kick">
 <type>Fighting</type>
 <class>Physical</class>
 <power>100</power>
 <accuracy>0.90</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Hidden Power" id="183">
+<move id="183" name="Hidden Power">
 <type>Normal</type>
 <class>Special</class>
 <power>1</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Horn Attack" id="184">
+<move id="184" name="Horn Attack">
 <type>Normal</type>
 <class>Physical</class>
 <power>65</power>
 <accuracy>1.00</accuracy>
 <pp>25</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Horn Drill" id="185">
+<move id="185" name="Horn Drill">
 <type>Normal</type>
 <class>Physical</class>
 <power>1</power>
 <accuracy>0.30</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Howl" id="186">
+<move id="186" name="Howl">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -3501,90 +2389,62 @@ user.applyStatus(user, new StatChangeEffect(Stat.DEFENCE, 1));
 <pp>40</pp>
 <target>User</target>
 <flags>
-	<snatch/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-user.applyStatus(user, new StatChangeEffect(Stat.ATTACK, 1));
-]]>
-</use>
 </move>
-
-<move name="Hydro Cannon" id="187">
+<move id="187" name="Hydro Cannon">
 <type>Water</type>
 <class>Special</class>
 <power>150</power>
 <accuracy>0.90</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Hydro Pump" id="188">
+<move id="188" name="Hydro Pump">
 <type>Water</type>
 <class>Special</class>
 <power>120</power>
 <accuracy>0.80</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Hyper Beam" id="189">
+<move id="189" name="Hyper Beam">
 <type>Normal</type>
 <class>Special</class>
 <power>150</power>
 <accuracy>0.90</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Hyper Fang" id="190">
+<move id="190" name="Hyper Fang">
 <type>Normal</type>
 <class>Physical</class>
 <power>80</power>
 <accuracy>0.90</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Hyper Voice" id="191">
+<move id="191" name="Hyper Voice">
 <type>Normal</type>
 <class>Special</class>
 <power>90</power>
@@ -3592,146 +2452,105 @@ user.applyStatus(user, new StatChangeEffect(Stat.ATTACK, 1));
 <pp>10</pp>
 <target>Enemies</target>
 <flags>
-	<protect/>
-	<memorable/>
+    <protect/>
+    <memorable/>
+    <sound/>
 </flags>
 </move>
-
-<move name="Hypnosis" id="192">
+<move id="192" name="Hypnosis">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0.60</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<init>
-// TODO: generation-specific accuracy
-makeStatusMove(this, [[SleepEffect]]);
-</init>
 </move>
-
-<move name="Ice Ball" id="193">
+<move id="193" name="Ice Ball">
 <type>Ice</type>
 <class>Physical</class>
 <power>30</power>
 <accuracy>0.90</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Ice Beam" id="194">
+<move id="194" name="Ice Beam">
 <type>Ice</type>
 <class>Special</class>
 <power>95</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Ice Fang" id="195">
+<move id="195" name="Ice Fang">
 <type>Ice</type>
 <class>Physical</class>
 <power>65</power>
 <accuracy>0.95</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Ice Punch" id="196">
+<move id="196" name="Ice Punch">
 <type>Ice</type>
 <class>Physical</class>
 <power>75</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Ice Shard" id="197">
+<move id="197" name="Ice Shard">
 <type>Ice</type>
 <class>Physical</class>
 <priority>1</priority>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>30</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Icicle Spear" id="198">
+<move id="198" name="Icicle Spear">
 <type>Ice</type>
 <class>Physical</class>
 <power>10</power>
 <accuracy>1.00</accuracy>
 <pp>30</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Icy Wind" id="199">
+<move id="199" name="Icy Wind">
 <type>Ice</type>
 <class>Special</class>
 <power>55</power>
@@ -3739,17 +2558,11 @@ makeStatusMove(this, [[SleepEffect]]);
 <pp>15</pp>
 <target>Enemies</target>
 <flags>
-	<protect/>
-	<memorable/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.SPEED, -1), 0.1]]);
-]]>
-</init>
 </move>
-
-<move name="Imprison" id="200">
+<move id="200" name="Imprison">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
@@ -3757,16 +2570,9 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPEED, -1), 0.1]]);
 <pp>10</pp>
 <target>User</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Ingrain" id="201">
+<move id="201" name="Ingrain">
 <type>Grass</type>
 <class>Other</class>
 <power>0</power>
@@ -3774,17 +2580,10 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPEED, -1), 0.1]]);
 <pp>20</pp>
 <target>User</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Iron Defense" id="202">
+<move id="202" name="Iron Defense">
 <type>Steel</type>
 <class>Other</class>
 <power>0</power>
@@ -3792,189 +2591,119 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPEED, -1), 0.1]]);
 <pp>15</pp>
 <target>User</target>
 <flags>
-	<snatch/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-user.applyStatus(user, new StatChangeEffect(Stat.DEFENCE, 2));
-]]>
-</use>
 </move>
-
-<move name="Iron Head" id="203">
+<move id="203" name="Iron Head">
 <type>Steel</type>
 <class>Physical</class>
 <power>80</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Iron Tail" id="204">
+<move id="204" name="Iron Tail">
 <type>Steel</type>
 <class>Physical</class>
 <power>100</power>
 <accuracy>0.75</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.DEFENCE, -1), 0.3]]);
-]]>
-</init>
 </move>
-
-<move name="Judgment" id="205">
+<move id="205" name="Judgment">
 <type>Normal</type>
 <class>Special</class>
 <power>100</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Jump Kick" id="206">
+<move id="206" name="Jump Kick">
 <type>Fighting</type>
 <class>Physical</class>
 <power>85</power>
 <accuracy>0.95</accuracy>
 <pp>25</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Karate Chop" id="207">
+<move id="207" name="Karate Chop">
 <type>Fighting</type>
 <class>Physical</class>
 <power>50</power>
 <accuracy>1.00</accuracy>
 <pp>25</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<high-critical/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
+    <high-critical/>
 </flags>
 </move>
-
-<move name="Kinesis" id="208">
+<move id="208" name="Kinesis">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0.80</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.ACCURACY, -1)]]);
-]]>
-</init>
 </move>
-
-<move name="Knock Off" id="209">
+<move id="209" name="Knock Off">
 <type>Dark</type>
 <class>Physical</class>
 <power>20</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Last Resort" id="210">
+<move id="210" name="Last Resort">
 <type>Normal</type>
 <class>Physical</class>
 <power>130</power>
 <accuracy>1.00</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-var usable = false;
-var count = user.moveCount;
-if (count != 1) {
-    usable = true;
-    for (var i = 0; i < count; ++i) {
-        if (user.getMove(i) != this) {
-            if (!user.isMoveUsed(i)) {
-                usable = false;
-                break;
-            }
-        }
-    }
-}
-if (usable) {
-    target.hp -= field.calculate(this, user, target, targets);
-} else {
-    field.print(Text.battle_messages(0));
-}
-]]>
-</use>
 </move>
-
-<move name="Lava Plume" id="211">
+<move id="211" name="Lava Plume">
 <type>Fire</type>
 <class>Special</class>
 <power>80</power>
@@ -3982,101 +2711,69 @@ if (usable) {
 <pp>15</pp>
 <target>Others</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Leaf Blade" id="212">
+<!--
+    TODO: This move has lower power (70) in RSE.
+-->
+<move id="212" name="Leaf Blade">
 <type>Grass</type>
 <class>Physical</class>
 <power>90</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
-	<high-critical/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
+    <high-critical/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Leaf Storm" id="213">
+<move id="213" name="Leaf Storm">
 <type>Grass</type>
 <class>Special</class>
 <power>140</power>
 <accuracy>0.90</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Leech Life" id="214">
+<move id="214" name="Leech Life">
 <type>Bug</type>
 <class>Physical</class>
 <power>20</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Leech Seed" id="215">
+<move id="215" name="Leech Seed">
 <type>Grass</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0.90</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Leer" id="216">
+<move id="216" name="Leer">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -4084,37 +2781,25 @@ if (usable) {
 <pp>30</pp>
 <target>Enemies</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.DEFENCE, -1)]]);
-]]>
-</init>
 </move>
-
-<move name="Lick" id="217">
+<move id="217" name="Lick">
 <type>Ghost</type>
 <class>Physical</class>
 <power>20</power>
 <accuracy>1.00</accuracy>
 <pp>30</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[ParalysisEffect, 0.3]]);
-]]>
-</init>
 </move>
-
-<move name="Light Screen" id="218">
+<move id="218" name="Light Screen">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
@@ -4122,74 +2807,49 @@ makeStatusMove(this, [[ParalysisEffect, 0.3]]);
 <pp>30</pp>
 <target>Allies</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Lock-on" id="219">
+<move id="219" name="Lock-on">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Lovely Kiss" id="220">
+<move id="220" name="Lovely Kiss">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0.75</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<init>
-makeStatusMove(this, [[SleepEffect]]);
-</init>
 </move>
-
-<move name="Low Kick" id="221">
+<move id="221" name="Low Kick">
 <type>Fighting</type>
 <class>Physical</class>
 <power>1</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Lucky Chant" id="222">
+<move id="222" name="Lucky Chant">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -4197,16 +2857,9 @@ makeStatusMove(this, [[SleepEffect]]);
 <pp>30</pp>
 <target>Allies</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Lunar Dance" id="223">
+<move id="223" name="Lunar Dance">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
@@ -4214,116 +2867,86 @@ makeStatusMove(this, [[SleepEffect]]);
 <pp>10</pp>
 <target>User</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Luster Purge" id="224">
+<move id="224" name="Luster Purge">
 <type>Psychic</type>
 <class>Special</class>
 <power>70</power>
 <accuracy>1.00</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.5]]);
-]]>
-</init>
 </move>
-
-<move name="Mach Punch" id="225">
+<move id="225" name="Mach Punch">
 <type>Fighting</type>
 <class>Physical</class>
 <priority>1</priority>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>30</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Magic Coat" id="226">
+<move id="226" name="Magic Coat">
 <type>Psychic</type>
 <class>Other</class>
 <priority>4</priority>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>15</pp>
-<target>Lastenemy</target>
+<target>None</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Magical Leaf" id="227">
+<move id="227" name="Magical Leaf">
 <type>Grass</type>
 <class>Special</class>
 <power>60</power>
 <accuracy>0</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Magma Storm" id="228">
+<move id="228" name="Magma Storm">
 <type>Fire</type>
 <class>Special</class>
 <power>120</power>
 <accuracy>0.70</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Magnet Bomb" id="229">
+<move id="229" name="Magnet Bomb">
 <type>Steel</type>
 <class>Physical</class>
 <power>60</power>
 <accuracy>0</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Magnet Rise" id="230">
+<move id="230" name="Magnet Rise">
 <type>Electric</type>
 <class>Other</class>
 <power>0</power>
@@ -4331,16 +2954,9 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.5]]);
 <pp>10</pp>
 <target>User</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Magnitude" id="231">
+<move id="231" name="Magnitude">
 <type>Ground</type>
 <class>Physical</class>
 <power>1</power>
@@ -4348,19 +2964,12 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.5]]);
 <pp>30</pp>
 <target>Others</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Me First" id="232">
+<move id="232" name="Me First">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -4368,37 +2977,23 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.5]]);
 <pp>20</pp>
 <target>Enemy</target>
 <flags>
-	<protect/>
-	<unimplemented/>
+    <protect/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Mean Look" id="233">
+<move id="233" name="Mean Look">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Meditate" id="234">
+<move id="234" name="Meditate">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
@@ -4406,191 +3001,138 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.5]]);
 <pp>40</pp>
 <target>User</target>
 <flags>
-	<snatch/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-user.applyStatus(user, new StatChangeEffect(Stat.ATTACK, 1));
-]]>
-</use>
 </move>
-
-<move name="Mega Drain" id="235">
+<move id="235" name="Mega Drain">
 <type>Grass</type>
 <class>Special</class>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Mega Kick" id="236">
+<move id="236" name="Mega Kick">
 <type>Normal</type>
 <class>Physical</class>
 <power>120</power>
 <accuracy>0.75</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Mega Punch" id="237">
+<move id="237" name="Mega Punch">
 <type>Normal</type>
 <class>Physical</class>
 <power>80</power>
 <accuracy>0.85</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Megahorn" id="238">
+<move id="238" name="Megahorn">
 <type>Bug</type>
 <class>Physical</class>
 <power>120</power>
 <accuracy>0.85</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Memento" id="239">
+<move id="239" name="Memento">
 <type>Dark</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Metal Burst" id="240">
+<move id="240" name="Metal Burst">
 <type>Steel</type>
 <class>Physical</class>
 <power>1</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Lastenemy</target>
+<target>None</target>
 <flags>
-	<memorable/>
+    <memorable/>
 </flags>
-<init>
-makeCounterMove(this, undefined, 1.5);
-</init>
 </move>
-
-<move name="Metal Claw" id="241">
+<move id="241" name="Metal Claw">
 <type>Steel</type>
 <class>Physical</class>
 <power>50</power>
 <accuracy>0.95</accuracy>
 <pp>35</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Metal Sound" id="242">
+<move id="242" name="Metal Sound">
 <type>Steel</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0.85</accuracy>
 <pp>40</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
+    <sound/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -2)]]);
-]]>
-</init>
 </move>
-
-<move name="Meteor Mash" id="243">
+<move id="243" name="Meteor Mash">
 <type>Steel</type>
 <class>Physical</class>
 <power>100</power>
 <accuracy>0.85</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Metronome" id="244">
+<move id="244" name="Metronome">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>10</pp>
-<target>Lastenemy</target>
+<target>None</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Milk Drink" id="245">
+<move id="245" name="Milk Drink">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -4598,54 +3140,33 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -2)]]);
 <pp>10</pp>
 <target>User</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Mimic" id="246">
+<move id="246" name="Mimic">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<unimplemented/>
+    <protect/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Mind Reader" id="247">
+<move id="247" name="Mind Reader">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>40</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Minimize" id="248">
+<move id="248" name="Minimize">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -4653,96 +3174,56 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -2)]]);
 <pp>20</pp>
 <target>User</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Miracle Eye" id="249">
+<move id="249" name="Miracle Eye">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>40</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Mirror Coat" id="250">
+<move id="250" name="Mirror Coat">
 <type>Psychic</type>
 <class>Special</class>
 <priority>-5</priority>
 <power>1</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Lastenemy</target>
+<target>None</target>
 <flags>
-
 </flags>
-<init>
-makeCounterMove(this, MoveClass.SPECIAL, 2);
-</init>
 </move>
-
-<move name="Mirror Move" id="251">
+<move id="251" name="Mirror Move">
 <type>Flying</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>20</pp>
-<target>Lastenemy</target>
+<target>None</target>
 <flags>
-
 </flags>
-<use>
-<![CDATA[
-var move = user.memory;
-if ((move == null) || (move.name == "Encore")) {
-    // Note: Mirror Move specifically fails when copying Encore
-    field.print(Text.battle_messages(0));
-    return;
-}
-
-// Execute the move on a randomised target.
-user.execute(move);
-]]>
-</use>
 </move>
-
-<move name="Mirror Shot" id="252">
+<move id="252" name="Mirror Shot">
 <type>Steel</type>
 <class>Special</class>
 <power>65</power>
 <accuracy>0.85</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.ACCURACY, -1), 0.3]]);
-]]>
-</init>
 </move>
-
-<move name="Mist" id="253">
+<move id="253" name="Mist">
 <type>Ice</type>
 <class>Other</class>
 <power>0</power>
@@ -4750,35 +3231,22 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.ACCURACY, -1), 0.3]]);
 <pp>30</pp>
 <target>Allies</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Mist Ball" id="254">
+<move id="254" name="Mist Ball">
 <type>Psychic</type>
 <class>Special</class>
 <power>70</power>
 <accuracy>1.00</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.SPATTACK, -1), 0.5]]);
-]]>
-</init>
 </move>
-
-<move name="Moonlight" id="255">
+<move id="255" name="Moonlight">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -4786,17 +3254,10 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPATTACK, -1), 0.5]]);
 <pp>5</pp>
 <target>User</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Morning Sun" id="256">
+<move id="256" name="Morning Sun">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -4804,55 +3265,36 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPATTACK, -1), 0.5]]);
 <pp>5</pp>
 <target>User</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Mud Bomb" id="257">
+<move id="257" name="Mud Bomb">
 <type>Ground</type>
 <class>Special</class>
 <power>65</power>
 <accuracy>0.85</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.ACCURACY, -1), 0.3]]);
-]]>
-</init>
 </move>
-
-<move name="Mud Shot" id="258">
+<move id="258" name="Mud Shot">
 <type>Ground</type>
 <class>Special</class>
 <power>55</power>
 <accuracy>0.95</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.SPEED, -1), 0.1]]);
-]]>
-</init>
 </move>
-
-<move name="Mud Sport" id="259">
+<move id="259" name="Mud Sport">
 <type>Ground</type>
 <class>Other</class>
 <power>0</power>
@@ -4860,34 +3302,21 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPEED, -1), 0.1]]);
 <pp>15</pp>
 <target>All</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Mud-Slap" id="260">
+<move id="260" name="Mud-Slap">
 <type>Ground</type>
 <class>Special</class>
 <power>20</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.ACCURACY, -1), 0.1]]);
-]]>
-</init>
 </move>
-
-<move name="Muddy Water" id="261">
+<move id="261" name="Muddy Water">
 <type>Water</type>
 <class>Special</class>
 <power>95</power>
@@ -4895,18 +3324,12 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.ACCURACY, -1), 0.1]]);
 <pp>10</pp>
 <target>Enemies</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.ACCURACY, -1), 0.3]]);
-]]>
-</init>
 </move>
-
-<move name="Nasty Plot" id="262">
+<move id="262" name="Nasty Plot">
 <type>Dark</type>
 <class>Other</class>
 <power>0</power>
@@ -4914,184 +3337,122 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.ACCURACY, -1), 0.3]]);
 <pp>20</pp>
 <target>User</target>
 <flags>
-	<snatch/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-user.applyStatus(user, new StatChangeEffect(Stat.SPATTACK, 2));
-]]>
-</use>
 </move>
-
-<move name="Natural Gift" id="263">
+<move id="263" name="Natural Gift">
 <type>Normal</type>
 <class>Physical</class>
 <power>1</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Nature Power" id="264">
+<move id="264" name="Nature Power">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>20</pp>
-<target>Lastenemy</target>
+<target>None</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Needle Arm" id="265">
+<move id="265" name="Needle Arm">
 <type>Grass</type>
 <class>Physical</class>
 <power>60</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Night Shade" id="266">
+<move id="266" name="Night Shade">
 <type>Ghost</type>
 <class>Special</class>
 <power>1</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Night Slash" id="267">
+<move id="267" name="Night Slash">
 <type>Dark</type>
 <class>Physical</class>
 <power>70</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<high-critical/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
+    <high-critical/>
 </flags>
 </move>
-
-<move name="Nightmare" id="268">
+<move id="268" name="Nightmare">
 <type>Ghost</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Octazooka" id="269">
+<move id="269" name="Octazooka">
 <type>Water</type>
 <class>Special</class>
 <power>65</power>
 <accuracy>0.85</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.ACCURACY, -1), 0.5]]);
-]]>
-</init>
 </move>
-
-<move name="Odor Sleuth" id="270">
+<move id="270" name="Odor Sleuth">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>40</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Ominous Wind" id="271">
+<move id="271" name="Ominous Wind">
 <type>Ghost</type>
 <class>Special</class>
 <power>60</power>
 <accuracy>1.00</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Outrage" id="272">
+<move id="272" name="Outrage">
 <type>Dragon</type>
 <class>Physical</class>
 <power>120</power>
@@ -5099,115 +3460,79 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.ACCURACY, -1), 0.5]]);
 <pp>15</pp>
 <target>Randenemy</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Overheat" id="273">
+<move id="273" name="Overheat">
 <type>Fire</type>
 <class>Special</class>
 <power>140</power>
 <accuracy>0.90</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Pain Split" id="274">
+<move id="274" name="Pain Split">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Pay Day" id="275">
+<move id="275" name="Pay Day">
 <type>Normal</type>
 <class>Physical</class>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Payback" id="276">
+<move id="276" name="Payback">
 <type>Dark</type>
 <class>Physical</class>
 <power>50</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Peck" id="277">
+<move id="277" name="Peck">
 <type>Flying</type>
 <class>Physical</class>
 <power>35</power>
 <accuracy>1.00</accuracy>
 <pp>35</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Perish Song" id="278">
+<move id="278" name="Perish Song">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -5215,16 +3540,10 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.ACCURACY, -1), 0.5]]);
 <pp>5</pp>
 <target>All</target>
 <flags>
-	<unimplemented/>
+    <sound/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Petal Dance" id="279">
+<move id="279" name="Petal Dance">
 <type>Grass</type>
 <class>Special</class>
 <power>90</power>
@@ -5232,196 +3551,134 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.ACCURACY, -1), 0.5]]);
 <pp>20</pp>
 <target>Randenemy</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Pin Missile" id="280">
+<move id="280" name="Pin Missile">
 <type>Bug</type>
 <class>Physical</class>
 <power>14</power>
 <accuracy>0.85</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Pluck" id="281">
+<move id="281" name="Pluck">
 <type>Flying</type>
 <class>Physical</class>
 <power>60</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Poison Fang" id="282">
+<move id="282" name="Poison Fang">
 <type>Poison</type>
 <class>Physical</class>
 <power>50</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Poison Gas" id="283">
+<move id="283" name="Poison Gas">
 <type>Poison</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0.55</accuracy>
 <pp>40</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Poison Jab" id="284">
+<move id="284" name="Poison Jab">
 <type>Poison</type>
 <class>Physical</class>
 <power>80</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[PoisonEffect, 0.3]]);
-]]>
-</init>
 </move>
-
-<move name="Poison Sting" id="285">
+<move id="285" name="Poison Sting">
 <type>Poison</type>
 <class>Physical</class>
 <power>15</power>
 <accuracy>1.00</accuracy>
 <pp>35</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[PoisonEffect, 0.3]]);
-]]>
-</init>
 </move>
-
-<move name="Poison Tail" id="286">
+<move id="286" name="Poison Tail">
 <type>Poison</type>
 <class>Physical</class>
 <power>50</power>
 <accuracy>1.00</accuracy>
 <pp>25</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
-	<high-critical/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
+    <high-critical/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Poisonpowder" id="287">
+<move id="287" name="Poisonpowder">
 <type>Poison</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0.75</accuracy>
 <pp>35</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Pound" id="288">
+<move id="288" name="Pound">
 <type>Normal</type>
 <class>Physical</class>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>35</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Powder Snow" id="289">
+<move id="289" name="Powder Snow">
 <type>Ice</type>
 <class>Special</class>
 <power>40</power>
@@ -5429,51 +3686,36 @@ makeStatusMove(this, [[PoisonEffect, 0.3]]);
 <pp>25</pp>
 <target>Enemies</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Power Gem" id="290">
+<move id="290" name="Power Gem">
 <type>Rock</type>
 <class>Special</class>
 <power>70</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Power Swap" id="291">
+<move id="291" name="Power Swap">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Power Trick" id="292">
+<move id="292" name="Power Trick">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
@@ -5481,50 +3723,35 @@ makeStatusMove(this, [[PoisonEffect, 0.3]]);
 <pp>10</pp>
 <target>User</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Power Whip" id="293">
+<move id="293" name="Power Whip">
 <type>Grass</type>
 <class>Physical</class>
 <power>120</power>
 <accuracy>0.85</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Present" id="294">
+<move id="294" name="Present">
 <type>Normal</type>
 <class>Physical</class>
 <power>1</power>
 <accuracy>0.90</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Protect" id="295">
+<move id="295" name="Protect">
 <type>Normal</type>
 <class>Other</class>
 <priority>3</priority>
@@ -5533,223 +3760,152 @@ makeStatusMove(this, [[PoisonEffect, 0.3]]);
 <pp>10</pp>
 <target>User</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Psybeam" id="296">
+<move id="296" name="Psybeam">
 <type>Psychic</type>
 <class>Special</class>
 <power>65</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Psych Up" id="297">
+<move id="297" name="Psych Up">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Psychic" id="298">
+<move id="298" name="Psychic">
 <type>Psychic</type>
 <class>Special</class>
 <power>90</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.1]]);
-]]>
-</init>
 </move>
-
-<move name="Psycho Boost" id="299">
+<move id="299" name="Psycho Boost">
 <type>Psychic</type>
 <class>Special</class>
 <power>140</power>
 <accuracy>0.90</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Psycho Cut" id="300">
+<move id="300" name="Psycho Cut">
 <type>Psychic</type>
 <class>Physical</class>
 <power>70</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<high-critical/>
+    <protect/>
+    <memorable/>
+    <flinch/>
+    <high-critical/>
 </flags>
 </move>
-
-<move name="Psycho Shift" id="301">
+<move id="301" name="Psycho Shift">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0.90</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Psywave" id="302">
+<move id="302" name="Psywave">
 <type>Psychic</type>
 <class>Special</class>
 <power>1</power>
 <accuracy>0.80</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Punishment" id="303">
+<move id="303" name="Punishment">
 <type>Dark</type>
 <class>Physical</class>
 <power>60</power>
 <accuracy>1.00</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Pursuit" id="304">
+<move id="304" name="Pursuit">
 <type>Dark</type>
 <class>Physical</class>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Quick Attack" id="305">
+<move id="305" name="Quick Attack">
 <type>Normal</type>
 <class>Physical</class>
 <priority>1</priority>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>30</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Rage" id="306">
+<move id="306" name="Rage">
 <type>Normal</type>
 <class>Physical</class>
 <power>20</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Rain Dance" id="307">
+<move id="307" name="Rain Dance">
 <type>Water</type>
 <class>Other</class>
 <power>0</power>
@@ -5757,37 +3913,23 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.1]]);
 <pp>5</pp>
 <target>All</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Rapid Spin" id="308">
+<move id="308" name="Rapid Spin">
 <type>Normal</type>
 <class>Physical</class>
 <power>20</power>
 <accuracy>1.00</accuracy>
 <pp>40</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Razor Leaf" id="309">
+<move id="309" name="Razor Leaf">
 <type>Grass</type>
 <class>Physical</class>
 <power>55</power>
@@ -5795,14 +3937,13 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.1]]);
 <pp>25</pp>
 <target>Enemies</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<high-critical/>
+    <protect/>
+    <memorable/>
+    <flinch/>
+    <high-critical/>
 </flags>
 </move>
-
-<move name="Razor Wind" id="310">
+<move id="310" name="Razor Wind">
 <type>Normal</type>
 <class>Special</class>
 <power>80</power>
@@ -5810,19 +3951,12 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.1]]);
 <pp>10</pp>
 <target>Enemies</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Recover" id="311">
+<move id="311" name="Recover">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -5830,17 +3964,10 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.1]]);
 <pp>10</pp>
 <target>User</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Recycle" id="312">
+<move id="312" name="Recycle">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -5848,16 +3975,9 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.1]]);
 <pp>10</pp>
 <target>User</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Reflect" id="313">
+<move id="313" name="Reflect">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
@@ -5865,17 +3985,10 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.1]]);
 <pp>20</pp>
 <target>Allies</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Refresh" id="314">
+<move id="314" name="Refresh">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -5883,17 +3996,10 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.1]]);
 <pp>20</pp>
 <target>User</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Rest" id="315">
+<move id="315" name="Rest">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
@@ -5901,156 +4007,108 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.1]]);
 <pp>10</pp>
 <target>User</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Return" id="316">
+<move id="316" name="Return">
 <type>Normal</type>
 <class>Physical</class>
 <power>1</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Revenge" id="317">
+<move id="317" name="Revenge">
 <type>Fighting</type>
 <class>Physical</class>
 <priority>-4</priority>
 <power>60</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Reversal" id="318">
+<move id="318" name="Reversal">
 <type>Fighting</type>
 <class>Physical</class>
 <power>1</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Roar" id="319">
+<move id="319" name="Roar">
 <type>Normal</type>
 <class>Other</class>
 <priority>-6</priority>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <sound/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Roar Of Time" id="320">
+<move id="320" name="Roar Of Time">
 <type>Dragon</type>
 <class>Special</class>
 <power>150</power>
 <accuracy>0.90</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
+    <sound/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Rock Blast" id="321">
+<move id="321" name="Rock Blast">
 <type>Rock</type>
 <class>Physical</class>
 <power>25</power>
 <accuracy>0.80</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Rock Climb" id="322">
+<move id="322" name="Rock Climb">
 <type>Normal</type>
 <class>Physical</class>
 <power>90</power>
 <accuracy>0.85</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Rock Polish" id="323">
+<move id="323" name="Rock Polish">
 <type>Rock</type>
 <class>Other</class>
 <power>0</power>
@@ -6058,16 +4116,10 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.1]]);
 <pp>20</pp>
 <target>User</target>
 <flags>
-	<snatch/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-user.applyStatus(user, new StatChangeEffect(Stat.SPEED, 2));
-]]>
-</use>
 </move>
-
-<move name="Rock Slide" id="324">
+<move id="324" name="Rock Slide">
 <type>Rock</type>
 <class>Physical</class>
 <power>75</power>
@@ -6075,142 +4127,100 @@ user.applyStatus(user, new StatChangeEffect(Stat.SPEED, 2));
 <pp>10</pp>
 <target>Enemies</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Rock Smash" id="325">
+<move id="325" name="Rock Smash">
 <type>Fighting</type>
 <class>Physical</class>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.DEFENCE, -1), 0.5]]);
-]]>
-</init>
 </move>
-
-<move name="Rock Throw" id="326">
+<move id="326" name="Rock Throw">
 <type>Rock</type>
 <class>Physical</class>
 <power>50</power>
 <accuracy>0.90</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Rock Tomb" id="327">
+<move id="327" name="Rock Tomb">
 <type>Rock</type>
 <class>Physical</class>
 <power>50</power>
 <accuracy>0.80</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.SPEED, -1), 0.1]]);
-]]>
-</init>
 </move>
-
-<move name="Rock Wrecker" id="328">
+<move id="328" name="Rock Wrecker">
 <type>Rock</type>
 <class>Physical</class>
 <power>150</power>
 <accuracy>0.90</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Role Play" id="329">
+<move id="329" name="Role Play">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Rolling Kick" id="330">
+<move id="330" name="Rolling Kick">
 <type>Fighting</type>
 <class>Physical</class>
 <power>60</power>
 <accuracy>0.85</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Rollout" id="331">
+<move id="331" name="Rollout">
 <type>Rock</type>
 <class>Physical</class>
 <power>30</power>
 <accuracy>0.90</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Roost" id="332">
+<move id="332" name="Roost">
 <type>Flying</type>
 <class>Other</class>
 <power>0</power>
@@ -6218,36 +4228,22 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPEED, -1), 0.1]]);
 <pp>10</pp>
 <target>User</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Sacred Fire" id="333">
+<move id="333" name="Sacred Fire">
 <type>Fire</type>
 <class>Physical</class>
 <power>100</power>
 <accuracy>0.95</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Safeguard" id="334">
+<move id="334" name="Safeguard">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -6255,56 +4251,36 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPEED, -1), 0.1]]);
 <pp>25</pp>
 <target>Allies</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Sand Tomb" id="335">
+<move id="335" name="Sand Tomb">
 <type>Ground</type>
 <class>Physical</class>
 <power>15</power>
 <accuracy>0.70</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Sand-Attack" id="336">
+<move id="336" name="Sand-Attack">
 <type>Ground</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.ACCURACY, -1)]]);
-]]>
-</init>
 </move>
-
-<move name="Sandstorm" id="337">
+<move id="337" name="Sandstorm">
 <type>Rock</type>
 <class>Other</class>
 <power>0</power>
@@ -6312,143 +4288,102 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.ACCURACY, -1)]]);
 <pp>10</pp>
 <target>All</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Scary Face" id="338">
+<move id="338" name="Scary Face">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0.90</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.SPEED, -2)]]);
-]]>
-</init>
 </move>
-
-<move name="Scratch" id="339">
+<move id="339" name="Scratch">
 <type>Normal</type>
 <class>Physical</class>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>35</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Screech" id="340">
+<move id="340" name="Screech">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0.85</accuracy>
 <pp>40</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
+    <sound/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.DEFENCE, -2)]]);
-]]>
-</init>
 </move>
-
-<move name="Secret Power" id="341">
+<move id="341" name="Secret Power">
 <type>Normal</type>
 <class>Physical</class>
 <power>70</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Seed Bomb" id="342">
+<move id="342" name="Seed Bomb">
 <type>Grass</type>
 <class>Physical</class>
 <power>80</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Seed Flare" id="343">
+<move id="343" name="Seed Flare">
 <type>Grass</type>
 <class>Special</class>
 <power>120</power>
 <accuracy>0.85</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Seismic Toss" id="344">
+<move id="344" name="Seismic Toss">
 <type>Fighting</type>
 <class>Physical</class>
 <power>1</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Selfdestruct" id="345">
+<move id="345" name="Selfdestruct">
 <type>Normal</type>
 <class>Physical</class>
 <power>200</power>
@@ -6456,110 +4391,81 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.DEFENCE, -2)]]);
 <pp>5</pp>
 <target>Others</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Shadow Ball" id="346">
+<move id="346" name="Shadow Ball">
 <type>Ghost</type>
 <class>Special</class>
 <power>80</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.2]]);
-]]>
-</init>
 </move>
-
-<move name="Shadow Claw" id="347">
+<move id="347" name="Shadow Claw">
 <type>Ghost</type>
 <class>Physical</class>
 <power>70</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<high-critical/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
+    <high-critical/>
 </flags>
 </move>
-
-<move name="Shadow Force" id="348">
+<move id="348" name="Shadow Force">
 <type>Ghost</type>
 <class>Physical</class>
 <power>120</power>
 <accuracy>1.00</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Shadow Punch" id="349">
+<move id="349" name="Shadow Punch">
 <type>Ghost</type>
 <class>Physical</class>
 <power>60</power>
 <accuracy>0</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Shadow Sneak" id="350">
+<move id="350" name="Shadow Sneak">
 <type>Ghost</type>
 <class>Physical</class>
 <priority>1</priority>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>30</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Sharpen" id="351">
+<move id="351" name="Sharpen">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -6567,198 +4473,139 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.SPDEFENCE, -1), 0.2]]);
 <pp>30</pp>
 <target>User</target>
 <flags>
-	<snatch/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-user.applyStatus(user, new StatChangeEffect(Stat.ATTACK, 1));
-]]>
-</use>
 </move>
-
-<move name="Sheer Cold" id="352">
+<move id="352" name="Sheer Cold">
 <type>Ice</type>
 <class>Special</class>
 <power>1</power>
 <accuracy>0.30</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Shock Wave" id="353">
+<move id="353" name="Shock Wave">
 <type>Electric</type>
 <class>Special</class>
 <power>60</power>
 <accuracy>0</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Signal Beam" id="354">
+<move id="354" name="Signal Beam">
 <type>Bug</type>
 <class>Special</class>
 <power>75</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Silver Wind" id="355">
+<move id="355" name="Silver Wind">
 <type>Bug</type>
 <class>Special</class>
 <power>60</power>
 <accuracy>1.00</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Sing" id="356">
+<move id="356" name="Sing">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0.55</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
+    <sound/>
 </flags>
-<init>
-makeStatusMove(this, [[SleepEffect]]);
-</init>
 </move>
-
-<move name="Sketch" id="357">
+<move id="357" name="Sketch">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>1</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<unimplemented/>
+    <unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Skill Swap" id="358">
+<move id="358" name="Skill Swap">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Skull Bash" id="359">
+<move id="359" name="Skull Bash">
 <type>Normal</type>
 <class>Physical</class>
 <power>100</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Sky Attack" id="360">
+<move id="360" name="Sky Attack">
 <type>Flying</type>
 <class>Physical</class>
 <power>140</power>
 <accuracy>0.90</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Sky Uppercut" id="361">
+<move id="361" name="Sky Uppercut">
 <type>Fighting</type>
 <class>Physical</class>
 <power>85</power>
 <accuracy>0.90</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Slack Off" id="362">
+<move id="362" name="Slack Off">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -6766,213 +4613,150 @@ makeStatusMove(this, [[SleepEffect]]);
 <pp>10</pp>
 <target>User</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Slam" id="363">
+<move id="363" name="Slam">
 <type>Normal</type>
 <class>Physical</class>
 <power>80</power>
 <accuracy>0.75</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Slash" id="364">
+<move id="364" name="Slash">
 <type>Normal</type>
 <class>Physical</class>
 <power>70</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<high-critical/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
+    <high-critical/>
 </flags>
 </move>
-
-<move name="Sleep Powder" id="365">
+<move id="365" name="Sleep Powder">
 <type>Grass</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0.75</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<init>
-makeStatusMove(this, [[SleepEffect]]);
-</init>
 </move>
-
-<move name="Sleep Talk" id="366">
+<move id="366" name="Sleep Talk">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>10</pp>
-<target>Lastenemy</target>
+<target>None</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Sludge" id="367">
+<move id="367" name="Sludge">
 <type>Poison</type>
 <class>Special</class>
 <power>65</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[PoisonEffect, 0.3]]);
-]]>
-</init>
 </move>
-
-<move name="Sludge Bomb" id="368">
+<move id="368" name="Sludge Bomb">
 <type>Poison</type>
 <class>Special</class>
 <power>90</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[PoisonEffect, 0.3]]);
-]]>
-</init>
 </move>
-
-<move name="Smellingsalt" id="369">
+<move id="369" name="Smellingsalt">
 <type>Normal</type>
 <class>Physical</class>
 <power>60</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Smog" id="370">
+<move id="370" name="Smog">
 <type>Poison</type>
 <class>Special</class>
 <power>20</power>
 <accuracy>0.70</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[PoisonEffect, 0.4]]);
-]]>
-</init>
 </move>
-
-<move name="Smokescreen" id="371">
+<move id="371" name="Smokescreen">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.ACCURACY, -1)]]);
-]]>
-</init>
 </move>
-
-<move name="Snatch" id="372">
+<move id="372" name="Snatch">
 <type>Dark</type>
 <class>Other</class>
 <priority>4</priority>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>10</pp>
-<target>Lastenemy</target>
+<target>None</target>
 <flags>
-	<unimplemented/>
+    <unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Snore" id="373">
+<move id="373" name="Snore">
 <type>Normal</type>
 <class>Special</class>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
+    <sound/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Softboiled" id="374">
+<move id="374" name="Softboiled">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -6980,131 +4764,90 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.ACCURACY, -1)]]);
 <pp>10</pp>
 <target>User</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Solarbeam" id="375">
+<move id="375" name="Solarbeam">
 <type>Grass</type>
 <class>Special</class>
 <power>120</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Sonicboom" id="376">
+<move id="376" name="Sonicboom">
 <type>Normal</type>
 <class>Special</class>
 <power>1</power>
 <accuracy>0.90</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
+    <sound/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Spacial Rend" id="377">
+<move id="377" name="Spacial Rend">
 <type>Dragon</type>
 <class>Special</class>
 <power>100</power>
 <accuracy>0.95</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<high-critical/>
+    <protect/>
+    <memorable/>
+    <flinch/>
+    <high-critical/>
 </flags>
 </move>
-
-<move name="Spark" id="378">
+<move id="378" name="Spark">
 <type>Electric</type>
 <class>Physical</class>
 <power>65</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[ParalysisEffect, 0.3]]);
-]]>
-</init>
 </move>
-
-<move name="Spider Web" id="379">
+<move id="379" name="Spider Web">
 <type>Bug</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Spike Cannon" id="380">
+<move id="380" name="Spike Cannon">
 <type>Normal</type>
 <class>Physical</class>
 <power>20</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Spikes" id="381">
+<move id="381" name="Spikes">
 <type>Ground</type>
 <class>Other</class>
 <power>0</power>
@@ -7112,54 +4855,38 @@ makeStatusMove(this, [[ParalysisEffect, 0.3]]);
 <pp>20</pp>
 <target>Enemyfield</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Spit Up" id="382">
+<move id="382" name="Spit Up">
 <type>Normal</type>
 <class>Special</class>
 <power>1</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <flinch/>
 </flags>
-<use>
+<attemptHit>
 <![CDATA[
-
+return true;
 ]]>
-</use>
+</attemptHit>
 </move>
-
-<move name="Spite" id="383">
+<move id="383" name="Spite">
 <type>Ghost</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Splash" id="384">
+<move id="384" name="Splash">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -7167,33 +4894,22 @@ makeStatusMove(this, [[ParalysisEffect, 0.3]]);
 <pp>40</pp>
 <target>User</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Spore" id="385">
+<move id="385" name="Spore">
 <type>Grass</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<init>
-makeStatusMove(this, [[SleepEffect]]);
-</init>
 </move>
-
-<move name="Stealth Rock" id="386">
+<move id="386" name="Stealth Rock">
 <type>Rock</type>
 <class>Other</class>
 <power>0</power>
@@ -7201,37 +4917,23 @@ makeStatusMove(this, [[SleepEffect]]);
 <pp>20</pp>
 <target>Enemyfield</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Steel Wing" id="387">
+<move id="387" name="Steel Wing">
 <type>Steel</type>
 <class>Physical</class>
 <power>70</power>
 <accuracy>0.90</accuracy>
 <pp>25</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Stockpile" id="388">
+<move id="388" name="Stockpile">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -7239,67 +4941,51 @@ makeStatusMove(this, [[SleepEffect]]);
 <pp>20</pp>
 <target>User</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Stomp" id="389">
+<move id="389" name="Stomp">
 <type>Normal</type>
 <class>Physical</class>
 <power>65</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Stone Edge" id="390">
+<move id="390" name="Stone Edge">
 <type>Rock</type>
 <class>Physical</class>
 <power>100</power>
 <accuracy>0.80</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<high-critical/>
+    <protect/>
+    <memorable/>
+    <flinch/>
+    <high-critical/>
 </flags>
 </move>
-
-<move name="Strength" id="391">
+<move id="391" name="Strength">
 <type>Normal</type>
 <class>Physical</class>
 <power>80</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="String Shot" id="392">
+<move id="392" name="String Shot">
 <type>Bug</type>
 <class>Other</class>
 <power>0</power>
@@ -7307,78 +4993,52 @@ makeStatusMove(this, [[SleepEffect]]);
 <pp>40</pp>
 <target>Enemies</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.SPEED, -1)]]);
-]]>
-</init>
 </move>
-
-<move name="Struggle" id="393">
+<move id="393" name="Struggle">
 <type>Normal</type>
 <class>Physical</class>
 <power>50</power>
 <accuracy>0</accuracy>
 <pp>1</pp>
-<target>Enemy</target>
+<target>Randenemy</target>
 <flags>
-	<contact/>
-	<protect/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Stun Spore" id="394">
+<move id="394" name="Stun Spore">
 <type>Grass</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0.75</accuracy>
 <pp>30</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[ParalysisEffect]]);
-]]>
-</init>
 </move>
-
-<move name="Submission" id="395">
+<move id="395" name="Submission">
 <type>Fighting</type>
 <class>Physical</class>
 <power>80</power>
 <accuracy>0.80</accuracy>
 <pp>25</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Substitute" id="396">
+<move id="396" name="Substitute">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -7386,39 +5046,25 @@ makeStatusMove(this, [[ParalysisEffect]]);
 <pp>10</pp>
 <target>User</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Sucker Punch" id="397">
+<move id="397" name="Sucker Punch">
 <type>Dark</type>
 <class>Physical</class>
 <priority>1</priority>
 <power>80</power>
 <accuracy>1.00</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Sunny Day" id="398">
+<move id="398" name="Sunny Day">
 <type>Fire</type>
 <class>Other</class>
 <power>0</power>
@@ -7426,76 +5072,49 @@ makeStatusMove(this, [[ParalysisEffect]]);
 <pp>5</pp>
 <target>All</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Super Fang" id="399">
+<move id="399" name="Super Fang">
 <type>Normal</type>
 <class>Physical</class>
 <power>1</power>
 <accuracy>0.90</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Superpower" id="400">
+<move id="400" name="Superpower">
 <type>Fighting</type>
 <class>Physical</class>
 <power>120</power>
 <accuracy>1.00</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Supersonic" id="401">
+<move id="401" name="Supersonic">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0.55</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <reflect/>
+    <memorable/>
+    <sound/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Surf" id="402">
+<move id="402" name="Surf">
 <type>Water</type>
 <class>Special</class>
 <power>95</power>
@@ -7503,33 +5122,25 @@ makeStatusMove(this, [[ParalysisEffect]]);
 <pp>15</pp>
 <target>Others</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Swagger" id="403">
+<move id="403" name="Swagger">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0.90</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Swallow" id="404">
+<move id="404" name="Swallow">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -7537,37 +5148,23 @@ makeStatusMove(this, [[ParalysisEffect]]);
 <pp>10</pp>
 <target>User</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Sweet Kiss" id="405">
+<move id="405" name="Sweet Kiss">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0.75</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Sweet Scent" id="406">
+<move id="406" name="Sweet Scent">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -7575,18 +5172,12 @@ makeStatusMove(this, [[ParalysisEffect]]);
 <pp>20</pp>
 <target>Enemies</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.EVASION, -1)]]);
-]]>
-</init>
 </move>
-
-<move name="Swift" id="407">
+<move id="407" name="Swift">
 <type>Normal</type>
 <class>Special</class>
 <power>60</power>
@@ -7594,32 +5185,24 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.EVASION, -1)]]);
 <pp>20</pp>
 <target>Enemies</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Switcheroo" id="408">
+<move id="408" name="Switcheroo">
 <type>Dark</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Swords Dance" id="409">
+<move id="409" name="Swords Dance">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -7627,16 +5210,10 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.EVASION, -1)]]);
 <pp>30</pp>
 <target>User</target>
 <flags>
-	<snatch/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-user.applyStatus(user, new StatChangeEffect(Stat.ATTACK, 2));
-]]>
-</use>
 </move>
-
-<move name="Synthesis" id="410">
+<move id="410" name="Synthesis">
 <type>Grass</type>
 <class>Other</class>
 <power>0</power>
@@ -7644,32 +5221,24 @@ user.applyStatus(user, new StatChangeEffect(Stat.ATTACK, 2));
 <pp>5</pp>
 <target>User</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Tackle" id="411">
+<move id="411" name="Tackle">
 <type>Normal</type>
 <class>Physical</class>
 <power>35</power>
 <accuracy>0.95</accuracy>
 <pp>35</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Tail Glow" id="412">
+<move id="412" name="Tail Glow">
 <type>Bug</type>
 <class>Other</class>
 <power>0</power>
@@ -7677,16 +5246,10 @@ user.applyStatus(user, new StatChangeEffect(Stat.ATTACK, 2));
 <pp>20</pp>
 <target>User</target>
 <flags>
-	<snatch/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-user.applyStatus(user, new StatChangeEffect(Stat.SPATTACK, 2));
-]]>
-</use>
 </move>
-
-<move name="Tail Whip" id="413">
+<move id="413" name="Tail Whip">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -7694,18 +5257,12 @@ user.applyStatus(user, new StatChangeEffect(Stat.SPATTACK, 2));
 <pp>30</pp>
 <target>Enemies</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[new StatChangeEffect(Stat.DEFENCE, -1)]]);
-]]>
-</init>
 </move>
-
-<move name="Tailwind" id="414">
+<move id="414" name="Tailwind">
 <type>Flying</type>
 <class>Other</class>
 <power>0</power>
@@ -7713,57 +5270,36 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.DEFENCE, -1)]]);
 <pp>30</pp>
 <target>Allies</target>
 <flags>
-	<snatch/>
-	<unimplemented/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Take Down" id="415">
+<move id="415" name="Take Down">
 <type>Normal</type>
 <class>Physical</class>
 <power>90</power>
 <accuracy>0.85</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Taunt" id="416">
+<move id="416" name="Taunt">
 <type>Dark</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Teeter Dance" id="417">
+<move id="417" name="Teeter Dance">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -7771,18 +5307,11 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.DEFENCE, -1)]]);
 <pp>20</pp>
 <target>Others</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Teleport" id="418">
+<move id="418" name="Teleport">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
@@ -7790,36 +5319,22 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.DEFENCE, -1)]]);
 <pp>20</pp>
 <target>User</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Thief" id="419">
+<move id="419" name="Thief">
 <type>Dark</type>
 <class>Physical</class>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Thrash" id="420">
+<move id="420" name="Thrash">
 <type>Normal</type>
 <class>Physical</class>
 <power>90</power>
@@ -7827,193 +5342,127 @@ makeStatusMove(this, [[new StatChangeEffect(Stat.DEFENCE, -1)]]);
 <pp>20</pp>
 <target>Randenemy</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Thunder" id="421">
+<move id="421" name="Thunder">
 <type>Electric</type>
 <class>Special</class>
 <power>120</power>
 <accuracy>0.70</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Thunder Fang" id="422">
+<move id="422" name="Thunder Fang">
 <type>Electric</type>
 <class>Physical</class>
 <power>65</power>
 <accuracy>0.95</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Thunder Wave" id="423">
+<move id="423" name="Thunder Wave">
 <type>Electric</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[ParalysisEffect]], true);
-]]>
-</init>
 </move>
-
-<move name="Thunderbolt" id="424">
+<move id="424" name="Thunderbolt">
 <type>Electric</type>
 <class>Special</class>
 <power>95</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[ParalysisEffect, 0.1]]);
-]]>
-</init>
 </move>
-
-<move name="Thunderpunch" id="425">
+<move id="425" name="Thunderpunch">
 <type>Electric</type>
 <class>Physical</class>
 <power>75</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
+    <contact/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[ParalysisEffect, 0.1]]);
-]]>
-</init>
 </move>
-
-<move name="Thundershock" id="426">
+<move id="426" name="Thundershock">
 <type>Electric</type>
 <class>Special</class>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>30</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[ParalysisEffect, 0.1]]);
-]]>
-</init>
 </move>
-
-<move name="Tickle" id="427">
+<move id="427" name="Tickle">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Torment" id="428">
+<move id="428" name="Torment">
 <type>Dark</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Toxic" id="429">
+<move id="429" name="Toxic">
 <type>Poison</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0.85</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Toxic Spikes" id="430">
+<move id="430" name="Toxic Spikes">
 <type>Poison</type>
 <class>Other</class>
 <power>0</power>
@@ -8021,71 +5470,44 @@ makeStatusMove(this, [[ParalysisEffect, 0.1]]);
 <pp>20</pp>
 <target>Enemyfield</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Transform" id="431">
+<move id="431" name="Transform">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<unimplemented/>
+    <unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Tri Attack" id="432">
+<move id="432" name="Tri Attack">
 <type>Normal</type>
 <class>Special</class>
 <power>80</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Trick" id="433">
+<move id="433" name="Trick">
 <type>Psychic</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Trick Room" id="434">
+<move id="434" name="Trick Room">
 <type>Psychic</type>
 <class>Other</class>
 <priority>-7</priority>
@@ -8094,78 +5516,54 @@ makeStatusMove(this, [[ParalysisEffect, 0.1]]);
 <pp>5</pp>
 <target>All</target>
 <flags>
-	<memorable/>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Triple Kick" id="435">
+<move id="435" name="Triple Kick">
 <type>Fighting</type>
 <class>Physical</class>
 <power>10</power>
 <accuracy>0.90</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
+<attemptHit>
 <![CDATA[
-
+return true;
 ]]>
-</use>
+</attemptHit>
 </move>
-
-<move name="Trump Card" id="436">
+<move id="436" name="Trump Card">
 <type>Normal</type>
 <class>Special</class>
 <power>1</power>
 <accuracy>0</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Twineedle" id="437">
+<move id="437" name="Twineedle">
 <type>Bug</type>
 <class>Physical</class>
 <power>25</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Twister" id="438">
+<move id="438" name="Twister">
 <type>Dragon</type>
 <class>Special</class>
 <power>40</power>
@@ -8173,40 +5571,26 @@ makeStatusMove(this, [[ParalysisEffect, 0.1]]);
 <pp>20</pp>
 <target>Enemies</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="U-turn" id="439">
+<move id="439" name="U-turn">
 <type>Bug</type>
 <class>Physical</class>
 <power>70</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Uproar" id="440">
+<move id="440" name="Uproar">
 <type>Normal</type>
 <class>Special</class>
 <power>50</power>
@@ -8214,162 +5598,124 @@ makeStatusMove(this, [[ParalysisEffect, 0.1]]);
 <pp>10</pp>
 <target>Randenemy</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
+    <sound/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Vacuum Wave" id="441">
+<move id="441" name="Vacuum Wave">
 <type>Fighting</type>
 <class>Special</class>
 <priority>1</priority>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>30</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Vicegrip" id="442">
+<move id="442" name="Vicegrip">
 <type>Normal</type>
 <class>Physical</class>
 <power>55</power>
 <accuracy>1.00</accuracy>
 <pp>30</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Vine Whip" id="443">
+<move id="443" name="Vine Whip">
 <type>Grass</type>
 <class>Physical</class>
 <power>35</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Vital Throw" id="444">
+<move id="444" name="Vital Throw">
 <type>Fighting</type>
 <class>Physical</class>
 <priority>-1</priority>
 <power>70</power>
 <accuracy>0</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Volt Tackle" id="445">
+<move id="445" name="Volt Tackle">
 <type>Electric</type>
 <class>Physical</class>
 <power>120</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Wake-up Slap" id="446">
+<move id="446" name="Wake-up Slap">
 <type>Fighting</type>
 <class>Physical</class>
 <power>60</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Water Gun" id="447">
+<move id="447" name="Water Gun">
 <type>Water</type>
 <class>Special</class>
 <power>40</power>
 <accuracy>1.00</accuracy>
 <pp>25</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Water Pulse" id="448">
+<move id="448" name="Water Pulse">
 <type>Water</type>
 <class>Special</class>
 <power>60</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Water Sport" id="449">
+<move id="449" name="Water Sport">
 <type>Water</type>
 <class>Other</class>
 <power>0</power>
@@ -8377,16 +5723,9 @@ makeStatusMove(this, [[ParalysisEffect, 0.1]]);
 <pp>15</pp>
 <target>All</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Water Spout" id="450">
+<move id="450" name="Water Spout">
 <type>Water</type>
 <class>Special</class>
 <power>150</power>
@@ -8394,134 +5733,91 @@ makeStatusMove(this, [[ParalysisEffect, 0.1]]);
 <pp>5</pp>
 <target>Enemies</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Waterfall" id="451">
+<move id="451" name="Waterfall">
 <type>Water</type>
 <class>Physical</class>
 <power>80</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Weather Ball" id="452">
+<move id="452" name="Weather Ball">
 <type>Normal</type>
 <class>Special</class>
 <power>50</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Whirlpool" id="453">
+<move id="453" name="Whirlpool">
 <type>Water</type>
 <class>Special</class>
 <power>15</power>
 <accuracy>0.70</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Whirlwind" id="454">
+<move id="454" name="Whirlwind">
 <type>Normal</type>
 <class>Other</class>
 <priority>-6</priority>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Will-o-wisp" id="455">
+<move id="455" name="Will-o-wisp">
 <type>Fire</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0.75</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Wing Attack" id="456">
+<move id="456" name="Wing Attack">
 <type>Flying</type>
 <class>Physical</class>
 <power>60</power>
 <accuracy>1.00</accuracy>
 <pp>35</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Wish" id="457">
+<move id="457" name="Wish">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -8529,16 +5825,9 @@ makeStatusMove(this, [[ParalysisEffect, 0.1]]);
 <pp>10</pp>
 <target>User</target>
 <flags>
-	<unimplemented/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Withdraw" id="458">
+<move id="458" name="Withdraw">
 <type>Water</type>
 <class>Other</class>
 <power>0</power>
@@ -8546,170 +5835,115 @@ makeStatusMove(this, [[ParalysisEffect, 0.1]]);
 <pp>40</pp>
 <target>User</target>
 <flags>
-	<snatch/>
+    <snatch/>
 </flags>
-<use>
-<![CDATA[
-user.applyStatus(user, new StatChangeEffect(Stat.DEFENCE, 1));
-]]>
-</use>
 </move>
-
-<move name="Wood Hammer" id="459">
+<move id="459" name="Wood Hammer">
 <type>Grass</type>
 <class>Physical</class>
 <power>120</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Worry Seed" id="460">
+<move id="460" name="Worry Seed">
 <type>Grass</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>1.00</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Wrap" id="461">
+<move id="461" name="Wrap">
 <type>Normal</type>
 <class>Physical</class>
 <power>15</power>
 <accuracy>0.85</accuracy>
 <pp>20</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Wring Out" id="462">
+<move id="462" name="Wring Out">
 <type>Normal</type>
 <class>Special</class>
 <power>1</power>
 <accuracy>1.00</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="X-Scissor" id="463">
+<move id="463" name="X-Scissor">
 <type>Bug</type>
 <class>Physical</class>
 <power>80</power>
 <accuracy>1.00</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
 </move>
-
-<move name="Yawn" id="464">
+<move id="464" name="Yawn">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
 <accuracy>0</accuracy>
 <pp>10</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<reflect/>
-	<memorable/>
-	<unimplemented/>
+    <protect/>
+    <reflect/>
+    <memorable/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
-<move name="Zap Cannon" id="465">
+<move id="465" name="Zap Cannon">
 <type>Electric</type>
 <class>Special</class>
 <power>120</power>
 <accuracy>0.50</accuracy>
 <pp>5</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<protect/>
-	<memorable/>
+    <protect/>
+    <memorable/>
 </flags>
-<init>
-<![CDATA[
-makeStatusMove(this, [[ParalysisEffect]]);
-]]>
-</init>
 </move>
-
-<move name="Zen Headbutt" id="466">
+<move id="466" name="Zen Headbutt">
 <type>Psychic</type>
 <class>Physical</class>
 <power>80</power>
 <accuracy>0.90</accuracy>
 <pp>15</pp>
-<target>Enemy</target>
+<target>Non-user</target>
 <flags>
-	<contact/>
-	<protect/>
-	<memorable/>
-	<flinch/>
-	<unimplemented/>
+    <contact/>
+    <protect/>
+    <memorable/>
+    <flinch/>
 </flags>
-<use>
-<![CDATA[
-
-]]>
-</use>
 </move>
-
 </shoddybattle>
