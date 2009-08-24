@@ -430,8 +430,10 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             boolean us = (i == m_participant);
             for (int j = 0; j < m_n; j++) {
                 Target t = new Target(m_visual.getPokemonForSlot(i, j).getName(), i, j);
-                if ((!us && !mode.m_opp) || (us && !mode.m_ally) ||
-                        (us && (j == m_current) && !mode.m_self)) {
+                if ((!us && !mode.m_opp) || 
+                        (us && !mode.m_ally) ||
+                        (us && (j == m_current) && !mode.m_self && (m_visual.getActiveCount(m_participant) > 1)) ||
+                        (m_visual.getPokemonForSlot(i, j).isFainted())) {
                     t.m_enabled = false;
                 }
                 targets[i][j] = t;
@@ -565,11 +567,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         } else if ("Non-user".equalsIgnoreCase(target)) {
             requestTarget(TargetClass.NON_USER);
         } else if ("Ally".equalsIgnoreCase(target)) {
-            if (m_n <= 2) {
-                sendAction(Action.MOVE, idx, defaultTarget);
-            } else {
-                requestTarget(TargetClass.ALLY);
-            }
+            requestTarget(TargetClass.ALLY);
         } else if ("User or ally".equalsIgnoreCase(target)) {
             requestTarget(TargetClass.USER_OR_ALLY);
         } else if ("Enemy".equalsIgnoreCase(target)) {

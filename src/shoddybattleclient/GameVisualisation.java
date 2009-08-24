@@ -376,6 +376,16 @@ public class GameVisualisation extends JPanel {
         repaint();
     }
 
+    // returns the number of active pokemon in a party
+    public int getActiveCount(int party) {
+        VisualPokemon[] pokes = m_parties[party];
+        int active = 0;
+        for (VisualPokemon p : pokes) {
+            if (!p.m_fainted) active++;
+        }
+        return active;
+    }
+
     @Override
     public JToolTip createToolTip() {
         VisualPokemon p = m_parties[m_tooltipParty][m_tooltipPoke];
