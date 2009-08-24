@@ -86,6 +86,46 @@ public class ServerLink extends Thread {
         // TODO: Clauses
     }
 
+    public static class Metagame {
+        private int m_idx;
+        private String m_name;
+        private String m_id;
+        private String m_description;
+        private List<String> m_banList;
+        private List<String> m_clauses;
+        public Metagame(int idx, String name, String id, String description,
+                List<String> banList, List<String> clauses) {
+            m_idx = idx;
+            m_name = name;
+            m_id = id;
+            m_description = description;
+            m_banList = banList;
+            m_clauses = clauses;
+        }
+        public int getIdx() {
+            return m_idx;
+        }
+        public String getName() {
+            return m_name;
+        }
+        public String getId() {
+            return m_id;
+        }
+        public String getDescription() {
+            return m_description;
+        }
+        public List<String> getBanList() {
+            return m_banList;
+        }
+        public List<String> getClauses() {
+            return m_clauses;
+        }
+        @Override
+        public String toString() {
+            return m_name;
+        }
+    }
+
     /**
      * Messages sent by the client to the server.
      */
@@ -1077,6 +1117,41 @@ public class ServerLink extends Thread {
                 }
             });
 
+            // METAGAME_LIST
+            new ServerMessage(26, new MessageHandler() {
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException {
+                    int count = is.readShort();
+                    Metagame[] metagames = new Metagame[count];
+                    for (int i = 0; i < metagames.length; ++i) {
+                        int idx = is.readUnsignedByte();
+                        String name = is.readUTF();
+                        String id = is.readUTF();
+                        String description = is.readUTF();
+                        List<String> banList = new ArrayList<String>();
+                        int banLength = is.readShort();
+                        for (int j = 0; j < banLength; ++j) {
+                            int entry = is.readShort();
+                            String species = PokemonSpecies.getNameFromId(
+                                    link.m_speciesList, entry);
+                            banList.add(species);
+                        }
+                        List<String> clauses = new ArrayList<String>();
+                        int clauseLength = is.readShort();
+                        for (int j = 0; j < clauseLength; ++j) {
+                            String clause = is.readUTF();
+                            clauses.add(clause);
+                        }
+                        metagames[i] = new Metagame(idx, name, id,
+                                description, banList, clauses);
+                    }
+                    link.m_metagames = metagames;
+                    if (link.m_lobby != null) {
+                        link.m_lobby.getFindPanel().updateMetagames();
+                    }
+                }
+            });
+
             // add additional messages here
         }
 
@@ -1111,6 +1186,11 @@ public class ServerLink extends Thread {
             new HashMap<String, ChallengeMediator>();
     private Map<Integer, BattleWindow> m_battles =
             new HashMap<Integer, BattleWindow>();
+    private Metagame[] m_metagames;
+
+    public Metagame[] getMetagames() {
+        return m_metagames;
+    }
 
     public List<PokemonSpecies> getSpeciesList() {
         return m_speciesList;

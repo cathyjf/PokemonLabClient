@@ -392,6 +392,10 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         }
     }
 
+    public FindPanel getFindPanel() {
+        return m_findPanel;
+    }
+
     /** Creates new form LobbyWindow */
     public LobbyWindow(ServerLink link, String userName) {
         initComponents();
