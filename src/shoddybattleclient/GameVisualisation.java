@@ -376,35 +376,6 @@ public class GameVisualisation extends JPanel {
         repaint();
     }
 
-    public String[] getPokemonNames() {
-        String[] ret = new String[m_n * 2];
-        for (int j = 0; j < m_n; j++) {
-            VisualPokemon p = m_active[m_view][j];
-            if ((p != null) && !p.isFainted()) {
-                ret[j] = p.getSpecies();
-            }
-        }
-        for (int j = 0; j < m_n; j++) {
-            VisualPokemon p = m_active[1 - m_view][j];
-            if ((p != null) && !p.isFainted()) {
-                ret[m_n + j] = p.getSpecies();
-            }
-        }
-        return ret;
-    }
-
-    public String[] getAllyNames() {
-        VisualPokemon[] party = m_active[m_view];
-        String[] ret = new String[party.length];
-        for (int i = 0; i < party.length; i++) {
-            VisualPokemon p = party[i];
-            if ((p != null) && !p.isFainted()) {
-                ret[i] = p.getSpecies();
-            }
-        }
-        return ret;
-    }
-
     @Override
     public JToolTip createToolTip() {
         VisualPokemon p = m_parties[m_tooltipParty][m_tooltipPoke];
@@ -517,13 +488,6 @@ public class GameVisualisation extends JPanel {
                 x = us ? 45 * (m_n - (i + 1)) - 15 : 215 - 45 * i;
             }
             int index = i + idx * m_n;
-            if (m_view == 1) {
-                if (index > m_n) {
-                    index -= m_n;
-                } else {
-                    index += m_n;
-                }
-            }
             if (us && (m_selected == i)) {
                 g2.drawImage(m_arrows[0], x + w / 2, y - m_arrows[0].getHeight(this), this);
             }

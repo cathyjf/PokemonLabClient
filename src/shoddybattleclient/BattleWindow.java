@@ -35,7 +35,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
@@ -61,6 +60,39 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     private static enum Action {
         MOVE,
         SWITCH
+    }
+
+    private static enum TargetClass {
+        NON_USER (true, true, false),
+        ALLY (false, true, false),
+        USER_OR_ALLY (false, true, true),
+        ENEMY (true, false, false);
+        // If opponents are targetable
+        private boolean m_opp;
+        // If allies are targetable
+        private boolean m_ally;
+        // If self is targetable
+        private boolean m_self;
+        private TargetClass(boolean opp, boolean ally, boolean self) {
+            m_opp = opp;
+            m_ally = ally;
+            m_self = self;
+        }
+    }
+
+    private static class Target {
+        private String m_name;
+        private int m_party;
+        private int m_slot;
+        private boolean m_enabled = true;
+        public Target(String name, int party, int slot) {
+            m_name = name;
+            m_party = party;
+            m_slot = slot;
+        }
+        public String toString() {
+            return m_name + " " + m_party + " " + m_slot + " " + m_enabled;
+        }
     }
 
     private class MoveButton extends JToggleButton {
@@ -388,45 +420,47 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     /**
      * Switches the move panel to show targets
      * @param mode Some constant representing the kind of targeting this move has
-     * @param self The index of the current user
      */
-    private void showTargets(int mode) {
+    private void showTargets(TargetClass mode) {
         m_targeting = true;
         panelMoves.removeAll();
-        String[] names;
-        if (mode == 0) {
-            /*single target*/
-            names = m_visual.getPokemonNames();
-            panelMoves.setLayout(new GridLayout(2, m_n));
-        } else if (mode == 1) {
-            /* ally */
-            names = m_visual.getAllyNames();
-            panelMoves.setLayout(new GridLayout(1, m_n));
-        } else {
-            names = new String[0];
-        }
-        
-        m_targets = new TargetButton[names.length];
-        ButtonGroup bg = new ButtonGroup();
-        for (int i = names.length - 1; i >= 0; i--) {
-            final int idx = i;
-            final TargetButton button = new TargetButton(names[i], idx);
-            button.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    if (!button.isEnabled()) return;
-                    m_visual.setTarget(idx);
-                    if (e.getClickCount() == 2) {
-                        btnMoveActionPerformed(null);
-                    }
+        panelMoves.setLayout(new GridLayout(2, m_n));
+        Target[][] targets = new Target[2][m_n];
+        for (int i = 0; i < targets.length; i++) {
+            boolean us = (i == m_participant);
+            for (int j = 0; j < m_n; j++) {
+                Target t = new Target(m_visual.getPokemonForSlot(i, j).getName(), i, j);
+                if ((!us && !mode.m_opp) || (us && !mode.m_ally) ||
+                        (us && (j == m_current) && !mode.m_self)) {
+                    t.m_enabled = false;
                 }
-            });
-            if ((idx == m_current) || (names[i] == null)) {
-                button.setEnabled(false);
+                targets[i][j] = t;
             }
-            m_targets[i] = button;
-            bg.add(button);
-            panelMoves.add(button);
+        }
+        targets = (1 == m_participant) ? targets : new Target[][] {targets[1], targets[0]};
+
+        m_targets = new TargetButton[m_n * 2];
+        ButtonGroup bg = new ButtonGroup();
+        for (int i = 0; i < targets.length; i++) {
+            for (int j = j = m_n - 1; j >= 0; j--) {
+                Target t = targets[i][j];
+                final int idx = t.m_party * m_n + t.m_slot;
+                final TargetButton button = new TargetButton(t.m_name, idx);
+                button.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        if (!button.isEnabled()) return;
+                        m_visual.setTarget(idx);
+                        if (e.getClickCount() >= 2) {
+                            btnMoveActionPerformed(null);
+                        }
+                    }
+                });
+                button.setEnabled(t.m_enabled);
+                m_targets[idx] = button;
+                bg.add(button);
+                panelMoves.add(button);
+            }
         }
         panelMoves.repaint();
     }
@@ -515,7 +549,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         tabAction.setSelectedIndex(1);
     }
 
-    public void requestTarget(int mode) {
+    private void requestTarget(TargetClass mode) {
         showTargets(mode);
         btnMove.setEnabled(true);
         btnMoveCancel.setEnabled(false);
@@ -528,14 +562,18 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         String target = m_moveButtons[idx].getMove().target;
         if (m_n == 1) {
             sendAction(Action.MOVE, idx, defaultTarget);
-        } else if ("Enemy".equals(target)) {
-            requestTarget(0);
-        } else if ("Ally".equals(target)) {
-            if (m_n == 2) {
+        } else if ("Non-user".equalsIgnoreCase(target)) {
+            requestTarget(TargetClass.NON_USER);
+        } else if ("Ally".equalsIgnoreCase(target)) {
+            if (m_n <= 2) {
                 sendAction(Action.MOVE, idx, defaultTarget);
             } else {
-                requestTarget(1);
+                requestTarget(TargetClass.ALLY);
             }
+        } else if ("User or ally".equalsIgnoreCase(target)) {
+            requestTarget(TargetClass.USER_OR_ALLY);
+        } else if ("Enemy".equalsIgnoreCase(target)) {
+            requestTarget(TargetClass.ENEMY);
         } else {
             sendAction(Action.MOVE, idx, defaultTarget);
         }
@@ -549,13 +587,6 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     }
 
     private void sendAction(Action action, int idx, int target) {
-        if (m_participant == 1) {
-            if (target >= m_n) {
-                target -= m_n;
-            } else {
-                target += m_n;
-            }
-        }
         if (action == Action.MOVE) {
             m_link.sendMoveAction(m_fid, idx, target);
         } else {
