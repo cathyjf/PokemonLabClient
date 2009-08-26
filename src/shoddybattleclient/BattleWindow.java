@@ -560,7 +560,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     private void sendMove(int idx) {
         if (!btnMove.isEnabled()) return;
         m_selectedMove = idx;
-        int defaultTarget = 1;
+        int defaultTarget = 1 - m_participant;
         String target = m_moveButtons[idx].getMove().target;
         if (m_n == 1) {
             sendAction(Action.MOVE, idx, defaultTarget);
