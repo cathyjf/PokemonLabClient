@@ -100,6 +100,11 @@ public class FindPanel extends javax.swing.JPanel {
 
         btnFind.setText("Find");
         btnFind.setEnabled(false);
+        btnFind.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFindActionPerformed(evt);
+            }
+        });
         jPanel4.add(btnFind);
 
         btnCancel.setText("Cancel");
@@ -127,13 +132,13 @@ public class FindPanel extends javax.swing.JPanel {
 
         txtBans.setColumns(14);
         txtBans.setEditable(false);
-        txtBans.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+        txtBans.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         txtBans.setLineWrap(true);
         txtBans.setRows(3);
         txtBans.setWrapStyleWord(true);
         jScrollPane2.setViewportView(txtBans);
 
-        jLabel4.setFont(new java.awt.Font("Lucida Grande", 0, 12)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Lucida Grande", 0, 12));
         jLabel4.setText("Clauses:");
 
         jTextArea1.setColumns(14);
@@ -143,7 +148,7 @@ public class FindPanel extends javax.swing.JPanel {
         jTextArea1.setWrapStyleWord(true);
         jScrollPane3.setViewportView(jTextArea1);
 
-        lblDescription.setFont(new java.awt.Font("Lucida Grande", 0, 12)); // NOI18N
+        lblDescription.setFont(new java.awt.Font("Lucida Grande", 0, 12));
         lblDescription.setText("<html>This is some information about this ladder</html>");
         lblDescription.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
@@ -217,9 +222,8 @@ public class FindPanel extends javax.swing.JPanel {
         String file = fd.getDirectory() + fd.getFile();
         TeamBox box = (TeamBox)panelSprites;
         m_team = box.loadFromTeam(file, m_link.getSpeciesList());
-        if (m_team != null) {
-            btnFind.setEnabled(true);
-        } else {
+        btnFind.setEnabled(m_team != null);
+        if (m_team == null) {
             JOptionPane.showMessageDialog(this, "Selected team file could not be loaded");
         }
     }//GEN-LAST:event_btnLoadActionPerformed
@@ -236,6 +240,12 @@ public class FindPanel extends javax.swing.JPanel {
         return ret.toString();
     }
 
+    public void informMatchStarted() {
+        btnFind.setEnabled(m_team != null);
+        btnCancel.setEnabled(false);
+        btnLoad.setEnabled(true);
+    }
+
     private void cmbLadderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbLadderActionPerformed
         Metagame metagame = (Metagame)cmbLadder.getSelectedItem();
         if (metagame != null) {
@@ -247,6 +257,18 @@ public class FindPanel extends javax.swing.JPanel {
             jTextArea1.setText(clauses);
         }
     }//GEN-LAST:event_cmbLadderActionPerformed
+
+    private void btnFindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFindActionPerformed
+        Metagame metagame = (Metagame)cmbLadder.getSelectedItem();
+        if (metagame == null)
+            return;
+        int idx = metagame.getIdx();
+        boolean rated = chkRated.isSelected();
+        m_link.queueTeam(idx, rated, m_team);
+        btnFind.setEnabled(false);
+        btnLoad.setEnabled(false);
+        btnCancel.setEnabled(true);
+    }//GEN-LAST:event_btnFindActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

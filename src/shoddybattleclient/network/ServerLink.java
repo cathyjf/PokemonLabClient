@@ -91,14 +91,20 @@ public class ServerLink extends Thread {
         private String m_name;
         private String m_id;
         private String m_description;
+        private int m_partySize;
+        private int m_maxTeamLength;
         private List<String> m_banList;
         private List<String> m_clauses;
+        private Pokemon[] m_team;
         public Metagame(int idx, String name, String id, String description,
-                List<String> banList, List<String> clauses) {
+                int partySize, int maxTeamLength, List<String> banList,
+                List<String> clauses) {
             m_idx = idx;
             m_name = name;
             m_id = id;
             m_description = description;
+            m_partySize = partySize;
+            m_maxTeamLength = maxTeamLength;
             m_banList = banList;
             m_clauses = clauses;
         }
@@ -114,11 +120,23 @@ public class ServerLink extends Thread {
         public String getDescription() {
             return m_description;
         }
+        public int getPartySize() {
+            return m_partySize;
+        }
+        public int getMaxTeamLength() {
+            return m_maxTeamLength;
+        }
         public List<String> getBanList() {
             return m_banList;
         }
         public List<String> getClauses() {
             return m_clauses;
+        }
+        public void setTeam(Pokemon[] team) {
+            m_team = team;
+        }
+        public Pokemon[] getTeam() {
+            return m_team;
         }
         @Override
         public String toString() {
@@ -327,6 +345,20 @@ public class ServerLink extends Thread {
     public static class RequestChannelListMessage extends OutMessage {
         public RequestChannelListMessage() {
             super(12);
+        }
+    }
+
+    public static class MetagameQueueMessage extends OutMessage {
+        public MetagameQueueMessage(ServerLink link,
+                int metagame, boolean rated, Pokemon[] team) {
+            super(13);
+            try {
+                m_stream.write(metagame);
+                m_stream.write(rated ? 1 : 0);
+                link.writeTeam(team, m_stream);
+            } catch (Exception e) {
+
+            }
         }
     }
 
@@ -622,41 +654,56 @@ public class ServerLink extends Thread {
 
             // BATTLE_BEGIN
             new ServerMessage(12, new MessageHandler() {
-                // int32 : field id
+                // int32  : field id
                 // string : opponent
-                // byte : party
+                // byte   : party
+                // int16  : metagame (-1 for a direct challenge)
+                // byte   : rated
                 public void handle(ServerLink link, DataInputStream is)
                         throws IOException {
                     int id = is.readInt();
                     String user = is.readUTF();
                     int party = is.read();
+                    int metagameId = is.readShort();
+                    boolean rated = (is.read() != 0);
                     String[] users = null;
 
                     ChallengeMediator mediator = null;
 
                     if (party == 0) {
-                        // we made the original challenge
-                        mediator = link.m_challenges.get(user);
-                        link.m_challenges.remove(user);
                         users = new String[] { link.m_name, user };
                     } else {
-                        // we were challenged
-                        mediator = link.m_lobby.getChallengeMediator(user);
-                        link.m_lobby.cancelChallenge(user);
                         users = new String[] { user, link.m_name };
                     }
+                    int partySize;
+                    int maxTeamLength;
+                    Pokemon[] team;
+                    if (metagameId != -1) {
+                        Metagame metagame = link.m_metagames[metagameId];
+                        partySize = metagame.getPartySize();
+                        maxTeamLength = metagame.getMaxTeamLength();
+                        team = metagame.getTeam();
+                        link.getLobby().getFindPanel().informMatchStarted();
+                    } else {
+                        if (party == 0) {
+                            // we made the original challenge
+                            mediator = link.m_challenges.get(user);
+                            link.m_challenges.remove(user);
+                        } else {
+                            // we were challenged
+                            mediator = link.m_lobby.getChallengeMediator(user);
+                            link.m_lobby.cancelChallenge(user);
+                        }
+                        partySize = mediator.getActivePartySize();
+                        team = mediator.getTeam();
+                        maxTeamLength = 6; // TODO: Include this in challenge.
+                        link.m_lobby.removeUserPanel(user);
+                    }
                     // TODO: send maximum team length
-                    BattleWindow wnd = new BattleWindow(link,
-                            id,
-                            mediator.getActivePartySize(),
-                            6,
-                            party,
-                            users,
-                            mediator.getTeam());
+                    BattleWindow wnd = new BattleWindow(link, id, partySize,
+                            maxTeamLength, party, users, team);
 
                     link.m_battles.put(id, wnd);
-                    link.m_lobby.removeUserPanel(user);
-
                     wnd.setVisible(true);
                 }
             });
@@ -1128,6 +1175,8 @@ public class ServerLink extends Thread {
                         String name = is.readUTF();
                         String id = is.readUTF();
                         String description = is.readUTF();
+                        int partySize = is.readUnsignedByte();
+                        int maxTeamLength = is.readUnsignedByte();
                         List<String> banList = new ArrayList<String>();
                         int banLength = is.readShort();
                         for (int j = 0; j < banLength; ++j) {
@@ -1143,7 +1192,8 @@ public class ServerLink extends Thread {
                             clauses.add(clause);
                         }
                         metagames[i] = new Metagame(idx, name, id,
-                                description, banList, clauses);
+                                description, partySize, maxTeamLength,
+                                banList, clauses);
                     }
                     link.m_metagames = metagames;
                     if (link.m_lobby != null) {
@@ -1281,6 +1331,11 @@ public class ServerLink extends Thread {
 
     public void updateMode(int channel, String user, int mode, boolean enable) {
         sendMessage(new ModeMessage(channel, user, mode, enable));
+    }
+
+    public void queueTeam(int metagame, boolean rated, Pokemon[] team) {
+        sendMessage(new MetagameQueueMessage(this, metagame, rated, team));
+        m_metagames[metagame].setTeam(team);
     }
 
     public void attemptAuthentication(String user, String password) {
