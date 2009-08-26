@@ -250,7 +250,7 @@ public class FindPanel extends javax.swing.JPanel {
         Metagame metagame = (Metagame)cmbLadder.getSelectedItem();
         if (metagame != null) {
             // TODO (for bearzly): make the description word wrap
-            lblDescription.setText(metagame.getDescription());
+            lblDescription.setText("<html>" + metagame.getDescription() + "</html>");
             String bans = join(metagame.getBanList(), ", ");
             txtBans.setText(bans);
             String clauses = join(metagame.getClauses(), ", ");
