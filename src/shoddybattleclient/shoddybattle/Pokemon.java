@@ -48,6 +48,12 @@ public class Pokemon {
         public int getValue() {
             return m_value;
         }
+        public static Gender getGender(int value) {
+            for (Gender g : Gender.values()) {
+                if (g.getValue() == value) return g;
+            }
+            return null;
+        }
         @Override
         public String toString() {
             return m_name;
