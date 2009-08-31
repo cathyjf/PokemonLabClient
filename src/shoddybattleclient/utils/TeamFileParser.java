@@ -76,19 +76,29 @@ public class TeamFileParser extends DefaultHandler {
     private int moveIndex;
 
     public Pokemon[] parseTeam(String file) {
+        DataInputStream is = null;
         try {
-            DataInputStream is = new DataInputStream(new FileInputStream(file));
-            short magic = is.readShort();
-            boolean sb1 = true;
-            if (magic != STREAM_MAGIC) {
-                sb1 = false;
+            try {
+                is = new DataInputStream(new FileInputStream(file));
+                short magic = is.readShort();
+                boolean sb1 = true;
+                if (magic != STREAM_MAGIC) {
+                    sb1 = false;
+                }
+                short version = is.readShort();
+                if (version != STREAM_VERSION) {
+                    sb1 = false;
+                }
+                return (sb1) ? parseShoddyBattle1Team(is) : parseShoddyBattle2Team(file);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            } finally {
+                if (is != null) {
+                    is.close();
+                }
             }
-            short version = is.readShort();
-            if (version != STREAM_VERSION) {
-                sb1 = false;
-            }
-            return (sb1) ? parseShoddyBattle1Team(is) : parseShoddyBattle2Team(file);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
