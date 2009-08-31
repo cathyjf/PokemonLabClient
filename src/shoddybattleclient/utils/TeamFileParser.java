@@ -449,7 +449,10 @@ public class TeamFileParser extends DefaultHandler {
                     } else {
                         String[] moves = new String[Pokemon.MOVE_COUNT];
                         for (int i = 0; i < moves.length; i++) {
-                            moves[i] = ((StreamString)arr.elements.get(i)).data;
+                            StreamString str = ((StreamString)arr.elements.get(i));
+                            if (str != null) {
+                                moves[i] = str.data;
+                            }
                         }
                         p.moves = moves;
                     }
