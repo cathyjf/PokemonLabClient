@@ -261,7 +261,7 @@ public class ServerLink extends Thread {
         stream.write(pokemon.shiny ? 1 : 0);
         stream.write(pokemon.gender.getValue());
         stream.writeInt(pokemon.level);
-        stream.writeUTF(pokemon.item);
+        stream.writeUTF((pokemon.item == null) ? "" : pokemon.item);
         stream.writeUTF(pokemon.ability);
         PokemonNature nature = PokemonNature.getNature(pokemon.nature);
         stream.writeInt(nature.getInternalValue());

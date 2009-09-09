@@ -89,7 +89,26 @@ public class TeamFileParser extends DefaultHandler {
                 if (version != STREAM_VERSION) {
                     sb1 = false;
                 }
-                return (sb1) ? parseShoddyBattle1Team(is) : parseShoddyBattle2Team(file);
+                Pokemon[] team = (sb1) ? parseShoddyBattle1Team(is) : parseShoddyBattle2Team(file);
+                for (Pokemon p : team) {
+                    List<String> moves = new ArrayList<String>();
+                    List<Integer> ppUps = new ArrayList<Integer>();
+                    for (int i = 0; i < p.moves.length; i++) {
+                        String m = p.moves[i];
+                        if (m != null) {
+                            moves.add(m);
+                            ppUps.add(p.ppUps[i]);
+                        }
+                    }
+                    p.moves = moves.toArray(new String[moves.size()]);
+                    Integer[] temp = ppUps.toArray(new Integer[ppUps.size()]);
+                    int[] temp2 = new int[temp.length];
+                    for (int i = 0; i < temp.length; i++) {
+                        temp2[i] = temp[i];
+                    }
+                    p.ppUps = temp2;
+                }
+                return team;
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -487,7 +506,7 @@ public class TeamFileParser extends DefaultHandler {
 
     public static void main(String[] args) {
         TeamFileParser tfp = new TeamFileParser();
-        Pokemon[] team = tfp.parseTeam("/Users/ben/teams/testteam");
+        Pokemon[] team = tfp.parseTeam("/Users/ben/gengarteam.txt");
         if (team != null) {
             for (Pokemon p : team) {
                 System.out.println("Level " + p.level + " " + p.species);
@@ -498,7 +517,7 @@ public class TeamFileParser extends DefaultHandler {
                 System.out.println("IVs: " + java.util.Arrays.toString(p.ivs));
                 System.out.println("EVs: " + java.util.Arrays.toString(p.evs));
                 System.out.println("Moves:");
-                for (int i = 0; i < Pokemon.MOVE_COUNT; i++) {
+                for (int i = 0; i < p.moves.length; i++) {
                     System.out.println("\t" + p.moves[i] + " (" + p.ppUps[i] + " pp ups)");
                 }
                 System.out.println();

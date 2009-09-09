@@ -469,7 +469,11 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
 
     private void setMoves(int i) {
         for (int j = 0; j < m_moveButtons.length; j++) {
-            setMove(i, j, PokemonMove.getIdFromName(m_moveList, m_pokemon[i].moves[j]));
+            if (j >= m_pokemon[i].moves.length) {
+                setMove(i, j, -1);
+            } else {
+                setMove(i, j, PokemonMove.getIdFromName(m_moveList, m_pokemon[i].moves[j]));
+            }
         }
     }
 
@@ -519,6 +523,10 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
 
     public void setMove(int pokemon, int idx, int id) {
         if ((idx < 0) || (idx >= m_moveButtons.length)) return;
+        if (id < 0) {
+            m_moveButtons[idx].setMove(pokemon, idx, null);
+            return;
+        }
         for (PokemonMove move : m_moveList) {
             if (move.id == id) {
                 m_moveButtons[idx].setMove(pokemon, idx, move);
@@ -599,8 +607,9 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     public void setValidMoves(boolean[] valid) {
         boolean struggle = true;
         for (int i = 0; i < m_moveButtons.length; i++) {
-            m_moveButtons[i].setEnabled(valid[i]);
-            if (valid[i]) struggle = false;
+            boolean allowed = (i < valid.length) ? valid[i] : false;
+            m_moveButtons[i].setEnabled(allowed);
+            if (allowed) struggle = false;
         }
         if (struggle && !m_forced) {
             btnMove.setText("Struggle");
