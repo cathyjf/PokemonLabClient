@@ -103,4 +103,15 @@ public class PokemonSpecies {
     public int getBase(int i) {
         return m_bases[i];
     }
+    public String toString() {
+        return m_name;
+    }
+    public boolean equals(Object o2) {
+        if (o2 instanceof PokemonSpecies) {
+            return m_name.equalsIgnoreCase(((PokemonSpecies)o2).m_name);
+        } else if (o2 instanceof String) {
+            return m_name.equalsIgnoreCase((String)o2);
+        }
+        return false;
+    }
 }

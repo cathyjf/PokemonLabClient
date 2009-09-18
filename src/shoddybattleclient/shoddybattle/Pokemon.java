@@ -82,16 +82,18 @@ public class Pokemon {
     public int[] ppUps = new int[MOVE_COUNT];
     public int[] ivs = new int[STAT_COUNT];
     public int[] evs = new int[STAT_COUNT];
+    public int happiness = 255;
 
     public Pokemon(String species, String nickname, boolean shiny, Gender gender,
-            int level, String item, String ability, String nature, String[] moves,
-            int[] ppUps, int[] ivs, int[] evs) {
+            int level, int happiness, String item, String ability, String nature,
+            String[] moves, int[] ppUps, int[] ivs, int[] evs) {
 
         this.species = species;
         this.nickname = nickname;
         this.shiny = shiny;
         this.gender = gender;
         this.level = level;
+        this.happiness = happiness;
         this.item = item;
         this.ability = ability;
         this.nature = nature;
@@ -102,13 +104,13 @@ public class Pokemon {
     }
 
     public Pokemon() {
-        
+
     }
 
     public String toString() {
         return this.species;
     }
-    
+
     public int calculateStat(int i, List<PokemonSpecies> list) {
         PokemonSpecies s =
                 list.get(PokemonSpecies.getIdFromName(list, species));
@@ -169,6 +171,9 @@ public class Pokemon {
         buf.append("<level>");
         buf.append(level);
         buf.append("</level>\n");
+        buf.append("<happiness>");
+        buf.append(happiness);
+        buf.append("</happiness>\n");
         buf.append("<gender>");
         buf.append(gender.getName());
         buf.append("</gender>\n");
@@ -205,5 +210,5 @@ public class Pokemon {
         buf.append("</pokemon>\n");
         return new String(buf);
     }
-    
+
 }

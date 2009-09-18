@@ -37,7 +37,6 @@ import org.xml.sax.Attributes;
 import shoddybattleclient.shoddybattle.Pokemon;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
 import shoddybattleclient.shoddybattle.PokemonNature;
-import shoddybattleclient.shoddybattle.PokemonSpecies;
 
 /**
  * This class parses both the XML Shoddy Battle 2 team format, as well as the
@@ -203,6 +202,12 @@ public class TeamFileParser extends DefaultHandler {
             moveIndex++;
         } else if (qName.equals("pokemon")) {
             m_pokemon.add(tempPoke);
+        } else if (qName.equals("happiness")) {
+            try {
+                tempPoke.happiness = Integer.valueOf(tempStr);
+            } catch (NumberFormatException e) {
+                tempPoke.happiness = 255;
+            }
         }
     }
 
@@ -483,6 +488,7 @@ public class TeamFileParser extends DefaultHandler {
                 }
             }
         }
+        p.happiness = 255;
         m_pokemon.add(p);
         return null;
     }
@@ -506,7 +512,9 @@ public class TeamFileParser extends DefaultHandler {
 
     public static void main(String[] args) {
         TeamFileParser tfp = new TeamFileParser();
-        Pokemon[] team = tfp.parseTeam("/Users/ben/gengarteam.txt");
+        Pokemon[] team = tfp.parseTeam(args[0]);
+        System.out.println("Content-type: text/plain");
+        System.out.println();
         if (team != null) {
             for (Pokemon p : team) {
                 System.out.println("Level " + p.level + " " + p.species);

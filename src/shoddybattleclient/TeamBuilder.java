@@ -23,17 +23,23 @@
 
 package shoddybattleclient;
 
-import java.awt.Dimension;
 import java.awt.FileDialog;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.MediaTracker;
+import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import javax.swing.JFileChooser;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.UIManager;
 import shoddybattleclient.shoddybattle.*;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
@@ -44,6 +50,45 @@ import shoddybattleclient.utils.*;
  * @author ben
  */
 public class TeamBuilder extends javax.swing.JFrame {
+
+    private class SpritePanel extends JPanel {
+        private int m_species = 0;
+        private Image m_img = null;
+        private Image m_background =
+                GameVisualisation.getImageFromResource("backgrounds/background2.png");
+        public SpritePanel() {
+            MediaTracker tracker = new MediaTracker(null);
+            tracker.addImage(m_background, 0);
+            try {
+                tracker.waitForAll();
+            } catch (Exception e) {
+                
+            }
+        }
+        public void setSpecies(int species, boolean shiny) {
+            m_species = species;
+            MediaTracker tracker = new MediaTracker(this);
+            m_img = GameVisualisation.getSprite(species, true, true, shiny);
+            tracker.addImage(m_img, WIDTH);
+            try {
+                tracker.waitForAll();
+            } catch (Exception e) {
+                
+            }
+            repaint();
+        }
+        public void setShiny(boolean shiny) {
+            setSpecies(m_species, shiny);
+        }
+        @Override
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(m_background, -130, -17, this);
+            if (m_img == null) return;
+            g.drawImage(m_img, panelSprite.getWidth() / 2 - m_img.getWidth(this) / 2,
+                    panelSprite.getHeight() - 10 - m_img.getHeight(this), this);
+        }
+    }
 
     private List<TeamBuilderForm> m_forms = new ArrayList<TeamBuilderForm>();
     private ArrayList<PokemonSpecies> m_species;
@@ -57,23 +102,27 @@ public class TeamBuilder extends javax.swing.JFrame {
         m_moves = mlp.parseDocument(TeamBuilder.class.getResource("resources/moves.xml").toString());
         SpeciesListParser parser = new SpeciesListParser();
         m_species = parser.parseDocument(TeamBuilder.class.getResource("resources/species.xml").toString());
+        Collections.sort(m_species, new Comparator<PokemonSpecies>() {
+            public int compare(PokemonSpecies arg0, PokemonSpecies arg1) {
+                return arg0.getName().compareToIgnoreCase(arg1.getName());
+            }
+        });
         long t2 = System.currentTimeMillis();
         System.out.println("Loaded moves and species info in " + (t2-t1) + " milliseconds");
-
+        cmbSpecies.setModel(new DefaultComboBoxModel(m_species.toArray(new PokemonSpecies[m_species.size()])));
         for (int i = 0; i < 6; i++) {
             addDefaultForm();
         }
-        Dimension d = m_forms.get(0).getPreferredSize();
-        setSize((int)d.getWidth() + 50, (int)d.getHeight() + 100);
+        setSize(getPreferredSize());
     }
 
     private void addDefaultForm() {
-        TeamBuilderForm tbf = new TeamBuilderForm(this, getSpeciesList(), m_forms.size());
+        TeamBuilderForm tbf = new TeamBuilderForm(this, m_forms.size());
         m_forms.add(tbf);
         tabForms.addTab("", tbf);
-        tbf.setPokemon(new Pokemon("Bulbasaur", "", false, Gender.GENDER_MALE, 100, "None", "None", "None",
-            new String[] {null, null, null, null}, new int[] {3,3,3,3}, new int[] {31,31,31,31,31,31},
-            new int[] {0,0,0,0,0,0}), true);
+        tbf.setPokemon(new Pokemon("Bulbasaur", "", false, Gender.GENDER_MALE, 100, 255,
+            "", "", "", new String[] {null, null, null, null}, new int[] {3,3,3,3},
+            new int[] {31,31,31,31,31,31}, new int[] {0,0,0,0,0,0}), true);
     }
 
     public PokemonSpecies getSpecies(String species) {
@@ -102,12 +151,18 @@ public class TeamBuilder extends javax.swing.JFrame {
         return m_moves;
     }
 
-    private void saveTeam() {
-        JFileChooser choose = new JFileChooser();
-        if (choose.showSaveDialog(this) != JFileChooser.APPROVE_OPTION)
-            return;
+    public void setSpriteShiny(boolean shiny) {
+        String tab = tabForms.getTitleAt(tabForms.getSelectedIndex());
+        String current = ((PokemonSpecies)cmbSpecies.getSelectedItem()).getName();
+        if (!tab.equals(current)) return;
+        ((SpritePanel)panelSprite).setShiny(shiny);
+    }
 
-        String file = choose.getSelectedFile().getPath();
+    private void saveTeam() {
+        FileDialog choose = new FileDialog(this, "Save Team", FileDialog.SAVE);
+        choose.setVisible(true);
+        String file = choose.getDirectory() + choose.getFile();
+        if (file == null) return;
 
         int dot = file.lastIndexOf('.');
         int slash = file.lastIndexOf(File.separatorChar);
@@ -137,6 +192,17 @@ public class TeamBuilder extends javax.swing.JFrame {
 
     }
 
+    private void setSpecies(String name) {
+        PokemonSpecies species = null;
+        for (PokemonSpecies s : m_species) {
+            if (s.getName().equals(name)) {
+                species = s;
+                break;
+            }
+        }
+        cmbSpecies.setSelectedItem(species);
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -147,6 +213,12 @@ public class TeamBuilder extends javax.swing.JFrame {
     private void initComponents() {
 
         tabForms = new javax.swing.JTabbedPane();
+        cmbSpecies = new javax.swing.JComboBox();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        treeBox = new javax.swing.JTree();
+        btnLoadFromBox = new javax.swing.JButton();
+        btnSaveToBox = new javax.swing.JButton();
+        panelSprite = new SpritePanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         menuNew = new javax.swing.JMenuItem();
@@ -157,6 +229,8 @@ public class TeamBuilder extends javax.swing.JFrame {
         menuChangeSize = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JSeparator();
         menuExport = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
+        mnuHappiness = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         menuRandomise = new javax.swing.JMenuItem();
         menuBox = new javax.swing.JMenuItem();
@@ -170,6 +244,47 @@ public class TeamBuilder extends javax.swing.JFrame {
                 formWindowClosing(evt);
             }
         });
+
+        tabForms.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                tabFormsStateChanged(evt);
+            }
+        });
+
+        cmbSpecies.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbSpeciesItemStateChanged(evt);
+            }
+        });
+
+        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
+        treeBox.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
+        treeBox.setRootVisible(false);
+        jScrollPane1.setViewportView(treeBox);
+
+        btnLoadFromBox.setText("Load >>");
+        btnLoadFromBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoadFromBoxActionPerformed(evt);
+            }
+        });
+
+        btnSaveToBox.setText("Save <<");
+
+        panelSprite.setBackground(new java.awt.Color(255, 255, 255));
+        panelSprite.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
+        panelSprite.setMaximumSize(new java.awt.Dimension(80, 80));
+
+        org.jdesktop.layout.GroupLayout panelSpriteLayout = new org.jdesktop.layout.GroupLayout(panelSprite);
+        panelSprite.setLayout(panelSpriteLayout);
+        panelSpriteLayout.setHorizontalGroup(
+            panelSpriteLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 117, Short.MAX_VALUE)
+        );
+        panelSpriteLayout.setVerticalGroup(
+            panelSpriteLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 81, Short.MAX_VALUE)
+        );
 
         jMenu1.setText("File");
 
@@ -218,6 +333,18 @@ public class TeamBuilder extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
+        jMenu3.setText("Edit");
+
+        mnuHappiness.setText("Set Happiness");
+        mnuHappiness.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuHappinessActionPerformed(evt);
+            }
+        });
+        jMenu3.add(mnuHappiness);
+
+        jMenuBar1.add(jMenu3);
+
         jMenu2.setText("Tools");
 
         menuRandomise.setText("Move to Front");
@@ -238,15 +365,38 @@ public class TeamBuilder extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(tabForms, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createSequentialGroup()
+                        .add(14, 14, 14)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, btnLoadFromBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 121, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 121, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, btnSaveToBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 121, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(panelSprite, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                    .add(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(cmbSpecies, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 129, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(tabForms, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(tabForms, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(tabForms, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 363, Short.MAX_VALUE)
+                    .add(layout.createSequentialGroup()
+                        .add(cmbSpecies, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(panelSprite, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 163, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(btnLoadFromBox)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(btnSaveToBox)
+                        .add(0, 2, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -258,11 +408,10 @@ public class TeamBuilder extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosing
 
     private void menuLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLoadActionPerformed
-        JFileChooser choose = new JFileChooser();
-        if (choose.showOpenDialog(this) != JFileChooser.APPROVE_OPTION)
-            return;
-
-        String file = choose.getSelectedFile().getPath();
+        FileDialog choose = new FileDialog(this, "Load Team", FileDialog.LOAD);
+        choose.setVisible(true);
+        String file = choose.getDirectory() + choose.getFile();
+        if (file == null) return;
  
         TeamFileParser tfp = new TeamFileParser();
         Pokemon[] team = tfp.parseTeam(file);
@@ -271,10 +420,11 @@ public class TeamBuilder extends javax.swing.JFrame {
         }
         m_forms = new ArrayList<TeamBuilderForm>();
         for (int i = 0; i < team.length; i++) {
-            m_forms.add(new TeamBuilderForm(this, getSpeciesList(), i));
+            m_forms.add(new TeamBuilderForm(this, i));
             tabForms.add("", m_forms.get(i));
             m_forms.get(i).setPokemon(team[i], true);
         }
+        setSpecies(team[0].species);
 }//GEN-LAST:event_menuLoadActionPerformed
 
     private void menuSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSaveActionPerformed
@@ -310,6 +460,43 @@ public class TeamBuilder extends javax.swing.JFrame {
         }
 }//GEN-LAST:event_menuChangeSizeActionPerformed
 
+    private void cmbSpeciesItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbSpeciesItemStateChanged
+        if (evt.getStateChange() != ItemEvent.SELECTED) return;
+        PokemonSpecies sp = (PokemonSpecies)cmbSpecies.getSelectedItem();
+        if (sp == null) return;
+        int id = PokemonSpecies.getIdFromName(m_species, sp.getName());
+        ((SpritePanel)panelSprite).setSpecies(id, false);
+    }//GEN-LAST:event_cmbSpeciesItemStateChanged
+
+    private void btnLoadFromBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadFromBoxActionPerformed
+        PokemonSpecies sp = (PokemonSpecies)cmbSpecies.getSelectedItem();
+        ((TeamBuilderForm)tabForms.getSelectedComponent()).setPokemon(new Pokemon(
+                sp.getName(), "", false, Gender.GENDER_MALE, 100, 255, null, null, null,
+                new String[] {null, null, null, null}, new int[] {3,3,3,3},
+                new int[] {31,31,31,31,31,31}, new int[] {0,0,0,0,0,0}), false);
+    }//GEN-LAST:event_btnLoadFromBoxActionPerformed
+
+    private void mnuHappinessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuHappinessActionPerformed
+        int happiness = ((TeamBuilderForm)tabForms.getSelectedComponent()).getHappiness();
+        String resp = JOptionPane.showInputDialog(this, "Enter a new value in [0,255]", happiness);
+        try {
+            happiness = Integer.valueOf(resp);
+            if ((happiness >= 0) && (happiness <= 255)) {
+                ((TeamBuilderForm)tabForms.getSelectedComponent()).setHappiness(happiness);
+            }
+        } catch (NumberFormatException e) {
+            
+        }
+    }//GEN-LAST:event_mnuHappinessActionPerformed
+
+    private void tabFormsStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabFormsStateChanged
+        int idx = tabForms.getSelectedIndex();
+        if (idx < 0) return;
+        String name = tabForms.getTitleAt(idx);
+        if ((name == null) || name.equals("")) return;
+        setSpecies(name);
+    }//GEN-LAST:event_tabFormsStateChanged
+
     /**
     * @param args the command line arguments
     */
@@ -317,6 +504,7 @@ public class TeamBuilder extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
+                    //UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 } catch (Exception e) {
                     
@@ -327,10 +515,15 @@ public class TeamBuilder extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnLoadFromBox;
+    private javax.swing.JButton btnSaveToBox;
+    private javax.swing.JComboBox cmbSpecies;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem6;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JMenuItem menuBox;
@@ -341,7 +534,10 @@ public class TeamBuilder extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuRandomise;
     private javax.swing.JMenuItem menuSave;
     private javax.swing.JMenuItem menuSaveAs;
+    private javax.swing.JMenuItem mnuHappiness;
+    private javax.swing.JPanel panelSprite;
     private javax.swing.JTabbedPane tabForms;
+    private javax.swing.JTree treeBox;
     // End of variables declaration//GEN-END:variables
 
 }
