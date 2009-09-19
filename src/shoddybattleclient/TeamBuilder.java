@@ -113,7 +113,7 @@ public class TeamBuilder extends javax.swing.JFrame {
         for (int i = 0; i < 6; i++) {
             addDefaultForm();
         }
-        setSize(getPreferredSize());
+        //setSize(getPreferredSize());
     }
 
     private void addDefaultForm() {
@@ -377,7 +377,7 @@ public class TeamBuilder extends javax.swing.JFrame {
                         .addContainerGap()
                         .add(cmbSpecies, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 129, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(tabForms, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE)
+                .add(tabForms, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 728, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -385,7 +385,7 @@ public class TeamBuilder extends javax.swing.JFrame {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(tabForms, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 363, Short.MAX_VALUE)
+                    .add(tabForms, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(cmbSpecies, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -396,7 +396,7 @@ public class TeamBuilder extends javax.swing.JFrame {
                         .add(btnLoadFromBox)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(btnSaveToBox)
-                        .add(0, 2, Short.MAX_VALUE)))
+                        .add(0, 45, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 

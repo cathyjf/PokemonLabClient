@@ -75,9 +75,9 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         scrollMoves.setViewportView(tblMoves);
         tblSelected = new JButtonTable();
         tblSelected.setModel(new SelectedMoveModel(this));
-        tblSelected.getColumnModel().getColumn(0).setPreferredWidth(50);
-        tblSelected.getColumnModel().getColumn(1).setPreferredWidth(80);
-        tblSelected.getColumnModel().getColumn(2).setPreferredWidth(160);
+        tblSelected.getColumnModel().getColumn(0).setPreferredWidth(80);
+        tblSelected.getColumnModel().getColumn(1).setPreferredWidth(100);
+        tblSelected.getColumnModel().getColumn(2).setPreferredWidth(170);
         scrollSelected.add(tblSelected);
         scrollSelected.setViewportView(tblSelected);
 
@@ -229,7 +229,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         mtm.selectMoves(p.moves, p.ppUps);
         tblMoves.setModel(mtm);
         //name column should be wider
-        tblMoves.getColumnModel().getColumn(0).setPreferredWidth(45);
+        tblMoves.getColumnModel().getColumn(0).setPreferredWidth(80);
         tblMoves.getColumnModel().getColumn(1).setPreferredWidth(160);
         
         cmbAbility.setModel(new DefaultComboBoxModel(m_species.getAbilities()));
@@ -444,9 +444,9 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
-                        .add(scrollSelected, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 87, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(scrollSelected, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 96, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(scrollMoves, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE))
+                        .add(scrollMoves, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                     .add(layout.createSequentialGroup()
                         .add(panelStats, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 190, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)

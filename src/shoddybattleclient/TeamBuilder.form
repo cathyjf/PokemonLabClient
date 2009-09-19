@@ -150,7 +150,7 @@
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="tabForms" pref="506" max="32767" attributes="0"/>
+              <Component id="tabForms" pref="728" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -160,7 +160,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="tabForms" alignment="0" pref="363" max="32767" attributes="0"/>
+                  <Component id="tabForms" alignment="0" pref="406" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="cmbSpecies" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -171,7 +171,7 @@
                       <Component id="btnLoadFromBox" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Component id="btnSaveToBox" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="2" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="45" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>

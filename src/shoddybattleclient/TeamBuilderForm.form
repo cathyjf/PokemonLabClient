@@ -88,10 +88,10 @@
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="scrollSelected" min="-2" pref="87" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="scrollMoves" pref="202" max="32767" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="1">
+                      <Component id="scrollSelected" min="-2" pref="96" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <Component id="scrollMoves" pref="0" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
                       <Component id="panelStats" min="-2" pref="190" max="-2" attributes="0"/>
