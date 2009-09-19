@@ -260,6 +260,7 @@ public class ServerLink extends Thread {
         stream.writeUTF(pokemon.nickname);
         stream.write(pokemon.shiny ? 1 : 0);
         stream.write(pokemon.gender.getValue());
+        stream.write(pokemon.happiness);
         stream.writeInt(pokemon.level);
         stream.writeUTF((pokemon.item == null) ? "" : pokemon.item);
         stream.writeUTF(pokemon.ability);
