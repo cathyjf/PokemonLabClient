@@ -41,6 +41,9 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeSelectionModel;
 import shoddybattleclient.shoddybattle.*;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
 import shoddybattleclient.utils.*;
@@ -90,6 +93,17 @@ public class TeamBuilder extends javax.swing.JFrame {
         }
     }
 
+    // a simple tree node that will never be shown as a leaf node
+    private class ParentTreeNode extends DefaultMutableTreeNode {
+        public ParentTreeNode(String s) {
+            super(s);
+        }
+        @Override
+        public boolean isLeaf() {
+            return false;
+        }
+    }
+
     private List<TeamBuilderForm> m_forms = new ArrayList<TeamBuilderForm>();
     private ArrayList<PokemonSpecies> m_species;
     private ArrayList<PokemonMove> m_moves;
@@ -113,7 +127,14 @@ public class TeamBuilder extends javax.swing.JFrame {
         for (int i = 0; i < 6; i++) {
             addDefaultForm();
         }
-        //setSize(getPreferredSize());
+        //setup boxes
+        ParentTreeNode root = new ParentTreeNode("root");
+        ParentTreeNode teams = new ParentTreeNode("Teams");
+        root.add(teams);
+        ParentTreeNode boxes = new ParentTreeNode("Boxes");
+        root.add(boxes);
+        treeBox.setModel(new DefaultTreeModel(root));
+        treeBox.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     }
 
     private void addDefaultForm() {
@@ -385,7 +406,7 @@ public class TeamBuilder extends javax.swing.JFrame {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(tabForms, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)
+                    .add(tabForms, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 389, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(cmbSpecies, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -396,7 +417,7 @@ public class TeamBuilder extends javax.swing.JFrame {
                         .add(btnLoadFromBox)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(btnSaveToBox)
-                        .add(0, 45, Short.MAX_VALUE)))
+                        .add(0, 28, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 

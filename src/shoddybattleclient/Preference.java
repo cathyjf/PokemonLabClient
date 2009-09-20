@@ -49,6 +49,7 @@ public class Preference {
     private static final String LOG_DIRECTORY = "logDirectory";
     private static final String AUTOSAVE_CHAT_LOGS = "autosaveChatLogs";
     private static final String BATTLE_LOGS = "battleLogs";
+    private static final String TEAM_DIR = "teamDir";
 
     public static void setStorageLocation(String loc) {
         m_prefs.put(STORAGE_LOCATION, loc);
@@ -228,5 +229,12 @@ public class Preference {
     }
     public static void setBattleLogOption(int opt) {
         m_prefs.putInt(BATTLE_LOGS, opt);
+    }
+    public static void setTeamDirectory(File dir) {
+        m_prefs.put(TEAM_DIR, dir.toString());
+    }
+    public static File getTeamDirectory() {
+        return new File(m_prefs.get(TEAM_DIR,
+                new JFileChooser().getCurrentDirectory().toString()));
     }
 }

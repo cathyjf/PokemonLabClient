@@ -254,8 +254,8 @@ public class WelcomeWindow extends javax.swing.JFrame {
     public static void main(String args[]) {
 
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            //UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             System.setProperty("apple.laf.useScreenMenuBar", "true");
         } catch (Exception e) {
             
@@ -268,7 +268,7 @@ public class WelcomeWindow extends javax.swing.JFrame {
             FirstLaunch.initialiseLocalStorage();
         }
 
-        System.setErr(new PrintStream(new OutputStream() {
+        /*System.setErr(new PrintStream(new OutputStream() {
             ErrorBox m_box = new ErrorBox();
             @Override
             public void write(final int b) throws IOException {
@@ -278,7 +278,7 @@ public class WelcomeWindow extends javax.swing.JFrame {
                     }
                 });
             }
-        }));
+        }));*/
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
