@@ -23,6 +23,7 @@
 
 package shoddybattleclient.shoddybattle;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 /**
@@ -30,7 +31,7 @@ import java.util.Iterator;
  *
  * @author Catherine
  */
-public class PokemonNature {
+public class PokemonNature implements Comparable {
         
     private static final ArrayList<PokemonNature> m_natures = new ArrayList<PokemonNature>();
     private int m_nature;
@@ -165,5 +166,30 @@ public class PokemonNature {
     public int getHarms() {
         return m_harms;
     }
-    
+
+    public static PokemonNature[] getNatures() {
+        ArrayList<PokemonNature> clone = (ArrayList<PokemonNature>) m_natures.clone();
+        //Collections.sort(clone);
+        return clone.toArray(new PokemonNature[m_natures.size()]);
+    }
+
+    public int compareTo(Object o) {
+        return toString().compareTo(o.toString());
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder b = new StringBuilder(m_name);
+        b.append("\t(");
+        if (m_benefits < 0) {
+            b.append("Neutral)");
+        } else {
+            b.append("+");
+            b.append(Pokemon.getStatName(m_benefits));
+            b.append(",-");
+            b.append(Pokemon.getStatName(m_harms));
+            b.append(")");
+        }
+        return b.toString();
+    }    
 }

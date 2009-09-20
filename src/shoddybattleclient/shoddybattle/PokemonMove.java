@@ -57,7 +57,27 @@ public class PokemonMove {
         return -1;
     }
 
-    public PokemonMove() {
+    public static int calculateHiddenPowerPower(int[] ivs) {
+        int pow = 0;
+        for (int i = 0; i < Pokemon.STAT_COUNT; i++) {
+            int r = ivs[i] % 4;
+            if ((r == 2) || (r == 3)) {
+                pow += 1 << i;
+            }
+        }
+        return pow * 40 / 63 + 30;
+    }
 
+    public static String getHiddenPowerType(int[] ivs) {
+        int idx = 0;
+        for (int i = 0; i < Pokemon.STAT_COUNT; i++) {
+            if ((ivs[i] % 2) != 0) {
+                idx += 1 << i;
+            }
+        }
+        idx = idx * 15 / 63;
+        return new String[] {"Fighting", "Flying", "Poison", "Ground", "Rock",
+            "Bug", "Ghost", "Steel", "Fire", "Water", "Grass", "Electric", "Psychic",
+            "Ice", "Dragon", "Dark"}[idx];
     }
 }

@@ -425,6 +425,7 @@ public class TeamBuilder extends javax.swing.JFrame {
             m_forms.get(i).setPokemon(team[i], true);
         }
         setSpecies(team[0].species);
+        setSpriteShiny(team[0].shiny);
 }//GEN-LAST:event_menuLoadActionPerformed
 
     private void menuSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSaveActionPerformed

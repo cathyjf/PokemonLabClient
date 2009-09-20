@@ -30,6 +30,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -66,6 +68,27 @@ public class TeamBuilderForm extends javax.swing.JPanel {
     private JButtonTable tblMoves;
     private JTable tblSelected;
 
+    private static final Map<String, int[]> m_hiddenPowers = new HashMap<String, int[]>();
+    
+    static {
+        m_hiddenPowers.put("Dark", new int[] { 31, 31, 31, 31, 31, 31 });
+        m_hiddenPowers.put("Fire", new int[] { 31, 30, 31, 30, 30, 31 });
+        m_hiddenPowers.put("Water", new int[] { 31, 31, 31, 30, 30, 31 });
+        m_hiddenPowers.put("Grass", new int[] { 31, 30, 31, 31, 30, 31 });
+        m_hiddenPowers.put("Electric", new int[] { 31, 31, 31, 31, 30, 31 });
+        m_hiddenPowers.put("Ice", new int[] { 31, 30, 30, 31, 31, 31 });
+        m_hiddenPowers.put("Fighting", new int[] { 31, 31, 30, 30, 30, 30 });
+        m_hiddenPowers.put("Poison", new int[] { 31, 31, 30, 31, 30, 30 });
+        m_hiddenPowers.put("Ground", new int[] { 31, 31, 31, 31, 30, 30 });
+        m_hiddenPowers.put("Flying", new int[] { 31, 31, 31, 30, 30, 30 });
+        m_hiddenPowers.put("Psychic", new int[] { 31, 30, 31, 30, 31, 31 });
+        m_hiddenPowers.put("Bug", new int[] { 31, 31, 31, 30, 31, 30 });
+        m_hiddenPowers.put("Rock", new int[] { 31, 31, 30, 30, 31, 30 });
+        m_hiddenPowers.put("Ghost", new int[] { 31, 31, 30, 31, 31, 30 });
+        m_hiddenPowers.put("Dragon", new int[] { 31, 30, 31, 31, 31, 31 });
+        m_hiddenPowers.put("Steel", new int[] { 31, 31, 31, 31, 31, 30 });
+    }
+
     /** Creates new form TeamBuilderForm */
     public TeamBuilderForm(TeamBuilder parent, int idx) {
         initComponents();
@@ -84,9 +107,11 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         m_parent = parent;
         m_idx = idx;
 
-        cmbNature.setModel(new DefaultComboBoxModel(PokemonNature.getNatureNames()));
+        cmbNature.setModel(new DefaultComboBoxModel(PokemonNature.getNatures()));
 
         setupStats();
+
+        cmbNatureItemStateChanged(null);
     }
 
     private void setupStats() {
@@ -104,7 +129,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         totalHeader.setFont(f);
         JLabel ivHeader = new JLabel("IVs");
         ivHeader.setFont(f);
-        m_evHeader = new JLabel("000");
+        m_evHeader = new JLabel("EVs");
         m_evHeader.setFont(f);
         panelStats.add(stat); panelStats.add(totalHeader); panelStats.add(baseHeader);
         panelStats.add(ivHeader); panelStats.add(m_evHeader);
@@ -142,7 +167,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
 
         for (int i = 0; i < m_evs.length; i++) {
             final int index = i;
-            KeyListener kl = new KeyListener() {
+            KeyListener evListener = new KeyListener() {
                 private boolean m_increasing = false;
                 private JTextField m_caller = null;
                 private Timer m_timer = new Timer(100, new ActionListener() {
@@ -174,8 +199,16 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                     updateStat(index);
                 }
             };
-            m_ivs[i].addKeyListener(kl);
-            m_evs[i].addKeyListener(kl);
+            KeyListener ivListener = new KeyListener() {
+                public void keyTyped(KeyEvent e) { }
+                public void keyPressed(KeyEvent e) { }
+                public void keyReleased(KeyEvent e) {
+                    updateStat(index);
+                    updateHiddenPower();
+                }
+            };
+            m_ivs[i].addKeyListener(ivListener);
+            m_evs[i].addKeyListener(evListener);
         }
     }
 
@@ -223,7 +256,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
             m_bases[i].setText(String.valueOf(m_species.getBase(i)));
             m_totals[i].setText(String.valueOf(calculateStat(i)));
         }
-
+        ((SelectedMoveModel)tblSelected.getModel()).clear();
         MoveTableModel mtm = new MoveTableModel(m_parent.getMoveList(), 
                 m_species.getMoves(), this);
         mtm.selectMoves(p.moves, p.ppUps);
@@ -238,8 +271,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
     }
 
     public int calculateStat(int i)  {
-        PokemonNature n =
-                PokemonNature.getNature((String)cmbNature.getSelectedItem());
+        PokemonNature n = (PokemonNature)cmbNature.getSelectedItem();
         return Pokemon.calculateStat(m_pokemon, i, m_species, n);
     }
 
@@ -248,18 +280,28 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         if ((idx < 0) || (idx > m_totals.length)) return;
         try {
             m_pokemon.ivs[idx] = Integer.parseInt(m_ivs[idx].getText());
-            m_pokemon.evs[idx] = Integer.parseInt(m_evs[idx].getText());
-            m_totals[idx].setText(String.valueOf(calculateStat(idx)));
-            int total = 0;
-            for (int i = 0; i < m_evs.length; i++) {
-                total += Integer.parseInt(m_evs[i].getText());
-            }
-            Color c = (total > 510) ? Color.RED : Color.BLACK;
-            m_evHeader.setText(String.valueOf(total));
-            m_evHeader.setForeground(c);
         } catch (NumberFormatException e) {
-
+            m_pokemon.ivs[idx] = 0;
         }
+        try {
+            m_pokemon.evs[idx] = Integer.parseInt(m_evs[idx].getText());
+        } catch (NumberFormatException e) {
+            m_pokemon.evs[idx] = 0;
+        }
+        m_totals[idx].setText(String.valueOf(calculateStat(idx)));
+        int total = 0;
+        for (int i = 0; i < m_evs.length; i++) {
+            total += m_pokemon.evs[i];
+        }
+        Color c = (total > 510) ? Color.RED : Color.BLACK;
+        m_evHeader.setText(String.valueOf(total));
+        m_evHeader.setForeground(c);
+    }
+
+    private void updateHiddenPower() {
+        txtHiddenPower.setText(String.valueOf(
+                PokemonMove.calculateHiddenPowerPower(m_pokemon.ivs)));
+        cmbHiddenPower.setSelectedItem(PokemonMove.getHiddenPowerType(m_pokemon.ivs));
     }
 
     public Pokemon getPokemon() {
@@ -271,7 +313,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         }
         m_pokemon.shiny = chkShiny.isSelected();
         m_pokemon.gender = (Gender)cmbGender.getSelectedItem();
-        m_pokemon.nature = (String)cmbNature.getSelectedItem();
+        m_pokemon.nature = ((PokemonNature)cmbNature.getSelectedItem()).getName();
         m_pokemon.item = (String)cmbItem.getSelectedItem();
         m_pokemon.ability = (String)cmbAbility.getSelectedItem();
         SelectedMoveModel m = (SelectedMoveModel)tblSelected.getModel();
@@ -295,6 +337,13 @@ public class TeamBuilderForm extends javax.swing.JPanel {
             success = ((MoveTableModel)tblMoves.getModel()).addMove(row);
         } else {
             success = ((SelectedMoveModel)tblSelected.getModel()).addMove(row);
+            if (success) {
+                //Set the happiness to the max value if return or frustration is picked
+                //todo: translation?
+                String move = row.getMove();
+                if (move.equalsIgnoreCase("Return")) m_pokemon.happiness = 255;
+                else if (move.equalsIgnoreCase("Frustration")) m_pokemon.happiness = 0;
+            }
         }
         return success;
     }
@@ -362,7 +411,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         jLabel27.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         jLabel27.setText("Ability:");
 
-        cmbNature.setFont(new java.awt.Font("Lucida Grande", 0, 11));
+        cmbNature.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
         cmbNature.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Jolly", "Hasty" }));
         cmbNature.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -380,8 +429,14 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         txtHiddenPower.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         txtHiddenPower.setText("70");
 
-        cmbHiddenPower.setFont(new java.awt.Font("Lucida Grande", 0, 11));
-        cmbHiddenPower.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Dark" }));
+        cmbHiddenPower.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+        cmbHiddenPower.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Bug", "Dark", "Dragon", "Electric", "Fighting", "Fire", "Flying", "Ghost", "Grass", "Ground", "Ice", "Poison", "Psychic", "Rock", "Steel", "Water" }));
+        cmbHiddenPower.setSelectedIndex(1);
+        cmbHiddenPower.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbHiddenPowerItemStateChanged(evt);
+            }
+        });
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -467,15 +522,34 @@ public class TeamBuilderForm extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cmbNatureItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbNatureItemStateChanged
-        if (!(evt.getStateChange() == ItemEvent.SELECTED)) return;
+        if ((evt != null) && (evt.getStateChange() != ItemEvent.SELECTED)) return;
+        PokemonNature n = (PokemonNature)cmbNature.getSelectedItem();
         for (int i = 0; i < m_totals.length; i++) {
             updateStat(i);
+            if (i == n.getBenefits()) {
+                m_totals[i].setForeground(new Color(0, 150, 0));
+            } else if (i == n.getHarms()) {
+                m_totals[i].setForeground(new Color(180, 0, 0));
+            } else {
+                m_totals[i].setForeground(Color.BLACK);
+            }
         }
     }//GEN-LAST:event_cmbNatureItemStateChanged
 
     private void chkShinyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkShinyActionPerformed
         m_parent.setSpriteShiny(chkShiny.isSelected());
     }//GEN-LAST:event_chkShinyActionPerformed
+
+    private void cmbHiddenPowerItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbHiddenPowerItemStateChanged
+        if (evt.getStateChange() != ItemEvent.SELECTED) return;
+        String type = (String)cmbHiddenPower.getSelectedItem();
+        int[] ivs = m_hiddenPowers.get(type);
+        for (int i = 0; i < m_ivs.length; i++) {
+            m_ivs[i].setText(String.valueOf(ivs[i]));
+            updateStat(i);
+        }
+        updateHiddenPower();
+    }//GEN-LAST:event_cmbHiddenPowerItemStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -88,6 +88,10 @@ public class MoveTableModel extends AbstractTableModel implements SortableTableM
         public void addMouseListener(MouseListener m) {
             m_button.addMouseListener(m);
         }
+
+        public String getMove() {
+            return m_move;
+        }
     }
 
     public static class SelectedMoveModel extends MoveTableModel {
@@ -165,6 +169,11 @@ public class MoveTableModel extends AbstractTableModel implements SortableTableM
                 super.sort(1, reverse);
             }
             super.sort(col - 1, reverse);
+        }
+
+        public void clear() {
+            m_row.clear();
+            fireTableDataChanged();
         }
     }
     
