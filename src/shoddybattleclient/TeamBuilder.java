@@ -30,6 +30,7 @@ import java.awt.MediaTracker;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
@@ -41,8 +42,10 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeWillExpandListener;
+import javax.swing.tree.ExpandVetoException;
+import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import shoddybattleclient.shoddybattle.*;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
@@ -93,17 +96,6 @@ public class TeamBuilder extends javax.swing.JFrame {
         }
     }
 
-    // a simple tree node that will never be shown as a leaf node
-    private class ParentTreeNode extends DefaultMutableTreeNode {
-        public ParentTreeNode(String s) {
-            super(s);
-        }
-        @Override
-        public boolean isLeaf() {
-            return false;
-        }
-    }
-
     private List<TeamBuilderForm> m_forms = new ArrayList<TeamBuilderForm>();
     private ArrayList<PokemonSpecies> m_species;
     private ArrayList<PokemonMove> m_moves;
@@ -114,8 +106,10 @@ public class TeamBuilder extends javax.swing.JFrame {
         long t1 = System.currentTimeMillis();
         MoveListParser mlp = new MoveListParser();
         m_moves = mlp.parseDocument(TeamBuilder.class.getResource("resources/moves.xml").toString());
+        mlp = null;
         SpeciesListParser parser = new SpeciesListParser();
         m_species = parser.parseDocument(TeamBuilder.class.getResource("resources/species.xml").toString());
+        parser = null;
         Collections.sort(m_species, new Comparator<PokemonSpecies>() {
             public int compare(PokemonSpecies arg0, PokemonSpecies arg1) {
                 return arg0.getName().compareToIgnoreCase(arg1.getName());
@@ -127,14 +121,20 @@ public class TeamBuilder extends javax.swing.JFrame {
         for (int i = 0; i < 6; i++) {
             addDefaultForm();
         }
-        //setup boxes
-        ParentTreeNode root = new ParentTreeNode("root");
-        ParentTreeNode teams = new ParentTreeNode("Teams");
-        root.add(teams);
-        ParentTreeNode boxes = new ParentTreeNode("Boxes");
-        root.add(boxes);
-        treeBox.setModel(new DefaultTreeModel(root));
+        treeBox.setModel(new BoxTreeModel());
         treeBox.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+        treeBox.addTreeWillExpandListener(new TreeWillExpandListener() {
+            public void treeWillExpand(TreeExpansionEvent e) throws ExpandVetoException {
+                TreePath path = e.getPath();
+                String root = (String)path.getPathComponent(1);
+                if (BoxTreeModel.isTeamRoot(root)) {
+                    loadPokemonFromTeams();
+                } else if (BoxTreeModel.isBoxRoot(root)) {
+                    loadPokemonFromBoxes();
+                }
+            }
+            public void treeWillCollapse(TreeExpansionEvent e) throws ExpandVetoException { }
+        });
     }
 
     private void addDefaultForm() {
@@ -222,6 +222,33 @@ public class TeamBuilder extends javax.swing.JFrame {
             }
         }
         cmbSpecies.setSelectedItem(species);
+    }
+
+    //updates the Tree by looking through our teams for any of the same pokemon
+    private void loadPokemonFromTeams() {
+        String species = ((PokemonSpecies)cmbSpecies.getSelectedItem()).getName();
+        File dir = Preference.getTeamDirectory();
+        FilenameFilter filter = new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".sbt");
+            }
+        };
+        File[] teams = dir.listFiles(filter);
+        TeamFileParser parser = new TeamFileParser();
+        for (int i = 0; i < teams.length; i++) {
+            Pokemon[] team = parser.parseTeam(teams[i].toString());
+            if (team == null) continue;
+            for (Pokemon p : team) {
+                if (p.species.equalsIgnoreCase(species)) {
+                    ((BoxTreeModel)treeBox.getModel()).addTeamPokemon(p);
+                }
+            }
+        }
+    }
+
+    //updates the Tree by looking through the boxes for matching pokemon
+    private void loadPokemonFromBoxes() {
+        String species = ((PokemonSpecies)cmbSpecies.getSelectedItem()).getName();
     }
 
     /** This method is called from within the constructor to
@@ -488,14 +515,21 @@ public class TeamBuilder extends javax.swing.JFrame {
         if (sp == null) return;
         int id = PokemonSpecies.getIdFromName(m_species, sp.getName());
         ((SpritePanel)panelSprite).setSpecies(id, false);
+        treeBox.setModel(new BoxTreeModel());
+        treeBox.setSelectionRow(0);
     }//GEN-LAST:event_cmbSpeciesItemStateChanged
 
     private void btnLoadFromBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadFromBoxActionPerformed
-        PokemonSpecies sp = (PokemonSpecies)cmbSpecies.getSelectedItem();
-        ((TeamBuilderForm)tabForms.getSelectedComponent()).setPokemon(new Pokemon(
+        Object obj = treeBox.getLastSelectedPathComponent();
+        if (BoxTreeModel.isDefaultNode(obj.toString())) {
+            PokemonSpecies sp = (PokemonSpecies)cmbSpecies.getSelectedItem();
+            ((TeamBuilderForm)tabForms.getSelectedComponent()).setPokemon(new Pokemon(
                 sp.getName(), "", false, Gender.GENDER_MALE, 100, 255, null, null, null,
                 new String[] {null, null, null, null}, new int[] {3,3,3,3},
                 new int[] {31,31,31,31,31,31}, new int[] {0,0,0,0,0,0}), false);
+        } else if (obj instanceof Pokemon) {
+            m_forms.get(tabForms.getSelectedIndex()).setPokemon((Pokemon)obj, true);
+        }
     }//GEN-LAST:event_btnLoadFromBoxActionPerformed
 
     private void mnuHappinessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuHappinessActionPerformed

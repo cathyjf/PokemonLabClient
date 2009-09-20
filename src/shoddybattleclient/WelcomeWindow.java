@@ -254,8 +254,8 @@ public class WelcomeWindow extends javax.swing.JFrame {
     public static void main(String args[]) {
 
         try {
-            //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            //UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             System.setProperty("apple.laf.useScreenMenuBar", "true");
         } catch (Exception e) {
             

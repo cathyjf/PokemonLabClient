@@ -75,6 +75,7 @@ public class TeamFileParser extends DefaultHandler {
     private int moveIndex;
 
     public Pokemon[] parseTeam(String file) {
+        m_pokemon = new ArrayList<Pokemon>();
         DataInputStream is = null;
         try {
             try {
@@ -124,15 +125,14 @@ public class TeamFileParser extends DefaultHandler {
 
     private Pokemon[] parseShoddyBattle2Team(String file) {
         SAXParserFactory spf = SAXParserFactory.newInstance();
+        Pokemon[] ret;
         try {
             SAXParser sp = spf.newSAXParser();
             sp.parse(file, this);
-        } catch (IOException e) {
-            System.out.println("Failed to open team file");
         } catch (Exception e) {
-            e.printStackTrace();
+            ret = null;
         }
-        Pokemon[] ret = new Pokemon[m_pokemon.size()];
+        ret = new Pokemon[m_pokemon.size()];
         m_pokemon.toArray(ret);
         return ret;
     }
