@@ -25,6 +25,7 @@ public class JButtonTable extends SortableJTable {
      * Set up this table so that it can be used to render JButtons in cells.
      */
     public JButtonTable() {
+        setDefaultRenderer(String.class, new RightAlignRenderer());
         setDefaultRenderer(JButton.class,
                             new JTableButtonRenderer(
                                 getDefaultRenderer(JButton.class)));
@@ -32,6 +33,24 @@ public class JButtonTable extends SortableJTable {
     }
 }
 
+
+/**
+ * Renders components that are numerical or --- to be right aligned
+ * @author Benjamin Gwin
+ */
+class RightAlignRenderer implements TableCellRenderer {
+
+    public Component getTableCellRendererComponent(JTable table, Object val,
+            boolean isSelected, boolean hasFocus, int row, int column) {
+        JLabel label = new JLabel(val.toString());
+        label.setFont(label.getFont().deriveFont(12.0f));
+        if ((val instanceof Integer) || "---".equals(val)) {
+            label.setHorizontalAlignment(JLabel.RIGHT);
+        }
+        return label;
+    }
+
+}
 /**
  *
  * @author Daniel F. Savarese
@@ -49,7 +68,7 @@ class JTableButtonRenderer implements TableCellRenderer {
 						 int row, int column)
   {
     if(value instanceof Component)
-      return (Component)value;
+        return (Component)value;
     return __defaultRenderer.getTableCellRendererComponent(
 	   table, value, isSelected, hasFocus, row, column);
   }

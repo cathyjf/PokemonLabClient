@@ -28,6 +28,8 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.event.ItemEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
@@ -59,6 +61,8 @@ public class TeamBuilder extends javax.swing.JFrame {
 
     private class SpritePanel extends JPanel {
         private int m_species = 0;
+        private boolean m_shiny = false;
+        private boolean m_front = true;
         private Image m_img = null;
         private Image m_background =
                 GameVisualisation.getImageFromResource("backgrounds/background2.png");
@@ -70,11 +74,19 @@ public class TeamBuilder extends javax.swing.JFrame {
             } catch (Exception e) {
                 
             }
+            addMouseListener(new MouseAdapter() {
+                public void mouseClicked(MouseEvent e) {
+                    m_front = !m_front;
+                    setSpecies(m_species, m_shiny, m_front);
+                }
+            });
         }
-        public void setSpecies(int species, boolean shiny) {
+        public void setSpecies(int species, boolean shiny, boolean front) {
             m_species = species;
+            m_shiny = shiny;
+            m_front = front;
             MediaTracker tracker = new MediaTracker(this);
-            m_img = GameVisualisation.getSprite(species, true, true, shiny);
+            m_img = GameVisualisation.getSprite(species, m_front, true, m_shiny);
             tracker.addImage(m_img, WIDTH);
             try {
                 tracker.waitForAll();
@@ -84,15 +96,22 @@ public class TeamBuilder extends javax.swing.JFrame {
             repaint();
         }
         public void setShiny(boolean shiny) {
-            setSpecies(m_species, shiny);
+            m_shiny = !m_shiny;
+            setSpecies(m_species, m_shiny, m_front);
         }
         @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
-            g.drawImage(m_background, -130, -17, this);
-            if (m_img == null) return;
-            g.drawImage(m_img, panelSprite.getWidth() / 2 - m_img.getWidth(this) / 2,
-                    panelSprite.getHeight() - 10 - m_img.getHeight(this), this);
+            if (m_front) {
+                g.drawImage(m_background, -130, -17, this);
+                if (m_img == null) return;
+                g.drawImage(m_img, panelSprite.getWidth() / 2 - m_img.getWidth(this) / 2,
+                        panelSprite.getHeight() - 10 - m_img.getHeight(this), this);
+            } else {
+                g.drawImage(m_background, 0, getHeight() - m_background.getHeight(this), this);
+                if (m_img == null) return;
+                g.drawImage(m_img, 30, getHeight() - m_img.getHeight(this), this);
+            }
         }
     }
 
@@ -514,7 +533,7 @@ public class TeamBuilder extends javax.swing.JFrame {
         PokemonSpecies sp = (PokemonSpecies)cmbSpecies.getSelectedItem();
         if (sp == null) return;
         int id = PokemonSpecies.getIdFromName(m_species, sp.getName());
-        ((SpritePanel)panelSprite).setSpecies(id, false);
+        ((SpritePanel)panelSprite).setSpecies(id, false, true);
         treeBox.setModel(new BoxTreeModel());
         treeBox.setSelectionRow(0);
     }//GEN-LAST:event_cmbSpeciesItemStateChanged

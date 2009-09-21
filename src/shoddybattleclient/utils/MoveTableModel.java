@@ -188,7 +188,7 @@ public class MoveTableModel extends AbstractTableModel implements SortableTableM
             case 2: return row.m_category;
             case 3: return row.m_type;
             case 4: return row.m_pp;
-            case 5: return row.m_power;
+            case 5: return (row.m_power <= 1) ? "---" : row.m_power;
             case 6: return (row.m_accuracy == 0) ? "---" : row.m_accuracy;
         }
         assert false;

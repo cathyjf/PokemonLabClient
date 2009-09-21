@@ -240,7 +240,10 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         txtNickname.setText(p.nickname);
         if (loading) {
             cmbItem.setSelectedItem(p.item);
-            cmbNature.setSelectedItem(p.nature);
+            cmbNature.setSelectedItem(PokemonNature.getNature(p.nature));
+        }
+        if ("".equals(p.nature)) {
+            cmbNature.setSelectedIndex(0);
         }
         txtLevel.setText(String.valueOf(p.level));
         chkShiny.setSelected(p.shiny);
