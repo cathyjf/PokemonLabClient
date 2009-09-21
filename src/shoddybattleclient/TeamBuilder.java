@@ -96,7 +96,7 @@ public class TeamBuilder extends javax.swing.JFrame {
             repaint();
         }
         public void setShiny(boolean shiny) {
-            m_shiny = !m_shiny;
+            m_shiny = shiny;
             setSpecies(m_species, m_shiny, m_front);
         }
         @Override
@@ -540,6 +540,7 @@ public class TeamBuilder extends javax.swing.JFrame {
 
     private void btnLoadFromBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadFromBoxActionPerformed
         Object obj = treeBox.getLastSelectedPathComponent();
+        if (obj == null) return;
         if (BoxTreeModel.isDefaultNode(obj.toString())) {
             PokemonSpecies sp = (PokemonSpecies)cmbSpecies.getSelectedItem();
             ((TeamBuilderForm)tabForms.getSelectedComponent()).setPokemon(new Pokemon(
@@ -579,7 +580,7 @@ public class TeamBuilder extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    //UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+                    UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 } catch (Exception e) {
                     

@@ -103,6 +103,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         tblSelected.getColumnModel().getColumn(2).setPreferredWidth(170);
         scrollSelected.add(tblSelected);
         scrollSelected.setViewportView(tblSelected);
+        splitPane.setDividerLocation((tblSelected.getRowHeight() + tblSelected.getRowMargin()) * 5);
 
         m_parent = parent;
         m_idx = idx;
@@ -371,14 +372,12 @@ public class TeamBuilderForm extends javax.swing.JPanel {
 
         txtNickname = new javax.swing.JTextField();
         jLabel24 = new javax.swing.JLabel();
-        scrollMoves = new javax.swing.JScrollPane();
         txtLevel = new javax.swing.JTextField();
         cmbGender = new javax.swing.JComboBox();
         chkShiny = new javax.swing.JCheckBox();
         panelStats = new javax.swing.JPanel();
         cmbItem = new javax.swing.JComboBox();
         jLabel5 = new javax.swing.JLabel();
-        scrollSelected = new javax.swing.JScrollPane();
         jLabel26 = new javax.swing.JLabel();
         jLabel27 = new javax.swing.JLabel();
         cmbNature = new javax.swing.JComboBox();
@@ -386,6 +385,9 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         jLabel25 = new javax.swing.JLabel();
         txtHiddenPower = new javax.swing.JTextField();
         cmbHiddenPower = new javax.swing.JComboBox();
+        splitPane = new javax.swing.JSplitPane();
+        scrollSelected = new javax.swing.JScrollPane();
+        scrollMoves = new javax.swing.JScrollPane();
 
         setOpaque(false);
 
@@ -414,7 +416,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         jLabel27.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         jLabel27.setText("Ability:");
 
-        cmbNature.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+        cmbNature.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         cmbNature.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Jolly", "Hasty" }));
         cmbNature.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -432,7 +434,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         txtHiddenPower.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         txtHiddenPower.setText("70");
 
-        cmbHiddenPower.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+        cmbHiddenPower.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         cmbHiddenPower.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Bug", "Dark", "Dragon", "Electric", "Fighting", "Fire", "Flying", "Ghost", "Grass", "Ground", "Ice", "Poison", "Psychic", "Rock", "Steel", "Water" }));
         cmbHiddenPower.setSelectedIndex(1);
         cmbHiddenPower.addItemListener(new java.awt.event.ItemListener() {
@@ -440,6 +442,13 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                 cmbHiddenPowerItemStateChanged(evt);
             }
         });
+
+        splitPane.setBorder(null);
+        splitPane.setDividerLocation(100);
+        splitPane.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        splitPane.setEnabled(false);
+        splitPane.setLeftComponent(scrollSelected);
+        splitPane.setRightComponent(scrollMoves);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -482,9 +491,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                                         .add(cmbNature, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .add(cmbAbility, 0, 162, Short.MAX_VALUE)))))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(scrollMoves, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE)
-                            .add(scrollSelected, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE))))
+                        .add(splitPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 387, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -502,10 +509,6 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
-                        .add(scrollSelected, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 96, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(scrollMoves, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                    .add(layout.createSequentialGroup()
                         .add(panelStats, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 190, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
@@ -519,7 +522,8 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(cmbAbility, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jLabel27))))
+                            .add(jLabel27)))
+                    .add(splitPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 295, Short.MAX_VALUE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -570,6 +574,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
     private javax.swing.JPanel panelStats;
     private javax.swing.JScrollPane scrollMoves;
     private javax.swing.JScrollPane scrollSelected;
+    private javax.swing.JSplitPane splitPane;
     private javax.swing.JTextField txtHiddenPower;
     private javax.swing.JTextField txtLevel;
     private javax.swing.JTextField txtNickname;
