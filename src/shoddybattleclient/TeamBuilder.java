@@ -140,6 +140,7 @@ public class TeamBuilder extends javax.swing.JFrame {
         for (int i = 0; i < 6; i++) {
             addDefaultForm();
         }
+        setSpecies(tabForms.getTitleAt(0));
         treeBox.setModel(new BoxTreeModel());
         treeBox.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         treeBox.addTreeWillExpandListener(new TreeWillExpandListener() {
@@ -504,7 +505,7 @@ public class TeamBuilder extends javax.swing.JFrame {
     }//GEN-LAST:event_menuSaveAsActionPerformed
 
     private void menuChangeSizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuChangeSizeActionPerformed
-        String str = JOptionPane.showInputDialog(this, "Enter a new size for this team", "6");
+        String str = JOptionPane.showInputDialog(this, "Enter a new size for this team", m_forms.size());
         int size = -1;
         try {
             size = Integer.parseInt(str);
@@ -512,6 +513,12 @@ public class TeamBuilder extends javax.swing.JFrame {
 
         }
         if (size <= 0) {
+            return;
+        }
+        if(size > 12)
+        {
+            JOptionPane.showMessageDialog(null, "Cannot use a size larger than 12 pokemon.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         if (size > m_forms.size()) {
@@ -536,6 +543,12 @@ public class TeamBuilder extends javax.swing.JFrame {
         ((SpritePanel)panelSprite).setSpecies(id, false, true);
         treeBox.setModel(new BoxTreeModel());
         treeBox.setSelectionRow(0);
+
+        //If the species has no gender or is only female, GENDER_MALE is ignored
+        TeamBuilderForm tbf = (TeamBuilderForm)tabForms.getSelectedComponent();
+        tbf.setPokemon(new Pokemon(sp.getName(), "", false, Gender.GENDER_MALE, 100, 255,
+            "", "", "", new String[] {null, null, null, null}, new int[] {3,3,3,3},
+            new int[] {31,31,31,31,31,31}, new int[] {0,0,0,0,0,0}), false);
     }//GEN-LAST:event_cmbSpeciesItemStateChanged
 
     private void btnLoadFromBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadFromBoxActionPerformed

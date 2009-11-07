@@ -179,7 +179,7 @@ public class Preference {
     }
 
     public static String getSpriteLocation() {
-        return getStorageLocation() + "sprites/";
+        return getStorageLocation() + "sprites" + File.separator;
     }
     public static void setSpriteDirectories(String[] dirs) {
         StringBuilder builder = new StringBuilder();
@@ -197,7 +197,7 @@ public class Preference {
 
     public static String getLogDirectory() {
         String file = m_prefs.get(LOG_DIRECTORY, new JFileChooser().getCurrentDirectory().toString());
-        if (!file.endsWith("/")) file += "/";
+        if (!file.endsWith(File.separator)) file += File.separator;
         return file;
     }
     public static void setLogDirectory(String dir) {

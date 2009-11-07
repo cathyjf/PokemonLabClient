@@ -103,7 +103,10 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         tblSelected.getColumnModel().getColumn(2).setPreferredWidth(170);
         scrollSelected.add(tblSelected);
         scrollSelected.setViewportView(tblSelected);
-        splitPane.setDividerLocation((tblSelected.getRowHeight() + tblSelected.getRowMargin()) * 5);
+
+        System.out.println();
+        splitPane.setDividerLocation(tblSelected.getTableHeader().getPreferredSize().height
+                + (tblSelected.getRowHeight() + tblSelected.getRowMargin()) * 4);
 
         m_parent = parent;
         m_idx = idx;
@@ -242,10 +245,12 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         if (loading) {
             cmbItem.setSelectedItem(p.item);
             cmbNature.setSelectedItem(PokemonNature.getNature(p.nature));
+
+            if ("".equals(p.nature)) {
+                cmbNature.setSelectedIndex(0);
+            }
         }
-        if ("".equals(p.nature)) {
-            cmbNature.setSelectedIndex(0);
-        }
+        
         txtLevel.setText(String.valueOf(p.level));
         chkShiny.setSelected(p.shiny);
         cmbAbility.setSelectedItem(p.ability);
@@ -272,6 +277,14 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         cmbAbility.setModel(new DefaultComboBoxModel(m_species.getAbilities()));
         
         m_parent.updateTitle(m_idx, m_species.getName());
+
+        int total = 0;
+        for (int i = 0; i < m_evs.length; i++) {
+            total += m_pokemon.evs[i];
+        }
+        Color c = (total > 510) ? Color.RED : Color.BLACK;
+        m_evHeader.setText(String.valueOf(total));
+        m_evHeader.setForeground(c);
     }
 
     public int calculateStat(int i)  {
