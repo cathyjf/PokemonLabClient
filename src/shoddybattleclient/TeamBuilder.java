@@ -119,6 +119,11 @@ public class TeamBuilder extends javax.swing.JFrame {
     private ArrayList<PokemonSpecies> m_species;
     private ArrayList<PokemonMove> m_moves;
 
+    //A hacky fix similar to TeamBuilderForm's hpProgramSelect
+    //Set to true if we don't want cmbSpeciesItemStateChange from clearning data
+    //on tab switch
+    private boolean speciesProgramSelect = false;
+
     /** Creates new form TeamBuilder */
     public TeamBuilder() {
         initComponents();
@@ -137,10 +142,7 @@ public class TeamBuilder extends javax.swing.JFrame {
         long t2 = System.currentTimeMillis();
         System.out.println("Loaded moves and species info in " + (t2-t1) + " milliseconds");
         cmbSpecies.setModel(new DefaultComboBoxModel(m_species.toArray(new PokemonSpecies[m_species.size()])));
-        for (int i = 0; i < 6; i++) {
-            addDefaultForm();
-        }
-        setSpecies(tabForms.getTitleAt(0));
+        addDefaultTeam();
         treeBox.setModel(new BoxTreeModel());
         treeBox.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         treeBox.addTreeWillExpandListener(new TreeWillExpandListener() {
@@ -157,6 +159,14 @@ public class TeamBuilder extends javax.swing.JFrame {
         });
     }
 
+    private void addDefaultTeam() {
+        m_forms.clear();
+        tabForms.removeAll();
+        for (int i = 0; i < 6; i++) {
+            addDefaultForm();
+        }
+        setSpecies(tabForms.getTitleAt(0));
+    }
     private void addDefaultForm() {
         TeamBuilderForm tbf = new TeamBuilderForm(this, m_forms.size());
         m_forms.add(tbf);
@@ -234,14 +244,23 @@ public class TeamBuilder extends javax.swing.JFrame {
     }
 
     private void setSpecies(String name) {
+        speciesProgramSelect = true;
         PokemonSpecies species = null;
         for (PokemonSpecies s : m_species) {
             if (s.getName().equals(name)) {
                 species = s;
+
+                int id = PokemonSpecies.getIdFromName(m_species, species.getName());
+                ((SpritePanel)panelSprite).setSpecies(id, false, true);
+                treeBox.setModel(new BoxTreeModel());
+                treeBox.setSelectionRow(0);
+
+                cmbSpecies.setSelectedItem(species);
+
                 break;
             }
         }
-        cmbSpecies.setSelectedItem(species);
+        speciesProgramSelect = false;
     }
 
     //updates the Tree by looking through our teams for any of the same pokemon
@@ -358,6 +377,11 @@ public class TeamBuilder extends javax.swing.JFrame {
 
         menuNew.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
         menuNew.setText("New Team");
+        menuNew.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuNewActionPerformed(evt);
+            }
+        });
         jMenu1.add(menuNew);
 
         menuLoad.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
@@ -464,7 +488,7 @@ public class TeamBuilder extends javax.swing.JFrame {
                         .add(btnLoadFromBox)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(btnSaveToBox)
-                        .add(0, 28, Short.MAX_VALUE)))
+                        .add(0, 48, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -479,21 +503,31 @@ public class TeamBuilder extends javax.swing.JFrame {
         FileDialog choose = new FileDialog(this, "Load Team", FileDialog.LOAD);
         choose.setVisible(true);
         String file = choose.getDirectory() + choose.getFile();
-        if (file == null) return;
- 
-        TeamFileParser tfp = new TeamFileParser();
-        Pokemon[] team = tfp.parseTeam(file);
-        for (int i = 0; i < m_forms.size(); i++) {
-            tabForms.removeTabAt(0);
+        if (file == null || !(new File(file).exists())) return;
+
+        try {
+            TeamFileParser tfp = new TeamFileParser();
+            Pokemon[] team = tfp.parseTeam(file);
+
+            m_forms.clear();
+            tabForms.removeAll();
+
+            int nPokemon = Math.min(team.length, 12);
+            for (int i = 0; i < nPokemon; i++) {
+                
+                m_forms.add(new TeamBuilderForm(this, i));
+                tabForms.add("", m_forms.get(i));
+                m_forms.get(i).setPokemon(team[i], true);
+            }
+            setSpecies(team[0].species);
+            setSpriteShiny(team[0].shiny);
         }
-        m_forms = new ArrayList<TeamBuilderForm>();
-        for (int i = 0; i < team.length; i++) {
-            m_forms.add(new TeamBuilderForm(this, i));
-            tabForms.add("", m_forms.get(i));
-            m_forms.get(i).setPokemon(team[i], true);
+        catch (Exception ex) {
+            ex.printStackTrace();
+            addDefaultTeam();
+            JOptionPane.showMessageDialog(null, "Error reading file",
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
-        setSpecies(team[0].species);
-        setSpriteShiny(team[0].shiny);
 }//GEN-LAST:event_menuLoadActionPerformed
 
     private void menuSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSaveActionPerformed
@@ -537,6 +571,7 @@ public class TeamBuilder extends javax.swing.JFrame {
 
     private void cmbSpeciesItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbSpeciesItemStateChanged
         if (evt.getStateChange() != ItemEvent.SELECTED) return;
+        if (speciesProgramSelect) return;
         PokemonSpecies sp = (PokemonSpecies)cmbSpecies.getSelectedItem();
         if (sp == null) return;
         int id = PokemonSpecies.getIdFromName(m_species, sp.getName());
@@ -585,6 +620,14 @@ public class TeamBuilder extends javax.swing.JFrame {
         if ((name == null) || name.equals("")) return;
         setSpecies(name);
     }//GEN-LAST:event_tabFormsStateChanged
+
+    private void menuNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuNewActionPerformed
+        int result = JOptionPane.showOptionDialog(null,
+                 "This team may have unsaved changes, create new anyways?",
+                 "Unsaved Changes", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+        if(result == JOptionPane.OK_OPTION)
+        addDefaultTeam();
+    }//GEN-LAST:event_menuNewActionPerformed
 
     /**
     * @param args the command line arguments

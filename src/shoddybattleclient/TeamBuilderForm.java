@@ -68,6 +68,11 @@ public class TeamBuilderForm extends javax.swing.JPanel {
     private JButtonTable tblMoves;
     private JTable tblSelected;
 
+    //hacky solution to hacky problem
+    //changing the IVs changes the hiddenpower (itemStateChanged) which changes the IVs
+    //use a flag so cmbNatureItemStateChanged knows we don't want it changed
+    private boolean hpProgramSelect = false;
+
     private static final Map<String, int[]> m_hiddenPowers = new HashMap<String, int[]>();
     
     static {
@@ -103,8 +108,8 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         tblSelected.getColumnModel().getColumn(2).setPreferredWidth(170);
         scrollSelected.add(tblSelected);
         scrollSelected.setViewportView(tblSelected);
+        txtNickname.setDocument(new RestrictiveDocument(15, new String[]{">", "<"}));
 
-        System.out.println();
         splitPane.setDividerLocation(tblSelected.getTableHeader().getPreferredSize().height
                 + (tblSelected.getRowHeight() + tblSelected.getRowMargin()) * 4);
 
@@ -242,15 +247,6 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         }
 
         txtNickname.setText(p.nickname);
-        if (loading) {
-            cmbItem.setSelectedItem(p.item);
-            cmbNature.setSelectedItem(PokemonNature.getNature(p.nature));
-
-            if ("".equals(p.nature)) {
-                cmbNature.setSelectedIndex(0);
-            }
-        }
-        
         txtLevel.setText(String.valueOf(p.level));
         chkShiny.setSelected(p.shiny);
         cmbAbility.setSelectedItem(p.ability);
@@ -265,6 +261,16 @@ public class TeamBuilderForm extends javax.swing.JPanel {
             m_bases[i].setText(String.valueOf(m_species.getBase(i)));
             m_totals[i].setText(String.valueOf(calculateStat(i)));
         }
+
+        if (loading) {
+            cmbItem.setSelectedItem(p.item);
+            cmbNature.setSelectedItem(PokemonNature.getNature(p.nature));
+
+            if ("".equals(p.nature)) {
+                cmbNature.setSelectedIndex(0);
+            }
+        }
+        
         ((SelectedMoveModel)tblSelected.getModel()).clear();
         MoveTableModel mtm = new MoveTableModel(m_parent.getMoveList(), 
                 m_species.getMoves(), this);
@@ -316,9 +322,11 @@ public class TeamBuilderForm extends javax.swing.JPanel {
     }
 
     private void updateHiddenPower() {
+        hpProgramSelect = true;
         txtHiddenPower.setText(String.valueOf(
                 PokemonMove.calculateHiddenPowerPower(m_pokemon.ivs)));
         cmbHiddenPower.setSelectedItem(PokemonMove.getHiddenPowerType(m_pokemon.ivs));
+        hpProgramSelect = false;
     }
 
     public Pokemon getPokemon() {
@@ -477,7 +485,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jLabel24)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(txtLevel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(txtLevel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(cmbItem, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -562,6 +570,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
 
     private void cmbHiddenPowerItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbHiddenPowerItemStateChanged
         if (evt.getStateChange() != ItemEvent.SELECTED) return;
+        if (hpProgramSelect) return;
         String type = (String)cmbHiddenPower.getSelectedItem();
         int[] ivs = m_hiddenPowers.get(type);
         for (int i = 0; i < m_ivs.length; i++) {

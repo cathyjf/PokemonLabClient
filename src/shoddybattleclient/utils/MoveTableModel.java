@@ -66,7 +66,7 @@ public class MoveTableModel extends AbstractTableModel implements SortableTableM
             m_accuracy = new Integer(accuracy);
             m_button = new JButton("+");
             m_button.addMouseListener(new MouseAdapter() {
-                public void mouseClicked(MouseEvent e) {
+                public void mousePressed(MouseEvent e) {
                     m_model.selectMove(TableRow.this);
                 }
             });
