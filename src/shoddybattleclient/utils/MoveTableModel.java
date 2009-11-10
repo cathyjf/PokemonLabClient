@@ -296,6 +296,7 @@ public class MoveTableModel extends AbstractTableModel implements SortableTableM
         boolean success = m_parent.moveSelected(row);
         if (success) {
             m_row.remove(row);
+            fireTableDataChanged();
         }
     }
 
