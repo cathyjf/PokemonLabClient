@@ -24,12 +24,14 @@
 package shoddybattleclient;
 
 import java.awt.event.KeyEvent;
+import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
+import shoddybattleclient.LobbyWindow.Channel;
 import shoddybattleclient.network.ServerLink;
 
 /**
@@ -76,6 +78,7 @@ public class ServerConnect extends javax.swing.JFrame {
         link.loadSpecies(
                 ServerConnect.class.getResource(
                 "resources/species.xml").toString());
+        txtLoginPassword.setText("admin");
     }
 
     /** This method is called from within the constructor to
@@ -128,6 +131,7 @@ public class ServerConnect extends javax.swing.JFrame {
 
         jLabel3.setText("Password:");
 
+        txtLoginName.setText("bearzly");
         txtLoginName.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtLoginNameKeyPressed(evt);
@@ -160,8 +164,8 @@ public class ServerConnect extends javax.swing.JFrame {
                             .add(jLabel3))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(txtLoginPassword, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
-                            .add(txtLoginName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)))
+                            .add(txtLoginPassword, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
+                            .add(txtLoginName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)))
                     .add(cmdLogIn))
                 .addContainerGap())
         );
@@ -231,9 +235,9 @@ public class ServerConnect extends javax.swing.JFrame {
                             .add(jLabel1))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, txtRegisterPassword, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, txtRegisterName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
-                            .add(txtRegisterConfirm, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)))
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, txtRegisterPassword, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, txtRegisterName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
+                            .add(txtRegisterConfirm, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)))
                     .add(cmdRegister))
                 .addContainerGap())
         );
@@ -304,11 +308,11 @@ public class ServerConnect extends javax.swing.JFrame {
         m_link.joinChannel("main"); // join #main - the main chat
     }
     
-    public void informUserBanned(String explanation) {
-        // todo: internationalise the top part of this
-        String message = "Login failed for the following reason:\n\n";
-        message += explanation;
-        JOptionPane.showMessageDialog(this, message);
+    public static void informUserBanned(String explanation) {
+        String message = "You have been banned from this channel until ";
+        message += Channel.DATE_FORMATTER.format(
+                new Date(Long.valueOf(explanation) * 1000));
+        JOptionPane.showMessageDialog(null, message);
     }
 
     public void informNameUnavailable() {

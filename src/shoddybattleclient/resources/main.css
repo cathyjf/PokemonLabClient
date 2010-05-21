@@ -65,3 +65,7 @@ body {
 .health-change {
     
 }
+
+.kick, .ban {
+    color: red;
+}

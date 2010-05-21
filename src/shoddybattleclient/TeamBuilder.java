@@ -130,17 +130,21 @@ public class TeamBuilder extends javax.swing.JFrame {
         long t1 = System.currentTimeMillis();
         MoveListParser mlp = new MoveListParser();
         m_moves = mlp.parseDocument(TeamBuilder.class.getResource("resources/moves.xml").toString());
+        long t2 = System.currentTimeMillis();
         mlp = null;
         SpeciesListParser parser = new SpeciesListParser();
         m_species = parser.parseDocument(TeamBuilder.class.getResource("resources/species.xml").toString());
         parser = null;
+        long t3 = System.currentTimeMillis();
         Collections.sort(m_species, new Comparator<PokemonSpecies>() {
             public int compare(PokemonSpecies arg0, PokemonSpecies arg1) {
                 return arg0.getName().compareToIgnoreCase(arg1.getName());
             }
         });
-        long t2 = System.currentTimeMillis();
-        System.out.println("Loaded moves and species info in " + (t2-t1) + " milliseconds");
+        long t4 = System.currentTimeMillis();
+        System.out.println("Loaded moves in " + (t2-t1) + " milliseconds");
+        System.out.println("Loaded species in " + (t3-t2) + " milliseconds");
+        System.out.println("Sorted species in " + (t4-t3) + " milliseconds");
         cmbSpecies.setModel(new DefaultComboBoxModel(m_species.toArray(new PokemonSpecies[m_species.size()])));
         addDefaultTeam();
         treeBox.setModel(new BoxTreeModel());

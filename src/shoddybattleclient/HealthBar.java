@@ -108,13 +108,14 @@ public class HealthBar extends JPanel implements ActionListener {
         double ratio = m_ratio;
         int x = (int)((double)width * ratio);
         g2.drawImage(m_image, 0, 0, x, height, this);
+        g2.setColor(Color.DARK_GRAY);
+        g2.drawRect(0, 0, width, height);
         g2.setColor(Color.BLACK);
-        g2.drawRect(0, 0, x - 1, height - 1);
-        g2.drawRect(0, 0, width - 1, height - 1);
-        g2.setFont(new Font(null, Font.BOLD, 20));
+        g2.drawRect(1, 1, x - 2, height - 2);
+        g2.drawRect(1, 1, width - 2, height - 2);
+        g2.setFont(new Font(null, Font.BOLD, height / 2));
         FontMetrics metrics = g2.getFontMetrics();
         String str;
-        //TODO: display preference
         if (!m_fraction) {
             str = (int)(ratio * 100) + "%";
         } else {

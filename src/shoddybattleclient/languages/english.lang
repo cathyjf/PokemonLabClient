@@ -259,8 +259,7 @@
 35: $1's power was weakened!
 36: $1 unleashed energy!
 37: $1 learned $2!
-38: $1's ability was suppressed
-39: $1 can use items again!
+38: $1's ability was suppressed!
 40: $1 waits for a target to make a move!
 41: $1 snatched $2's move!
 42: $1's rage is building!
@@ -596,11 +595,18 @@
 56: $1's Ice Body restored its health a little!
 57: $1's Dry Skin restored its health a little!
 58: $1 finally got its act together!
+59: $1's $2 raised its $3!
 
 [item-messages]
-0: $1's leftovers restored its health a little!
+0: $1's $2 restored its health a little!
 1: $1's $2 cured its $3!
+2: $1's Quick Claw activated!
+3: $1's $2 raised its $3!
+4: The berry was the wrong flavour for $1!
 
 [client-messages]
 0: *** $1 sets mode $2 $3
 1: *** Mode $1 $2
+2: *** $1 was kicked by $2
+3: *** $1 was banned by $2 for $3
+4: *** $1 was unbanned

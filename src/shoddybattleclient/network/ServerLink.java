@@ -37,7 +37,6 @@ import shoddybattleclient.ChatPane;
 import shoddybattleclient.GameVisualisation.VisualPokemon;
 import shoddybattleclient.LobbyWindow;
 import shoddybattleclient.Preference;
-import shoddybattleclient.Preference.HealthDisplay;
 import shoddybattleclient.ServerConnect;
 import shoddybattleclient.shoddybattle.Pokemon;
 import shoddybattleclient.shoddybattle.PokemonMove;
@@ -126,11 +125,11 @@ public class ServerLink extends Thread {
         public int getMaxTeamLength() {
             return m_maxTeamLength;
         }
-        public List<String> getBanList() {
-            return m_banList;
+        public String[] getBanList() {
+            return m_banList.toArray(new String[m_banList.size()]);
         }
-        public List<String> getClauses() {
-            return m_clauses;
+        public String[] getClauses() {
+            return m_clauses.toArray(new String[m_clauses.size()]);
         }
         public void setTeam(Pokemon[] team) {
             m_team = team;
@@ -363,6 +362,19 @@ public class ServerLink extends Thread {
         }
     }
 
+    public static class BanMessage extends OutMessage {
+        public BanMessage(int channel, String user, int date) {
+            super(14);
+            try {
+                m_stream.writeInt(channel);
+                m_stream.writeUTF(user);
+                m_stream.writeInt(date);
+            } catch (Exception e) {
+
+            }
+        }
+    }
+
     public static abstract class MessageHandler {
         /**
          * Handle a message from the server by reading values from the
@@ -483,7 +495,7 @@ public class ServerLink extends Thread {
                             conn.informFailedChallenge();
                             break;
                         case 6:
-                            conn.informUserBanned(details);
+                            ServerConnect.informUserBanned(details);
                             break;
                         case 7:
                             conn.informSuccessfulLogin();
@@ -1203,6 +1215,22 @@ public class ServerLink extends Thread {
                 }
             });
 
+            //KICK_BAN_MESSAGE
+            new ServerMessage(27, new MessageHandler() {
+                //int32  : channel
+                //string : mod
+                //string : user
+                //int32  : date
+                public void handle(ServerLink link, DataInputStream is)
+                                                            throws IOException{
+                    int id = is.readInt();
+                    String mod = is.readUTF();
+                    String user = is.readUTF();
+                    int date = is.readInt();
+                    link.getLobby().handleBanMessage(id, mod, user, date);
+                }
+            });
+
             // add additional messages here
         }
 
@@ -1337,6 +1365,10 @@ public class ServerLink extends Thread {
     public void queueTeam(int metagame, boolean rated, Pokemon[] team) {
         sendMessage(new MetagameQueueMessage(this, metagame, rated, team));
         m_metagames[metagame].setTeam(team);
+    }
+
+    public void sendBanMessage(int channel, String user, int date) {
+        sendMessage(new BanMessage(channel, user, date));
     }
 
     public void attemptAuthentication(String user, String password) {

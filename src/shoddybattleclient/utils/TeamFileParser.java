@@ -90,6 +90,7 @@ public class TeamFileParser extends DefaultHandler {
                     sb1 = false;
                 }
                 Pokemon[] team = (sb1) ? parseShoddyBattle1Team(is) : parseShoddyBattle2Team(file);
+                if (team.length == 0) return null;
                 for (Pokemon p : team) {
                     List<String> moves = new ArrayList<String>();
                     List<Integer> ppUps = new ArrayList<Integer>();

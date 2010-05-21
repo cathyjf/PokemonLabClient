@@ -181,8 +181,47 @@ public class Text {
         System.out.println("Syntax error on line " + line);
     }
 
+    public static String formatDateDifference(int date) {
+        long longNow = System.currentTimeMillis();
+        int now = (int)(longNow / 1000);
+        int diff = date - now;
+        int years = diff / 31556926;
+        diff -= years * 31556926;
+        int days = diff / 86400;
+        diff -= days * 86400;
+        int hours = diff / 3600;
+        diff -= hours * 3600;
+        int minutes = diff / 60;
+        StringBuilder sb = new StringBuilder();
+        boolean y, d, h, m;
+        y = d = h = m = false;
+        if (years > 0) {
+            sb.append(years).append(" year");
+            if (years > 1) sb.append("s");
+            sb.append(" ");
+            y = true;
+        }
+        if (days > 0) {
+            sb.append(days).append(" day");
+            if (days > 1) sb.append("s");
+            sb.append(" ");
+            d = true;
+        }
+        if ((hours > 0) && !y) {
+            sb.append(hours).append(" hour");
+            if (hours > 1) sb.append("s");
+            sb.append(" ");
+        }
+        if (!y && !d && !h && (minutes == 0)) minutes = 1;
+        if ((minutes > 0) && !y && !d) {
+            sb.append(minutes).append(" minute");
+            if (minutes > 1) sb.append("s");
+        }
+        return sb.toString();
+    }
+
     public static void main(String[] args) {
-        System.out.println(Text.getText(0, 0, new String[0]));
+        System.out.println(Text.formatDateDifference(1315949113));
     }
 
 }

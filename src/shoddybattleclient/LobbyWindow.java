@@ -28,6 +28,7 @@ import java.awt.Component;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import javax.swing.*;
 import java.util.*;
 import javax.swing.event.ChangeEvent;
@@ -50,14 +51,20 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         public static final int MUTE = 8;      // +b
         public static final int IDLE = 16;     // inactive
         public static final int BUSY = 32;     // ("ignoring challenges")
+        public static final int MUTED = 64;    // +m muted room
+        public static final int INVITE = 128;  // +i invite only
 
         public static final String[] MODES =
-                { "a", "o", "v", "b", "", "" }; // TODO: last two
+                { "a", "o", "v", "b"};
+        public static final String[] CHANNEL_MODES = {"m", "i"};
 
         public static final int TYPE_ORDINARY = 0;
         public static final int TYPE_BATTLE = 1;
 
         private static final ImageIcon[] m_icons = new ImageIcon[3];
+
+        public static final SimpleDateFormat DATE_FORMATTER =
+                new SimpleDateFormat("dd/MM/yyyy kk:mm:ss");
 
         private int m_id;
         private int m_type;
@@ -115,38 +122,70 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         public void removeUser(String name) {
             m_users.remove(name);
         }
-        public void updateUser(String setter, String name, int flags) {
-            User user = getUser(name);
-            int old = user.getFlags();
-            int diff = old ^ flags;
+        private String getModeString(int oldflags, int newflags, boolean channel) {
+            String[] modeNames = channel ? CHANNEL_MODES : MODES;
+            int diff = oldflags ^ newflags;
             if (diff == 0)
-                return;
+                return null;
             StringBuilder modes = new StringBuilder();
             String last = null;
-            for (int i = 0; i < 4; ++i) {
+            for (int i = 0; i < modeNames.length; ++i) {
                 int bit = 1 << i;
                 if ((diff & bit) != 0) {
-                    String prefix = ((old & bit) != 0) ? "-" : "+";
+                    String prefix = ((oldflags & bit) != 0) ? "-" : "+";
                     if (!prefix.equals(last)) {
                         modes.append(prefix);
                     }
                     last = prefix;
-                    modes.append(MODES[i]);
+                    modes.append(modeNames[i]);
                 }
             }
+            return modes.toString();
+        }
+        //sets the flags for this channel
+        public void setFlags(String setter, int flags) {
+            String modes = getModeString(m_flags, flags, true);
+            if (modes == null) return;
+            m_flags = flags;
+            String msg = Text.getText(26, 0, new String[] {setter, modes, ""});
+            msg = "<font class='mode'>" + msg + "</font>";
+            m_chat.getLobby().showChannelMessage(this, null, msg, false);
+        }
+        public void updateUser(String setter, String name, int flags) {
+            User user = getUser(name);
+            int old = user.getFlags();
+            String modes = getModeString(old, flags, false);
+            if (modes == null) return;
             String msg;
             if (setter.length() > 0) {
                 msg = Text.getText(26, 0, new String[] {
-                    setter, modes.toString(), name });
+                    setter, modes, name });
             } else {
                 msg = Text.getText(26, 1, new String[] {
-                    modes.toString(), name });
+                    modes, name });
             }
             msg = "<font class='mode'>" + msg + "</font>";
             m_chat.getLobby().showChannelMessage(this, null,
                     msg, false);
             user.setLevel(flags);
         }
+
+        public void informBan(String mod, String user, int date) {
+            if (date == 0) {
+                //kick
+                String msg = Text.getText(26, 2, new String[] {user, mod});
+                m_chat.addMessage(null, "<b class='kick'>" + msg + "</b>", false);
+            } else if (date == -1) {
+                //unban
+                String msg = Text.getText(26, 4, new String[] {user});
+                m_chat.addMessage(null, "<b class='unban'>" + msg + "</b>", false);
+            } else if (date > 0) {
+                String dateStr = Text.formatDateDifference(date);
+                String msg = Text.getText(26, 3, new String[] {user, mod, dateStr});
+                m_chat.addMessage(null, "<b class='ban'>" + msg + "</b>", false);
+            }
+        }
+
         public String getUserHtml(User user) {
             return user.getHtml(m_colours.getColour(user.getName()));
         }
@@ -506,6 +545,10 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
     public void handleUpdateStatus(int id, String setter, String user, int flags) {
         Channel channel = m_channels.get(id);
         if (channel != null) {
+            if ("".equals(user)) {
+                channel.setFlags(setter, flags);
+                return;
+            }
             channel.updateUser(setter, user, flags);
             if (channel.getChatPane() == tabChats.getSelectedComponent()) {
                 updateUsers(channel);
@@ -579,10 +622,24 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         return openUserPanel(user, true, generation, n);
     }
 
+    @Override
     public void tabClosed(Component c) {
         if (c instanceof UserPanel) {
             UserPanel panel = (UserPanel)c;
             m_userPanels.remove(panel.getOpponent());
+        }
+    }
+
+    public void handleBanMessage(int id, String mod, String user, int date) {
+        if (id == -1) {
+            for (Channel c : m_channels.values()) {
+                if (c.getType() == Channel.TYPE_ORDINARY) {
+                    c.informBan(mod, user, date);
+                }
+            }
+        } else {
+            Channel c = m_channels.get(id);
+            if (c != null) c.informBan(mod, user, date);
         }
     }
 

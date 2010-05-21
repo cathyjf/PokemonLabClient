@@ -23,6 +23,8 @@
 package shoddybattleclient;
 
 import java.awt.FileDialog;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -280,12 +282,12 @@ public class FindPanel extends javax.swing.JPanel {
         Metagame metagame = (Metagame)cmbLadder.getSelectedItem();
         if (metagame != null) {
             lblDescription.setText("<html>" + metagame.getDescription() + "</html>");
-            List<String> banList = metagame.getBanList();
+            List<String> banList = Arrays.asList(metagame.getBanList());
             Collections.sort(banList);
             String bans = join(banList, ", ");
             txtBans.setText(bans);
             int partySize = metagame.getPartySize();
-            List<String> clauseList = metagame.getClauses();
+            List<String> clauseList = new ArrayList(Arrays.asList(metagame.getClauses()));
             clauseList.add(0, partySize + " v. " + partySize);
             clauseList.add(1, metagame.getMaxTeamLength() + " Pokemon per team");
             String clauses = join(clauseList, ", ");

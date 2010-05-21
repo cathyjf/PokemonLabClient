@@ -63,7 +63,12 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab {
          */
         public Pokemon[] loadFromTeam(String file, List<PokemonSpecies> speciesList) {
             TeamFileParser tfp = new TeamFileParser();
-            Pokemon[] team = tfp.parseTeam(file);
+            Pokemon[] team = null;
+            try {
+                team = tfp.parseTeam(file);
+            } catch (Exception e) {
+                return null;
+            }
             if (team != null) {
                 this.removeAll();
                 this.repaint();
@@ -108,7 +113,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab {
     private final ServerLink m_link;
     private String m_opponent;
     private int m_idx;
-    private Pokemon[] m_team;
+    private Pokemon[] m_team = null;
     private boolean m_incoming = false;
     private int m_n;
     private int m_generation;
@@ -412,11 +417,13 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab {
         if (fd.getFile() == null) return;
         String file = fd.getDirectory() + fd.getFile();
         TeamBox box = (TeamBox)panelSprites;
-        m_team = box.loadFromTeam(file, m_link.getSpeciesList());
-        if (m_team != null) {
+        Pokemon[] team = box.loadFromTeam(file, m_link.getSpeciesList());
+        if (team != null) {
+            m_team = team;
             btnChallenge.setEnabled(true);
         } else {
             JOptionPane.showMessageDialog(this, "Selected team file could not be loaded");
+            if (m_team == null) btnChallenge.setEnabled(false);
         }
     }//GEN-LAST:event_btnLoadActionPerformed
 

@@ -139,6 +139,30 @@ public class ChatPane extends javax.swing.JPanel implements CloseableTab {
             } else {
                 addMessage(null, "You are no longer ignoring " + args);
             }
+        } else if ("ban".equals(command)) {
+            String[] parts = args.split(" ");
+            int channel;
+            int date;
+            String user;
+            if (parts.length == 3) {
+                if (!parts[0].equalsIgnoreCase("global")) {
+                    throw new CommandException("/ban [global] user length");
+                }
+                channel = -1;
+                user = parts[1];
+                date = Integer.valueOf(parts[2]);
+            } else {
+                channel = m_channel.getId();
+                user = parts[0];
+                date = Integer.valueOf(parts[1]);
+            }
+            m_lobby.getLink().sendBanMessage(channel, user, date);
+        } else if ("unban".equals(command)) {
+            String user = args.trim();
+            m_lobby.getLink().sendBanMessage(m_channel.getId(), user, 1);
+        } else if ("kick".equals(command)) {
+            String user = args.trim();
+            m_lobby.getLink().sendBanMessage(m_channel.getId(), user, 0);
         }
     }
 
@@ -263,6 +287,7 @@ public class ChatPane extends javax.swing.JPanel implements CloseableTab {
         return m_chatPane;
     }
 
+    @Override
     public boolean informClosed() {
         m_lobby.getLink().partChannel(m_channel.getId());
         return true;
