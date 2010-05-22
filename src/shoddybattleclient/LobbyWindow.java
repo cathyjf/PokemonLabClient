@@ -34,6 +34,7 @@ import java.util.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import shoddybattleclient.network.ServerLink;
+import shoddybattleclient.network.ServerLink.BanElement;
 import shoddybattleclient.network.ServerLink.ChallengeMediator;
 import shoddybattleclient.utils.*;
 import shoddybattleclient.utils.CloseableTabbedPane.TabCloseListener;
@@ -378,6 +379,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
     private Map<String, UserPanel>  m_userPanels = new HashMap<String, UserPanel>();
     private BattlePanel m_battlePanel;
     private FindPanel m_findPanel;
+    private AdminPanel m_adminPanel;
 
     public BattlePanel getBattlePanel() {
         return m_battlePanel;
@@ -442,6 +444,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         m_link.setLobbyWindow(this);
         m_battlePanel = new BattlePanel(m_link);
         m_findPanel = new FindPanel(m_link);
+        m_adminPanel = new AdminPanel(m_link);
         m_name = userName;
 
         tabChats.addChangeListener(new ChangeListener() {
@@ -641,6 +644,17 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
             Channel c = m_channels.get(id);
             if (c != null) c.informBan(mod, user, date);
         }
+    }
+
+    public void informBadLookup() {
+        m_adminPanel.setErrorText("No such user");
+    }
+
+    public void showLookupResults(String user, String ip, List<String> aliases,
+                                                List<BanElement> bans) {
+        m_adminPanel.updateDetails(user, ip, aliases, bans);
+        tabChats.add("Admin", m_adminPanel);
+        tabChats.setSelectedComponent(m_adminPanel);
     }
 
     /** This method is called from within the constructor to

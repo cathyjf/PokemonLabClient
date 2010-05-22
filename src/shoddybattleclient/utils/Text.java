@@ -185,8 +185,8 @@ public class Text {
         long longNow = System.currentTimeMillis();
         int now = (int)(longNow / 1000);
         int diff = date - now;
-        int years = diff / 31556926;
-        diff -= years * 31556926;
+        int years = diff / 31536000;
+        diff -= years * 31536000;
         int days = diff / 86400;
         diff -= days * 86400;
         int hours = diff / 3600;

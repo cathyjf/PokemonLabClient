@@ -34,6 +34,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.JScrollPane;
 import shoddybattleclient.LobbyWindow.Channel;
 import shoddybattleclient.utils.CloseableTabbedPane.CloseableTab;
@@ -140,22 +142,27 @@ public class ChatPane extends javax.swing.JPanel implements CloseableTab {
                 addMessage(null, "You are no longer ignoring " + args);
             }
         } else if ("ban".equals(command)) {
-            String[] parts = args.split(" ");
+            String[] parts = args.split(" ", 3);
             int channel;
-            int date;
+            String dateFormat;
             String user;
             if (parts.length == 3) {
                 if (!parts[0].equalsIgnoreCase("global")) {
-                    throw new CommandException("/ban [global] user length");
+                    throw new CommandException("/ban [global] user date");
                 }
                 channel = -1;
                 user = parts[1];
-                date = Integer.valueOf(parts[2]);
+                dateFormat = parts[2];
             } else {
                 channel = m_channel.getId();
                 user = parts[0];
-                date = Integer.valueOf(parts[1]);
+                dateFormat = parts[1];
             }
+
+            long d = parseDateFormat(dateFormat);
+            long now = System.currentTimeMillis() / 1000;
+            int date = ((d + now) > Integer.MAX_VALUE)
+                                        ? Integer.MAX_VALUE : (int)(d + now);
             m_lobby.getLink().sendBanMessage(channel, user, date);
         } else if ("unban".equals(command)) {
             String user = args.trim();
@@ -163,6 +170,9 @@ public class ChatPane extends javax.swing.JPanel implements CloseableTab {
         } else if ("kick".equals(command)) {
             String user = args.trim();
             m_lobby.getLink().sendBanMessage(m_channel.getId(), user, 0);
+        } else if ("lookup".equals(command)) {
+            String user = args.trim();
+            m_lobby.getLink().requestUserLookup(user);
         }
     }
 
@@ -227,6 +237,27 @@ public class ChatPane extends javax.swing.JPanel implements CloseableTab {
                 parseMode(pm + action.substring(i, i + 1), user.trim());
             }
         }
+    }
+
+    private static long parseDateFormat(String s) throws CommandException {
+        Pattern p = Pattern.compile("((\\d+)y)?((\\d+)d)?((\\d+)h)?((\\d+)m?)?");
+        Matcher matcher = p.matcher(s);
+        long time = 0;
+        if (matcher.matches()) {
+            String y = matcher.group(2);
+            String d = matcher.group(4);
+            String h = matcher.group(6);
+            String m = matcher.group(8);
+            try {
+                if (y != null) time += Integer.parseInt(y) * 31536000;
+                if (d != null) time += Integer.parseInt(d) * 86400;
+                if (h != null) time += Integer.parseInt(h) * 3600;
+                if (m != null) time += Integer.parseInt(m) * 60;
+            } catch (Exception e) {
+                throw new CommandException("Time format [_y][_d][_h][_m]");
+            }
+        }
+        return (int)time;
     }
 
     public void addMessage(String user, String message) {

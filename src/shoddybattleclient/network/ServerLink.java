@@ -375,6 +375,17 @@ public class ServerLink extends Thread {
         }
     }
 
+    public static class UserDetailMessage extends OutMessage {
+        public UserDetailMessage(String user) {
+            super(15);
+            try {
+                m_stream.writeUTF(user);
+            } catch (Exception e) {
+                
+            }
+        }
+    }
+
     public static abstract class MessageHandler {
         /**
          * Handle a message from the server by reading values from the
@@ -1231,6 +1242,46 @@ public class ServerLink extends Thread {
                 }
             });
 
+            new ServerMessage(28, new MessageHandler() {
+                //string : name of the user
+                //string : ip
+                //byte   : number of aliases
+                //for each alias:
+                //    string : alias
+                //byte  : number of bans
+                //for each ban:
+                //    int32  : channel
+                //    string : banned name
+                //    int32  : expiry
+                public void handle(ServerLink link, DataInputStream is)
+                                                        throws IOException {
+                    String user = is.readUTF();
+                    if ("".equals(user)) {
+                        is.readUTF();
+                        is.readByte();
+                        is.readByte();
+                        link.getLobby().informBadLookup();
+                    } else {
+                        String ip = is.readUTF();
+                        byte acount = is.readByte();
+                        List<String> aliases = new ArrayList<String>();
+                        for (byte i = 0; i < acount; i++) {
+                            aliases.add(is.readUTF());
+                        }
+                        byte bcount = is.readByte();
+                        List<BanElement> bans = new ArrayList<BanElement>();
+                        for (byte i = 0; i < bcount; i++) {
+                            int channel = is.readInt();
+                            String name = is.readUTF();
+                            int expiry = is.readInt();
+                            //insert java tuples here
+                            bans.add(new BanElement(channel, name, expiry));
+                        }
+                        link.getLobby().showLookupResults(user, ip, aliases, bans);
+                    }
+                }
+            });
+
             // add additional messages here
         }
 
@@ -1246,6 +1297,17 @@ public class ServerLink extends Thread {
         }
         public static ServerMessage getMessage(int code) {
             return m_map.get(code);
+        }
+    }
+
+    public static class BanElement {
+        public int channel;
+        public String name;
+        public int expiry;
+        public BanElement(int channel, String name, int expiry) {
+            this.channel = channel;
+            this.name = name;
+            this.expiry = expiry;
         }
     }
 
@@ -1369,6 +1431,10 @@ public class ServerLink extends Thread {
 
     public void sendBanMessage(int channel, String user, int date) {
         sendMessage(new BanMessage(channel, user, date));
+    }
+
+    public void requestUserLookup(String user) {
+        sendMessage(new UserDetailMessage(user));
     }
 
     public void attemptAuthentication(String user, String password) {

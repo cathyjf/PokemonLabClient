@@ -252,8 +252,8 @@ public class WelcomeWindow extends javax.swing.JFrame {
     * Main entry point for Shoddy Battle 2
     */
     public static void main(String args[]) {
-
         try {
+            //UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             //UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             System.setProperty("apple.laf.useScreenMenuBar", "true");
@@ -262,7 +262,6 @@ public class WelcomeWindow extends javax.swing.JFrame {
         }
 
         Text.loadText("english.lang");
-
 
         if (Preference.getStorageLocation() == null) {
             FirstLaunch.initialiseLocalStorage();
