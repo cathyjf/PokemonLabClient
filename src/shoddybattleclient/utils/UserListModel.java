@@ -24,91 +24,42 @@
 package shoddybattleclient.utils;
 import java.util.*;
 import javax.swing.*;
-import javax.swing.event.*;
 import shoddybattleclient.LobbyWindow.User;
 
-public class UserListModel implements ListModel {
-    private final List<User> m_items;
-    private List<ListDataListener> m_listeners = new ArrayList<ListDataListener>();
-    
-    public UserListModel(List<User> items) {
-        m_items = items;
-    }
-    
-    public List<User> getList() {
-        return m_items;
-    }
-    
+public class UserListModel extends AbstractListModel {
+
+    private List<User> m_users = new ArrayList<User>();
+
+    @Override
     public int getSize() {
-        return m_items.size();
+        return m_users.size();
     }
-    
-    public User getElementAt(int index) {
-        try {
-            return m_items.get(index);
-        } catch (Exception e) {
-            return null;
-        }
+
+    @Override
+    public Object getElementAt(int index) {
+        return m_users.get(index);
     }
-    
-    public void addListDataListener(ListDataListener l) {
-        m_listeners.add(l);
+
+    public void addUser(User u) {
+        m_users.add(u);
+        this.fireIntervalAdded(u, m_users.size(), m_users.size());
     }
-    
-    public void removeListDataListener(ListDataListener l) {
-        m_listeners.remove(l);
+
+    public void removeUser(String name) {
+        User u = new User(name, 0);
+        int idx = m_users.indexOf(u);
+        m_users.remove(u);
+        this.fireIntervalRemoved(u, idx, idx);
     }
-    
-    public void add(User user) {
-        if (m_items.contains(user)) return;
-        Iterator i = m_items.iterator();
-        while (i.hasNext()) {
-            Object item = (Object)i.next();
-            if (item == null) {
-                continue;
-            }
-            if (item.equals(user)) {
+
+    public void setLevel(User u, int flags) {
+        for (int i = 0; i < m_users.size(); i++) {
+            User user = m_users.get(i);
+            if (user.equals(u)) {
+                user.setLevel(flags);
+                this.fireContentsChanged(this, i, i);
                 return;
             }
         }
-        m_items.add(user);
-    }
-
-    public User getUser(String name) {
-        for (User u : m_items) {
-            if (u.getName().equals(name)) {
-                return u;
-            }
-        }
-        return null;
-    }
-    
-    public void remove(String name) {
-        for (User u : m_items) {
-            if (u.getName().equals(name)) {
-                m_items.remove(u);
-                break;
-            }
-        }
-    }
-
-    public void setLevel(String name, int level) {
-        for (User u : m_items) {
-            if (u.getName().equals(name)) {
-                u.setLevel(level);
-            }
-        }
-    }
-
-    public void setStatus(String name, int status) {
-        for (User u : m_items) {
-            if (u.getName().equals(name)) {
-                u.setStatus(status);
-            }
-        }
-    }
-
-    public void sort() {
-        Collections.<User>sort(m_items);
     }
 }

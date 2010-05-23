@@ -62,7 +62,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         public static final int TYPE_ORDINARY = 0;
         public static final int TYPE_BATTLE = 1;
 
-        private static final ImageIcon[] m_icons = new ImageIcon[3];
+        
 
         public static final SimpleDateFormat DATE_FORMATTER =
                 new SimpleDateFormat("dd/MM/yyyy kk:mm:ss");
@@ -74,21 +74,8 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         private int m_flags;
         private ChatPane m_chat;
         // TOOD: Do not assume the background is white.
-        private static ColourMap m_colours = new ColourMap(Color.WHITE);
-        private UserListModel m_users =
-                new UserListModel(new ArrayList<User>());
-
-        public static ImageIcon getModeIcon(String file) {
-            return new ImageIcon(Toolkit.getDefaultToolkit()
-                    .createImage(GameVisualisation.class.getResource(
-                    "resources/modes/" + file)));
-        }
-
-        static {
-            m_icons[0] = getModeIcon("voice.png");
-            m_icons[1] = getModeIcon("operator.png");
-            m_icons[2] = getModeIcon("protected.png");
-        }
+        public static ColourMap COLOUR_MAP = new ColourMap(Color.WHITE);
+        private UserListModel m_users = new UserListModel();
 
         public void setChatPane(ChatPane c) {
             m_chat = c;
@@ -118,10 +105,10 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
             m_flags = flags;
         }
         public void addUser(String name, int flags) {
-            m_users.add(new User(name, flags));
+            m_users.addUser(new User(name, flags));
         }
         public void removeUser(String name) {
-            m_users.remove(name);
+            m_users.removeUser(name);
         }
         private String getModeString(int oldflags, int newflags, boolean channel) {
             String[] modeNames = channel ? CHANNEL_MODES : MODES;
@@ -168,7 +155,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
             msg = "<font class='mode'>" + msg + "</font>";
             m_chat.getLobby().showChannelMessage(this, null,
                     msg, false);
-            user.setLevel(flags);
+            m_users.setLevel(user, flags);
         }
 
         public void informBan(String mod, String user, int date) {
@@ -187,43 +174,10 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
             }
         }
 
-        public String getUserHtml(User user) {
-            return user.getHtml(m_colours.getColour(user.getName()));
+        public static String getUserHtml(User user) {
+            return user.getHtml(COLOUR_MAP.getColour(user.getName()));
         }
         
-        class UserCellRenderer extends JLabel implements ListCellRenderer {
-            public Component getListCellRendererComponent(JList list,
-                    Object value, int index, boolean isSelected,
-                    boolean cellHasFocus) {
-                User user = (User)value;
-                setText("<html>" + getUserHtml(user) + "</html>");
-                int level = user.getLevel();
-                if (level > 0) {
-                    setIcon(m_icons[level - 1]);
-                } else {
-                    setIcon(null);
-                }
-                if (isSelected) {
-                    setBackground(list.getSelectionBackground());
-                    setForeground(list.getSelectionForeground());
-                } else {
-                    setBackground(list.getBackground());
-                    setForeground(list.getForeground());
-                }
-                setEnabled(list.isEnabled());
-                setFont(list.getFont());
-                setOpaque(true);
-                return this;
-            }
-
-        }
-
-        public ListCellRenderer getRenderer() {
-            return new UserCellRenderer();
-        }
-        public void sort() {
-            m_users.sort();
-        }
         public String getTopic() {
             return m_topic;
         }
@@ -237,11 +191,56 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
             return m_id;
         }
         public User getUser(String name) {
-            return m_users.getUser(name);
+            for (int i = 0; i < m_users.getSize(); i++) {
+                User u = (User)m_users.getElementAt(i);
+                if (u.m_name.equalsIgnoreCase(name)) {
+                    return u;
+                }
+            }
+            return null;
         }
         public int getType() {
             return m_type;
         }
+    }
+
+    public static class UserCellRenderer extends JLabel implements ListCellRenderer {
+        private static final ImageIcon[] STATUS_ICONS = new ImageIcon[3];
+        static {
+            STATUS_ICONS[0] = getModeIcon("voice.png");
+            STATUS_ICONS[1] = getModeIcon("operator.png");
+            STATUS_ICONS[2] = getModeIcon("protected.png");
+        }
+        public static ImageIcon getModeIcon(String file) {
+            return new ImageIcon(Toolkit.getDefaultToolkit()
+                    .createImage(GameVisualisation.class.getResource(
+                    "resources/modes/" + file)));
+        }
+
+        public Component getListCellRendererComponent(JList list,
+                Object value, int index, boolean isSelected,
+                boolean cellHasFocus) {
+            User user = (User)value;
+            setText("<html>" + Channel.getUserHtml(user) + "</html>");
+            int level = user.getLevel();
+            if (level > 0) {
+                setIcon(STATUS_ICONS[level - 1]);
+            } else {
+                setIcon(null);
+            }
+            if (isSelected) {
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+            } else {
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+            }
+            setEnabled(list.isEnabled());
+            setFont(list.getFont());
+            setOpaque(true);
+            return this;
+        }
+
     }
 
     /**
@@ -352,7 +351,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         }
         @Override
         public boolean equals(Object o2) {
-            return ((User)o2).m_name.equals(m_name);
+            return ((User)o2).m_name.equalsIgnoreCase(m_name);
         }
         @Override
         public String toString() {
@@ -380,6 +379,8 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
     private BattlePanel m_battlePanel;
     private FindPanel m_findPanel;
     private AdminPanel m_adminPanel;
+    //The most recent chat pane that was focused
+    private ChatPane m_recentChat = null;
 
     public BattlePanel getBattlePanel() {
         return m_battlePanel;
@@ -409,6 +410,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
                 + channel.getTopic()
                 + "</b>", false);
         tabChats.add("#" + name, c);
+        listUsers.setModel(channel.getModel());
     }
     
     public Channel getChannel(int id) {
@@ -423,9 +425,6 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
             } else {
                 channel.removeUser(user);
             }
-        }
-        if (channel.getChatPane() == tabChats.getSelectedComponent()) {
-            listUsers.setModel(new UserListModel(channel.getModel().getList()));
         }
         if (channel.getType() == Channel.TYPE_BATTLE) {
             BattleWindow wnd = m_link.getBattle(channel.getId());
@@ -447,21 +446,22 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         m_adminPanel = new AdminPanel(m_link);
         m_name = userName;
 
+        listUsers.setCellRenderer(new UserCellRenderer());
+
         tabChats.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 if (tabChats.getSelectedIndex() == -1) {
-                    listUsers.setModel(new UserListModel(new ArrayList<User>()));
+                    listUsers.setModel(new UserListModel());
                     return;
                 }
                 ((CloseableTabbedPane)tabChats).setFlashingAt(tabChats.getSelectedIndex(), false);
                 Component comp = tabChats.getSelectedComponent();
                 if (comp instanceof ChatPane) {
                     ChatPane c = (ChatPane)comp;
+                    m_recentChat = c;
                     Channel channel = c.getChannel();
                     listUsers.setModel(channel.getModel());
-                    listUsers.setCellRenderer(channel.getRenderer());
                 } else if (comp instanceof BattlePanel) {
-                    BattlePanel panel = (BattlePanel)comp;
                     m_link.requestChannelList();
                 }
             }
@@ -495,12 +495,15 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
      * Takes some letters and returns a list of matching usernames
      */
     public List<String> autocompleteUser(String str) {
+        UserListModel ulm = (UserListModel)listUsers.getModel();
+        for (int i = 0; i < ulm.getSize(); i++) {
+            System.out.println(ulm.getElementAt(i));
+        }
         str = str.toLowerCase();
         UserListModel model = (UserListModel)listUsers.getModel();
-        List<User> list = model.getList();
+        List<String> list = null;
         List<String> ret = new ArrayList<String>();
-        for (User u : list) {
-            String name = u.m_name;
+        for (String name : list) {
             if (name.toLowerCase().startsWith(str)) {
                 ret.add(name);
             }
@@ -553,19 +556,10 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
                 return;
             }
             channel.updateUser(setter, user, flags);
-            if (channel.getChatPane() == tabChats.getSelectedComponent()) {
-                updateUsers(channel);
-            }
             if (channel.getType() == Channel.TYPE_BATTLE) {
                 updateBattleUsers(channel.getId());
             }
         }
-    }
-
-    private void updateUsers(Channel channel) {
-        UserListModel model = channel.getModel();
-        model.sort();
-        listUsers.setModel(new UserListModel(model.getList()));
     }
 
     public void showChannelMessage(Channel channel,
@@ -586,7 +580,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
             User u = channel.getUser(user);
             String prefix = u.getPrefix();
             showChannelMessage(channel,
-                    prefix + channel.getUserHtml(u), message, true);
+                    prefix + Channel.getUserHtml(u), message, true);
         }
     }
 

@@ -46,6 +46,7 @@ import javax.swing.JToggleButton;
 import shoddybattleclient.ChatPane.CommandException;
 import shoddybattleclient.GameVisualisation.VisualPokemon;
 import shoddybattleclient.LobbyWindow.Channel;
+import shoddybattleclient.LobbyWindow.UserCellRenderer;
 import shoddybattleclient.Preference.LogOption;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.shoddybattle.*;
@@ -249,7 +250,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
 
         m_channel = m_link.getLobby().getChannel(fid);
         listUsers.setModel(m_channel.getModel());
-        listUsers.setCellRenderer(m_channel.getRenderer());
+        listUsers.setCellRenderer(new UserCellRenderer());
         
         if (m_participant == 0) {
             lblPlayer0.setText(users[0]);
@@ -330,7 +331,6 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
 
     public void refreshUsers() {
         listUsers.setModel(m_channel.getModel());
-        listUsers.setCellRenderer(m_channel.getRenderer());
     }
 
     public String getTrainer(int party) {
