@@ -1429,7 +1429,18 @@ public class ServerLink extends Thread {
         m_metagames[metagame].setTeam(team);
     }
 
-    public void sendBanMessage(int channel, String user, int date) {
+    public void sendBanMessage(int channel, String user, long length) {
+        int date;
+        if (length == 0) {
+            date = 0;
+        } else if (length < 0) {
+            date = 1;
+        } else {
+            long d = (System.currentTimeMillis() / 1000) + length;
+            if (d > Integer.MAX_VALUE) d = Integer.MAX_VALUE;
+            else if (d < Integer.MIN_VALUE) d = Integer.MIN_VALUE;
+            date = (int)d;
+        }
         sendMessage(new BanMessage(channel, user, date));
     }
 

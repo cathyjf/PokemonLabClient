@@ -41,9 +41,21 @@ public class UserListModel extends AbstractListModel {
     }
 
     public void addUser(User u) {
+        final int size = m_users.size();
+        if (size == 0) {
+            m_users.add(u);
+            this.fireIntervalAdded(this, 0, 0);
+            return;
+        }
+        for (int i = 0; i < size; ++i) {
+            if (u.compareTo(m_users.get(i)) < 0) {
+                m_users.add(i, u);
+                this.fireIntervalAdded(this, i, i);
+                return;
+            }
+        }
         m_users.add(u);
-        Collections.<User>sort(m_users);
-        this.fireIntervalAdded(u, 0, m_users.size());
+        this.fireIntervalAdded(u, size, size);
     }
 
     public void removeUser(String name) {
@@ -54,14 +66,24 @@ public class UserListModel extends AbstractListModel {
     }
 
     public void setLevel(User u, int flags) {
+        User user = null;
         for (int i = 0; i < m_users.size(); i++) {
-            User user = m_users.get(i);
+            user = m_users.get(i);
             if (user.equals(u)) {
                 user.setLevel(flags);
-                Collections.<User>sort(m_users);
-                this.fireContentsChanged(this, 0, m_users.size());
-                return;
+                m_users.remove(user);
+                this.fireIntervalRemoved(this, i, i);
+                addUser(user);
+                break;
             }
         }
+    }
+
+    public List<String> getNames() {
+        List<String> ret = new ArrayList<String>();
+        for (User u : m_users) {
+            ret.add(u.getName());
+        }
+        return ret;
     }
 }

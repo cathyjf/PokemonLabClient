@@ -525,13 +525,9 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
      * Takes some letters and returns a list of matching usernames
      */
     public List<String> autocompleteUser(String str) {
-        UserListModel ulm = (UserListModel)listUsers.getModel();
-        for (int i = 0; i < ulm.getSize(); i++) {
-            System.out.println(ulm.getElementAt(i));
-        }
         str = str.toLowerCase();
         UserListModel model = (UserListModel)listUsers.getModel();
-        List<String> list = null;
+        List<String> list = model.getNames();
         List<String> ret = new ArrayList<String>();
         for (String name : list) {
             if (name.toLowerCase().startsWith(str)) {
