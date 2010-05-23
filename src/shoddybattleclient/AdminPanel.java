@@ -42,11 +42,19 @@ import shoddybattleclient.utils.CloseableTabbedPane.CloseableTab;
  */
 public class AdminPanel extends javax.swing.JPanel implements CloseableTab {
     
+    public static interface ChannelLookup {
+        public String getChannelName(int id);
+    }
+    
     private static class BanTableModel extends AbstractTableModel {
         private final static String[] COLUMN_NAMES =
                                 new String[] {"Channel", "Username", "Expiry"};
-
+        private ChannelLookup m_lookup;
         private List<BanElement> m_data = new ArrayList<BanElement>();
+
+        public BanTableModel(ChannelLookup lookup) {
+            m_lookup = lookup;
+        }
 
         public void setData(List<BanElement> data) {
             m_data = data;
@@ -67,11 +75,12 @@ public class AdminPanel extends javax.swing.JPanel implements CloseableTab {
             BanElement be = m_data.get(rowIndex);
             switch (columnIndex) {
                 case 0:
-                    return be.channel;
+                    return m_lookup.getChannelName(be.channel);
                 case 1:
                     return be.name;
                 case 2:
-                    return be.expiry;
+                    long l = be.expiry;
+                    return LobbyWindow.Channel.DATE_FORMATTER.format(l * 1000);
                 default:
                     throw new InternalError();
             }
@@ -96,7 +105,23 @@ public class AdminPanel extends javax.swing.JPanel implements CloseableTab {
     public AdminPanel(ServerLink link) {
         initComponents();
         m_link = link;
-        tblBans.setModel(new BanTableModel());
+        tblBans.setModel(new BanTableModel(m_link.getLobby()));
+        for (int i = 0; i < tblBans.getColumnCount(); i++) {
+            tblBans.getColumnModel().getColumn(i).setPreferredWidth(getColumnWidth(i));
+        }
+    }
+
+    private int getColumnWidth(int col) {
+        switch (col) {
+            case 0:
+                return 100;
+            case 1:
+                return 100;
+            case 2:
+                return 300;
+            default:
+                return 0;
+        }
     }
 
     private void sendRequest() {
@@ -158,9 +183,6 @@ public class AdminPanel extends javax.swing.JPanel implements CloseableTab {
         txtName = new javax.swing.JLabel();
         txtIp = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jPanel4 = new javax.swing.JPanel();
-        btnKick = new javax.swing.JButton();
-        btnBan = new javax.swing.JButton();
 
         setOpaque(false);
 
@@ -169,8 +191,8 @@ public class AdminPanel extends javax.swing.JPanel implements CloseableTab {
         jLabel1.setText("User Lookup:");
 
         txtLookup.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtLookupKeyTyped(evt);
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtLookupKeyReleased(evt);
             }
         });
 
@@ -264,15 +286,6 @@ public class AdminPanel extends javax.swing.JPanel implements CloseableTab {
                     .add(txtIp)))
         );
 
-        jPanel4.setOpaque(false);
-        jPanel4.setLayout(new java.awt.GridLayout(2, 0));
-
-        btnKick.setText("Kick");
-        jPanel4.add(btnKick);
-
-        btnBan.setText("Ban");
-        jPanel4.add(btnBan);
-
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -282,10 +295,7 @@ public class AdminPanel extends javax.swing.JPanel implements CloseableTab {
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
                     .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
-                    .add(jPanel2Layout.createSequentialGroup()
-                        .add(jPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 112, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(jPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jLabel5)
                     .add(jLabel6))
                 .addContainerGap())
@@ -294,12 +304,8 @@ public class AdminPanel extends javax.swing.JPanel implements CloseableTab {
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel2Layout.createSequentialGroup()
                 .add(20, 20, 20)
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel2Layout.createSequentialGroup()
-                        .add(jPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 58, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(17, 17, 17))
-                    .add(jPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .add(0, 0, 0)
+                .add(jPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 58, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(17, 17, 17)
                 .add(jLabel5)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)
@@ -309,8 +315,6 @@ public class AdminPanel extends javax.swing.JPanel implements CloseableTab {
                 .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
                 .addContainerGap())
         );
-
-        jPanel2Layout.linkSize(new java.awt.Component[] {jPanel3, jPanel4}, org.jdesktop.layout.GroupLayout.VERTICAL);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -328,20 +332,18 @@ public class AdminPanel extends javax.swing.JPanel implements CloseableTab {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtLookupKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtLookupKeyTyped
-        if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
-            sendRequest();
-        }
-    }//GEN-LAST:event_txtLookupKeyTyped
-
     private void btnLookupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLookupActionPerformed
         sendRequest();
     }//GEN-LAST:event_btnLookupActionPerformed
 
+    private void txtLookupKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtLookupKeyReleased
+        if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+            sendRequest();
+        }
+    }//GEN-LAST:event_txtLookupKeyReleased
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBan;
-    private javax.swing.JButton btnKick;
     private javax.swing.JButton btnLookup;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
@@ -350,7 +352,6 @@ public class AdminPanel extends javax.swing.JPanel implements CloseableTab {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JList lstAliases;

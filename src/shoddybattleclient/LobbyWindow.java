@@ -27,12 +27,15 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import javax.swing.*;
 import java.util.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import shoddybattleclient.AdminPanel.ChannelLookup;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.network.ServerLink.BanElement;
 import shoddybattleclient.network.ServerLink.ChallengeMediator;
@@ -43,7 +46,7 @@ import shoddybattleclient.utils.CloseableTabbedPane.TabCloseListener;
  *
  * @author ben
  */
-public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener {
+public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener, ChannelLookup {
 
     public static class Channel {
         public static final int PROTECTED = 1; // +a
@@ -216,7 +219,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
                     .createImage(GameVisualisation.class.getResource(
                     "resources/modes/" + file)));
         }
-
+        
         public Component getListCellRendererComponent(JList list,
                 Object value, int index, boolean isSelected,
                 boolean cellHasFocus) {
@@ -303,7 +306,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         private String m_name;
         private int m_status = 0;
         private int m_flags, m_level;
-        private List<Integer> m_battles = new ArrayList<Integer>();
+        private Map<Integer, String> m_battles = new HashMap<Integer, String>();
 
         public User(String name, int flags) {
             m_name = name;
@@ -343,8 +346,8 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
             String[] prefixes = { "", "+", "@", "&" };
             return prefixes[m_level];
         }
-        public void addBattle(int id) {
-            m_battles.add(id);
+        public void addBattle(int id, String opponent) {
+            m_battles.put(id, opponent);
         }
         public void removeBattle(int id) {
             m_battles.remove(id);
@@ -372,15 +375,36 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         }
     }
 
+    private class PopupListener extends MouseAdapter {
+        int m_level = 0;
+        public void setLevel(int level) { m_level = level; }
+        public void mouseReleased(MouseEvent e) {
+            triggerPopup(e);
+        }
+        public void mousePressed(MouseEvent e) {
+            triggerPopup(e);
+        }
+        private void triggerPopup(MouseEvent e) {
+            if (e.isPopupTrigger()) {
+                int idx = listUsers.locationToIndex(e.getPoint());
+                if (idx < 0) return;
+                User u = (User)((UserListModel)listUsers.getModel()).getElementAt(idx);
+                new UserPopupMenu(LobbyWindow.this, u, m_level)
+                                .show(e.getComponent(), e.getX(), e.getY());
+            }
+        }
+    };
+
     private String m_name;
     private ServerLink m_link;
     private Map<Integer, Channel> m_channels = new HashMap<Integer, Channel>();
     private Map<String, UserPanel>  m_userPanels = new HashMap<String, UserPanel>();
-    private BattlePanel m_battlePanel;
-    private FindPanel m_findPanel;
-    private AdminPanel m_adminPanel;
-    //The most recent chat pane that was focused
-    private ChatPane m_recentChat = null;
+    final private BattlePanel m_battlePanel;
+    final private FindPanel m_findPanel;
+    final private AdminPanel m_adminPanel;
+    //The most recent channel that was focused
+    private Channel m_recentChannel = null;
+    final private PopupListener m_popupListener = new PopupListener();
 
     public BattlePanel getBattlePanel() {
         return m_battlePanel;
@@ -458,9 +482,13 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
                 Component comp = tabChats.getSelectedComponent();
                 if (comp instanceof ChatPane) {
                     ChatPane c = (ChatPane)comp;
-                    m_recentChat = c;
                     Channel channel = c.getChannel();
+                    m_recentChannel = channel;
                     listUsers.setModel(channel.getModel());
+                    User u = channel.getUser(m_name);
+                    if (u != null) {
+                        m_popupListener.setLevel(u.getLevel());
+                    }
                 } else if (comp instanceof BattlePanel) {
                     m_link.requestChannelList();
                 }
@@ -477,6 +505,8 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
               Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         mnuLeaveServer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W,
               Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+
+        listUsers.addMouseListener(m_popupListener);
     }
 
     public ServerLink getLink() {
@@ -556,6 +586,9 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
                 return;
             }
             channel.updateUser(setter, user, flags);
+            if (user.equalsIgnoreCase(m_name)) {
+                m_popupListener.setLevel(channel.getUser(m_name).getLevel());
+            }
             if (channel.getType() == Channel.TYPE_BATTLE) {
                 updateBattleUsers(channel.getId());
             }
@@ -651,6 +684,20 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
         tabChats.setSelectedComponent(m_adminPanel);
     }
 
+    public String getChannelName(int id) {
+        Channel c = m_channels.get(id);
+        if (c == null) {
+            return null;
+        } else {
+            return c.getName();
+        }
+    }
+
+    public int getActiveChannel() {
+        if (m_recentChannel == null) return -1;
+        return m_recentChannel.getId();
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -703,6 +750,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener 
             }
         });
 
+        listUsers.setSelectionMode(1);
         jScrollPane1.setViewportView(listUsers);
 
         jMenu3.setText("File");
