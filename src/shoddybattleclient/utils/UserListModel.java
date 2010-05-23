@@ -42,7 +42,8 @@ public class UserListModel extends AbstractListModel {
 
     public void addUser(User u) {
         m_users.add(u);
-        this.fireIntervalAdded(u, m_users.size(), m_users.size());
+        Collections.<User>sort(m_users);
+        this.fireIntervalAdded(u, 0, m_users.size());
     }
 
     public void removeUser(String name) {
@@ -57,7 +58,8 @@ public class UserListModel extends AbstractListModel {
             User user = m_users.get(i);
             if (user.equals(u)) {
                 user.setLevel(flags);
-                this.fireContentsChanged(this, i, i);
+                Collections.<User>sort(m_users);
+                this.fireContentsChanged(this, 0, m_users.size());
                 return;
             }
         }
