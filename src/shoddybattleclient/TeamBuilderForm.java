@@ -249,6 +249,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         txtNickname.setText(p.nickname);
         txtLevel.setText(String.valueOf(p.level));
         chkShiny.setSelected(p.shiny);
+        cmbAbility.setModel(new DefaultComboBoxModel(m_species.getAbilities()));
         cmbAbility.setSelectedItem(p.ability);
         if (g.equals(Gender.GENDER_BOTH)) {
             cmbGender.setSelectedIndex(p.gender.ordinal());
@@ -279,8 +280,6 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         //name column should be wider
         tblMoves.getColumnModel().getColumn(0).setPreferredWidth(80);
         tblMoves.getColumnModel().getColumn(1).setPreferredWidth(160);
-        
-        cmbAbility.setModel(new DefaultComboBoxModel(m_species.getAbilities()));
         
         m_parent.updateTitle(m_idx, m_species.getName());
 
