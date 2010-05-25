@@ -211,4 +211,62 @@ public class Pokemon {
         return new String(buf);
     }
 
+    public String toTeamText() {
+        StringBuffer buf = new StringBuffer();
+        String nick = nickname.trim();
+        if(!nick.equals(species) && nick.length() != 0) {
+            buf.append(nick);
+            buf.append(" (");
+            buf.append(species);
+            buf.append(")");
+        }
+        else
+            buf.append(species);
+
+        if(gender != Gender.GENDER_NONE) {
+            buf.append(" (");
+            if(gender == Gender.GENDER_MALE)
+                buf.append("M");
+            else
+                buf.append("F");
+            buf.append(")");
+        }
+
+        buf.append(" @ ");
+        buf.append(item);
+        buf.append("\nAbility: ");
+        buf.append(ability);
+
+        buf.append("\nEVs: ");
+        for(int i = 0; i < evs.length; i++) {
+            if(evs[i] != 0) {
+                buf.append(evs[i]);
+                buf.append(" ");
+                buf.append(Pokemon.getStatName(i));
+                buf.append("/");
+            }
+        }
+        buf.setLength(buf.length()-1); //Remove the last /
+
+        PokemonNature n = PokemonNature.getNature(nature);
+        buf.append("\n");
+        buf.append(nature);
+        buf.append(" nature (");
+        if (n.getBenefits() < 0) {
+            buf.append("Neutral");
+        } else {
+            buf.append("+");
+            buf.append(Pokemon.getStatName(n.getBenefits()));
+            buf.append(",-");
+            buf.append(Pokemon.getStatName(n.getHarms()));
+        }
+        buf.append(")");
+
+        for(String move : moves) {
+            buf.append("\n- ");
+            buf.append(move);
+        }
+
+        return buf.toString();
+    }
 }

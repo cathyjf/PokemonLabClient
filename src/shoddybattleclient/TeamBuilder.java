@@ -425,6 +425,11 @@ public class TeamBuilder extends javax.swing.JFrame {
         jMenu1.add(jSeparator2);
 
         menuExport.setText("Export to Text");
+        menuExport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuExportActionPerformed(evt);
+            }
+        });
         jMenu1.add(menuExport);
 
         jMenuBar1.add(jMenu1);
@@ -481,7 +486,7 @@ public class TeamBuilder extends javax.swing.JFrame {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(tabForms, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 389, Short.MAX_VALUE)
+                    .add(tabForms, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(cmbSpecies, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -492,7 +497,7 @@ public class TeamBuilder extends javax.swing.JFrame {
                         .add(btnLoadFromBox)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(btnSaveToBox)
-                        .add(0, 48, Short.MAX_VALUE)))
+                        .add(0, 55, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -632,6 +637,16 @@ public class TeamBuilder extends javax.swing.JFrame {
         if(result == JOptionPane.OK_OPTION)
         addDefaultTeam();
     }//GEN-LAST:event_menuNewActionPerformed
+
+    private void menuExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuExportActionPerformed
+        StringBuilder buf = new StringBuilder();
+        for (int i = 0; i < m_forms.size(); i++) {
+            Pokemon p = m_forms.get(i).getPokemon();
+            buf.append(p.toTeamText());
+            buf.append("\n---\n");
+        }
+        new TextDialog(this, buf.toString());
+    }//GEN-LAST:event_menuExportActionPerformed
 
     /**
     * @param args the command line arguments
