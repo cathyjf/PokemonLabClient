@@ -118,9 +118,10 @@ public class TeamBuilder extends javax.swing.JFrame {
     private List<TeamBuilderForm> m_forms = new ArrayList<TeamBuilderForm>();
     private ArrayList<PokemonSpecies> m_species;
     private ArrayList<PokemonMove> m_moves;
+    private File m_save;
 
     //A hacky fix similar to TeamBuilderForm's hpProgramSelect
-    //Set to true if we don't want cmbSpeciesItemStateChange from clearning data
+    //Set to true if we don't want cmbSpeciesItemStateChange from clearing data
     //on tab switch
     private boolean speciesProgramSelect = false;
 
@@ -217,13 +218,18 @@ public class TeamBuilder extends javax.swing.JFrame {
         FileDialog choose = new FileDialog(this, "Save Team", FileDialog.SAVE);
         choose.setVisible(true);
         String file = choose.getDirectory() + choose.getFile();
-        if (file == null) return;
+        if (file != null) { 
+            saveTeam(file);
+            m_save = new File(file);
+        }
+    }
 
-        int dot = file.lastIndexOf('.');
-        int slash = file.lastIndexOf(File.separatorChar);
+    private void saveTeam(String location) {
+        int dot = location.lastIndexOf('.');
+        int slash = location.lastIndexOf(File.separatorChar);
         if (slash > dot) {
             // no extension - so supply the default one
-            file += ".sbt";
+            location += ".sbt";
         }
 
         int length = m_forms.size();
@@ -237,14 +243,16 @@ public class TeamBuilder extends javax.swing.JFrame {
         buf.append("</shoddybattle>");
 
         try {
-            Writer output = new PrintWriter(new FileWriter(file));
+            Writer output = new PrintWriter(new FileWriter(location));
             output.write(new String(buf));
             output.flush();
             output.close();
+
+            JOptionPane.showMessageDialog(null, "Team saved successfully",
+                    "", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException e) {
             System.out.println("Failed to write team to file");
         }
-
     }
 
     private void setSpecies(String name) {
@@ -521,15 +529,16 @@ public class TeamBuilder extends javax.swing.JFrame {
             m_forms.clear();
             tabForms.removeAll();
 
-            int nPokemon = Math.min(team.length, 12);
+            int nPokemon = Math.min(team.length, 24);
             for (int i = 0; i < nPokemon; i++) {
-                
                 m_forms.add(new TeamBuilderForm(this, i));
                 tabForms.add("", m_forms.get(i));
                 m_forms.get(i).setPokemon(team[i], true);
             }
             setSpecies(team[0].species);
             setSpriteShiny(team[0].shiny);
+
+            m_save = new File(file);
         }
         catch (Exception ex) {
             ex.printStackTrace();
@@ -540,32 +549,35 @@ public class TeamBuilder extends javax.swing.JFrame {
 }//GEN-LAST:event_menuLoadActionPerformed
 
     private void menuSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSaveActionPerformed
-        saveTeam();
+        if(m_save == null)
+            saveTeam();
+        else
+            saveTeam(m_save.getAbsolutePath());
 }//GEN-LAST:event_menuSaveActionPerformed
 
     private void menuSaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSaveAsActionPerformed
-        // TODO add your handling code here:
+        saveTeam();
     }//GEN-LAST:event_menuSaveAsActionPerformed
 
     private void menuChangeSizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuChangeSizeActionPerformed
         String str = JOptionPane.showInputDialog(this, "Enter a new size for this team", m_forms.size());
-        int size = -1;
+        int size = 0;
         try {
-            size = Integer.parseInt(str);
-        } catch (NumberFormatException e) {
-
-        }
-        if (size <= 0) {
+            size = Integer.parseInt(str.trim());
+        } catch (Exception e) {
             return;
         }
-        if(size > 12)
-        {
-            JOptionPane.showMessageDialog(null, "Cannot use a size larger than 12 pokemon.",
+
+        if (size < 1)
+            return;
+
+        if (size > 24) {
+            JOptionPane.showMessageDialog(null, "Cannot use a size larger than 24 pokemon.",
                     "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
+
         if (size > m_forms.size()) {
-            System.out.println("a");
             while (size > m_forms.size()) {
                 addDefaultForm();
             }

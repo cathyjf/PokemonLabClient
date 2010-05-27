@@ -35,7 +35,7 @@ public class RestrictiveDocument extends PlainDocument {
     private int max;
 
     /**
-     * Creates a new document that limits the kind of user import.
+     * Creates a new document that limits the kind of user input.
      * @param max The maximum amount of characters the document supports
      * @param filter A list of disallowed characters, which may be regular expressions
      */

@@ -23,11 +23,7 @@
 
 package shoddybattleclient;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.utils.*;
@@ -258,7 +254,7 @@ public class WelcomeWindow extends javax.swing.JFrame {
             //UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             System.setProperty("apple.laf.useScreenMenuBar", "true");
         } catch (Exception e) {
-            
+            System.out.println("Failed to set look and feel");
         }
 
         Text.loadText("english.lang");
