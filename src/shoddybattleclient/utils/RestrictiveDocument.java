@@ -21,7 +21,9 @@
  */
 
 package shoddybattleclient.utils;
-import javax.swing.text.*;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
 
 /**
  *
@@ -32,6 +34,11 @@ public class RestrictiveDocument extends PlainDocument {
     private String[] filter;
     private int max;
 
+    /**
+     * Creates a new document that limits the kind of user import.
+     * @param max The maximum amount of characters the document supports
+     * @param filter A list of disallowed characters, which may be regular expressions
+     */
     public RestrictiveDocument(int max, String[] filter) {
         this.max = max;
         this.filter = filter;
@@ -58,8 +65,6 @@ public class RestrictiveDocument extends PlainDocument {
                 str = str.substring(0, max-getLength());
             }
         }
-
-
 
         super.insertString(offs, str, a);
     }

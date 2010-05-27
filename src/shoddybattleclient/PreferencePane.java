@@ -80,6 +80,7 @@ public class PreferencePane extends javax.swing.JFrame {
             m_str = str;
             m_url = url;
         }
+        @Override
         public String toString() {
             return m_str;
         }
@@ -181,7 +182,7 @@ public class PreferencePane extends javax.swing.JFrame {
     private void initSpritePanel() {
         File path = new File(Preference.getSpriteLocation());
         path.mkdirs();
-        List<SpritePackage> packages = new ArrayList();
+        List<SpritePackage> packages = new ArrayList<SpritePackage>();
         File[] dirs = path.listFiles();
         for (int i = 0; i < dirs.length; i++) {
             File dir = dirs[i];

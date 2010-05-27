@@ -108,7 +108,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         tblSelected.getColumnModel().getColumn(2).setPreferredWidth(170);
         scrollSelected.add(tblSelected);
         scrollSelected.setViewportView(tblSelected);
-        txtNickname.setDocument(new RestrictiveDocument(15, new String[]{">", "<"}));
+        txtNickname.setDocument(new RestrictiveDocument(15, new String[]{"[<>]+"}));
 
         splitPane.setDividerLocation(tblSelected.getTableHeader().getPreferredSize().height
                 + (tblSelected.getRowHeight() + tblSelected.getRowMargin()) * 4);

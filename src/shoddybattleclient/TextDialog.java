@@ -1,7 +1,7 @@
 /*
  * TextDialog.java
  *
- * Created on Apr 7, 2009, 11:51:16 PM
+ * Created on May 25, 2010, 4:32:39 PM
  *
  * This file is a part of Shoddy Battle.
  * Copyright (C) 2009  Catherine Fitzpatrick and Benjamin Gwin

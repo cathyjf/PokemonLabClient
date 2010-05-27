@@ -329,6 +329,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         public String getName() {
             return m_name;
         }
+        @Override
         public int compareTo(Object o2) {
             User u2 = ((User)o2);
             if (m_level > u2.m_level)
@@ -354,7 +355,15 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         }
         @Override
         public boolean equals(Object o2) {
+            if(o2 == null)
+                return false;
+            if(!this.getClass().equals(o2.getClass()))
+                return false;
             return ((User)o2).m_name.equalsIgnoreCase(m_name);
+        }
+        @Override
+        public int hashCode() {
+            return m_name.toUpperCase().hashCode();
         }
         @Override
         public String toString() {
