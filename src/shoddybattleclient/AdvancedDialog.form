@@ -41,7 +41,7 @@
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="btnConnect" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="30" max="32767" attributes="0"/>
+                      <EmptySpace pref="91" max="32767" attributes="0"/>
                       <Component id="btnCancel" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -84,8 +84,14 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtHost">
+      <Events>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtHostKeyPressed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtPort">
+      <Events>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtPortKeyPressed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnCancel">
       <Properties>

@@ -71,7 +71,7 @@ public class ServerConnect extends javax.swing.JFrame {
         }
         txtWelcome.setCaretPosition(0);
 
-        // temporary
+        // TODO: temporary
         link.loadMoves(
                 ServerConnect.class.getResource(
                 "resources/moves.xml").toString());
@@ -383,10 +383,7 @@ public class ServerConnect extends javax.swing.JFrame {
         String user = txtRegisterName.getText().trim();
         // todo: collapse whitespace...
         m_link.registerAccount(user, pass1);
-
-        // note: NetBeans will not let me fix the indention of the following
-        // line
-}//GEN-LAST:event_cmdRegisterActionPerformed
+    }//GEN-LAST:event_cmdRegisterActionPerformed
 
     private void txtLoginPasswordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtLoginPasswordKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {

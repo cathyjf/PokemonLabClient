@@ -22,7 +22,9 @@
 
 package shoddybattleclient;
 
+import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -62,6 +64,18 @@ public class AdvancedDialog extends javax.swing.JDialog {
 
         jLabel2.setText("Port:");
 
+        txtHost.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtHostKeyPressed(evt);
+            }
+        });
+
+        txtPort.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtPortKeyPressed(evt);
+            }
+        });
+
         btnCancel.setText("Cancel");
         btnCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -93,7 +107,7 @@ public class AdvancedDialog extends javax.swing.JDialog {
                             .add(txtHost, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 165, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                     .add(layout.createSequentialGroup()
                         .add(btnConnect)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 30, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 91, Short.MAX_VALUE)
                         .add(btnCancel)))
                 .addContainerGap())
         );
@@ -122,15 +136,29 @@ public class AdvancedDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectActionPerformed
-        if (WelcomeWindow.connect(txtHost.getText(), Integer.parseInt(txtPort.getText()))) {
-            m_parent.dispose();
-            this.dispose();
+        try {
+            if (WelcomeWindow.connect(txtHost.getText(), Integer.parseInt(txtPort.getText()))) {
+                m_parent.dispose();
+                this.dispose();
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Port must be a number");
         }
     }//GEN-LAST:event_btnConnectActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         this.dispose();
     }//GEN-LAST:event_btnCancelActionPerformed
+
+    private void txtHostKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtHostKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            btnConnectActionPerformed(null);
+        }
+    }//GEN-LAST:event_txtHostKeyPressed
+
+    private void txtPortKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPortKeyPressed
+        txtHostKeyPressed(evt);
+    }//GEN-LAST:event_txtPortKeyPressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

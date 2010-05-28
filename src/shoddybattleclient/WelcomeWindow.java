@@ -23,6 +23,7 @@
 
 package shoddybattleclient;
 import java.awt.event.MouseEvent;
+import java.net.UnknownHostException;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import shoddybattleclient.network.ServerLink;
@@ -98,6 +99,9 @@ public class WelcomeWindow extends javax.swing.JFrame {
         ServerLink link;
         try {
             link = new ServerLink(host, port);
+        } catch(UnknownHostException e) {
+            JOptionPane.showMessageDialog(null, "Invalid host");
+            return false;
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
             return false;
