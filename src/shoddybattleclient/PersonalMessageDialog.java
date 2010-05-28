@@ -26,16 +26,17 @@ package shoddybattleclient;
 import java.awt.Color;
 import javax.swing.JOptionPane;
 import shoddybattleclient.network.ServerLink;
+import shoddybattleclient.network.ServerLink.MessageListener;
 
 /**
  *
  * @author ben
  */
-public class PersonalMessageDialog extends javax.swing.JFrame {
+public class PersonalMessageDialog extends javax.swing.JFrame implements MessageListener{
 
     private ServerLink m_link;
 
-    private static final int MAX_LENGTH = 250;
+    private static final int MAX_LENGTH = 150;
 
     /** Creates new form PersonalMessageDialog */
     public PersonalMessageDialog(ServerLink link) {
@@ -47,6 +48,20 @@ public class PersonalMessageDialog extends javax.swing.JFrame {
         lblInfo.setText("<html>" + info + "</html>");
         //todo: get current message
         lblLimit.setText("0/" + MAX_LENGTH);
+        m_link.addMessageListener(this);
+        m_link.requestUserMessage(link.getLobby().getUserName());
+    }
+
+    @Override
+    public void informMessageRecevied(String user, String msg) {
+        if (!user.equals(m_link.getLobby().getUserName())) return;
+        txtMessage.setText(msg);
+    }
+
+    @Override
+    public void dispose() {
+        m_link.removeMessageListener(this);
+        super.dispose();
     }
 
     /** This method is called from within the constructor to
@@ -143,6 +158,7 @@ public class PersonalMessageDialog extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Your message is too long");
             return;
         }
+        m_link.updatePersonalMessage(message);
         dispose();
     }//GEN-LAST:event_btnSubmitActionPerformed
 

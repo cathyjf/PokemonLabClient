@@ -143,6 +143,11 @@ public class ServerLink extends Thread {
         }
     }
 
+    //Provies callbacks for elements trying to receive a user's personal message
+    public static interface MessageListener {
+        public void informMessageRecevied(String user, String msg);
+    }
+
     /**
      * Messages sent by the client to the server.
      */
@@ -382,6 +387,28 @@ public class ServerLink extends Thread {
                 m_stream.writeUTF(user);
             } catch (Exception e) {
                 
+            }
+        }
+    }
+
+    public static class PersonalUserMessage extends OutMessage {
+        public PersonalUserMessage(String message) {
+            super(16);
+            try {
+                m_stream.writeUTF(message);
+            } catch (Exception e) {
+                
+            }
+        }
+    }
+
+    public static class RequestUserMessage extends OutMessage {
+        public RequestUserMessage(String user) {
+            super(17);
+            try {
+                m_stream.writeUTF(user);
+            } catch (Exception e) {
+
             }
         }
     }
@@ -1282,6 +1309,18 @@ public class ServerLink extends Thread {
                 }
             });
 
+            //USER_PERSONAL_MESSAGE
+            new ServerMessage(29, new MessageHandler() {
+                //string : user
+                //string : message
+                public void handle(ServerLink link, DataInputStream is)
+                                                            throws IOException{
+                    String user = is.readUTF();
+                    String message = is.readUTF();
+                    link.informPersonalMessageReceived(user, message);
+                }
+            });
+
             // add additional messages here
         }
 
@@ -1328,6 +1367,7 @@ public class ServerLink extends Thread {
     private Map<Integer, BattleWindow> m_battles =
             new HashMap<Integer, BattleWindow>();
     private Metagame[] m_metagames;
+    private List<MessageListener> m_msgListeners = new ArrayList<MessageListener>();
 
     public Metagame[] getMetagames() {
         return m_metagames;
@@ -1376,6 +1416,20 @@ public class ServerLink extends Thread {
 
     public void postChallengeTeam(String opponent, Pokemon[] team) {
         sendMessage(new ChallengeTeam(this, opponent, team));
+    }
+
+    public void addMessageListener(MessageListener ml) {
+        m_msgListeners.add(ml);
+    }
+
+    public void removeMessageListener(MessageListener ml) {
+        m_msgListeners.remove(ml);
+    }
+
+    public void informPersonalMessageReceived(String user, String message) {
+        for (MessageListener ml : m_msgListeners) {
+            ml.informMessageRecevied(user, message);
+        }
     }
 
     public void loadSpecies(String file) {
@@ -1446,6 +1500,14 @@ public class ServerLink extends Thread {
 
     public void requestUserLookup(String user) {
         sendMessage(new UserDetailMessage(user));
+    }
+
+    public void updatePersonalMessage(String msg) {
+        sendMessage(new PersonalUserMessage(msg));
+    }
+
+    public void requestUserMessage(String user) {
+        sendMessage(new RequestUserMessage(user));
     }
 
     public void attemptAuthentication(String user, String password) {

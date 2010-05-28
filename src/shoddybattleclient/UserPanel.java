@@ -34,17 +34,20 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.network.ServerLink.ChallengeMediator;
+import shoddybattleclient.network.ServerLink.MessageListener;
 import shoddybattleclient.shoddybattle.Pokemon;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
 import shoddybattleclient.shoddybattle.PokemonSpecies;
 import shoddybattleclient.utils.CloseableTabbedPane.CloseableTab;
+import shoddybattleclient.utils.HTMLPane;
 import shoddybattleclient.utils.TeamFileParser;
+import shoddybattleclient.utils.Text;
 
 /**
  *
  * @author ben
  */
-public class UserPanel extends javax.swing.JPanel implements CloseableTab {
+public class UserPanel extends javax.swing.JPanel implements CloseableTab, MessageListener {
 
     public static class TeamBox extends JPanel {
         public TeamBox() {
@@ -126,7 +129,16 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab {
         m_opponent = name;
         m_link = link;
         m_idx = index;
-        lblMessage.setText("<html>I am a polymath so don't challenge me unless you want to lose</html>");
+        m_link.addMessageListener(this);
+        m_link.requestUserMessage(name);
+    }
+
+    public void setPersonalMessage(String msg) {
+        if ("".equals(msg)) {
+            msg = Text.getText(26, 5);
+        }
+        msg = "<html>" + HTMLPane.htmlEntityEncode(msg) + "</html>";
+        lblMessage.setText(msg);
     }
 
     public void setIncoming() {
@@ -170,20 +182,30 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab {
     }
 
     public boolean informClosed() {
+        boolean close = true;
         if (m_waiting) {
-            return JOptionPane.showConfirmDialog(this,
+            close = JOptionPane.showConfirmDialog(this,
                     "Are you sure you wish to cancel your challenge?", "Cancel Challenge",
                      JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
         } else {
             if (m_incoming) {
                 m_link.resolveChallenge(m_opponent, false, null);
             }
-            return true;
+            close = true;
         }
+        if (!close) return false;
+        m_link.removeMessageListener(this);
+        return true;
     }
 
     public String getOpponent() {
         return m_opponent;
+    }
+
+    @Override
+    public void informMessageRecevied(String user, String msg) {
+        if (!user.equals(m_opponent)) return;
+        setPersonalMessage(msg);
     }
 
     /** This method is called from within the constructor to
