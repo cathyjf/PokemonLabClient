@@ -217,11 +217,10 @@ public class TeamBuilder extends javax.swing.JFrame {
     private void saveTeam() {
         FileDialog choose = new FileDialog(this, "Save Team", FileDialog.SAVE);
         choose.setVisible(true);
+        if (choose.getFile() == null) return;
         String file = choose.getDirectory() + choose.getFile();
-        if (file != null) { 
-            saveTeam(file);
-            m_save = new File(file);
-        }
+        saveTeam(file);
+        m_save = new File(file);
     }
 
     private void saveTeam(String location) {
@@ -519,6 +518,7 @@ public class TeamBuilder extends javax.swing.JFrame {
     private void menuLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLoadActionPerformed
         FileDialog choose = new FileDialog(this, "Load Team", FileDialog.LOAD);
         choose.setVisible(true);
+        if (choose.getFile() == null) return;
         String file = choose.getDirectory() + choose.getFile();
         if (file == null || !(new File(file).exists())) return;
 
