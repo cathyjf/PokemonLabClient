@@ -92,17 +92,20 @@
             <Property name="text" type="java.lang.String" value="Tools"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="menuRandomise">
+            <MenuItem class="javax.swing.JMenuItem" name="menuFront">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Move to Front"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuFrontActionPerformed"/>
+              </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="menuBox">
+            <MenuItem class="javax.swing.JMenuItem" name="menuRandomise">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Randomise Team"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem6">
+            <MenuItem class="javax.swing.JMenuItem" name="menuBox">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Open Box"/>
               </Properties>
@@ -177,7 +180,7 @@
                       <Component id="btnLoadFromBox" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Component id="btnSaveToBox" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="55" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="62" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>

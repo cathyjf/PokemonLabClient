@@ -330,9 +330,9 @@ public class TeamBuilder extends javax.swing.JFrame {
         jMenu3 = new javax.swing.JMenu();
         mnuHappiness = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+        menuFront = new javax.swing.JMenuItem();
         menuRandomise = new javax.swing.JMenuItem();
         menuBox = new javax.swing.JMenuItem();
-        jMenuItem6 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Shoddy Battle - Team Builder");
@@ -455,14 +455,19 @@ public class TeamBuilder extends javax.swing.JFrame {
 
         jMenu2.setText("Tools");
 
-        menuRandomise.setText("Move to Front");
+        menuFront.setText("Move to Front");
+        menuFront.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuFrontActionPerformed(evt);
+            }
+        });
+        jMenu2.add(menuFront);
+
+        menuRandomise.setText("Randomise Team");
         jMenu2.add(menuRandomise);
 
-        menuBox.setText("Randomise Team");
+        menuBox.setText("Open Box");
         jMenu2.add(menuBox);
-
-        jMenuItem6.setText("Open Box");
-        jMenu2.add(jMenuItem6);
 
         jMenuBar1.add(jMenu2);
 
@@ -493,7 +498,7 @@ public class TeamBuilder extends javax.swing.JFrame {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(tabForms, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)
+                    .add(tabForms, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(cmbSpecies, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -504,7 +509,7 @@ public class TeamBuilder extends javax.swing.JFrame {
                         .add(btnLoadFromBox)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(btnSaveToBox)
-                        .add(0, 55, Short.MAX_VALUE)))
+                        .add(0, 62, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -660,6 +665,21 @@ public class TeamBuilder extends javax.swing.JFrame {
         new TextDialog(this, buf.toString());
     }//GEN-LAST:event_menuExportActionPerformed
 
+    private void menuFrontActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuFrontActionPerformed
+        int selected = tabForms.getSelectedIndex();
+        if (selected < 1)
+            return;
+
+        TeamBuilderForm temp = m_forms.get(selected);
+        m_forms.set(selected, m_forms.get(0));
+        m_forms.set(0, temp);
+
+        // JTabbedPane.setComponentAt() "apparently" removes tabs
+        tabForms.removeAll();
+        for(TeamBuilderForm tab : m_forms)
+            tabForms.addTab(tab.getPokemon().toString(), tab);
+    }//GEN-LAST:event_menuFrontActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -685,13 +705,13 @@ public class TeamBuilder extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JMenuItem menuBox;
     private javax.swing.JMenuItem menuChangeSize;
     private javax.swing.JMenuItem menuExport;
+    private javax.swing.JMenuItem menuFront;
     private javax.swing.JMenuItem menuLoad;
     private javax.swing.JMenuItem menuNew;
     private javax.swing.JMenuItem menuRandomise;
