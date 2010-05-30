@@ -47,7 +47,7 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="cmbHiddenPower" min="-2" pref="91" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="txtHiddenPower" min="-2" max="-2" attributes="1"/>
+                                  <Component id="txtHiddenPower" min="-2" pref="30" max="-2" attributes="1"/>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Group type="103" groupAlignment="1" attributes="0">
@@ -63,7 +63,7 @@
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="splitPane" min="-2" pref="399" max="32767" attributes="0"/>
+                      <Component id="splitPane" min="-2" pref="404" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -113,6 +113,11 @@
   </Layout>
   <SubComponents>
     <Component class="javax.swing.JTextField" name="txtNickname">
+      <Properties>
+        <Property name="document" type="javax.swing.text.Document" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="new FilteredDocument(15, &quot;[&lt;&gt;]+&quot;)" type="code"/>
+        </Property>
+      </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel24">
       <Properties>
@@ -121,6 +126,9 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtLevel">
       <Properties>
+        <Property name="document" type="javax.swing.text.Document" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="new IntegerDocument(1, 100, txtLevel)" type="code"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="100"/>
       </Properties>
     </Component>
@@ -220,12 +228,17 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtHiddenPower">
       <Properties>
-        <Property name="editable" type="boolean" value="false"/>
+        <Property name="document" type="javax.swing.text.Document" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="new IntegerDocument(30, 70, txtHiddenPower)" type="code"/>
+        </Property>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Lucida Grande" size="11" style="0"/>
         </Property>
         <Property name="text" type="java.lang.String" value="70"/>
       </Properties>
+      <Events>
+        <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtHiddenPowerKeyTyped"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JComboBox" name="cmbHiddenPower">
       <Properties>

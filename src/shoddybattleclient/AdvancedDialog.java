@@ -25,6 +25,7 @@ package shoddybattleclient;
 import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import shoddybattleclient.utils.IntegerDocument;
 
 /**
  *
@@ -70,6 +71,7 @@ public class AdvancedDialog extends javax.swing.JDialog {
             }
         });
 
+        txtPort.setDocument(new IntegerDocument(65535, null));
         txtPort.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtPortKeyPressed(evt);

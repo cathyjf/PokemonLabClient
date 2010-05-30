@@ -89,6 +89,11 @@
       </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtPort">
+      <Properties>
+        <Property name="document" type="javax.swing.text.Document" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="new IntegerDocument(65535, null)" type="code"/>
+        </Property>
+      </Properties>
       <Events>
         <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtPortKeyPressed"/>
       </Events>

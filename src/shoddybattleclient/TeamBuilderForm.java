@@ -39,9 +39,12 @@ import javax.swing.JTextField;
 import javax.swing.Timer;
 import shoddybattleclient.shoddybattle.*;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
-import shoddybattleclient.utils.*;
+import shoddybattleclient.utils.FilteredDocument;
+import shoddybattleclient.utils.IntegerDocument;
+import shoddybattleclient.utils.MoveTableModel;
 import shoddybattleclient.utils.MoveTableModel.SelectedMoveModel;
 import shoddybattleclient.utils.MoveTableModel.TableRow;
+import shoddybattleclient.utils.JButtonTable;
 /**
  *
  * @author ben
@@ -108,7 +111,6 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         tblSelected.getColumnModel().getColumn(2).setPreferredWidth(170);
         scrollSelected.add(tblSelected);
         scrollSelected.setViewportView(tblSelected);
-        txtNickname.setDocument(new RestrictiveDocument(15, new String[]{"[<>]+"}));
 
         splitPane.setDividerLocation(tblSelected.getTableHeader().getPreferredSize().height
                 + (tblSelected.getRowHeight() + tblSelected.getRowMargin()) * 4);
@@ -148,12 +150,14 @@ public class TeamBuilderForm extends javax.swing.JPanel {
             iv.setSize(new Dimension(0, 0));
             iv.setPreferredSize(new Dimension(0, 0));
             iv.setMaximumSize(new Dimension(0, 0));
+            iv.setDocument(new IntegerDocument(31, iv));
             m_ivs[i] = iv;
             JTextField ev = new JTextField("0");
             ev.setFont(iv.getFont());
             ev.setSize(new Dimension(0, 0));
             ev.setPreferredSize(new Dimension(0, 0));
             ev.setMaximumSize(new Dimension(0, 0));
+            ev.setDocument(new IntegerDocument(0, 255, 0, ev));
             m_evs[i] = ev;
             JLabel base = new JLabel("000");
             base.setFont(iv.getFont());
@@ -411,8 +415,11 @@ public class TeamBuilderForm extends javax.swing.JPanel {
 
         setOpaque(false);
 
+        txtNickname.setDocument(new FilteredDocument(15, "[<>]+"));
+
         jLabel24.setText("Level:");
 
+        txtLevel.setDocument(new IntegerDocument(1, 100, txtLevel));
         txtLevel.setText("100");
 
         chkShiny.setText("Shiny?");
@@ -450,9 +457,14 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         jLabel25.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         jLabel25.setText("Hidden Power:");
 
-        txtHiddenPower.setEditable(false);
-        txtHiddenPower.setFont(new java.awt.Font("Lucida Grande", 0, 11));
+        txtHiddenPower.setDocument(new IntegerDocument(30, 70, txtHiddenPower));
+        txtHiddenPower.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
         txtHiddenPower.setText("70");
+        txtHiddenPower.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtHiddenPowerKeyTyped(evt);
+            }
+        });
 
         cmbHiddenPower.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         cmbHiddenPower.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Bug", "Dark", "Dragon", "Electric", "Fighting", "Fire", "Flying", "Ghost", "Grass", "Ground", "Ice", "Poison", "Psychic", "Rock", "Steel", "Water" }));
@@ -501,7 +513,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                                     .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                     .add(cmbHiddenPower, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 91, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                    .add(txtHiddenPower, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                    .add(txtHiddenPower, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 30, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                                 .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                                     .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                                         .add(jLabel27)
@@ -511,7 +523,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                                         .add(cmbNature, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .add(cmbAbility, 0, 162, Short.MAX_VALUE)))))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(splitPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 387, Short.MAX_VALUE)))
+                        .add(splitPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 404, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -578,6 +590,10 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         }
         updateHiddenPower();
     }//GEN-LAST:event_cmbHiddenPowerItemStateChanged
+
+    private void txtHiddenPowerKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtHiddenPowerKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtHiddenPowerKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

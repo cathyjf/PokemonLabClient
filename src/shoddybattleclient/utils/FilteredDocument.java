@@ -21,6 +21,7 @@
  */
 
 package shoddybattleclient.utils;
+
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
@@ -29,26 +30,26 @@ import javax.swing.text.PlainDocument;
  *
  * @author Carlos
  */
-public class RestrictiveDocument extends PlainDocument {
+public class FilteredDocument extends PlainDocument {
 
-    private String[] filter;
+    private String filter;
     private int max;
 
     /**
      * Creates a new document that limits the kind of user input.
      * @param max The maximum amount of characters the document supports
-     * @param filter A list of disallowed characters, which may be regular expressions
+     * @param filter A disallowed substring and/or regular expression
      */
-    public RestrictiveDocument(int max, String[] filter) {
+    public FilteredDocument(int max, String filter) {
         this.max = max;
         this.filter = filter;
     }
 
-    public RestrictiveDocument(int max) {
-        this(max, new String[0]);
+    public FilteredDocument(int max) {
+        this(max, "");
     }
 
-    public RestrictiveDocument(String[] filter) {
+    public FilteredDocument(String filter) {
         this(-1, filter);
     }
 
@@ -56,9 +57,7 @@ public class RestrictiveDocument extends PlainDocument {
     public void insertString(int offs, String str, AttributeSet a)
             throws BadLocationException {
 
-        for(String f : filter) {
-            str = str.replaceAll(f, "");
-        }
+        str = str.replaceAll(filter, "");
         
         if(max > 0) {
             if(getLength() + str.length() > max) {
