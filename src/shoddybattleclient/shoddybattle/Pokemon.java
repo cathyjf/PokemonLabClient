@@ -66,6 +66,8 @@ public class Pokemon {
     public static final int S_SPEED = 3;
     public static final int S_SPATTACK = 4;
     public static final int S_SPDEFENCE = 5;
+    public static final int S_ACCURACY = 6;
+    public static final int S_EVASION = 7;
 
     public static final int MOVE_COUNT = 4;
     public static final int STAT_COUNT = 6;
@@ -152,6 +154,10 @@ public class Pokemon {
                 return "SpDef";
             case S_SPATTACK:
                 return "SpAtk";
+            case S_EVASION:
+                return "Evas";
+            case S_ACCURACY:
+                return "Acc";
             default:
                 return "Bad stat index";
         }

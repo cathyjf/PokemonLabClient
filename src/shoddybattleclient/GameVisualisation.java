@@ -23,6 +23,7 @@
 
 package shoddybattleclient;
 
+import java.awt.AlphaComposite;
 import shoddybattleclient.utils.*;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -30,6 +31,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.MediaTracker;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,7 +41,9 @@ import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -56,29 +60,101 @@ import shoddybattleclient.shoddybattle.PokemonSpecies;
  */
 public class GameVisualisation extends JPanel {
 
+    private static class Pokeball extends JPanel {
+        private VisualPokemon m_pokemon;
+        public Pokeball(VisualPokemon p) {
+            setOpaque(false);
+            m_pokemon = p;
+            ToolTipManager manager = ToolTipManager.sharedInstance();
+            manager.setInitialDelay(0);
+            manager.setEnabled(true);
+            setToolTipText("asdf");
+        }
+        public Dimension getPreferredSize() {
+            return new Dimension(18, 18);
+        }
+        public void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D)g.create();
+            g2.setRenderingHint(
+                    RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            int w = getPreferredSize().width - 2;
+            int h = getPreferredSize().height - 2;
+            if (m_pokemon.getState() == State.FAINTED) {
+                g2.setColor(Color.DARK_GRAY);
+                g2.fillArc(0, 0, w, h, 0, 360);
+                g2.dispose();
+                return;
+            }
+            g2.setColor(Color.BLACK);
+            g2.fillArc(0, 0, w, h, 0, 360);
+            g2.setColor(Color.WHITE);
+            g2.fillArc(1, 1, w - 2, h - 2, 0, 360);
+            g2.setColor(Color.RED);
+            g2.fillArc(1, 1, w - 2, h - 2, 0, 180);
+            g2.fillArc(1, h / 2 - 2, w - 2, h / 5, 0, -180);
+            g2.setColor(Color.BLACK);
+            g2.drawArc(1, h / 2 - 2, w - 2, h / 5, 0, -180);
+            g2.fillArc(w / 2 - 3, h/2 - 2, 6, 6, 0, 360);
+            g2.setColor(Color.WHITE);
+            g2.fillArc(w / 2 - 2, h/2 - 1, 4, 4, 0, 360);
+            if (m_pokemon.getState() != State.NORMAL) {
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
+                g2.setColor(Color.GRAY);
+                g2.fillArc(0, 0, w, h, 0, 360);
+                g2.setComposite(AlphaComposite.SrcOver);
+                g2.drawString(String.valueOf(m_pokemon.getState().ordinal()), w / 2, h / 2);
+            }
+            g2.dispose();
+        }
+        @Override
+        public JToolTip createToolTip() {
+            return new JCustomTooltip(this,
+                    new VisualToolTip(m_pokemon, true));
+        }
+    }
+
+    private static class Sprite extends JPanel {
+        private int m_id;
+        public Sprite(int id) {
+            m_id = id;
+        }
+    }
+
     public static class VisualPokemon {
         private String m_species;
         private String m_name;
+        private int m_level;
         private int m_gender;
         private boolean m_shiny;
         private List<String> m_statuses = new ArrayList<String>();
         private int m_healthN = 48;
         private int m_healthD = 48;
-        private int[] m_statLevels = new int[6];
+        private int[] m_statLevels = new int[8];
         private boolean m_visible = true;
         private int m_slot = -1;
         private boolean m_fainted = false;
         private Pokemon m_pokemon = null;
         private int m_frame = 1;
+        private State m_state = State.NORMAL;
+        private static Map<String, State> m_stateMap = new HashMap<String, State>();
+        static {
+            m_stateMap.put(Text.getText(6, 0), State.BURNED);
+            m_stateMap.put(Text.getText(8, 0), State.FROZEN);
+            m_stateMap.put(Text.getText(9, 0), State.PARALYSED);
+            m_stateMap.put(Text.getText(10, 0), State.SLEEPING);
+            m_stateMap.put(Text.getText(11, 0), State.POISONED);
+        }
 
-        public VisualPokemon(String species, int gender, boolean shiny) {
+        public VisualPokemon(String species, int gender, int level, boolean shiny) {
             m_species = species;
             m_gender = gender;
+            m_level = level;
             m_shiny = shiny;
         }
         public VisualPokemon() {
             m_species = "???";
             m_gender = 0;
+            m_level = 100;
             m_shiny = false;
         }
         public String getSpecies() {
@@ -102,11 +178,27 @@ public class GameVisualisation extends JPanel {
         public boolean isShiny() {
             return m_shiny;
         }
+        public int getLevel() {
+            return m_level;
+        }
+        public void updateStatus(String status, boolean applied) {
+            if (applied) {
+                addStatus(status);
+            } else {
+                removeStatus(status);
+            }
+        }
         public void addStatus(String status) {
             m_statuses.add(status);
+            if (m_stateMap.containsKey(status)) {
+                m_state = m_stateMap.get(status);
+            }
         }
         public void removeStatus(String status) {
             m_statuses.remove(status);
+            if (m_stateMap.containsKey(status)) {
+                m_state = State.NORMAL;
+            }
         }
         public List<String> getStatuses() {
             return m_statuses;
@@ -121,8 +213,9 @@ public class GameVisualisation extends JPanel {
         public int getDenominator() {
             return m_healthD;
         }
-        public void setStatLevel(int i, int level) {
-            m_statLevels[i] = level;
+        public void updateStatLevel(int i, int delta, boolean applied) {
+            int sign = (applied) ? 1 : -1;
+            m_statLevels[i] += sign * delta;
         }
         public int getStatLevel(int idx) {
             return m_statLevels[idx];
@@ -139,13 +232,11 @@ public class GameVisualisation extends JPanel {
         public boolean isFainted() {
             return m_fainted;
         }
-        public int getState() {
+        public State getState() {
             if (m_fainted) {
-                return STATE_FAINTED;
-            } else if (m_statuses.size() > 0) {
-                return STATE_STATUSED;
+                return State.FAINTED;
             } else {
-                return STATE_NORMAL;
+                return m_state;
             }
         }
         public void setPokemon(Pokemon p) {
@@ -159,23 +250,35 @@ public class GameVisualisation extends JPanel {
         }
     }
 
-    public static final int STATE_NORMAL = 0;
-    public static final int STATE_STATUSED = 1;
-    public static final int STATE_FAINTED = 2;
+    public static enum State {
+        NORMAL,
+        PARALYSED,
+        BURNED,
+        FROZEN,
+        SLEEPING,
+        POISONED,
+        FAINTED;
+    }
 
     private static final int BACKGROUND_COUNT = 23;
 
+    private static final int RADIUS_SINGLE = 0;
+    private static final int RADIUS_PARTY = 1;
+    private static final int RADIUS_GLOBAL = 2;
+
     private Image m_background;
-    private static final Image[] m_pokeball = new Image[3];
     private static final Image[] m_arrows = new Image[2];
     private VisualPokemon[][] m_active;
     private VisualPokemon[][] m_parties;
+    private Pokeball[][] m_pokeballs;
     private int m_view;
     private int m_selected = -1;
     private int m_target = Integer.MAX_VALUE;
     private Graphics2D m_mouseInput;
     private static final IndexColorModel m_colours;
     private final List<PokemonSpecies> m_speciesList;
+    private List<String>[] m_partyStatuses = new ArrayList[2];
+    private List<String> m_globalStatuse = new ArrayList<String>();
     private int m_n;
     //max team length
     private int m_length;
@@ -189,9 +292,6 @@ public class GameVisualisation extends JPanel {
     }
 
     static {
-        m_pokeball[STATE_NORMAL] = getImageFromResource("pokeball.png");
-        m_pokeball[STATE_STATUSED] = getImageFromResource("pokeball2.png");
-        m_pokeball[STATE_FAINTED] = getImageFromResource("pokeball3.png");
         m_arrows[0] = getImageFromResource("arrow_green.png");
         m_arrows[1] = getImageFromResource("arrow_red.png");
         
@@ -214,25 +314,17 @@ public class GameVisualisation extends JPanel {
     }
     
     public GameVisualisation(int view, int n, int length, List<PokemonSpecies> speciesList) {
+        this.setLayout(null);
         m_view = view;
         m_active = new VisualPokemon[2][n];
         m_parties = new VisualPokemon[2][length];
+        m_pokeballs = new Pokeball[2][length];
         m_speciesList = speciesList;
-        for (int i = 0; i < m_parties.length; i++) {
-            for (int j = 0; j < m_parties[i].length; j++) {
-                m_parties[i][j] = new VisualPokemon();
-            }
-        }
-        m_n = n;
-        m_length = length;
-        setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
         int background = new Random().nextInt(BACKGROUND_COUNT) + 1;
         m_background = getImageFromResource("backgrounds/background" + background + ".png");
         MediaTracker tracker = new MediaTracker(this);
         tracker.addImage(m_background, 0);
-        tracker.addImage(m_pokeball[0], 1);
-        tracker.addImage(m_pokeball[1], 2);
-        tracker.addImage(m_pokeball[2], 3);
         tracker.addImage(m_arrows[0], 4);
         tracker.addImage(m_arrows[1], 5);
         try {
@@ -240,6 +332,35 @@ public class GameVisualisation extends JPanel {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        int rows = length / 3;
+        for (int i = 0; i < m_parties.length; i++) {
+            for (int j = 0; j < m_parties[i].length; j++) {
+                VisualPokemon p = new VisualPokemon();
+                m_parties[i][j] = p;
+                Pokeball ball = new Pokeball(p);
+                m_pokeballs[i][j] = ball;
+                Dimension d = ball.getPreferredSize();
+                ball.setSize(d);
+                int x, y;
+                int w = m_background.getWidth(this);
+                int h = m_background.getHeight(this);
+                int row = j / 3;
+                int buff = 1;
+                x = (j - 3*row) * (d.width + buff) + 2;
+                y = (d.width + buff) * row + 2;
+                if (view == i) {
+                    x += w - 3 * (d.width + buff) - 2;
+                    y += h - rows * (d.width + buff);
+                }
+                ball.setLocation(x, y);
+                
+                this.add(ball);
+            }
+        }
+        m_n = n;
+        m_length = length;
+        setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
         Dimension d = getPreferredSize();
         final BufferedImage image = new BufferedImage((int)d.getWidth(),
@@ -268,10 +389,6 @@ public class GameVisualisation extends JPanel {
         });
     }
 
-    public void updateStatLevel(int party, int slot, int stat, int level) {
-        getPokemonForSlot(party, slot).setStatLevel(stat, level);
-    }
-
     public void setSpriteVisible(int party, int slot, boolean visible) {
         m_active[party][slot].m_visible = visible;
     }
@@ -282,6 +399,26 @@ public class GameVisualisation extends JPanel {
 
     public VisualPokemon getPokemon(int party, int index) {
         return m_parties[party][index];
+    }
+
+    public void updateStatus(int party, int position, int radius, String msg, boolean applied) {
+        VisualPokemon p = getPokemon(party, position);
+        if (radius != RADIUS_SINGLE) {
+            //todo: take care of non single radii
+            return;
+        }
+        String[] parts = msg.split(";");
+        if (parts.length == 1) {
+            p.updateStatus(msg, applied);
+        } else {
+            if ("StatChangeEffect".equals(parts[0])) {
+                int stat = Integer.parseInt(parts[1]);
+                int delta = Integer.parseInt(parts[2]);
+                p.updateStatLevel(stat, delta, applied);
+            }
+            //todo: other cases with additional information
+        }
+        m_pokeballs[party][position].repaint();
     }
 
     void faint(int party, int slot) {
@@ -426,8 +563,7 @@ public class GameVisualisation extends JPanel {
             denom = p.getDenominator();
         }
         // TODO: adjust final parameter for spectator support
-        VisualToolTip vt = new VisualToolTip(p.getSpecies(), stats.toString(),
-                effects.toString(), num, denom, m_tooltipParty == m_view);
+        VisualToolTip vt = new VisualToolTip(p, m_tooltipParty == m_view);
         return new JCustomTooltip(this, vt);
     }
 
@@ -439,28 +575,6 @@ public class GameVisualisation extends JPanel {
         g2.drawImage(m_background, 0, 0, this);
         for (int i = 0; i < 2; i++) {
             paintParty(i, g2);
-            paintPokeballs(i, g2);
-        }
-        g2.dispose();
-    }
-
-    private void paintPokeballs(int idx, Graphics g) {
-        Graphics2D g2 = (Graphics2D)g.create();
-        boolean us = (idx == m_view);
-        int w = m_pokeball[0].getWidth(this);
-        int h = m_pokeball[0].getHeight(this);
-        int baseX = us ? m_background.getWidth(this) - 3 * (w + 3) : 5;
-        int baseY = us ? m_background.getHeight(this) - 2 * (h + 3) : 5;
-        VisualPokemon[] party = m_parties[idx];
-        for (int i = 0; i < party.length; i++) {
-            if (i >= 6) break;
-            int row = i / 3;
-            Image pokeball = m_pokeball[party[i].getState()];
-            int x = baseX + (i % 3) * (w + 3);
-            int y = baseY + row * (h + 3);
-            g2.drawImage(pokeball, x, y, this);
-            m_mouseInput.setColor(new Color(idx, i, 0));
-            m_mouseInput.fillRect(x, y, w, h);
         }
         g2.dispose();
     }
@@ -583,52 +697,10 @@ public class GameVisualisation extends JPanel {
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Visualisation test");
+        GameVisualisation panel = new GameVisualisation(0, 1, 6, null);
+        frame.setSize(panel.getPreferredSize().width, panel.getPreferredSize().height + 20);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ArrayList<PokemonSpecies> species = new SpeciesListParser().parseDocument(
-                GameVisualisation.class.getResource("resources/species.xml").toString());
-        final GameVisualisation vis = new GameVisualisation(0, 3, 6, species);
-        VisualPokemon[] party1 = new VisualPokemon[] {
-            new VisualPokemon("Squirtle", Pokemon.Gender.GENDER_MALE.getValue(), false),
-            new VisualPokemon("Wartortle", Pokemon.Gender.GENDER_MALE.getValue(), false),
-            new VisualPokemon("Blastoise", Pokemon.Gender.GENDER_MALE.getValue(), false)
-        };
-        VisualPokemon[] party2 = new VisualPokemon[] {
-            new VisualPokemon("Blissey", Pokemon.Gender.GENDER_FEMALE.getValue(), false),
-            new VisualPokemon("Togekiss", Pokemon.Gender.GENDER_FEMALE.getValue(), false),
-            new VisualPokemon("Tyranitar", Pokemon.Gender.GENDER_FEMALE.getValue(), false)
-        };
-        vis.setSelected(0);
-        vis.setTarget(-2);
-        vis.setActive(party1, party2);
-        Dimension d = vis.getPreferredSize();
-        frame.setSize(d.width, d.height + 22);
-        vis.setSize(d);
-        vis.setLocation(0, 0);
-        frame.add(vis);
-
+        frame.add(panel);
         frame.setVisible(true);
-        new Thread(new Runnable() {
-
-            public void run() {
-                int i = -3;
-                while (true) {
-                    synchronized(this) {
-                        final int idx = i;
-                        javax.swing.SwingUtilities.invokeLater(new Runnable(){
-                            public void run() {
-                                vis.setTarget(idx);
-                            }
-                        });
-                        try {
-                            wait(700);
-                        } catch (Exception e) {
-
-                        }
-                        if (++i > 5) i = -3;
-                    }
-                }
-            }
-
-        }).start();
     }
 }

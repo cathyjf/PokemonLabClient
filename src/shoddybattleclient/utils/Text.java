@@ -50,6 +50,12 @@ public class Text {
             text = text.replace(match, args[i]);
         }
 
+        text = parse(text, field);
+
+        return text;
+    }
+
+    public static String parse(String text, BattleField field) {
         int pos;
         String match = "${";
         while ((pos  = text.indexOf(match)) >= 0) {
@@ -76,7 +82,6 @@ public class Text {
                 text = text.substring(0, pos) + name + text.substring(pos2 + 1);
             }
         }
-
         return text;
     }
     

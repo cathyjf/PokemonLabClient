@@ -24,62 +24,87 @@
 package shoddybattleclient;
 
 import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import javax.swing.BorderFactory;
+import java.awt.Font;
+import java.util.List;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
+import shoddybattleclient.GameVisualisation.VisualPokemon;
+import shoddybattleclient.shoddybattle.Pokemon;
+import shoddybattleclient.shoddybattle.Pokemon.Gender;
+import shoddybattleclient.utils.Text;
 
 /**
  *
  * @author ben
  */
 public class VisualToolTip extends javax.swing.JPanel {
+    private HealthBar m_healthBar;
+    private JLabel[] m_statLabels = new JLabel[7];
+    private static String[] statPrefixes = new String[7];
+
+    static {
+        int longest = 0;
+        for (int i = 0; i < statPrefixes.length; i++) {
+            statPrefixes[i] = Pokemon.getStatName(i + 1) + ": ";
+            if (statPrefixes[i].length() > longest) longest = statPrefixes[i].length();
+        }
+        for (int i = 0; i < 7; i++) {
+            while (statPrefixes[i].length() < longest) {
+                statPrefixes[i] += " ";
+            }
+        }
+    }
 
     /** Creates new form VisualToolTip */
-    public VisualToolTip(String name, String stats, String effects,
-            int num, int denom, boolean exact) {
+    public VisualToolTip(VisualPokemon p, boolean fraction) {
         initComponents();
-        setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(5, 5, 5, 5);
-        c.weightx = 0.5;
-        c.anchor = GridBagConstraints.PAGE_START;
-        c.fill = GridBagConstraints.HORIZONTAL;
-
-        c.gridx = 0; c.gridy = 0;
-        c.ipady = 0;
-        c.gridwidth = 2;
-        c.weighty = 0;
-        JLabel lblName = new JLabel("<html><b>" + name + "</b></html>");
-        add(lblName, c);
-
-        if ((num >= 0) && (denom > 0)) {
-            HealthBar bar = new HealthBar(exact);
-            bar.setRatio(num, denom, false);
-            c.gridx = 0;
-            c.gridy = 1;
-            c.ipady = 20;
-            c.gridwidth = 2;
-            c.weightx = 0;
-            add(bar, c);
+        m_healthBar = new HealthBar(fraction);
+        m_healthBar.setRatio(p.getNumerator(), p.getDenominator(), false);
+        panelHealth.add(m_healthBar);
+        for (int i = 0; i < m_statLabels.length; i++) {
+            JLabel label = new JLabel(statPrefixes[i]);
+            label.setForeground(Color.WHITE);
+            label.setFont(Font.decode(Font.MONOSPACED));
+            label.setFont(label.getFont().deriveFont(12.0f));
+            m_statLabels[i] = label;
+            panelStats.add(label);
         }
-        c.gridwidth = 1;
-        c.ipady = 0;
-        c.weighty = 1.0;
-        JPanel panelStats = new JPanel();
-        JLabel lblStats = new JLabel(stats);
-        panelStats.add(lblStats);
-        panelStats.setBorder(BorderFactory.createTitledBorder("Stats"));
-        JPanel panelEffects = new JPanel();
-        JLabel lblEffects = new JLabel(effects);
-        panelEffects.add(lblEffects);
-        panelEffects.setBorder(BorderFactory.createTitledBorder("Effects"));
-        c.weightx = 0.5;
-        c.gridx = 0; c.gridy = 2;
-        add(panelStats, c);
-        c.gridx = 1; c.gridy = 2;
-        add(panelEffects, c);
+        if (p.getName() == null) {
+            lblName.setText("???");
+            lblLevel.setText("");
+            return;
+        }
+        lblName.setText(p.getName());
+        if (p.isFainted()) lblName.setForeground(Color.GRAY);
+        int level = p.getLevel();
+        Gender g = Gender.getGender(p.getGender());
+        String gender = "";
+        if (Gender.GENDER_MALE.equals(g)) {
+            gender = String.valueOf('\u2642');
+        } else if (Gender.GENDER_FEMALE.equals(g)) {
+            gender = String.valueOf('\u2640');
+        }
+        lblLevel.setText("Level " + String.valueOf(level) + " " + gender);
+        
+        List<String> statuses = p.getStatuses();
+        if (statuses.size() == 0) {
+            lblEffects.setText("No Effects");
+        } else {
+            StringBuilder sb = new StringBuilder("<html>");
+            for (String s : statuses) {
+                sb.append("-");
+                sb.append(s);
+                sb.append("<br>");
+            }
+            sb.append("</html>");
+            lblEffects.setText(sb.toString());
+        }
+        for (int i = 0; i < m_statLabels.length; i++) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(statPrefixes[i]);
+            //todo calc stat
+            sb.append(p.getStatLevel(i + 1));
+            m_statLabels[i].setText(sb.toString());
+        }
     }
 
     /** This method is called from within the constructor to
@@ -90,19 +115,98 @@ public class VisualToolTip extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
+        lblName = new javax.swing.JLabel();
+        panelHealth = new javax.swing.JPanel();
+        lblLevel = new javax.swing.JLabel();
+        panelStats = new javax.swing.JPanel();
+        panelEffects = new javax.swing.JPanel();
+        lblEffects = new javax.swing.JLabel();
+
+        setBackground(new java.awt.Color(51, 51, 51));
         setLayout(new java.awt.GridBagLayout());
+
+        lblName.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
+        lblName.setForeground(new java.awt.Color(255, 255, 255));
+        lblName.setText("Pokemon");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.insets = new java.awt.Insets(2, 0, 0, 0);
+        add(lblName, gridBagConstraints);
+
+        panelHealth.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
+        panelHealth.setPreferredSize(new java.awt.Dimension(150, 25));
+        panelHealth.setLayout(new java.awt.GridLayout());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.6;
+        gridBagConstraints.insets = new java.awt.Insets(2, 5, 2, 2);
+        add(panelHealth, gridBagConstraints);
+
+        lblLevel.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+        lblLevel.setForeground(new java.awt.Color(255, 255, 255));
+        lblLevel.setText("Level");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(0, 2, 0, 0);
+        add(lblLevel, gridBagConstraints);
+
+        panelStats.setBackground(new java.awt.Color(79, 79, 79));
+        panelStats.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        panelStats.setPreferredSize(new java.awt.Dimension(100, 115));
+        panelStats.setLayout(new java.awt.GridLayout(7, 1, 2, 0));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridheight = 8;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.weightx = 0.6;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(2, 5, 5, 2);
+        add(panelStats, gridBagConstraints);
+
+        panelEffects.setBackground(new java.awt.Color(79, 79, 79));
+        panelEffects.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        panelEffects.setPreferredSize(new java.awt.Dimension(100, 50));
+        panelEffects.setLayout(new javax.swing.BoxLayout(panelEffects, javax.swing.BoxLayout.PAGE_AXIS));
+
+        lblEffects.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+        lblEffects.setForeground(new java.awt.Color(255, 255, 255));
+        lblEffects.setText("No Effects");
+        panelEffects.add(lblEffects);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridheight = 7;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.weightx = 0.4;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(4, 5, 5, 2);
+        add(panelEffects, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     public static void main(String[] args) {
         javax.swing.JFrame frame = new javax.swing.JFrame("test");
-        frame.add(new VisualToolTip("Bulba", "test1", "test2", 4, 6, true));
-        frame.setSize(200, 200);
+        VisualToolTip t = new VisualToolTip(new VisualPokemon(), true);
+        frame.add(t);
+        frame.setSize(265, 175);
         frame.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel lblEffects;
+    private javax.swing.JLabel lblLevel;
+    private javax.swing.JLabel lblName;
+    private javax.swing.JPanel panelEffects;
+    private javax.swing.JPanel panelHealth;
+    private javax.swing.JPanel panelStats;
     // End of variables declaration//GEN-END:variables
 
 }

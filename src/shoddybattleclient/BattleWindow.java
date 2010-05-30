@@ -253,11 +253,11 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         listUsers.setCellRenderer(new UserCellRenderer());
         
         if (m_participant == 0) {
-            lblPlayer0.setText(users[0]);
-            lblPlayer1.setText(users[1]);
-        } else {
-            lblPlayer0.setText(users[1]);
             lblPlayer1.setText(users[0]);
+            lblPlayer0.setText(users[1]);
+        } else {
+            lblPlayer1.setText(users[1]);
+            lblPlayer0.setText(users[0]);
         }
         m_chat = new HTMLPane();
         m_chat.setTimeStampsEnabled(false);
@@ -480,45 +480,34 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     private void setupVisual() {
         m_visual = new GameVisualisation(m_participant, m_n, m_length, m_link.getSpeciesList());
         m_visual.setSize(m_visual.getPreferredSize());
-        int base = 20;
-        int buffer = 5;
-        int healthHeight = 35;
-        int x = 10;
-        m_visual.setLocation(x, base + healthHeight + buffer);
-        int p1 = 1 - m_participant;
-        int p2 = m_participant;
-        
+        panelVisual.add(m_visual);
+        int p1 = m_participant;
+        int p2 = 1 - p1;
         if (m_n == 1) {
+            ((GridLayout)panelHealth0.getLayout()).setColumns(1);
+            ((GridLayout)panelHealth1.getLayout()).setColumns(1);
             m_healthBars = new HealthBar[2][1];
-            m_healthBars[p1][0] = new HealthBar(false);
-            m_healthBars[p1][0].setLocation(x, base);
-            m_healthBars[p1][0].setSize(m_visual.getWidth(), healthHeight);
-            m_healthBars[p2][0] = new HealthBar(true);
-            m_healthBars[p2][0].setLocation(x, base + healthHeight + (2 * buffer) + m_visual.getHeight());
-            m_healthBars[p2][0].setSize(m_visual.getWidth(), healthHeight);
-            add(m_healthBars[0][0]);
-            add(m_healthBars[1][0]);
+            m_healthBars[0][0] = new HealthBar(false);
+            m_healthBars[1][0] = new HealthBar(true);
+            panelHealth0.add(m_healthBars[p1][0]);
+            panelHealth1.add(m_healthBars[p2][0]);
         } else if (m_n == 2) {
-            final int w = m_visual.getWidth() / 2 - 5;
+            ((GridLayout)panelHealth0.getLayout()).setColumns(2);
+            ((GridLayout)panelHealth1.getLayout()).setColumns(2);
             m_healthBars = new HealthBar[2][2];
-            m_healthBars[p1][1] = new HealthBar(false);
-            m_healthBars[p1][1].setLocation(x, base);
-            m_healthBars[p1][1].setSize(w, healthHeight);
-            m_healthBars[p1][0] = new HealthBar(false);
-            m_healthBars[p1][0].setLocation(x + w + 10, base);
-            m_healthBars[p1][0].setSize(w, healthHeight);
-            m_healthBars[p2][1] = new HealthBar(true);
-            m_healthBars[p2][1].setLocation(x, base + healthHeight + (2 * buffer) + m_visual.getHeight());
-            m_healthBars[p2][1].setSize(w, healthHeight);
-            m_healthBars[p2][0] = new HealthBar(true);
-            m_healthBars[p2][0].setLocation(x + w + 10, base + healthHeight + (2 * buffer) + m_visual.getHeight());
-            m_healthBars[p2][0].setSize(w, healthHeight);
-            add(m_healthBars[0][0]);
-            add(m_healthBars[0][1]);
-            add(m_healthBars[1][0]);
-            add(m_healthBars[1][1]);
+            m_healthBars[0][1] = new HealthBar(false);
+            m_healthBars[0][0] = new HealthBar(false);
+            m_healthBars[1][1] = new HealthBar(true);
+            m_healthBars[1][0] = new HealthBar(true);
+            panelHealth0.add(m_healthBars[p1][1]);
+            panelHealth0.add(m_healthBars[p1][0]);
+            panelHealth1.add(m_healthBars[p2][1]);
+            panelHealth1.add(m_healthBars[p2][0]);
         }
-        add(m_visual);
+        for (int i = 0; i < m_healthBars[p1].length; i++) {
+            m_healthBars[p1][i].setFraction(true);
+            m_healthBars[p2][i].setFraction(false);
+        }
     }
 
     public void setMove(int pokemon, int idx, int id) {
@@ -629,10 +618,6 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         m_visual.updateHealth(party, slot, total, denominator);
     }
 
-    public void updateStatLevel(int party, int slot, int stat, int level) {
-        m_visual.updateStatLevel(party, slot, stat, level);
-    }
-
     public void faint(int party, int slot) {
         m_visual.faint(party, slot);
     }
@@ -695,6 +680,10 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         return (p != null) ? p.getName() : null;
     }
 
+    public void updateStatus(int party, int position, int radius, String msg, boolean applied) {
+        m_visual.updateStatus(party, position, radius, msg, applied);
+    }
+
     public String getName(int party, int index) {
         VisualPokemon p = m_visual.getPokemon(party, index);
         return (p == null) ? null : p.getName();
@@ -745,6 +734,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         txtChat = new javax.swing.JTextField();
         tabAction = new javax.swing.JTabbedPane();
@@ -761,10 +751,14 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         jScrollPane1 = new javax.swing.JScrollPane();
         listUsers = new javax.swing.JList();
         scrollChat = new javax.swing.JScrollPane();
-        lblPlayer0 = new javax.swing.JLabel();
+        panelGame = new javax.swing.JPanel();
         lblPlayer1 = new javax.swing.JLabel();
-        lblClock0 = new javax.swing.JLabel();
         lblClock1 = new javax.swing.JLabel();
+        lblPlayer0 = new javax.swing.JLabel();
+        lblClock0 = new javax.swing.JLabel();
+        panelHealth1 = new javax.swing.JPanel();
+        panelVisual = new javax.swing.JPanel();
+        panelHealth0 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setLocationByPlatform(true);
@@ -894,13 +888,73 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
 
         jScrollPane1.setViewportView(listUsers);
 
-        lblPlayer0.setText("Player 1");
+        panelGame.setPreferredSize(new java.awt.Dimension(256, 247));
+        panelGame.setLayout(new java.awt.GridBagLayout());
 
-        lblPlayer1.setText("Player 2");
+        lblPlayer1.setText("Player1");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        panelGame.add(lblPlayer1, gridBagConstraints);
 
-        lblClock0.setText("20:00:00");
+        lblClock1.setText("00:00:00");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        panelGame.add(lblClock1, gridBagConstraints);
 
-        lblClock1.setText("20:00:00");
+        lblPlayer0.setText("Player0");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        panelGame.add(lblPlayer0, gridBagConstraints);
+
+        lblClock0.setText("00:00:00");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        panelGame.add(lblClock0, gridBagConstraints);
+
+        panelHealth1.setPreferredSize(new java.awt.Dimension(256, 30));
+        panelHealth1.setLayout(new java.awt.GridLayout(1, 0, 3, 0));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
+        panelGame.add(panelHealth1, gridBagConstraints);
+
+        panelVisual.setPreferredSize(new java.awt.Dimension(256, 144));
+
+        org.jdesktop.layout.GroupLayout panelVisualLayout = new org.jdesktop.layout.GroupLayout(panelVisual);
+        panelVisual.setLayout(panelVisualLayout);
+        panelVisualLayout.setHorizontalGroup(
+            panelVisualLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 256, Short.MAX_VALUE)
+        );
+        panelVisualLayout.setVerticalGroup(
+            panelVisualLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 144, Short.MAX_VALUE)
+        );
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
+        panelGame.add(panelVisual, gridBagConstraints);
+
+        panelHealth0.setPreferredSize(new java.awt.Dimension(256, 30));
+        panelHealth0.setLayout(new java.awt.GridLayout(1, 0, 3, 0));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
+        panelGame.add(panelHealth0, gridBagConstraints);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -910,47 +964,29 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                     .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(layout.createSequentialGroup()
-                                .add(lblPlayer1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 113, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 80, Short.MAX_VALUE)
-                                .add(lblClock1))
-                            .add(layout.createSequentialGroup()
-                                .add(lblPlayer0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
-                                .add(80, 80, 80)
-                                .add(lblClock0)))
-                        .add(32, 32, 32)
-                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 87, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(panelGame, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jScrollPane1, 0, 0, Short.MAX_VALUE)
                         .add(7, 7, 7))
                     .add(tabAction, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 363, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(txtChat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
-                    .add(scrollChat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE))
+                    .add(txtChat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE)
+                    .add(scrollChat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE))
                 .addContainerGap())
         );
-
-        layout.linkSize(new java.awt.Component[] {lblPlayer0, lblPlayer1}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
-
-        layout.linkSize(new java.awt.Component[] {lblClock0, lblClock1}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
-
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(lblPlayer1)
-                    .add(lblClock1))
-                .add(4, 4, 4)
+                .add(20, 20, 20)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(scrollChat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(txtChat, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                     .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                .add(lblPlayer0)
-                                .add(lblClock0))
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(panelGame, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 244, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(tabAction, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 222, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
@@ -1101,12 +1137,11 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
                 TeamFileParser tfp = new TeamFileParser();
                 //Pokemon[] pokemon = tfp.parseTeam("/Users/ben/team1.sbt");
                 BattleWindow battle = new BattleWindow(null, 0, 1, 6, new String[] { "bearzly", "Catherine" });
-                battle.setPokemon(new VisualPokemon[] {new VisualPokemon("Wartortle", 1, false)},
-                        new VisualPokemon[] {new VisualPokemon("Groudon", 0, true)});
+                //battle.setPokemon(new VisualPokemon[] {new VisualPokemon("Wartortle", 1, false)},
+                //        new VisualPokemon[] {new VisualPokemon("Groudon", 0, true)});
                 battle.setVisible(true);
                 battle.requestAction(2, 0);
                 battle.updateHealth(0, 0, 38, 48);
-                battle.updateStatLevel(0, 0, 2, -3);
                 battle.setSpriteVisible(0, 0, false);
             }
         });
@@ -1127,8 +1162,12 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     private javax.swing.JLabel lblPlayer0;
     private javax.swing.JLabel lblPlayer1;
     private javax.swing.JList listUsers;
+    private javax.swing.JPanel panelGame;
+    private javax.swing.JPanel panelHealth0;
+    private javax.swing.JPanel panelHealth1;
     private javax.swing.JPanel panelMoves;
     private javax.swing.JPanel panelSwitch;
+    private javax.swing.JPanel panelVisual;
     private javax.swing.JScrollPane scrollChat;
     private javax.swing.JTabbedPane tabAction;
     private javax.swing.JTextField txtChat;

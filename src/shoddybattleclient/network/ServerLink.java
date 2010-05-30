@@ -823,6 +823,7 @@ public class ServerLink extends Thread {
                  //         int16 : species id
                  //         if id != -1:
                  //             byte : gender
+                 //             byte : level
                  //             byte : whether the pokemon is shiny
                 public void handle(ServerLink link, DataInputStream is)
                         throws IOException {
@@ -839,12 +840,13 @@ public class ServerLink extends Thread {
                         for (int j = 0; j < size; ++j) {
                             short id = is.readShort();
                             if (id != -1) {
-                                int gender = is.read();
+                                int gender = is.readUnsignedByte();
+                                int level = is.readUnsignedByte();
                                 boolean shiny = (is.read() != 0);
                                 String species = PokemonSpecies.getNameFromId(
                                         link.m_speciesList, id);
                                 VisualPokemon p = new VisualPokemon(species,
-                                        gender, shiny);
+                                        gender, level, shiny);
                                 pokemon[i][j] = p;
                                 wnd.setSpecies(i, j, species);
                             }
@@ -1131,6 +1133,7 @@ public class ServerLink extends Thread {
                 //             int16  : species id
                 //             if species != -1:
                 //                 byte : gender
+                //                 byte : level
                 //                 byte : whether the pokemon is shiny
                 //         byte : whether the pokemon is fainted
                 //         if not fainted:
@@ -1161,11 +1164,12 @@ public class ServerLink extends Thread {
                                 int id = is.readShort();
                                 if (id != -1) {
                                     int gender = is.read();
+                                    int level = is.readUnsignedByte();
                                     boolean shiny = (is.read() != 0);
                                     String species = PokemonSpecies.getNameFromId(
                                             link.m_speciesList, id);
                                     VisualPokemon visual =
-                                            new VisualPokemon(species,
+                                            new VisualPokemon(species, level,
                                             gender, shiny);
                                     active[i][slot] = visual;
                                     battle.setSpecies(i, slot, species);
@@ -1318,6 +1322,29 @@ public class ServerLink extends Thread {
                     String user = is.readUTF();
                     String message = is.readUTF();
                     link.informPersonalMessageReceived(user, message);
+                }
+            });
+
+            //BATTLE_STATUS_CHANGE
+            new ServerMessage(30, new MessageHandler() {
+                //int32 : field id
+                //byte  : party
+                //byte  : position
+                //byte  : effect radius
+                //string: message
+                //byte  : whether the status was applied
+                public void handle(ServerLink link, DataInputStream is)
+                                                        throws IOException {
+                    int fid = is.readInt();
+                    int party = is.readUnsignedByte();
+                    int position = is.readUnsignedByte();
+                    int radius = is.readUnsignedByte();
+                    String msg = is.readUTF();
+                    boolean applied = (is.read() != 0);
+                    BattleWindow wnd = link.getBattle(fid);
+                    if (wnd == null) return;
+                    msg = Text.parse(msg, wnd);
+                    wnd.updateStatus(party, position, radius, msg, applied);
                 }
             });
 
