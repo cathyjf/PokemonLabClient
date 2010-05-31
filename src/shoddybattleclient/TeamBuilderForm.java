@@ -457,7 +457,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         jLabel25.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         jLabel25.setText("Hidden Power:");
 
-        txtHiddenPower.setDocument(new IntegerDocument(30, 70, txtHiddenPower));
+        txtHiddenPower.setEditable(false);
         txtHiddenPower.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
         txtHiddenPower.setText("70");
         txtHiddenPower.addKeyListener(new java.awt.event.KeyAdapter() {

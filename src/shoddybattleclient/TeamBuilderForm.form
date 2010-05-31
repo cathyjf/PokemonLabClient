@@ -228,9 +228,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtHiddenPower">
       <Properties>
-        <Property name="document" type="javax.swing.text.Document" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="new IntegerDocument(30, 70, txtHiddenPower)" type="code"/>
-        </Property>
+        <Property name="editable" type="boolean" value="false"/>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Lucida Grande" size="11" style="0"/>
         </Property>
