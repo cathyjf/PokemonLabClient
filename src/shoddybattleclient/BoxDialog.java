@@ -22,19 +22,25 @@
 
 package shoddybattleclient;
 
+import java.awt.Component;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.util.Comparator;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.List;
 import javax.swing.AbstractListModel;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.ListCellRenderer;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import shoddybattleclient.shoddybattle.Pokemon;
@@ -48,7 +54,7 @@ import shoddybattleclient.utils.TeamFileParser;
 public class BoxDialog extends javax.swing.JDialog {
 
     //This is needed for proper list display
-    private class PokemonWrapper {
+    private class PokemonWrapper implements Comparable<PokemonWrapper> {
         public String name;
         public Pokemon pokemon;
         public PokemonWrapper(String pokemonName, Pokemon poke) {
@@ -59,26 +65,22 @@ public class BoxDialog extends javax.swing.JDialog {
         public String toString() {
             return name;
         }
-    }
-
-    private class CaseInsensitiveComparator implements Comparator<String> {
-
         @Override
-        public int compare(String o1, String o2) {
-            return o1.compareToIgnoreCase(o2);
+        public int compareTo(PokemonWrapper o) {
+            return name.compareToIgnoreCase(o.name);
         }
     }
 
     //TODO: Consider this box with BoxTreeModel.Box
     //Calling methods on this Box modifies the hard drive
     private class Box implements Comparable<Box> {
-
+        
         private String m_name;
-        private Map<String, Pokemon> m_pokemon;
+        private ArrayList<PokemonWrapper> m_pokemon;
 
         public Box(String name) {
             m_name = name;
-            m_pokemon = new TreeMap<String, Pokemon>(new CaseInsensitiveComparator());
+            m_pokemon = new ArrayList<PokemonWrapper>();
             
             //Create the box itself
             File boxDir = new File(getBoxPath());
@@ -92,51 +94,77 @@ public class BoxDialog extends javax.swing.JDialog {
                 try {
                     TeamFileParser tfp = new TeamFileParser();
                     Pokemon poke = tfp.parseTeam(pokeFile.getAbsolutePath())[0];
-                    m_pokemon.put(pokeFile.getName(), poke);
+                    m_pokemon.add(new PokemonWrapper(pokeFile.getName(), poke));
                 }
                 catch(Exception ex) {}
             }
+            Collections.sort(m_pokemon);
+            clearDuplicates(m_pokemon);
         }
 
         //This creates a new file if it doesn't exist
         public void addPokemon(String name, Pokemon pokemon) throws IOException {
+            addPokemon(new PokemonWrapper(name, pokemon));
+        }
+
+        public void addPokemon(PokemonWrapper wrapper) throws IOException {
             StringBuffer buf = new StringBuffer();
             buf.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
-            buf.append(pokemon.toXML());
+            buf.append(wrapper.pokemon.toXML());
 
-            //The file must be removed if the "case" changes
-            PokemonWrapper wrapper = getPokemonWrapper(name);
-            if(wrapper != null) {
-                new File(getBoxPath() + "/" + wrapper.name).delete();
-                m_pokemon.remove(name);
-            }
-            
-            File pokemonPath = new File(getBoxPath() + "/" + name);
+            File pokemonPath = new File(getBoxPath() + "/" + wrapper.name);
             Writer writer = new PrintWriter(new FileWriter(pokemonPath));
             writer.write(new String(buf));
             writer.flush();
             writer.close();
 
-            m_pokemon.put(name, pokemon);
+            //Insert the pokemon into its sorted position
+            int i = 0;
+            for(i = 0; i < getPokemonCount(); i++) {
+                int compare = wrapper.compareTo(m_pokemon.get(i));
+                if(compare < 0) {
+                    break;
+                } else if(compare == 0) {
+                    m_pokemon.set(i, wrapper);
+                    return;
+                }
+            }
+            m_pokemon.add(i, wrapper);
+        }
+
+        //If the pokemon doesn't exist, it does nothing
+        public void removePokemon(String name) {
+            for(int i = 0; i < getPokemonCount(); i++) {
+                PokemonWrapper wrapper = getPokemonAt(i);
+                if(wrapper.name.equalsIgnoreCase(name)) {
+                    removePokemonAt(i);
+                }
+            }
+        }
+
+        public void removePokemonAt(int index) {
+            PokemonWrapper wrapper = getPokemonAt(index);
+            new File(getBoxPath() + "/" + wrapper.name).delete();
+            m_pokemon.remove(index);
         }
 
         public PokemonWrapper getPokemonAt(int idx) {
-            Iterator<Map.Entry<String, Pokemon>> iter = m_pokemon.entrySet().iterator();
-            for(int i = 0; i < idx; i++)
-                iter.next();
-            Map.Entry<String, Pokemon> entry = iter.next();
-            return new PokemonWrapper(entry.getKey(), entry.getValue());
+            return m_pokemon.get(idx);
         }
 
         public Pokemon getPokemon(String name) {
-            return m_pokemon.get(name);
+            PokemonWrapper wrapper = getPokemonWrapper(name);
+            if(wrapper == null)
+                return null;
+            return wrapper.pokemon;
         }
 
         //This has a use if we want a case-sensitive name
         public PokemonWrapper getPokemonWrapper(String name) {
-            for(Map.Entry<String, Pokemon> entry : m_pokemon.entrySet()) {
-                if(entry.getKey().equalsIgnoreCase(name))
-                    return new PokemonWrapper(entry.getKey(), entry.getValue());
+            //With the right comparator its O(logn), but I don't think its worth it
+            for(PokemonWrapper wrapper : m_pokemon) {
+                if(wrapper.name.equalsIgnoreCase(name))
+                    return wrapper;
             }
             return null;
         }
@@ -166,13 +194,36 @@ public class BoxDialog extends javax.swing.JDialog {
 
     private class BoxListModel extends AbstractListModel {
 
-        Set<Box> m_boxes = new TreeSet<Box>();
+        //TreeSets are a major performance liability come getElementAt()
+        List<Box> m_boxes = new ArrayList<Box>();
+
+        public void addBoxes(List<Box> boxes) {
+            m_boxes.addAll(boxes);
+            Collections.sort(m_boxes);
+            clearDuplicates(m_boxes);
+            fireListChanged();
+        }
 
         public void addBox(Box box) {
-            m_boxes.add(box);
+            //This is faster for already sorted lists
+            int i = 0;
+            for(i = 0; i < getSize(); i++) {
+                int compare = box.compareTo(m_boxes.get(i));
+                if(compare < 0) {
+                    break;
+                } else if(compare == 0) {
+                    m_boxes.set(i, box);
+                    fireListChanged();
+                    return;
+                }
+            }
+            m_boxes.add(i, box);
+            fireListChanged();
+        }
 
-            //Let the list know that we added a box
-            ListDataEvent evt = new ListDataEvent(box,
+        //Let the list know that we added a box
+        public void fireListChanged() {
+            ListDataEvent evt = new ListDataEvent(this,
                     ListDataEvent.CONTENTS_CHANGED, 0, m_boxes.size());
             for (ListDataListener listener : getListDataListeners()) {
                 listener.contentsChanged(evt);
@@ -180,8 +231,6 @@ public class BoxDialog extends javax.swing.JDialog {
         }
 
         public Box getBox(String name) {
-            //We could make this O(logn) with a custom Box comparator
-            //But the speed benefit isn't worth it here
             for(Box box : m_boxes) {
                 if(box.getName().equalsIgnoreCase(name))
                     return box;
@@ -189,13 +238,13 @@ public class BoxDialog extends javax.swing.JDialog {
             return null;
         }
 
+        public void removeBox(Box box) {
+            m_boxes.remove(box);
+        }
+
         @Override
         public Object getElementAt(int index) {
-            //Sets can't be accessed random access, so we must iterate
-            Iterator<Box> iter = m_boxes.iterator();
-            for(int i = 0; i < index; i++)
-                iter.next();
-            return iter.next();
+            return m_boxes.get(index);
         }
 
         @Override
@@ -234,31 +283,96 @@ public class BoxDialog extends javax.swing.JDialog {
         }
     }
 
+    class PokemonListRenderer extends JLabel implements ListCellRenderer {
+        public PokemonListRenderer() {
+            setOpaque(true);
+        }
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            Box box = (Box)listBoxes.getSelectedValue();
+            PokemonWrapper wrapper = box.getPokemonAt(index);
+            Pokemon poke = wrapper.pokemon;
+
+            if(isSelected) {
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+            }
+            else {
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+            }
+
+            setText(value.toString());
+
+            boolean showMale = true;
+            if(poke.gender == Pokemon.Gender.GENDER_FEMALE) showMale = false;
+
+            try {
+                java.awt.Image img = GameVisualisation.getSprite(
+                    teamBuilder.getSpecies(poke.toString()).getId(), true, showMale, poke.shiny);
+                img = img.getScaledInstance(32, 32, java.awt.Image.SCALE_SMOOTH);
+                ImageIcon icon = new ImageIcon(img);
+                setIcon(icon);
+            } catch (Exception ex) {}
+
+            return this;
+        }
+    }
+
     private BoxListModel boxModel;
     private PokemonListModel pokemonModel;
-    private TeamBuilder m_parent;
+    private TeamBuilder teamBuilder;
 
     /** Creates new form BoxDialog */
     public BoxDialog(TeamBuilder parent) {
         initComponents();
-        m_parent = parent;
+        teamBuilder = parent;
 
         pokemonModel = new PokemonListModel();
         listPokemon.setModel(pokemonModel);
+        listPokemon.setCellRenderer(new PokemonListRenderer());
 
-        //Load boxes
         File boxDir = new File(Preference.getBoxLocation());
         boxModel = new BoxListModel();
+        ArrayList<Box> boxes = new ArrayList<Box>();
         if(boxDir.exists()) {
             for(File boxFile : boxDir.listFiles()) {
                 if(!boxFile.isDirectory())
                     continue;
-                boxModel.addBox(new Box(boxFile.getName()));
+                boxes.add(new Box(boxFile.getName()));
             }
         }
+        boxModel.addBoxes(boxes);
         listBoxes.setModel(boxModel);
 
+        listBoxes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        listPokemon.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
         setVisible(true);
+    }
+
+    //On *nix systems, both Box and Pokemon loading allow for duplicates on
+    //first load. This clears those duplicates from the list.
+    //This list MUST be sorted before using this method
+    private void clearDuplicates(List<? extends Comparable> list) {
+        //Sorted lists allow us to do this in O(n)
+        Iterator<? extends Comparable> iter = list.iterator();
+        Comparable previous = null;
+        while(iter.hasNext()) {
+            Comparable current = iter.next();
+
+            //this only happens once, but it makes the code cleaner
+            if(previous == null) {
+                previous = current;
+                continue;
+            }
+
+            //FIXME: Find a way to do this without the compiler throwing a hissy fit
+            if(previous.compareTo(current) == 0)
+                iter.remove();
+            previous = current;
+        }
     }
 
     /** This method is called from within the constructor to
@@ -270,6 +384,9 @@ public class BoxDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        popupMenu = new javax.swing.JPopupMenu();
+        menuRename = new javax.swing.JMenuItem();
+        menuDelete = new javax.swing.JMenuItem();
         jScrollPane1 = new javax.swing.JScrollPane();
         listBoxes = new javax.swing.JList();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -278,8 +395,35 @@ public class BoxDialog extends javax.swing.JDialog {
         btnImport = new javax.swing.JButton();
         btnExport = new javax.swing.JButton();
 
+        menuRename.setText("Rename");
+        menuRename.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuRenameActionPerformed(evt);
+            }
+        });
+        popupMenu.add(menuRename);
+
+        menuDelete.setText("Delete");
+        menuDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuDeleteActionPerformed(evt);
+            }
+        });
+        popupMenu.add(menuDelete);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
+        listBoxes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                listMouseEvent(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                listMouseEvent(evt);
+            }
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                listMouseEvent(evt);
+            }
+        });
         listBoxes.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
                 listBoxesValueChanged(evt);
@@ -287,6 +431,17 @@ public class BoxDialog extends javax.swing.JDialog {
         });
         jScrollPane1.setViewportView(listBoxes);
 
+        listPokemon.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                listMouseEvent(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                listMouseEvent(evt);
+            }
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                listMouseEvent(evt);
+            }
+        });
         jScrollPane2.setViewportView(listPokemon);
 
         btnNewBox.setText("New Box");
@@ -317,30 +472,30 @@ public class BoxDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnNewBox))
+                    .addComponent(btnNewBox)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(btnImport)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnExport))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNewBox)
                     .addComponent(btnImport)
                     .addComponent(btnExport))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -358,7 +513,12 @@ public class BoxDialog extends javax.swing.JDialog {
         }
 
         try {
-            boxModel.addBox(new Box(boxName));
+            Box newBox = new Box(boxName);
+            boxModel.addBox(newBox);
+            listBoxes.setSelectedValue(newBox, true);
+        } catch(SecurityException ex) {
+            JOptionPane.showMessageDialog(this, "Permission denied", "Error",
+                    JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Error making box", "Error",
                     JOptionPane.ERROR_MESSAGE);
@@ -384,8 +544,13 @@ public class BoxDialog extends javax.swing.JDialog {
         }
 
         try {
-            box.addPokemon(name.trim(), m_parent.getSelectedPokemon());
+            name = name.trim();
+            box.removePokemon(name); //May be a rename
+            PokemonWrapper newPoke = new PokemonWrapper(name, teamBuilder.getSelectedPokemon());
+            box.addPokemon(newPoke);
+
             pokemonModel.fireListChanged();
+            listPokemon.setSelectedValue(newPoke, true);
         } catch(SecurityException ex) {
             JOptionPane.showMessageDialog(this, "Permission denied", "Error",
                     JOptionPane.ERROR_MESSAGE);
@@ -406,8 +571,148 @@ public class BoxDialog extends javax.swing.JDialog {
         if(wrapper == null)
             return;
 
-        m_parent.setSelectedPokemon(wrapper.pokemon);
+        teamBuilder.setSelectedPokemon(wrapper.pokemon);
     }//GEN-LAST:event_btnExportActionPerformed
+
+    private void listMouseEvent(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listMouseEvent
+        if(evt.isPopupTrigger()) {
+            JList list = (JList)evt.getSource();
+            int index = list.locationToIndex(new Point(evt.getX(), evt.getY()));
+
+            if(index != -1) {
+                Rectangle r = list.getCellBounds(index, index);
+                if(!r.contains(evt.getX(), evt.getY())) return;
+                list.setSelectedIndex(index);
+                popupMenu.show(list, evt.getX(), evt.getY());
+            }
+        }
+    }//GEN-LAST:event_listMouseEvent
+
+    private void menuRenameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuRenameActionPerformed
+        //This method could apply to both listBoxes and listPokemon
+        JList list = (JList)popupMenu.getInvoker();
+
+        Object item = list.getSelectedValue();
+        String newName = JOptionPane.showInputDialog(this, "New name for "+item.toString()+":");
+        if(newName == null || newName.trim().equals(""))
+            return;
+
+        File oldFile;
+        File newFile;
+        if(list == listBoxes) {
+            Box current = (Box)item;
+            Box previous = boxModel.getBox(newName); //exists for renames
+
+            //Duplicates are fine if we're merely changing the case
+            if(previous != null && previous != current) {
+                JOptionPane.showMessageDialog(this, "A box with this name already exists",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            oldFile = new File(current.getBoxPath());
+            newFile = new File(Preference.getBoxLocation() + "/" + newName);
+            
+            try {
+                oldFile.renameTo(newFile);
+
+                Box newBox = new Box(newName);
+                boxModel.removeBox(current);
+                boxModel.addBox(newBox);
+                list.setSelectedValue(newBox, true);
+            } catch(SecurityException ex) {
+                JOptionPane.showMessageDialog(this, "Permission denied", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error renaming box", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            Box box = (Box)listBoxes.getSelectedValue();
+            PokemonWrapper current = (PokemonWrapper)item;
+            PokemonWrapper previous = box.getPokemonWrapper(newName); //exists for renames
+
+            //Duplicates are fine if we're merely changing the case
+            if(previous != null && previous.pokemon != current.pokemon) {
+                JOptionPane.showMessageDialog(this, "A pokemon with this name already exists",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                PokemonWrapper newPoke = new PokemonWrapper(newName, current.pokemon);
+                box.removePokemon(current.name);
+                box.addPokemon(newPoke);
+
+                pokemonModel.fireListChanged();
+                list.setSelectedValue(newPoke, true);
+            } catch(SecurityException ex) {
+                JOptionPane.showMessageDialog(this, "Permission denied", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error renaming pokemon", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_menuRenameActionPerformed
+
+    private void menuDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuDeleteActionPerformed
+        //This method could apply to both listBoxes and listPokemon
+        JList list = (JList)popupMenu.getInvoker();
+
+        Object item = list.getSelectedValue();
+        int option = JOptionPane.showConfirmDialog(this, "Are you sure you want " +
+                " to delete " + item.toString() + "?", "", JOptionPane.YES_NO_OPTION);
+
+        if(option != JOptionPane.YES_OPTION)
+            return;
+
+        if(list == listBoxes) {
+            Box box = (Box)item;
+            try {
+                File boxFile = new File(box.getBoxPath());
+                //While we delete remaining files later, this helps in case there is an exception
+                //If there is a "problem Pokemon", we need the display to update properly after all
+                while(box.getPokemonCount() != 0) {
+                    box.removePokemonAt(box.getPokemonCount()-1);
+                }
+
+                //If the user has rigged it with duplicates, files may remain
+                //FIXME: Consider ill placed non-empty sub directories
+                for(File file : boxFile.listFiles()) {
+                    file.delete();
+                }
+
+                boxModel.removeBox(box);
+                boxFile.delete();
+            } catch(SecurityException ex) {
+                JOptionPane.showMessageDialog(this, "Permission denied", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error deleting box", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+
+            boxModel.fireListChanged();
+
+        } else {
+            Box box = (Box)listBoxes.getSelectedValue();
+            PokemonWrapper wrapper = (PokemonWrapper)item;
+
+            try {
+                box.removePokemon(wrapper.name);
+            } catch(SecurityException ex) {
+                JOptionPane.showMessageDialog(this, "Permission denied", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error deleting pokemon", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+        //This always changes no matter what is deleted
+        pokemonModel.fireListChanged();
+    }//GEN-LAST:event_menuDeleteActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -418,6 +723,9 @@ public class BoxDialog extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JList listBoxes;
     private javax.swing.JList listPokemon;
+    private javax.swing.JMenuItem menuDelete;
+    private javax.swing.JMenuItem menuRename;
+    private javax.swing.JPopupMenu popupMenu;
     // End of variables declaration//GEN-END:variables
 
 }
