@@ -80,15 +80,10 @@ public class BoxDialog extends javax.swing.JDialog {
             m_name = name;
             m_pokemon = new TreeMap<String, Pokemon>(new CaseInsensitiveComparator());
             
-            //Create the box folder if it doesn't exist
-            File boxFolder = new File(Preference.getBoxLocation());
-            if(!boxFolder.exists())
-                boxFolder.mkdir();
-
             //Create the box itself
             File boxDir = new File(getBoxPath());
             if(!boxDir.exists())
-                boxDir.mkdir();
+                boxDir.mkdirs();
 
             //Read in all the pokemon in this box
             for(File pokeFile : boxDir.listFiles()) {
