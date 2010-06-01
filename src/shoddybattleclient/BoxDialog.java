@@ -390,7 +390,55 @@ public class BoxDialog extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         listBoxes = new javax.swing.JList();
         jScrollPane2 = new javax.swing.JScrollPane();
-        listPokemon = new javax.swing.JList();
+        listPokemon = new javax.swing.JList()  {
+            //TODO: Make a better Pokemon view implementation
+            PokemonWrapper lastPoke;
+            @Override
+            public String getToolTipText(java.awt.event.MouseEvent evt) {
+                int index = locationToIndex(evt.getPoint());
+
+                if(index < 0)
+                return null;
+
+                Rectangle r = this.getCellBounds(index, index);
+                if(!r.contains(evt.getX(), evt.getY())) return null;
+
+                PokemonWrapper poke = (PokemonWrapper)pokemonModel.getElementAt(index);
+                StringBuffer buffer = new StringBuffer();
+                buffer.append("<html>");
+                buffer.append(poke.pokemon.
+                    toTeamText().replaceAll("\n", "<br>"));
+                return new String(buffer);
+            }
+
+            @Override
+            public Point getToolTipLocation(java.awt.event.MouseEvent evt) {
+                int index = locationToIndex(evt.getPoint());
+
+                if(index < 0) {
+                    lastPoke = null;
+                    return null;
+                }
+
+                PokemonWrapper poke = (PokemonWrapper)pokemonModel.getElementAt(index);
+                if(poke == lastPoke)
+                return null;
+
+                lastPoke = poke;
+                return new Point(evt.getX(), evt.getY() + 25);
+            }
+            /* Flickers too much, left here if anyone wants to deal with it
+            long lastShow = 0;
+            @Override
+            public Point getToolTipLocation(java.awt.event.MouseEvent evt) {
+                long currentTime = System.currentTimeMillis();
+                if((currentTime - lastShow) > 50) {
+                    lastShow = currentTime;
+                    return new Point(evt.getX() + 15, evt.getY() + 15);
+                } else
+                return null;
+            }*/
+        };
         btnNewBox = new javax.swing.JButton();
         btnImport = new javax.swing.JButton();
         btnExport = new javax.swing.JButton();
