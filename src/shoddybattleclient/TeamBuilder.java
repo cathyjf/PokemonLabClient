@@ -274,6 +274,21 @@ public class TeamBuilder extends javax.swing.JFrame {
         speciesProgramSelect = false;
     }
 
+    public Pokemon getSelectedPokemon() {
+        return m_forms.get(tabForms.getSelectedIndex()).getPokemon();
+    }
+
+    public void setSelectedPokemon(Pokemon poke) {
+        int idx = tabForms.getSelectedIndex();
+
+        if(idx < 0)
+            return;
+
+        setSpecies(poke.toString());
+        m_forms.get(idx).setPokemon(poke, false);
+        tabForms.setTitleAt(idx, poke.toString());
+    }
+
     //updates the Tree by looking through our teams for any of the same pokemon
     private void loadPokemonFromTeams() {
         String species = ((PokemonSpecies)cmbSpecies.getSelectedItem()).getName();
@@ -467,6 +482,11 @@ public class TeamBuilder extends javax.swing.JFrame {
         jMenu2.add(menuRandomise);
 
         menuBox.setText("Open Box");
+        menuBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuBoxActionPerformed(evt);
+            }
+        });
         jMenu2.add(menuBox);
 
         jMenuBar1.add(jMenu2);
@@ -679,6 +699,10 @@ public class TeamBuilder extends javax.swing.JFrame {
         for(TeamBuilderForm tab : m_forms)
             tabForms.addTab(tab.getPokemon().toString(), tab);
     }//GEN-LAST:event_menuFrontActionPerformed
+
+    private void menuBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBoxActionPerformed
+        new BoxDialog(this);
+    }//GEN-LAST:event_menuBoxActionPerformed
 
     /**
     * @param args the command line arguments

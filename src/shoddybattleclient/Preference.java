@@ -195,6 +195,10 @@ public class Preference {
         return m_prefs.get(SPRITE_DIRECTORIES, "platinum,dp").split(",");
     }
 
+    public static String getBoxLocation() {
+        return getStorageLocation() + "boxes" + File.separator;
+    }
+
     public static String getLogDirectory() {
         String file = m_prefs.get(LOG_DIRECTORY, new JFileChooser().getCurrentDirectory().toString());
         if (!file.endsWith(File.separator)) file += File.separator;

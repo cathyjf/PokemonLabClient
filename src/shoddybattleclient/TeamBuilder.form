@@ -109,6 +109,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Open Box"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuBoxActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
