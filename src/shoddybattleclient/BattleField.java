@@ -34,7 +34,7 @@ public interface BattleField {
      * is in [0, max team length - 1].
      */
     public String getName(int party, int index);
-
+    
     public int getParty();
 
 }

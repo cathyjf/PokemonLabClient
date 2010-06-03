@@ -27,10 +27,11 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.List;
 import javax.swing.JLabel;
+import shoddybattleclient.GameVisualisation.StatusObject;
 import shoddybattleclient.GameVisualisation.VisualPokemon;
+import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.shoddybattle.Pokemon;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
-import shoddybattleclient.utils.Text;
 
 /**
  *
@@ -73,7 +74,7 @@ public class VisualToolTip extends javax.swing.JPanel {
             lblLevel.setText("");
             return;
         }
-        lblName.setText(p.getName());
+        lblName.setText(p.getSpecies());
         if (p.isFainted()) lblName.setForeground(Color.GRAY);
         int level = p.getLevel();
         Gender g = Gender.getGender(p.getGender());
@@ -85,12 +86,12 @@ public class VisualToolTip extends javax.swing.JPanel {
         }
         lblLevel.setText("Level " + String.valueOf(level) + " " + gender);
         
-        List<String> statuses = p.getStatuses();
+        List<StatusObject> statuses = p.getStatuses();
         if (statuses.size() == 0) {
             lblEffects.setText("No Effects");
         } else {
             StringBuilder sb = new StringBuilder("<html>");
-            for (String s : statuses) {
+            for (StatusObject s : statuses) {
                 sb.append("-");
                 sb.append(s);
                 sb.append("<br>");
@@ -101,8 +102,18 @@ public class VisualToolTip extends javax.swing.JPanel {
         for (int i = 0; i < m_statLabels.length; i++) {
             StringBuilder sb = new StringBuilder();
             sb.append(statPrefixes[i]);
-            //todo calc stat
-            sb.append(p.getStatLevel(i + 1));
+            int statLevel = p.getStatLevel(i + 1);
+            if ((p.getPokemon() != null) && ((i + 1) < Pokemon.S_ACCURACY)) {
+                sb.append(p.getPokemon().calculateStat(i + 1,
+                        ServerLink.getSpeciesList(), statLevel));
+                sb.append(" ");
+            }
+            if (statLevel != 0) {
+                sb.append("(");
+                if (statLevel > 0) sb.append("+");
+                sb.append(statLevel);
+                sb.append(")");
+            }
             m_statLabels[i].setText(sb.toString());
         }
     }

@@ -113,15 +113,23 @@ public class Pokemon {
         return this.species;
     }
 
-    public int calculateStat(int i, List<PokemonSpecies> list) {
+    public int calculateStat(int i, List<PokemonSpecies> list, int level) {
         PokemonSpecies s =
                 list.get(PokemonSpecies.getIdFromName(list, species));
         PokemonNature n = PokemonNature.getNature(nature);
-        return calculateStat(this, i, s, n);
+        return calculateStat(this, i, s, n, level);
+    }
+
+    private static double[] MULTIPLIERS = new double[] {0.25, 0.2857, 0.3333, 0.4, 0.5,
+        0.6667, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0};
+
+    public static int calculateStat(Pokemon pokemon, int i,
+            PokemonSpecies species, PokemonNature nature) {
+        return calculateStat(pokemon, i, species, nature, 1);
     }
 
     public static int calculateStat(Pokemon pokemon, int i,
-            PokemonSpecies species, PokemonNature nature)  {
+            PokemonSpecies species, PokemonNature nature, int level)  {
         int base = species.getBase(i);
         int common =
                 (int)((int)(((2.0 * base)
@@ -137,7 +145,8 @@ public class Pokemon {
             }
         }
         double effect = (nature == null) ? 1.0 : nature.getEffect(i);
-        return (int)((common + 5) * effect);
+        int stat = (int)((common + 5) * effect);
+        return (i == S_HP) ? stat : (int)(stat * MULTIPLIERS[6 + level]);
     }
 
     public static String getStatName(int idx) {

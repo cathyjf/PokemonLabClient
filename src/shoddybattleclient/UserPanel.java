@@ -238,12 +238,13 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
 
         jPanel1.setOpaque(false);
 
-        lblName.setFont(new java.awt.Font("Lucida Grande", 1, 16));
+        lblName.setFont(new java.awt.Font("Lucida Grande", 1, 16)); // NOI18N
         lblName.setText("bearzly");
 
+        lblMessage.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
         lblMessage.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
-        jLabel3.setFont(new java.awt.Font("Lucida Grande", 1, 13));
+        jLabel3.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
         jLabel3.setText("Rankings:");
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
@@ -251,11 +252,10 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(lblMessage, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
                     .add(lblName)
-                    .add(jLabel3))
+                    .add(jLabel3)
+                    .add(lblMessage, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -280,7 +280,6 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         jLabel2.setText("Pokemon per side:");
 
         cmbN.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5", "6" }));
-        cmbN.setSelectedIndex(0);
 
         jLabel4.setFont(new java.awt.Font("Lucida Grande", 1, 13));
         jLabel4.setText("Generation:");

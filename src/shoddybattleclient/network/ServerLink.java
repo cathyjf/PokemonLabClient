@@ -845,7 +845,7 @@ public class ServerLink extends Thread {
                                 boolean shiny = (is.read() != 0);
                                 String species = PokemonSpecies.getNameFromId(
                                         link.m_speciesList, id);
-                                VisualPokemon p = new VisualPokemon(species,
+                                VisualPokemon p = new VisualPokemon(id,
                                         gender, level, shiny);
                                 pokemon[i][j] = p;
                                 wnd.setSpecies(i, j, species);
@@ -987,14 +987,14 @@ public class ServerLink extends Thread {
                             PokemonSpecies.getNameFromId(link.m_speciesList,
                             speciesId);
 
+                    wnd.sendOut(party, slot, index, species, name, gender, level);
+
                     if (gender != 0) {
                         species += " ";
                         boolean male = (gender ==
                                 Pokemon.Gender.GENDER_MALE.getValue());
                         species += male ? '\u2642' : '\u2640';
                     }
-
-                    wnd.sendOut(party, slot, index, name);
 
                     String trainer = Text.formatTrainer(wnd.getTrainer(party),
                             wnd.getParty(), party);
@@ -1169,11 +1169,11 @@ public class ServerLink extends Thread {
                                     String species = PokemonSpecies.getNameFromId(
                                             link.m_speciesList, id);
                                     VisualPokemon visual =
-                                            new VisualPokemon(species, level,
+                                            new VisualPokemon(id, level,
                                             gender, shiny);
                                     active[i][slot] = visual;
                                     battle.setSpecies(i, slot, species);
-                                    battle.sendOut(i, slot, j, name);
+                                    battle.sendOut(i, slot, j, species, name, gender, level);
                                 }
                             }
                             boolean fainted = (is.read() != 0);
@@ -1387,7 +1387,7 @@ public class ServerLink extends Thread {
     private Thread m_messageThread;
     private ServerConnect m_serverConnect;
     private LobbyWindow m_lobby;
-    private List<PokemonSpecies> m_speciesList;
+    private static List<PokemonSpecies> m_speciesList;
     private List<PokemonMove> m_moveList;
     private Map<String, ChallengeMediator> m_challenges =
             new HashMap<String, ChallengeMediator>();
@@ -1400,7 +1400,7 @@ public class ServerLink extends Thread {
         return m_metagames;
     }
 
-    public List<PokemonSpecies> getSpeciesList() {
+    public static List<PokemonSpecies> getSpeciesList() {
         return m_speciesList;
     }
 

@@ -31,10 +31,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.MediaTracker;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
@@ -42,32 +41,39 @@ import java.awt.image.IndexColorModel;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JToolTip;
-import javax.swing.Timer;
 import javax.swing.ToolTipManager;
 import shoddybattleclient.shoddybattle.Pokemon;
+import shoddybattleclient.shoddybattle.Pokemon.Gender;
 import shoddybattleclient.shoddybattle.PokemonSpecies;
 
 /**
  *
  * @author ben
  */
-public class GameVisualisation extends JPanel {
+
+interface PokemonDelegate {
+        //Get a pokemon in a particular party and slot
+        public GameVisualisation.VisualPokemon getPokemonForSlot(int party, int slot);
+}
+
+public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
 
     private static class Pokeball extends JPanel {
         private VisualPokemon m_pokemon;
         public Pokeball(VisualPokemon p) {
             setOpaque(false);
             m_pokemon = p;
-            ToolTipManager manager = ToolTipManager.sharedInstance();
-            manager.setInitialDelay(0);
-            manager.setEnabled(true);
             setToolTipText("asdf");
         }
         public Dimension getPreferredSize() {
@@ -75,6 +81,7 @@ public class GameVisualisation extends JPanel {
         }
         public void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D)g.create();
+            //g2.scale(0.9, 0.9);
             g2.setRenderingHint(
                     RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             int w = getPreferredSize().width - 2;
@@ -114,19 +121,91 @@ public class GameVisualisation extends JPanel {
     }
 
     private static class Sprite extends JPanel {
-        private int m_id;
-        public Sprite(int id) {
-            m_id = id;
+        private boolean m_front;
+        private int m_frame = 0;
+        private Image m_image = null;
+        private Dimension m_size = new Dimension(84, 84);
+        private int m_party;
+        private int m_slot;
+        private PokemonDelegate m_delegate;
+        public Sprite(int party, int slot, boolean front, PokemonDelegate delegate) {
+            setOpaque(false);
+            setToolTipText("");
+            m_front = front;
+            m_party = party;
+            m_slot = slot;
+            m_delegate = delegate;
+        }
+        public void setSprite(VisualPokemon p) {
+            if (p == null) {
+                m_image = null;
+                repaint();
+                return;
+            }
+            boolean male = Gender.GENDER_MALE.ordinal() == p.m_gender;
+            m_image = GameVisualisation.getSprite(p.m_id, m_front, male, p.m_shiny);
+            MediaTracker tracker = new MediaTracker(this);
+            tracker.addImage(m_image, 0);
+            try {
+                tracker.waitForAll();
+            } catch (Exception e) {
+                
+            }
+            if (m_image != null) {
+                m_size = new Dimension(m_image.getWidth(this), m_image.getHeight(this));
+            }
+            repaint();
+        }
+        public Dimension getPreferredSize() {
+            return m_size;
+        }
+        public void paintComponent(Graphics g) {
+            g.drawImage(m_image, 0, 0, this);
+        }
+        @Override
+        public JToolTip createToolTip() {
+            VisualPokemon p = m_delegate.getPokemonForSlot(m_party, m_slot);
+            if (p == null) {
+                setToolTipText(null);
+                return new JToolTip();
+            }
+            return new JCustomTooltip(this, new VisualToolTip(p, true));
+        }
+    }
+
+    public static class StatusObject {
+        private String m_name;
+        private int m_turns = -1;
+        private int m_count = 0;
+        public StatusObject(String name) {
+            m_name = name;
+        }
+        public StatusObject(String name, int turns) {
+            m_name = name;
+            m_turns = turns;
+        }
+        public String getName() {
+            return m_name;
+        }
+        public String toString() {
+            return (m_turns > 0) ? m_name + " {" + m_turns + "}" : m_name;
+        }
+        public void addCount() {
+            ++m_count;
+        }
+        public int decreaseCount() {
+            return --m_count;
         }
     }
 
     public static class VisualPokemon {
+        private int m_id;
         private String m_species;
         private String m_name;
         private int m_level;
         private int m_gender;
         private boolean m_shiny;
-        private List<String> m_statuses = new ArrayList<String>();
+        private List<StatusObject> m_statuses = new ArrayList<StatusObject>();
         private int m_healthN = 48;
         private int m_healthD = 48;
         private int[] m_statLevels = new int[8];
@@ -145,8 +224,8 @@ public class GameVisualisation extends JPanel {
             m_stateMap.put(Text.getText(11, 0), State.POISONED);
         }
 
-        public VisualPokemon(String species, int gender, int level, boolean shiny) {
-            m_species = species;
+        public VisualPokemon(int id, int gender, int level, boolean shiny) {
+            m_id = id;
             m_gender = gender;
             m_level = level;
             m_shiny = shiny;
@@ -167,10 +246,20 @@ public class GameVisualisation extends JPanel {
             m_name = name;
         }
         public String getName() {
+            if (m_pokemon != null) {
+                return ("".equals(m_pokemon.nickname))
+                        ? m_pokemon.species : m_pokemon.nickname;
+            }
             return m_name;
+        }
+        public Pokemon getPokemon() {
+            return m_pokemon;
         }
         public void setSpecies(String name) {
             m_species = name;
+        }
+        public void setGender(int gender) {
+            m_gender = gender;
         }
         public int getGender() {
             return m_gender;
@@ -178,29 +267,40 @@ public class GameVisualisation extends JPanel {
         public boolean isShiny() {
             return m_shiny;
         }
+        public void setLevel(int level) {
+            m_level = level;
+        }
         public int getLevel() {
             return m_level;
         }
-        public void updateStatus(String status, boolean applied) {
+        public StatusObject updateStatus(String status, boolean applied) {
             if (applied) {
-                addStatus(status);
+                return addStatus(status);
             } else {
                 removeStatus(status);
+                return null;
             }
         }
-        public void addStatus(String status) {
-            m_statuses.add(status);
+        public StatusObject addStatus(String status) {
+            StatusObject obj = new StatusObject(status);
+            m_statuses.add(obj);
             if (m_stateMap.containsKey(status)) {
                 m_state = m_stateMap.get(status);
             }
+            return obj;
         }
         public void removeStatus(String status) {
-            m_statuses.remove(status);
+            Iterator<StatusObject> i = m_statuses.iterator();
+            while (i.hasNext()) {
+                StatusObject obj = i.next();
+                if (obj.getName().equals(status))
+                    i.remove();
+            }
             if (m_stateMap.containsKey(status)) {
                 m_state = State.NORMAL;
             }
         }
-        public List<String> getStatuses() {
+        public List<StatusObject> getStatuses() {
             return m_statuses;
         }
         public void setHealth(int num, int denom) {
@@ -263,22 +363,24 @@ public class GameVisualisation extends JPanel {
     private static final int BACKGROUND_COUNT = 23;
 
     private static final int RADIUS_SINGLE = 0;
-    private static final int RADIUS_PARTY = 1;
-    private static final int RADIUS_GLOBAL = 2;
+    private static final int RADIUS_USER_PARTY = 1;
+    private static final int RADIUS_ENEMY_PARTY = 2;
+    private static final int RADIUS_GLOBAL = 3;
 
     private Image m_background;
-    private static final Image[] m_arrows = new Image[2];
     private VisualPokemon[][] m_active;
     private VisualPokemon[][] m_parties;
     private Pokeball[][] m_pokeballs;
+    private Sprite[][] m_sprites;
     private int m_view;
     private int m_selected = -1;
     private int m_target = Integer.MAX_VALUE;
     private Graphics2D m_mouseInput;
     private static final IndexColorModel m_colours;
     private final List<PokemonSpecies> m_speciesList;
-    private List<String>[] m_partyStatuses = new ArrayList[2];
-    private List<String> m_globalStatuse = new ArrayList<String>();
+    private interface StringList extends List<String> {}
+    private List<String>[] m_partyStatuses = new StringList[2];
+    private Set<String> m_globalStatuses = new HashSet<String>();
     private int m_n;
     //max team length
     private int m_length;
@@ -286,31 +388,32 @@ public class GameVisualisation extends JPanel {
     private int m_tooltipParty = Integer.MAX_VALUE;
     private int m_tooltipPoke = Integer.MAX_VALUE;
 
+    static {
+        ToolTipManager.sharedInstance().setInitialDelay(200);
+        ToolTipManager.sharedInstance().setReshowDelay(200);
+    }
+
     public static Image getImageFromResource(String file) {
         return Toolkit.getDefaultToolkit()
                 .createImage(GameVisualisation.class.getResource("resources/" + file));
     }
 
     static {
-        m_arrows[0] = getImageFromResource("arrow_green.png");
-        m_arrows[1] = getImageFromResource("arrow_red.png");
+        byte[] r = new byte[4];
+        byte[] g = new byte[4];
+        byte[] b = new byte[4];
+        r[0] = g[0] = b[0] = 0;
+        r[1] = g[1] = b[1] = (byte)255;
+        g[2] = g[3] = 1;
+        b[2] = b[3] = 1;
+        r[2] = 0;
+        r[3] = 1;
         
-        byte[] r = new byte[13];
-        byte[] g = new byte[13];
-        byte[] b = new byte[13];
-        for (byte i = 0; i < 2; ++i) {
-            for (byte j = 0; j < 6; ++j) {
-                int k = i * 6 + j;
-                r[k] = i;
-                g[k] = j;
-            }
-        }
-        r[12] = g[12] = b[12] = (byte)255;
         m_colours = new IndexColorModel(4, r.length, r, g, b);
 
-        ToolTipManager manager = ToolTipManager.sharedInstance();
+        /*ToolTipManager manager = ToolTipManager.sharedInstance();
         manager.setInitialDelay(0);
-        manager.setReshowDelay(0);
+        manager.setReshowDelay(0);*/
     }
     
     public GameVisualisation(int view, int n, int length, List<PokemonSpecies> speciesList) {
@@ -325,8 +428,6 @@ public class GameVisualisation extends JPanel {
         m_background = getImageFromResource("backgrounds/background" + background + ".png");
         MediaTracker tracker = new MediaTracker(this);
         tracker.addImage(m_background, 0);
-        tracker.addImage(m_arrows[0], 4);
-        tracker.addImage(m_arrows[1], 5);
         try {
             tracker.waitForAll();
         } catch (InterruptedException e) {
@@ -360,6 +461,17 @@ public class GameVisualisation extends JPanel {
         }
         m_n = n;
         m_length = length;
+        m_sprites = new Sprite[2][n];
+        for (int i = 0; i < m_sprites.length; i++) {
+            for (int j = 0; j < m_sprites[i].length; j++) {
+                boolean us = (i == m_view);
+                Sprite s = new Sprite(i, j, !us, this);
+                s.setSize(s.getPreferredSize());
+                s.setLocation(getSpriteLocation(us, j, m_n, 0, 0));
+                m_sprites[i][j] = s;
+                this.add(s, new Integer(m_view * m_sprites[i].length + j));
+            }
+        }
         setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
         Dimension d = getPreferredSize();
@@ -378,12 +490,13 @@ public class GameVisualisation extends JPanel {
                 Color c = new Color(image.getRGB(x, y));
                 if (c.equals(Color.WHITE)) {
                     setToolTipText(null);
-                } else if (c.getBlue() == 1) {
+                    return;
+                } else if (c.getGreen() == 1) {
+                    //party
                     displayInformation(c.getRed(), -1);
-                } else if (c.getBlue() == 2) {
+                } else if (c.equals(Color.BLACK)) {
+                    //field
                     displayInformation(-1, -1);
-                } else {
-                    displayInformation(c.getRed(), c.getGreen());
                 }
             }
         });
@@ -403,8 +516,28 @@ public class GameVisualisation extends JPanel {
 
     public void updateStatus(int party, int position, int radius, String msg, boolean applied) {
         VisualPokemon p = getPokemon(party, position);
-        if (radius != RADIUS_SINGLE) {
-            //todo: take care of non single radii
+        if (radius == RADIUS_USER_PARTY) {
+            if (applied) {
+                m_partyStatuses[party].add(msg);
+            } else {
+                m_partyStatuses[party].remove(msg);
+            }
+            return;
+        }
+        if (radius == RADIUS_ENEMY_PARTY) {
+            if (applied) {
+                m_partyStatuses[1 - party].add(msg);
+            } else {
+                m_partyStatuses[1 - party].remove(msg);
+            }
+            return;
+        }
+        if (radius == RADIUS_GLOBAL) {
+            if (applied) {
+                m_globalStatuses.add(msg);
+            } else {
+                m_globalStatuses.remove(msg);
+            }
             return;
         }
         String[] parts = msg.split(";");
@@ -429,14 +562,22 @@ public class GameVisualisation extends JPanel {
     private void displayInformation(int party, int idx) {
         m_tooltipParty = party;
         m_tooltipPoke = idx;
-        String text = party + " " + idx;
-        boolean reshow = ((text != null) && !text.equals(getToolTipText()));
-        setToolTipText(text);
-        if (reshow) {
-            ToolTipManager manager = ToolTipManager.sharedInstance();
-            manager.setEnabled(false);
-            manager.setEnabled(true);
+        List<String> effects;
+        if (party == -1) {
+            effects = new ArrayList<String>();
+            for (String eff : m_globalStatuses) {
+                effects.add(eff);
+            }
+        } else {
+            effects = m_partyStatuses[party];
         }
+        if ((effects == null) || (effects.size() == 0)) {
+            setToolTipText(null);
+            return;
+        }
+        String text = FindPanel.join(effects, "<br>");
+        text = "<html>" + text + "</html>";
+        setToolTipText(text);
 
     }
 
@@ -444,10 +585,14 @@ public class GameVisualisation extends JPanel {
         for (int i = 0; i < 2; i++) {
             VisualPokemon[] party = (i == 0) ? party1 : party2;
             for (int j = 0; j < party.length; j++) {
-                m_active[i][j] = party[j];
+                VisualPokemon p = party[j];
+                Sprite s = m_sprites[i][j];
+                s.setSprite(p);
+                Dimension d = s.getPreferredSize();
+                s.setLocation(getSpriteLocation(i == m_view, j, m_n,
+                                                            d.width, d.height));
             }
         }
-        repaint();
     }
 
     public VisualPokemon getPokemonForSlot(int party, int slot) {
@@ -465,32 +610,18 @@ public class GameVisualisation extends JPanel {
         }
     }
 
-    public void sendOut(final int party, final int slot, int index, String name) {
+    public void sendOut(final int party, final int slot, int index, String species, 
+                                            String name, int gender, int level) {
         VisualPokemon p = getPokemonForSlot(party, slot);
         if (p != null) {
             p.setSlot(-1);
         }
         VisualPokemon newPoke = m_parties[party][index];
         newPoke.setSlot(slot);
+        newPoke.setSpecies(species);
         newPoke.setName(name);
-        Timer t = new Timer(400, new ActionListener() {
-            private boolean m_first = true;
-            public void actionPerformed(ActionEvent e) {
-                VisualPokemon p = m_active[party][slot];
-                if (p == null) return;
-                Timer t = (Timer)e.getSource();
-                if (m_first) {
-                    t.setDelay(300);
-                    m_first = false;
-                } else {
-                    t.stop();
-                    t = null;
-                }
-                p.toggleFrame();
-                repaint();
-            }
-        });
-        t.start();
+        newPoke.setLevel(level);
+        newPoke.setGender(gender);
     }
 
     public void setPokemon(int party, int index, Pokemon p) {
@@ -525,116 +656,63 @@ public class GameVisualisation extends JPanel {
 
     @Override
     public JToolTip createToolTip() {
+        if (m_tooltipParty == -1) {
+            return new JToolTip();
+        } else if (m_tooltipPoke == -1) {
+            return new JToolTip();
+        }
         VisualPokemon p = m_parties[m_tooltipParty][m_tooltipPoke];
         if (p == null) return new JToolTip();
-        StringBuilder stats = new StringBuilder();
-        stats.append("<html>");
-        for (int i = 0; i < 6; i++) {
-            //calc stat
-            stats.append(Text.getText(2, i));
-            if (i > 0) {
-                int level = p.getStatLevel(i);
-                if (level != 0) {
-                    if (level > 0) stats.append("+");
-                    stats.append(level);
-                }
-            }
-            stats.append("<br>");
-        }
-        stats.append("</html>");
-        StringBuilder effects = new StringBuilder();
-        effects.append("<html>");
-        List<String> statuses = p.getStatuses();
-        if (statuses.size() == 0) {
-            effects.append("No effects");
-        } else {
-            for (String eff : statuses) {
-                effects.append("-");
-                effects.append(eff);
-                effects.append("<br>");
-            }
-        }
-        effects.append("</html>");
-        int num, denom;
-        if (false /*m_n <= 2*/) {
-            num = denom = -1;
-        } else {
-            num = p.getNumerator();
-            denom = p.getDenominator();
-        }
+        
         // TODO: adjust final parameter for spectator support
         VisualToolTip vt = new VisualToolTip(p, m_tooltipParty == m_view);
         return new JCustomTooltip(this, vt);
     }
 
+    private Point getSpriteLocation(boolean us, int slot, int n, int w, int h) {
+        int x = 0, y;
+        int hw = w /2 ;
+        Dimension d = this.getPreferredSize();
+        if (us) {
+            y = d.height - h;
+            if (n == 1) {
+                x = 50 - hw;
+            } else if (n == 2) {
+                x = (slot == 0) ? 30 - hw: 90 - hw;
+            } else if (n == 3) {
+                x = (slot == 0) ? 20 - hw : (slot == 1) ? 55 - hw : 90 - hw;
+            } else {
+                x = slot * 23;
+            }
+        } else {
+            y = 90 - h;
+            if (n == 1) {
+                x = 190 - hw;
+            } else if (n == 2) {
+                x = (slot == 0) ? 170 - hw : 220 - hw;
+            } else if (n == 3) {
+                x = (slot == 0) ? 160 - hw : (slot == 1) ? 190 - hw : 220 - hw;
+            } else {
+                x = 220 - n * 23 + 23 * slot;
+                y -= 5;
+            }
+        }
+        return new Point(x, y);
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D)g.create();
-        m_mouseInput.setColor(Color.WHITE);
+        m_mouseInput.setColor(Color.BLACK);
         m_mouseInput.fillRect(0, 0, getWidth(), getHeight());
+        m_mouseInput.setColor(Color.WHITE);
+        m_mouseInput.fillRect(0, 0, 60, 36);
+        m_mouseInput.fillRect(getWidth() - 60, getHeight() - 36, 60, 36);
+        m_mouseInput.setColor(new Color(m_view, 1, 0));
+        m_mouseInput.fillRect(0, getHeight() - 60, 220, 60);
+        m_mouseInput.setColor(new Color(1 - m_view, 1, 0));
+        m_mouseInput.fillRect(70, 10, 220, 60);
         g2.drawImage(m_background, 0, 0, this);
-        for (int i = 0; i < 2; i++) {
-            paintParty(i, g2);
-        }
-        g2.dispose();
-    }
-
-    private void paintParty(int idx, Graphics g) {
-        Graphics2D g2 = (Graphics2D)g.create();
-        VisualPokemon[] team = m_active[idx];
-        if (team == null) return;
-        boolean us = (idx == m_view);
-        final int partyBuf = 12;
-        MediaTracker tracker = new MediaTracker(this);
-        for (int i = m_n - 1; i >= 0; i--) {
-            VisualPokemon p = team[i];
-            if (p == null) continue;
-            Image img = getSprite(p.getSpecies(), !us,
-                    p.getGender() != Pokemon.Gender.GENDER_FEMALE.getValue(), p.isShiny(), p.getFrame());
-            if (img == null) continue;
-            tracker.addImage(img, 0);
-            try {
-                tracker.waitForAll();
-            } catch (InterruptedException e) {
-
-            }
-            int h = img.getHeight(this);
-            int w = img.getWidth(this);
-            int x;
-            int y = us ? m_background.getHeight(this) - h : 88 - h;
-            if (m_n == 1) {
-                x = us ? 64 - (w / 2) : m_background.getWidth(this) - 64 - (w / 2);
-            } else if (m_n == 2) {
-                x = us ? 70 : 220 - w / 2;
-                x -= us ? 70 * i : 50 * i;
-            } else {
-                //get ugly
-                x = us ? 45 * (m_n - (i + 1)) - 15 : 215 - 45 * i;
-            }
-            int index = i + idx * m_n;
-            if (us && (m_selected == i)) {
-                g2.drawImage(m_arrows[0], x + w / 2, y - m_arrows[0].getHeight(this), this);
-            }
-            if ((m_target == index) || ((m_target == -1) && !us) || ((m_target == -2) && us)
-                    || (m_target == -3)) {
-                g2.drawImage(m_arrows[1], x + w / 2, y - m_arrows[1].getHeight(this), this);
-            }
-            if (p.m_visible) g2.drawImage(img, x, y, this);
-            m_mouseInput.setColor(new Color(idx, 0, 1));
-            m_mouseInput.fillRect(x - partyBuf, y - partyBuf, w + partyBuf * 2,
-                    h + partyBuf * 2);
-            int pos = -1;
-            for (int j = 0; j < m_parties[idx].length; j++) {
-                if (m_parties[idx][j].getSlot() == i) {
-                    pos = j;
-                    break;
-                }
-            }
-            if (pos != -1) {
-                m_mouseInput.setColor(new Color(idx, pos, 0));
-                m_mouseInput.fillRect(x, y, w, h);
-            }
-        }
         g2.dispose();
     }
 
@@ -697,7 +775,26 @@ public class GameVisualisation extends JPanel {
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Visualisation test");
-        GameVisualisation panel = new GameVisualisation(0, 1, 6, null);
+
+        SpeciesListParser slp = new SpeciesListParser();
+        List<PokemonSpecies> species = slp.parseDocument(
+                GameVisualisation.class.getResource("resources/species.xml").toString());
+        GameVisualisation panel = new GameVisualisation(1, 2, 6, species);
+        frame.setSize(panel.getPreferredSize().width, panel.getPreferredSize().height + 20);
+        Random r = new java.util.Random();
+        VisualPokemon p1 = new VisualPokemon(1, 1, 100, false);
+        VisualPokemon p2 = new VisualPokemon(2, 1, 100, false);
+        VisualPokemon p3 = new VisualPokemon(3, 1, 100, false);
+        VisualPokemon p4 = new VisualPokemon(4, 1, 100, false);
+        /*VisualPokemon p5 = new VisualPokemon(r.nextInt(505), 1, 100, false);
+        VisualPokemon p6 = new VisualPokemon(r.nextInt(505), 1, 100, false);
+        VisualPokemon p7 = new VisualPokemon(r.nextInt(505), 1, 100, false);
+        VisualPokemon p8 = new VisualPokemon(r.nextInt(505), 1, 100, false);
+        VisualPokemon p9 = new VisualPokemon(r.nextInt(505), 1, 100, false);
+        VisualPokemon p10 = new VisualPokemon(r.nextInt(505), 1, 100, false);
+        VisualPokemon p11 = new VisualPokemon(r.nextInt(505), 1, 100, false);
+        VisualPokemon p12 = new VisualPokemon(r.nextInt(505), 1, 100, false);*/
+        panel.setActive(new VisualPokemon[] {p1, p2}, new VisualPokemon[] {p3,p4});
         frame.setSize(panel.getPreferredSize().width, panel.getPreferredSize().height + 20);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(panel);
