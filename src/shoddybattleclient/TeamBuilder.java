@@ -285,8 +285,7 @@ public class TeamBuilder extends javax.swing.JFrame {
             return;
 
         setSpecies(poke.toString());
-        m_forms.get(idx).setPokemon(poke, false);
-        tabForms.setTitleAt(idx, poke.toString());
+        m_forms.get(idx).setPokemon(poke, true);
     }
 
     //updates the Tree by looking through our teams for any of the same pokemon
@@ -314,6 +313,20 @@ public class TeamBuilder extends javax.swing.JFrame {
     //updates the Tree by looking through the boxes for matching pokemon
     private void loadPokemonFromBoxes() {
         String species = ((PokemonSpecies)cmbSpecies.getSelectedItem()).getName();
+        File dir = new File(Preference.getBoxLocation());
+
+        if (!dir.exists()) return;
+
+        //We need to look through all the boxes for matches of the same species
+        for (File boxFolder : dir.listFiles()) {
+            if (!boxFolder.isDirectory()) continue;
+
+            try {
+                PokemonBox box = new PokemonBox(boxFolder.getName(), species);
+                if (box.getSize() > 0)
+                    ((BoxTreeModel)treeBox.getModel()).addBox(box);
+            } catch (Exception ex) {}
+        }
     }
 
     /** This method is called from within the constructor to
@@ -383,6 +396,11 @@ public class TeamBuilder extends javax.swing.JFrame {
         });
 
         btnSaveToBox.setText("Save <<");
+        btnSaveToBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveToBoxActionPerformed(evt);
+            }
+        });
 
         panelSprite.setBackground(new java.awt.Color(255, 255, 255));
         panelSprite.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
@@ -518,7 +536,7 @@ public class TeamBuilder extends javax.swing.JFrame {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(tabForms, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
+                    .add(tabForms, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(cmbSpecies, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -642,7 +660,9 @@ public class TeamBuilder extends javax.swing.JFrame {
                 new String[] {null, null, null, null}, new int[] {3,3,3,3},
                 new int[] {31,31,31,31,31,31}, new int[] {0,0,0,0,0,0}), false);
         } else if (obj instanceof Pokemon) {
-            m_forms.get(tabForms.getSelectedIndex()).setPokemon((Pokemon)obj, true);
+            setSelectedPokemon((Pokemon)obj);
+        } else if (obj instanceof PokemonBox.PokemonWrapper) {
+            setSelectedPokemon(((PokemonBox.PokemonWrapper)obj).pokemon);
         }
     }//GEN-LAST:event_btnLoadFromBoxActionPerformed
 
@@ -703,6 +723,10 @@ public class TeamBuilder extends javax.swing.JFrame {
     private void menuBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBoxActionPerformed
         new BoxDialog(this);
     }//GEN-LAST:event_menuBoxActionPerformed
+
+    private void btnSaveToBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveToBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnSaveToBoxActionPerformed
 
     /**
     * @param args the command line arguments

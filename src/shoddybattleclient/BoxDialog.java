@@ -1,6 +1,6 @@
 /* BoxDialog.java
  *
- * Created on Sunday May 31, 2010, 8:58 PM
+ * Created on Monday May 31, 2010, 8:58 PM
  *
  * This file is a part of Shoddy Battle.
  * Copyright (C) 2009  Catherine Fitzpatrick and Benjamin Gwin
@@ -26,10 +26,6 @@ import java.awt.Component;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -44,7 +40,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import shoddybattleclient.shoddybattle.Pokemon;
-import shoddybattleclient.utils.TeamFileParser;
+import shoddybattleclient.shoddybattle.PokemonBox;
+import shoddybattleclient.shoddybattle.PokemonBox.PokemonWrapper;
 
 /**
  * A dialog to manage pokemon and boxes.
@@ -53,158 +50,17 @@ import shoddybattleclient.utils.TeamFileParser;
  */
 public class BoxDialog extends javax.swing.JDialog {
 
-    //This is needed for proper list display
-    private class PokemonWrapper implements Comparable<PokemonWrapper> {
-        public String name;
-        public Pokemon pokemon;
-        public PokemonWrapper(String pokemonName, Pokemon poke) {
-            name = pokemonName;
-            pokemon = poke;
-        }
-        @Override
-        public String toString() {
-            return name;
-        }
-        @Override
-        public int compareTo(PokemonWrapper o) {
-            return name.compareToIgnoreCase(o.name);
-        }
-    }
-
-    //TODO: Consider this box with BoxTreeModel.Box
-    //Calling methods on this Box modifies the hard drive
-    private class Box implements Comparable<Box> {
-        
-        private String m_name;
-        private ArrayList<PokemonWrapper> m_pokemon;
-
-        public Box(String name) {
-            m_name = name;
-            m_pokemon = new ArrayList<PokemonWrapper>();
-            
-            //Create the box itself
-            File boxDir = new File(getBoxPath());
-            if(!boxDir.exists())
-                boxDir.mkdirs();
-
-            //Read in all the pokemon in this box
-            for(File pokeFile : boxDir.listFiles()) {
-                if(pokeFile.isDirectory())
-                    continue;
-                try {
-                    TeamFileParser tfp = new TeamFileParser();
-                    Pokemon poke = tfp.parseTeam(pokeFile.getAbsolutePath())[0];
-                    m_pokemon.add(new PokemonWrapper(pokeFile.getName(), poke));
-                }
-                catch(Exception ex) {}
-            }
-            Collections.sort(m_pokemon);
-            clearDuplicates(m_pokemon);
-        }
-
-        //This creates a new file if it doesn't exist
-        public void addPokemon(String name, Pokemon pokemon) throws IOException {
-            addPokemon(new PokemonWrapper(name, pokemon));
-        }
-
-        public void addPokemon(PokemonWrapper wrapper) throws IOException {
-            StringBuffer buf = new StringBuffer();
-            buf.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
-            buf.append(wrapper.pokemon.toXML());
-
-            File pokemonPath = new File(getBoxPath() + "/" + wrapper.name);
-            Writer writer = new PrintWriter(new FileWriter(pokemonPath));
-            writer.write(new String(buf));
-            writer.flush();
-            writer.close();
-
-            //Insert the pokemon into its sorted position
-            int i = 0;
-            for(i = 0; i < getPokemonCount(); i++) {
-                int compare = wrapper.compareTo(m_pokemon.get(i));
-                if(compare < 0) {
-                    break;
-                } else if(compare == 0) {
-                    m_pokemon.set(i, wrapper);
-                    return;
-                }
-            }
-            m_pokemon.add(i, wrapper);
-        }
-
-        //If the pokemon doesn't exist, it does nothing
-        public void removePokemon(String name) {
-            for(int i = 0; i < getPokemonCount(); i++) {
-                PokemonWrapper wrapper = getPokemonAt(i);
-                if(wrapper.name.equalsIgnoreCase(name)) {
-                    removePokemonAt(i);
-                }
-            }
-        }
-
-        public void removePokemonAt(int index) {
-            PokemonWrapper wrapper = getPokemonAt(index);
-            new File(getBoxPath() + "/" + wrapper.name).delete();
-            m_pokemon.remove(index);
-        }
-
-        public PokemonWrapper getPokemonAt(int idx) {
-            return m_pokemon.get(idx);
-        }
-
-        public Pokemon getPokemon(String name) {
-            PokemonWrapper wrapper = getPokemonWrapper(name);
-            if(wrapper == null)
-                return null;
-            return wrapper.pokemon;
-        }
-
-        //This has a use if we want a case-sensitive name
-        public PokemonWrapper getPokemonWrapper(String name) {
-            //With the right comparator its O(logn), but I don't think its worth it
-            for(PokemonWrapper wrapper : m_pokemon) {
-                if(wrapper.name.equalsIgnoreCase(name))
-                    return wrapper;
-            }
-            return null;
-        }
-
-        public int getPokemonCount() {
-            return m_pokemon.size();
-        }
-
-        public String getName() {
-            return m_name;
-        }
-
-        public String getBoxPath() {
-            return Preference.getBoxLocation() + File.separatorChar + getName();
-        }
-
-        @Override
-        public int compareTo(Box o) {
-            return getName().compareToIgnoreCase(o.getName());
-        }
-
-        @Override
-        public String toString() {
-            return getName();
-        }
-    }
-
     private class BoxListModel extends AbstractListModel {
+        private List<PokemonBox> m_boxes = new ArrayList<PokemonBox>();
 
-        //TreeSets are a major performance liability come getElementAt()
-        List<Box> m_boxes = new ArrayList<Box>();
-
-        public void addBoxes(List<Box> boxes) {
+        public void addBoxes(List<PokemonBox> boxes) {
             m_boxes.addAll(boxes);
             Collections.sort(m_boxes);
             clearDuplicates(m_boxes);
             fireListChanged();
         }
 
-        public void addBox(Box box) {
+        public void addBox(PokemonBox box) {
             //This is faster for already sorted lists
             int i = 0;
             for(i = 0; i < getSize(); i++) {
@@ -230,15 +86,15 @@ public class BoxDialog extends javax.swing.JDialog {
             }
         }
 
-        public Box getBox(String name) {
-            for(Box box : m_boxes) {
+        public PokemonBox getBox(String name) {
+            for(PokemonBox box : m_boxes) {
                 if(box.getName().equalsIgnoreCase(name))
                     return box;
             }
             return null;
         }
 
-        public void removeBox(Box box) {
+        public void removeBox(PokemonBox box) {
             m_boxes.remove(box);
         }
 
@@ -254,10 +110,9 @@ public class BoxDialog extends javax.swing.JDialog {
     }
 
     private class PokemonListModel extends AbstractListModel {
+        private PokemonBox owner;
 
-        Box owner;
-
-        public void setBox(Box box) {
+        public void setBox(PokemonBox box) {
             owner = box;
             fireListChanged();
         }
@@ -279,7 +134,7 @@ public class BoxDialog extends javax.swing.JDialog {
         public int getSize() {
             if(owner == null)
                 return 0;
-            return owner.getPokemonCount();
+            return owner.getSize();
         }
     }
 
@@ -290,7 +145,7 @@ public class BoxDialog extends javax.swing.JDialog {
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-            Box box = (Box)listBoxes.getSelectedValue();
+            PokemonBox box = (PokemonBox)listBoxes.getSelectedValue();
             PokemonWrapper wrapper = box.getPokemonAt(index);
             Pokemon poke = wrapper.pokemon;
 
@@ -326,6 +181,7 @@ public class BoxDialog extends javax.swing.JDialog {
 
     /** Creates new form BoxDialog */
     public BoxDialog(TeamBuilder parent) {
+        super(parent);
         initComponents();
         teamBuilder = parent;
 
@@ -335,12 +191,12 @@ public class BoxDialog extends javax.swing.JDialog {
 
         File boxDir = new File(Preference.getBoxLocation());
         boxModel = new BoxListModel();
-        ArrayList<Box> boxes = new ArrayList<Box>();
+        ArrayList<PokemonBox> boxes = new ArrayList<PokemonBox>();
         if(boxDir.exists()) {
             for(File boxFile : boxDir.listFiles()) {
                 if(!boxFile.isDirectory())
                     continue;
-                boxes.add(new Box(boxFile.getName()));
+                boxes.add(new PokemonBox(boxFile.getName()));
             }
         }
         boxModel.addBoxes(boxes);
@@ -425,7 +281,7 @@ public class BoxDialog extends javax.swing.JDialog {
                 return null;
 
                 lastPoke = poke;
-                return new Point(evt.getX(), evt.getY() + 25);
+                return new Point(evt.getX() + 15, evt.getY() + 25);
             }
             /* Flickers too much, left here if anyone wants to deal with it
             long lastShow = 0;
@@ -552,8 +408,7 @@ public class BoxDialog extends javax.swing.JDialog {
     private void btnNewBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewBoxActionPerformed
         String boxName = JOptionPane.showInputDialog(this, "New box name:");
 
-        if(boxName == null)
-            return;
+        if(boxName == null) return;
         if(boxModel.getBox(boxName) != null) {
             JOptionPane.showMessageDialog(this, "This box already exists", "Error",
                     JOptionPane.ERROR_MESSAGE);
@@ -561,12 +416,9 @@ public class BoxDialog extends javax.swing.JDialog {
         }
 
         try {
-            Box newBox = new Box(boxName);
+            PokemonBox newBox = new PokemonBox(boxName);
             boxModel.addBox(newBox);
             listBoxes.setSelectedValue(newBox, true);
-        } catch(SecurityException ex) {
-            JOptionPane.showMessageDialog(this, "Permission denied", "Error",
-                    JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Error making box", "Error",
                     JOptionPane.ERROR_MESSAGE);
@@ -574,7 +426,7 @@ public class BoxDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnNewBoxActionPerformed
 
     private void btnImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportActionPerformed
-        Box box = (Box)listBoxes.getSelectedValue();
+        PokemonBox box = (PokemonBox)listBoxes.getSelectedValue();
 
         if(box == null)
             return;
@@ -594,14 +446,8 @@ public class BoxDialog extends javax.swing.JDialog {
         try {
             name = name.trim();
             box.removePokemon(name); //May be a rename
-            PokemonWrapper newPoke = new PokemonWrapper(name, teamBuilder.getSelectedPokemon());
-            box.addPokemon(newPoke);
-
+            box.addPokemon(name, teamBuilder.getSelectedPokemon());
             pokemonModel.fireListChanged();
-            listPokemon.setSelectedValue(newPoke, true);
-        } catch(SecurityException ex) {
-            JOptionPane.showMessageDialog(this, "Permission denied", "Error",
-                    JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Error adding pokemon", "Error",
                     JOptionPane.ERROR_MESSAGE);
@@ -609,7 +455,7 @@ public class BoxDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnImportActionPerformed
 
     private void listBoxesValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listBoxesValueChanged
-        Box box = (Box)listBoxes.getSelectedValue();
+        PokemonBox box = (PokemonBox)listBoxes.getSelectedValue();
         pokemonModel.setBox(box);
     }//GEN-LAST:event_listBoxesValueChanged
 
@@ -648,10 +494,10 @@ public class BoxDialog extends javax.swing.JDialog {
         File oldFile;
         File newFile;
         if(list == listBoxes) {
-            Box current = (Box)item;
-            Box previous = boxModel.getBox(newName); //exists for renames
+            PokemonBox current = (PokemonBox)item;
 
             //Duplicates are fine if we're merely changing the case
+            PokemonBox previous = boxModel.getBox(newName);
             if(previous != null && previous != current) {
                 JOptionPane.showMessageDialog(this, "A box with this name already exists",
                         "Error", JOptionPane.ERROR_MESSAGE);
@@ -664,23 +510,20 @@ public class BoxDialog extends javax.swing.JDialog {
             try {
                 oldFile.renameTo(newFile);
 
-                Box newBox = new Box(newName);
+                PokemonBox newBox = new PokemonBox(newName);
                 boxModel.removeBox(current);
                 boxModel.addBox(newBox);
                 list.setSelectedValue(newBox, true);
-            } catch(SecurityException ex) {
-                JOptionPane.showMessageDialog(this, "Permission denied", "Error",
-                        JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error renaming box", "Error",
                         JOptionPane.ERROR_MESSAGE);
             }
         } else {
-            Box box = (Box)listBoxes.getSelectedValue();
+            PokemonBox box = (PokemonBox)listBoxes.getSelectedValue();
             PokemonWrapper current = (PokemonWrapper)item;
-            PokemonWrapper previous = box.getPokemonWrapper(newName); //exists for renames
 
             //Duplicates are fine if we're merely changing the case
+            PokemonWrapper previous = box.getPokemon(newName);
             if(previous != null && previous.pokemon != current.pokemon) {
                 JOptionPane.showMessageDialog(this, "A pokemon with this name already exists",
                         "Error", JOptionPane.ERROR_MESSAGE);
@@ -688,15 +531,10 @@ public class BoxDialog extends javax.swing.JDialog {
             }
 
             try {
-                PokemonWrapper newPoke = new PokemonWrapper(newName, current.pokemon);
                 box.removePokemon(current.name);
-                box.addPokemon(newPoke);
+                box.addPokemon(newName, current.pokemon);
 
                 pokemonModel.fireListChanged();
-                list.setSelectedValue(newPoke, true);
-            } catch(SecurityException ex) {
-                JOptionPane.showMessageDialog(this, "Permission denied", "Error",
-                        JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error renaming pokemon", "Error",
                         JOptionPane.ERROR_MESSAGE);
@@ -716,13 +554,14 @@ public class BoxDialog extends javax.swing.JDialog {
             return;
 
         if(list == listBoxes) {
-            Box box = (Box)item;
+            PokemonBox box = (PokemonBox)item;
             try {
                 File boxFile = new File(box.getBoxPath());
+
                 //While we delete remaining files later, this helps in case there is an exception
                 //If there is a "problem Pokemon", we need the display to update properly after all
-                while(box.getPokemonCount() != 0) {
-                    box.removePokemonAt(box.getPokemonCount()-1);
+                while(box.getSize() != 0) {
+                    box.removePokemonAt(box.getSize()-1);
                 }
 
                 //If the user has rigged it with duplicates, files may remain
@@ -733,9 +572,6 @@ public class BoxDialog extends javax.swing.JDialog {
 
                 boxModel.removeBox(box);
                 boxFile.delete();
-            } catch(SecurityException ex) {
-                JOptionPane.showMessageDialog(this, "Permission denied", "Error",
-                        JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error deleting box", "Error",
                         JOptionPane.ERROR_MESSAGE);
@@ -744,14 +580,11 @@ public class BoxDialog extends javax.swing.JDialog {
             boxModel.fireListChanged();
 
         } else {
-            Box box = (Box)listBoxes.getSelectedValue();
+            PokemonBox box = (PokemonBox)listBoxes.getSelectedValue();
             PokemonWrapper wrapper = (PokemonWrapper)item;
 
             try {
                 box.removePokemon(wrapper.name);
-            } catch(SecurityException ex) {
-                JOptionPane.showMessageDialog(this, "Permission denied", "Error",
-                        JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error deleting pokemon", "Error",
                         JOptionPane.ERROR_MESSAGE);

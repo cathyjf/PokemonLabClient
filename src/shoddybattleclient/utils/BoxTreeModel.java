@@ -28,6 +28,8 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import shoddybattleclient.shoddybattle.Pokemon;
+import shoddybattleclient.shoddybattle.PokemonBox;
+import shoddybattleclient.shoddybattle.PokemonBox.PokemonWrapper;
 
 /**
  * A subclass of TreeModel that is used to display pokemon in boxes in the team
@@ -36,37 +38,13 @@ import shoddybattleclient.shoddybattle.Pokemon;
  */
 public class BoxTreeModel implements TreeModel {
 
-    public class Box {
-        private String m_name;
-        private List<Pokemon> m_pokemon = new ArrayList<Pokemon>();
-        public Box(String name) {
-            m_name = name;
-            loadContents();
-        }
-        public String toString() {
-            return m_name;
-        }
-        private void loadContents() {
-
-        }
-        public int getChildCount() {
-            return m_pokemon.size();
-        }
-        public Pokemon getChild(int idx) {
-            return m_pokemon.get(idx);
-        }
-        public int indexOf(Object child) {
-            return m_pokemon.indexOf(child);
-        }
-    }
-
     private static final String m_root = "Root";
     private static final String m_default = "(default)";
     private static final String m_teamRoot = "Teams";
     private static final String m_boxRoot = "Boxes";
     private List<TreeModelListener> m_listeners = new ArrayList<TreeModelListener>();
     private List<Pokemon> m_teamPokemon = new ArrayList<Pokemon>();
-    private List<Box> m_boxes = new ArrayList<Box>();
+    private List<PokemonBox> m_boxes = new ArrayList<PokemonBox>();
 
     public static boolean isDefaultNode(String name) {
         return m_default.equals(name);
@@ -96,8 +74,8 @@ public class BoxTreeModel implements TreeModel {
             return m_teamPokemon.get(idx);
         } else if (parent.equals(m_boxRoot)) {
             return m_boxes.get(idx);
-        } else if (parent instanceof Box) {
-            return ((Box)parent).getChild(idx);
+        } else if (parent instanceof PokemonBox) {
+            return ((PokemonBox)parent).getPokemonAt(idx);
         } else {
             return null;
         }
@@ -110,15 +88,15 @@ public class BoxTreeModel implements TreeModel {
             return m_teamPokemon.size();
         } else if (node.equals(m_boxRoot)) {
             return m_boxes.size();
-        } else if (node instanceof Box) {
-            return ((Box)node).getChildCount();
+        } else if (node instanceof PokemonBox) {
+            return ((PokemonBox)node).getSize();
         } else {
             return 0;
         }
     }
 
     public boolean isLeaf(Object node) {
-        return (node instanceof Pokemon) || (node.equals(m_default));
+        return (node instanceof Pokemon) ||(node instanceof PokemonWrapper) || (node.equals(m_default));
     }
 
     public void valueForPathChanged(TreePath path, Object val) {
@@ -133,8 +111,8 @@ public class BoxTreeModel implements TreeModel {
             return m_teamPokemon.indexOf(child);
         } else if (parent.equals(m_boxRoot)) {
             return m_boxes.indexOf(child);
-        } else if (parent instanceof Box) {
-            return ((Box)parent).indexOf(child);
+        } else if (parent instanceof PokemonBox) {
+            return ((PokemonBox)parent).indexOf((PokemonWrapper)child);
         } else {
             return -1;
         }
@@ -152,4 +130,7 @@ public class BoxTreeModel implements TreeModel {
         m_teamPokemon.add(p);
     }
 
+    public void addBox(PokemonBox box) {
+        m_boxes.add(box);
+    }
 }
