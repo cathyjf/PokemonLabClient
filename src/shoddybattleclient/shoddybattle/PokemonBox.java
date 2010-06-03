@@ -166,14 +166,18 @@ public class PokemonBox implements Comparable<PokemonBox> {
         return index;
     }
 
+    public int indexOf(String name) {
+        //Wrappers compare using names, so a dud allows us to search in O(logn)
+        PokemonWrapper dud = new PokemonWrapper(name, null);
+        return indexOf(dud);
+    }
+
     public PokemonWrapper getPokemonAt(int idx) {
         return m_pokemon.get(idx);
     }
 
     public PokemonWrapper getPokemon(String name) {
-        //Wrappers compare using names, so a dud allows us to search in O(logn)
-        PokemonWrapper dud = new PokemonWrapper(name, null);
-        int index = indexOf(dud);
+        int index = indexOf(name);
         if (index < 0)
             return null;
         return m_pokemon.get(index);
@@ -181,9 +185,7 @@ public class PokemonBox implements Comparable<PokemonBox> {
 
     //If the pokemon doesn't exist, it does nothing
     public void removePokemon(String name) {
-        //Wrappers compare using names, so a dud allows us to search in O(logn)
-        PokemonWrapper dud = new PokemonWrapper(name, null);
-        int index = indexOf(dud);
+        int index = indexOf(name);
         if (index >= 0)
             removePokemonAt(index);
     }

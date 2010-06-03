@@ -79,7 +79,7 @@ public class BoxDialog extends javax.swing.JDialog {
 
         //Let the list know that we added a box
         public void fireListChanged() {
-            ListDataEvent evt = new ListDataEvent(this,
+            ListDataEvent evt = new ListDataEvent(listBoxes,
                     ListDataEvent.CONTENTS_CHANGED, 0, m_boxes.size());
             for (ListDataListener listener : getListDataListeners()) {
                 listener.contentsChanged(evt);
@@ -100,6 +100,7 @@ public class BoxDialog extends javax.swing.JDialog {
 
         @Override
         public Object getElementAt(int index) {
+            if(getSize() == 0) return null;
             return m_boxes.get(index);
         }
 
@@ -118,7 +119,7 @@ public class BoxDialog extends javax.swing.JDialog {
         }
 
         public void fireListChanged() {
-            ListDataEvent evt = new ListDataEvent(owner,
+            ListDataEvent evt = new ListDataEvent(listPokemon,
                     ListDataEvent.CONTENTS_CHANGED, 0, getSize());
             for (ListDataListener listener : getListDataListeners()) {
                 listener.contentsChanged(evt);
@@ -127,13 +128,13 @@ public class BoxDialog extends javax.swing.JDialog {
 
         @Override
         public Object getElementAt(int index) {
+            if(owner == null) return null;
             return owner.getPokemonAt(index);
         }
 
         @Override
         public int getSize() {
-            if(owner == null)
-                return 0;
+            if(owner == null) return 0;
             return owner.getSize();
         }
     }
@@ -443,15 +444,17 @@ public class BoxDialog extends javax.swing.JDialog {
                 return;
         }
 
+        name = name.trim();
         try {
-            name = name.trim();
             box.removePokemon(name); //May be a rename
             box.addPokemon(name, teamBuilder.getSelectedPokemon());
-            pokemonModel.fireListChanged();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Error adding pokemon", "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
+
+        pokemonModel.fireListChanged();
+        listPokemon.setSelectedValue(box.getPokemon(name), true);
     }//GEN-LAST:event_btnImportActionPerformed
 
     private void listBoxesValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listBoxesValueChanged
@@ -533,12 +536,13 @@ public class BoxDialog extends javax.swing.JDialog {
             try {
                 box.removePokemon(current.name);
                 box.addPokemon(newName, current.pokemon);
-
-                pokemonModel.fireListChanged();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error renaming pokemon", "Error",
                         JOptionPane.ERROR_MESSAGE);
             }
+
+            pokemonModel.fireListChanged();
+            list.setSelectedValue(box.getPokemon(newName), true);
         }
     }//GEN-LAST:event_menuRenameActionPerformed
 
@@ -593,6 +597,7 @@ public class BoxDialog extends javax.swing.JDialog {
 
         //This always changes no matter what is deleted
         pokemonModel.fireListChanged();
+        list.clearSelection();
     }//GEN-LAST:event_menuDeleteActionPerformed
 
 
