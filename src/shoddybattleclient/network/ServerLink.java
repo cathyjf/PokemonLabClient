@@ -42,6 +42,7 @@ import shoddybattleclient.shoddybattle.Pokemon;
 import shoddybattleclient.shoddybattle.PokemonMove;
 import shoddybattleclient.shoddybattle.PokemonNature;
 import shoddybattleclient.shoddybattle.PokemonSpecies;
+import shoddybattleclient.utils.ClauseList.Clause;
 import shoddybattleclient.utils.MoveListParser;
 import shoddybattleclient.utils.SpeciesListParser;
 import shoddybattleclient.utils.Text;
@@ -1348,6 +1349,25 @@ public class ServerLink extends Thread {
                 }
             });
 
+            //CLAUSE_LIST
+            new ServerMessage(31, new MessageHandler() {
+                //int16 : number of clauses
+                //for each clause:
+                //    string : name
+                //    string : description
+                public void handle(ServerLink link, DataInputStream is)
+                                                        throws IOException {
+                    int count = is.readShort();
+                    List<Clause> clauses = new ArrayList<Clause>();
+                    for (int i = 0; i < count; i++) {
+                        String name = is.readUTF();
+                        String desc = is.readUTF();
+                        clauses.add(new Clause(name, desc));
+                    }
+                    link.setClauseList(clauses);
+                }
+            });
+
             // add additional messages here
         }
 
@@ -1395,6 +1415,7 @@ public class ServerLink extends Thread {
             new HashMap<Integer, BattleWindow>();
     private Metagame[] m_metagames;
     private List<MessageListener> m_msgListeners = new ArrayList<MessageListener>();
+    private List<Clause> m_clauseList;
 
     public Metagame[] getMetagames() {
         return m_metagames;
@@ -1406,6 +1427,14 @@ public class ServerLink extends Thread {
 
     public List<PokemonMove> getMoveList() {
         return m_moveList;
+    }
+
+    public void setClauseList(List<Clause> clauses) {
+        m_clauseList = clauses;
+    }
+
+    public List<Clause> getClauseList() {
+        return m_clauseList;
     }
 
     public ServerLink(String host, int port)

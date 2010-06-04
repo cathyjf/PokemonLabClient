@@ -38,6 +38,8 @@ import shoddybattleclient.network.ServerLink.MessageListener;
 import shoddybattleclient.shoddybattle.Pokemon;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
 import shoddybattleclient.shoddybattle.PokemonSpecies;
+import shoddybattleclient.utils.ClauseList;
+import shoddybattleclient.utils.ClauseList.ClauseListModel;
 import shoddybattleclient.utils.CloseableTabbedPane.CloseableTab;
 import shoddybattleclient.utils.HTMLPane;
 import shoddybattleclient.utils.TeamFileParser;
@@ -131,6 +133,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         m_idx = index;
         m_link.addMessageListener(this);
         m_link.requestUserMessage(name);
+        listClauses.setModel(new ClauseListModel(m_link.getClauseList()));
     }
 
     public void setPersonalMessage(String msg) {
@@ -233,18 +236,27 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         btnLoad = new javax.swing.JButton();
         btnChallenge = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        listClauses = new ClauseList();
+        chkTimed = new javax.swing.JCheckBox();
+        jLabel5 = new javax.swing.JLabel();
+        txtTimerPool = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        txtTimerPeriods = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        txtTimerLength = new javax.swing.JTextField();
 
         setOpaque(false);
 
         jPanel1.setOpaque(false);
 
-        lblName.setFont(new java.awt.Font("Lucida Grande", 1, 16)); // NOI18N
+        lblName.setFont(new java.awt.Font("Lucida Grande", 1, 16));
         lblName.setText("bearzly");
 
         lblMessage.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
         lblMessage.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
-        jLabel3.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Lucida Grande", 1, 13));
         jLabel3.setText("Rankings:");
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
@@ -255,7 +267,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(lblName)
                     .add(jLabel3)
-                    .add(lblMessage, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE))
+                    .add(lblMessage, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -266,7 +278,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
                 .add(lblMessage, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 135, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jLabel3)
-                .addContainerGap(117, Short.MAX_VALUE))
+                .addContainerGap(121, Short.MAX_VALUE))
         );
 
         jPanel2.setOpaque(false);
@@ -358,15 +370,71 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
 
         jPanel3.setOpaque(false);
 
+        jScrollPane1.setViewportView(listClauses);
+
+        chkTimed.setSelected(true);
+        chkTimed.setText("Timed Battle?");
+        chkTimed.setEnabled(false);
+
+        jLabel5.setText("Initial Pool:");
+
+        txtTimerPool.setText("300");
+        txtTimerPool.setEnabled(false);
+
+        jLabel6.setText("Periods:");
+
+        txtTimerPeriods.setText("3");
+        txtTimerPeriods.setEnabled(false);
+
+        jLabel7.setText("Period Length:");
+
+        txtTimerLength.setText("30");
+        txtTimerLength.setEnabled(false);
+
         org.jdesktop.layout.GroupLayout jPanel3Layout = new org.jdesktop.layout.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 240, Short.MAX_VALUE)
+            .add(jPanel3Layout.createSequentialGroup()
+                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(chkTimed)
+                    .add(jPanel3Layout.createSequentialGroup()
+                        .add(8, 8, 8)
+                        .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane1, 0, 0, Short.MAX_VALUE)
+                            .add(jPanel3Layout.createSequentialGroup()
+                                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(jPanel3Layout.createSequentialGroup()
+                                        .add(jLabel5)
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(txtTimerPool, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 49, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                    .add(jPanel3Layout.createSequentialGroup()
+                                        .add(jLabel7)
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(txtTimerLength, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jLabel6)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(txtTimerPeriods, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 31, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 258, Short.MAX_VALUE)
+            .add(jPanel3Layout.createSequentialGroup()
+                .add(chkTimed)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel5)
+                    .add(txtTimerPool, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jLabel6)
+                    .add(txtTimerPeriods, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel7)
+                    .add(txtTimerLength, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Advanced", jPanel3);
@@ -379,17 +447,18 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
                 .addContainerGap()
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 261, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 266, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(25, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+            .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE))
-                .addContainerGap())
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE)
+                    .add(layout.createSequentialGroup()
+                        .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -450,6 +519,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChallenge;
     private javax.swing.JButton btnLoad;
+    private javax.swing.JCheckBox chkTimed;
     private javax.swing.JComboBox cmbGen;
     private javax.swing.JComboBox cmbN;
     private javax.swing.JComboBox cmbRules;
@@ -457,13 +527,21 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lblMessage;
     private javax.swing.JLabel lblName;
+    private javax.swing.JList listClauses;
     private javax.swing.JPanel panelSprites;
+    private javax.swing.JTextField txtTimerLength;
+    private javax.swing.JTextField txtTimerPeriods;
+    private javax.swing.JTextField txtTimerPool;
     // End of variables declaration//GEN-END:variables
 
 }
