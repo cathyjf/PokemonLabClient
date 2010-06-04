@@ -34,7 +34,7 @@ public class TextDialog extends javax.swing.JDialog implements ClipboardOwner{
 
     /** Creates new form TextDialog */
     public TextDialog(java.awt.Frame parent, String text) {
-        super(parent, true);
+        super(parent);
         initComponents();
 
         jTextArea1.setText(text);

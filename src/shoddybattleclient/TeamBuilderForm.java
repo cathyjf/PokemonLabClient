@@ -181,11 +181,20 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         for (int i = 0; i < m_evs.length; i++) {
             final int index = i;
             KeyListener evListener = new KeyListener() {
+                //Linux has a "bug" where holding down a key fires many keyReleased
+                //This attempts to soften that bug, and shouldn't affect Mac/Windows
+                //Stopping it at actionPerformed gives keyPressed some time to save itself
                 private boolean m_increasing = false;
                 private JTextField m_caller = null;
+                boolean stopped = false;
                 private Timer m_timer = new Timer(100, new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         try {
+                            if(stopped) {
+                                m_timer.stop();
+                                return;
+                            }
+                            
                             int current = Integer.parseInt(m_caller.getText());
                             current += m_increasing ? 4 : -4;
                             if (current < 0) current = 0;
@@ -202,13 +211,15 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                     if (e.getKeyCode() == KeyEvent.VK_UP) {
                         m_increasing = true;
                         m_timer.start();
+                        stopped = false;
                     } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
                         m_increasing = false;
                         m_timer.start();
+                        stopped = false;
                     }
                 }
                 public void keyReleased(KeyEvent e) {
-                    m_timer.stop();
+                    stopped = true;
                     updateStat(index);
                 }
             };
