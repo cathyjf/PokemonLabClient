@@ -46,15 +46,15 @@ public class BoxTreeModel implements TreeModel {
     private List<Pokemon> m_teamPokemon = new ArrayList<Pokemon>();
     private List<PokemonBox> m_boxes = new ArrayList<PokemonBox>();
 
-    public static boolean isDefaultNode(String name) {
+    public static boolean isDefaultNode(Object name) {
         return m_default.equals(name);
     }
 
-    public static boolean isTeamRoot(String name) {
+    public static boolean isTeamRoot(Object name) {
         return m_teamRoot.equals(name);
     }
 
-    public static boolean isBoxRoot(String name) {
+    public static boolean isBoxRoot(Object name) {
         return m_boxRoot.equals(name);
     }
 

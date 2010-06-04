@@ -50,6 +50,7 @@ import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import shoddybattleclient.shoddybattle.*;
+import shoddybattleclient.shoddybattle.PokemonBox.PokemonWrapper;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
 import shoddybattleclient.utils.*;
 
@@ -653,7 +654,7 @@ public class TeamBuilder extends javax.swing.JFrame {
     private void btnLoadFromBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadFromBoxActionPerformed
         Object obj = treeBox.getLastSelectedPathComponent();
         if (obj == null) return;
-        if (BoxTreeModel.isDefaultNode(obj.toString())) {
+        if (BoxTreeModel.isDefaultNode(obj)) {
             PokemonSpecies sp = (PokemonSpecies)cmbSpecies.getSelectedItem();
             ((TeamBuilderForm)tabForms.getSelectedComponent()).setPokemon(new Pokemon(
                 sp.getName(), "", false, Gender.GENDER_MALE, 100, 255, null, null, null,
@@ -661,8 +662,8 @@ public class TeamBuilder extends javax.swing.JFrame {
                 new int[] {31,31,31,31,31,31}, new int[] {0,0,0,0,0,0}), false);
         } else if (obj instanceof Pokemon) {
             setSelectedPokemon((Pokemon)obj);
-        } else if (obj instanceof PokemonBox.PokemonWrapper) {
-            setSelectedPokemon(((PokemonBox.PokemonWrapper)obj).pokemon);
+        } else if (obj instanceof PokemonWrapper) {
+            setSelectedPokemon(((PokemonWrapper)obj).pokemon);
         }
     }//GEN-LAST:event_btnLoadFromBoxActionPerformed
 
@@ -725,7 +726,63 @@ public class TeamBuilder extends javax.swing.JFrame {
     }//GEN-LAST:event_menuBoxActionPerformed
 
     private void btnSaveToBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveToBoxActionPerformed
-        // TODO add your handling code here:
+        BoxTreeModel treeModel = (BoxTreeModel)treeBox.getModel();
+        Object obj = treeBox.getLastSelectedPathComponent();
+        PokemonBox box = null;
+        if (BoxTreeModel.isBoxRoot(obj)) {
+            ArrayList<String> boxes = new ArrayList<String>();
+            String newBox = "<html><i>New Box</i> ";
+            boxes.add(newBox);
+            for (File boxFile : new File(Preference.getBoxLocation()).listFiles()) {
+                if (boxFile.isDirectory())
+                    boxes.add(boxFile.getName());
+            }
+
+            Object selection = JOptionPane.showInputDialog(this, "Select a box", "Save to Box",
+                    JOptionPane.PLAIN_MESSAGE, null, boxes.toArray(), boxes.get(0));
+            if (selection == null) return;
+
+            if (selection.equals(newBox)) { //No system allows a foldername like newBox
+                String boxName = JOptionPane.showInputDialog(this, "New box name:");
+
+                if(boxName == null) return;
+                if(new File(Preference.getBoxLocation() + File.separatorChar + boxName).exists()) {
+                    JOptionPane.showMessageDialog(this, "This box already exists", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                selection = boxName;
+            }
+
+            box = new PokemonBox((String)selection, getSelectedPokemon().toString());
+            treeModel.addBox(box);
+
+        } else if (obj instanceof PokemonBox) {
+            box = (PokemonBox)obj;
+        } else if (obj instanceof PokemonWrapper) {
+            box = ((PokemonWrapper)obj).getParent();
+        }
+
+        if (box != null) {
+            String name = JOptionPane.showInputDialog(this, "New Pokemon's name:");
+            if(name == null || name.trim().equals("")) return;
+
+            if(box.getPokemon(name) != null) {
+                int confirm = JOptionPane.showConfirmDialog(this, "This Pokemon already exists, are " +
+                        "you sure you want to replace it?", "", JOptionPane.YES_NO_OPTION);
+                if(confirm != JOptionPane.YES_OPTION)
+                    return;
+            }
+
+            try {
+                name = name.trim();
+                box.removePokemon(name); //May be a rename
+                box.addPokemon(name, getSelectedPokemon());
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error adding pokemon", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_btnSaveToBoxActionPerformed
 
     /**

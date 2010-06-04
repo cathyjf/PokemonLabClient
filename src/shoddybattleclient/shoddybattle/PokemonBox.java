@@ -90,7 +90,7 @@ public class PokemonBox implements Comparable<PokemonBox> {
         m_pokemon = new ArrayList<PokemonWrapper>();
 
         //Create the box itself if it doesn't exist
-        File boxDir = new File(getBoxPath());
+        File boxDir = getBoxFolder();
         if (!boxDir.exists())
             boxDir.mkdirs();
 
@@ -206,6 +206,10 @@ public class PokemonBox implements Comparable<PokemonBox> {
 
     public String getBoxPath() {
         return Preference.getBoxLocation() + File.separatorChar + getName();
+    }
+
+    public File getBoxFolder() {
+        return new File(getBoxPath());
     }
 
     @Override

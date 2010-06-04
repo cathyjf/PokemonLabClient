@@ -507,7 +507,7 @@ public class BoxDialog extends javax.swing.JDialog {
                 return;
             }
 
-            oldFile = new File(current.getBoxPath());
+            oldFile = current.getBoxFolder();
             newFile = new File(Preference.getBoxLocation() + "/" + newName);
             
             try {
@@ -560,7 +560,7 @@ public class BoxDialog extends javax.swing.JDialog {
         if(list == listBoxes) {
             PokemonBox box = (PokemonBox)item;
             try {
-                File boxFile = new File(box.getBoxPath());
+                File boxFile = box.getBoxFolder();
 
                 //While we delete remaining files later, this helps in case there is an exception
                 //If there is a "problem Pokemon", we need the display to update properly after all
