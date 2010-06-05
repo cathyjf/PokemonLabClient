@@ -27,6 +27,7 @@ import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.FileDialog;
 import java.awt.Font;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
@@ -39,9 +40,13 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.ButtonGroup;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import shoddybattleclient.ChatPane.CommandException;
 import shoddybattleclient.GameVisualisation.VisualPokemon;
@@ -96,6 +101,28 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         }
     }
 
+    private static final Map<String, Color> m_colourMap = new HashMap<String, Color>();
+    static {
+        m_colourMap.put("Normal", new Color(0xb2a5b2));
+        m_colourMap.put("Fire", new Color(0xf9532c));
+        m_colourMap.put("Water", new Color(0x4a9cf1));
+        m_colourMap.put("Electric", new Color(0xebe96a));
+        m_colourMap.put("Grass", new Color(0x2ecf4d));
+        m_colourMap.put("Ice", new Color(0x6ce0e4));
+        m_colourMap.put("Fighting", new Color(0xa3694d));
+        m_colourMap.put("Poison", new Color(0x8956a4));
+        m_colourMap.put("Ground", new Color(0xa47c56));
+        m_colourMap.put("Flying", new Color(0xeeae52));
+        m_colourMap.put("Psychic", new Color(0xe580e1));
+        m_colourMap.put("Bug", new Color(0x7bf091));
+        m_colourMap.put("Rock", new Color(0x4a2d0e));
+        m_colourMap.put("Ghost", new Color(0x7d679a));
+        m_colourMap.put("Dragon", new Color(0x1ba8cb));
+        m_colourMap.put("Dark", new Color(0x221448));
+        m_colourMap.put("Steel", new Color(0x7b7b7b));
+        m_colourMap.put("Typeless", new Color(0x2299a7));
+        }
+
     private class MoveButton extends JToggleButton {
         private int m_i, m_j;
         private PokemonMove m_move = null;
@@ -118,17 +145,47 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             }
             return m_move.pp;
         }
+
         protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
             if (m_move == null) return;
             Graphics2D g2 = (Graphics2D)g.create();
+            
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
             if (!isEnabled()) {
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
             }
+
+            Color c = m_colourMap.get(m_move.type);
+            int diff = 20;
+            int red = c.getRed() - diff;
+            if (red < 0) red = 0;
+            int green = c.getGreen() - diff;
+            if (green < 0) green = 0;
+            int blue = c.getBlue() - diff;
+            if (blue < 0) blue = 0;
+            Color c2 = new Color(red, green, blue);
+            int w = getWidth();
+            int h = getHeight();
+            g2.setColor(c.darker());
+            g2.fillRoundRect(0, 0, w, h, 5, 5);
+            g2.setPaint(new GradientPaint(0, h/2, c2, 0, h-2, c2.darker()));
+            g2.fillRect(2, h/2, w-4, h/2 - 2);
+            g2.setPaint(new GradientPaint(0, 0, c.brighter(), 0, h/2-2, c));
+            g2.fillRect(2, 2, w - 4, h/2 - 2);
+            if (isSelected()) {
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.15f));
+                g2.setColor(Color.BLACK);
+                g2.fillRect(2, 2, w-4, h-4);
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
+            }
+            
             g2.setFont(g2.getFont().deriveFont(Font.BOLD).deriveFont(17f));
+            g2.setColor(Color.GRAY);
+            g2.drawString(m_move.name, 11, 26);
+            g2.setColor(Color.WHITE);
             g2.drawString(m_move.name, 10, 25);
-            g2.setColor(Color.DARK_GRAY);
+            
             g2.setFont(g2.getFont().deriveFont(Font.PLAIN).deriveFont(12f));
             int y = getHeight() - g2.getFontMetrics().getHeight();
             g2.drawString(m_move.type, 10, y);
@@ -363,7 +420,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
 
     private void createButtons() {
         m_moveButtons = new MoveButton[4];
-        panelMoves.setLayout(new GridLayout(2, 2));
+        panelMoves.setLayout(new GridLayout(2, 2, 3, 3));
         ButtonGroup moveButtons = new ButtonGroup();
         for (int i = 0; i < m_moveButtons.length; i++) {
             final int idx = i;
@@ -410,7 +467,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         if (m_moveButtons[0].isAncestorOf(panelMoves)) return;
         m_targeting = false;
         panelMoves.removeAll();
-        panelMoves.setLayout(new GridLayout(2, 2));
+        panelMoves.setLayout(new GridLayout(2, 2, 3, 3));
         for (int i = 0; i < m_moveButtons.length; i++) {
             panelMoves.add(m_moveButtons[i]);
         }
@@ -444,7 +501,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         m_targets = new TargetButton[m_n * 2];
         ButtonGroup bg = new ButtonGroup();
         for (int i = 0; i < targets.length; i++) {
-            for (int j = j = m_n - 1; j >= 0; j--) {
+            for (int j = 0; j < m_n; j++) {
                 Target t = targets[i][j];
                 final int idx = t.m_party * m_n + t.m_slot;
                 final TargetButton button = new TargetButton(t.m_name, idx);
@@ -499,10 +556,10 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             m_healthBars[0][0] = new HealthBar(false);
             m_healthBars[1][1] = new HealthBar(true);
             m_healthBars[1][0] = new HealthBar(true);
-            panelHealth0.add(m_healthBars[p1][1]);
             panelHealth0.add(m_healthBars[p1][0]);
-            panelHealth1.add(m_healthBars[p2][1]);
+            panelHealth0.add(m_healthBars[p1][1]);
             panelHealth1.add(m_healthBars[p2][0]);
+            panelHealth1.add(m_healthBars[p2][1]);
         }
         for (int i = 0; i < m_healthBars[p1].length; i++) {
             m_healthBars[p1][i].setFraction(true);
@@ -1128,24 +1185,23 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     * @param args the command line arguments
     */
     public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    //javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
-                } catch (Exception e) {
-                    
-                }
-                TeamFileParser tfp = new TeamFileParser();
-                //Pokemon[] pokemon = tfp.parseTeam("/Users/ben/team1.sbt");
-                BattleWindow battle = new BattleWindow(null, 0, 1, 6, new String[] { "bearzly", "Catherine" });
-                //battle.setPokemon(new VisualPokemon[] {new VisualPokemon("Wartortle", 1, false)},
-                //        new VisualPokemon[] {new VisualPokemon("Groudon", 0, true)});
-                battle.setVisible(true);
-                battle.requestAction(2, 0);
-                battle.updateHealth(0, 0, 38, 48);
-                battle.setSpriteVisible(0, 0, false);
-            }
-        });
+        JFrame frame = new JFrame();
+        JPanel panel = new JPanel();
+        frame.setSize(370, 180);
+        panel.setLayout(new GridLayout(2, 2, 3, 3));
+        java.util.Random r = new java.util.Random();
+        /*for (int i = 0; i < 4; i++) {
+            MoveButton button = new MoveButton();
+            PokemonMove move = new PokemonMove();
+            move.name = "Tackle";
+            move.type = Text.getText(0, r.nextInt(17));
+            button.setMove(0, 0, move);
+            panel.add(button);
+        }*/
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        panel.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        frame.add(panel);
+        frame.setVisible(true);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

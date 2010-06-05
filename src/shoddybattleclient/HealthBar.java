@@ -36,8 +36,8 @@ public class HealthBar extends JPanel implements ActionListener {
     private static final Color GREY1 = new Color(230, 230, 230);
     private static final Color GREY2 = new Color(180, 180, 180);
     private static final Color[] GREYS = new Color[] {GREY1, GREY2};
-    private static final Color GREEN1 = new Color(42, 222, 67);
-    private static final Color GREEN2 = new Color(36, 173, 52);
+    private static final Color GREEN1 = new Color(0x67e446);//new Color(42, 222, 67);
+    private static final Color GREEN2 = new Color(20, 140, 40);
     private static final Color[] GREENS = new Color[] {GREEN1, GREEN2};
     private static final Color YELLOW1 = new Color(230, 240, 38);
     private static final Color YELLOW2 = new Color(158, 158, 17);
@@ -113,7 +113,7 @@ public class HealthBar extends JPanel implements ActionListener {
         g2.fillRect(0, 0, x, height);
         g2.setPaint(colours[1]);
         g2.fillRect(x, 0, 1, height);
-        g2.setFont(new Font(null, Font.BOLD, height * 3 / 5));
+        g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, height * 3 / 5));
         FontMetrics metrics = g2.getFontMetrics();
         String str;
         if (!m_fraction) {
@@ -135,7 +135,7 @@ public class HealthBar extends JPanel implements ActionListener {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Testing HealthBar");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(230, 70);
+        frame.setSize(230, 55);
         final HealthBar health = new HealthBar(true);
         health.setRatio(48, 48, false);
         frame.getContentPane().add(health);
