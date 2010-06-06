@@ -287,7 +287,8 @@ public class TeamBuilder extends javax.swing.JFrame {
 
         if(!poke.toString().equals(getSelectedPokemon().toString()))
             setSpecies(poke.toString());
-        m_forms.get(idx).setPokemon(poke, true);
+        setSpriteShiny(poke.shiny);
+        m_forms.get(idx).setPokemon(poke.clone(), true);
     }
 
     //updates the Tree by looking through our teams for any of the same pokemon

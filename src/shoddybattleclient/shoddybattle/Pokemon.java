@@ -22,13 +22,14 @@
 
 package shoddybattleclient.shoddybattle;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
  *
  * @author ben
  */
-public class Pokemon {
+public class Pokemon implements Cloneable {
 
     public static enum Gender {
         GENDER_MALE   ("Male", 1),
@@ -111,6 +112,22 @@ public class Pokemon {
 
     public String toString() {
         return this.species;
+    }
+
+    public Pokemon clone() {
+        String[] newMoves = (String[])Arrays.asList(moves).toArray(new String[moves.length]);
+        int[] newPpUps = cloneIntArray(ppUps);
+        int[] newIvs = cloneIntArray(ivs);
+        int[] newEvs = cloneIntArray(evs);
+        return new Pokemon(species, nickname, shiny, gender, level, happiness,
+                item, ability, nature, newMoves, newPpUps, newIvs, newEvs);
+    }
+
+    private int[] cloneIntArray(int[] old) {
+        int[] newArr = new int[old.length];
+        for (int i = 0; i < old.length; i++)
+            newArr[i] = old[i];
+        return newArr;
     }
 
     public int calculateStat(int i, List<PokemonSpecies> list, int level) {
