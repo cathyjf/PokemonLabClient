@@ -110,24 +110,15 @@ public class Pokemon implements Cloneable {
 
     }
 
+    @Override
     public String toString() {
         return this.species;
     }
 
+    @Override
     public Pokemon clone() {
-        String[] newMoves = (String[])Arrays.asList(moves).toArray(new String[moves.length]);
-        int[] newPpUps = cloneIntArray(ppUps);
-        int[] newIvs = cloneIntArray(ivs);
-        int[] newEvs = cloneIntArray(evs);
-        return new Pokemon(species, nickname, shiny, gender, level, happiness,
-                item, ability, nature, newMoves, newPpUps, newIvs, newEvs);
-    }
-
-    private int[] cloneIntArray(int[] old) {
-        int[] newArr = new int[old.length];
-        for (int i = 0; i < old.length; i++)
-            newArr[i] = old[i];
-        return newArr;
+        return new Pokemon(species, nickname, shiny, gender, level, happiness, item,
+                ability, nature, moves.clone(), ppUps.clone(), ivs.clone(), evs.clone());
     }
 
     public int calculateStat(int i, List<PokemonSpecies> list, int level) {
