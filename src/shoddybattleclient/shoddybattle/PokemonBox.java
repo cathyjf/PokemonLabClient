@@ -218,6 +218,22 @@ public class PokemonBox implements Comparable<PokemonBox> {
     }
 
     @Override
+    public boolean equals(Object o2) {
+        if (o2 == null) return false;
+        if (!o2.getClass().equals(getClass())) return false;
+
+        if (getName().equalsIgnoreCase(((PokemonBox)o2).getName()))
+            return true;
+        else
+            return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return getName().toUpperCase().hashCode();
+    }
+
+    @Override
     public String toString() {
         return getName();
     }

@@ -285,7 +285,8 @@ public class TeamBuilder extends javax.swing.JFrame {
         if(idx < 0)
             return;
 
-        setSpecies(poke.toString());
+        if(!poke.toString().equals(getSelectedPokemon().toString()))
+            setSpecies(poke.toString());
         m_forms.get(idx).setPokemon(poke, true);
     }
 
@@ -728,15 +729,17 @@ public class TeamBuilder extends javax.swing.JFrame {
     private void btnSaveToBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveToBoxActionPerformed
         BoxTreeModel treeModel = (BoxTreeModel)treeBox.getModel();
         Object obj = treeBox.getLastSelectedPathComponent();
+
         PokemonBox box = null;
         if (obj == null || BoxTreeModel.isDefaultNode(obj) || BoxTreeModel.isBoxRoot(obj)) {
             ArrayList<String> boxes = new ArrayList<String>();
             String newBox = "<html><i>New Box</i> ";
-            boxes.add(newBox);
             for (File boxFile : new File(Preference.getBoxLocation()).listFiles()) {
                 if (boxFile.isDirectory())
                     boxes.add(boxFile.getName());
             }
+            Collections.sort(boxes);
+            boxes.add(0, newBox);
 
             Object selection = JOptionPane.showInputDialog(this, "Select a box", "Save to Box",
                     JOptionPane.PLAIN_MESSAGE, null, boxes.toArray(), boxes.get(0));
@@ -755,7 +758,6 @@ public class TeamBuilder extends javax.swing.JFrame {
             }
 
             box = new PokemonBox((String)selection, getSelectedPokemon().toString());
-            treeModel.addBox(box);
 
         } else if (obj instanceof PokemonBox) {
             box = (PokemonBox)obj;
@@ -778,6 +780,9 @@ public class TeamBuilder extends javax.swing.JFrame {
                 name = name.trim();
                 box.removePokemon(name); //May be a rename
                 box.addPokemon(name, getSelectedPokemon());
+
+                //Adds it in if it doesn't exist. Updates the tree if it does.
+                treeModel.addBox(box);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error adding pokemon", "Error",
                     JOptionPane.ERROR_MESSAGE);

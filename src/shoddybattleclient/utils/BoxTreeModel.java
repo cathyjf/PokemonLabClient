@@ -23,7 +23,9 @@
 package shoddybattleclient.utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
@@ -131,6 +133,40 @@ public class BoxTreeModel implements TreeModel {
     }
 
     public void addBox(PokemonBox box) {
-        m_boxes.add(box);
+        //This is faster for already sorted lists
+        int i = 0;
+        for (i = 0; i < m_boxes.size(); i++) {
+            int compare = box.compareTo(m_boxes.get(i));
+            if (compare < 0) {
+                break;
+            } else if (compare == 0) {
+                m_boxes.set(i, box);
+                updateBox(box);
+                return;
+            }
+        }
+        m_boxes.add(i, box);
+
+        TreePath path = new TreePath(new Object[]{m_root, m_boxRoot});
+        TreeModelEvent evt = new TreeModelEvent(this, path, new int[]{i}, new Object[]{box});
+        for (TreeModelListener listener : m_listeners) {
+            listener.treeNodesInserted(evt);
+        }
+    }
+
+    private void updateBox(PokemonBox box) {
+        int size = box.getSize();
+        PokemonWrapper[] wrappers = new PokemonWrapper[size];
+        int[] indices = new int[size];
+        for(int i = 0; i < size; i++) {
+            indices[i] = i;
+            wrappers[i] = box.getPokemonAt(i);
+        }
+        
+        TreePath path = new TreePath(new Object[]{m_root, m_boxRoot, box});
+        TreeModelEvent evt = new TreeModelEvent(this, path, indices, wrappers);
+        for (TreeModelListener listener : m_listeners) {
+            listener.treeStructureChanged(evt);
+        }
     }
 }
