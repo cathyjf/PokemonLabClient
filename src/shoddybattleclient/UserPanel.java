@@ -23,6 +23,7 @@
 
 package shoddybattleclient;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.Graphics;
@@ -30,11 +31,15 @@ import java.awt.Image;
 import java.awt.MediaTracker;
 import java.util.List;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.network.ServerLink.ChallengeMediator;
 import shoddybattleclient.network.ServerLink.MessageListener;
+import shoddybattleclient.network.ServerLink.Metagame;
+import shoddybattleclient.network.ServerLink.RuleSet;
+import shoddybattleclient.network.ServerLink.TimerOptions;
 import shoddybattleclient.shoddybattle.Pokemon;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
 import shoddybattleclient.shoddybattle.PokemonSpecies;
@@ -111,6 +116,8 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
+            g.setColor(Color.WHITE);
+            g.fillRect(1, 1, getWidth() - 2, getHeight() - 2);
             g.drawImage(m_image, 0, 0, this);
         }
     }
@@ -122,6 +129,9 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
     private boolean m_incoming = false;
     private int m_n;
     private int m_generation;
+    private int[] m_clauses;
+    private TimerOptions m_timerOps;
+    private int m_metagame;
     private boolean m_waiting = false;
 
     /** Creates new form UserPanel */
@@ -134,6 +144,10 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         m_link.addMessageListener(this);
         m_link.requestUserMessage(name);
         listClauses.setModel(new ClauseListModel(m_link.getClauseList()));
+        Metagame[] metagames = m_link.getMetagames();
+        DefaultComboBoxModel model = new DefaultComboBoxModel(metagames);
+        model.addElement("Custom...");
+        cmbRules.setModel(model);
     }
 
     public void setPersonalMessage(String msg) {
@@ -152,12 +166,27 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         m_incoming = true;
     }
 
-    public void setOptions(int n, int generation) {
+    public void setOptions(int n, int generation, RuleSet rules) {
         if (m_waiting) return;
         m_n = n;
         m_generation = generation;
         cmbN.setSelectedIndex(n - 1);
         cmbGen.setSelectedIndex(generation);
+        m_clauses = rules.getClauses(m_link.getClauseList());
+        ((ClauseListModel)listClauses.getModel()).setSelected(m_clauses);
+        TimerOptions ops = rules.getTimerOptions();
+        enableCustomFields(false);
+        if (ops == null) {
+            chkTimed.setSelected(false);
+            txtTimerLength.setText(null);
+            txtTimerPeriods.setText(null);
+            txtTimerPool.setText(null);
+        } else {
+            chkTimed.setSelected(true);
+            txtTimerLength.setText(String.valueOf(ops.periodLength));
+            txtTimerPeriods.setText(String.valueOf(ops.periods));
+            txtTimerPool.setText(String.valueOf(ops.pool));
+        }
     }
 
     public ChallengeMediator getMediator() {
@@ -176,6 +205,15 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
             }
             public int getActivePartySize() {
                 return m_n;
+            }
+            public int[] getClauses() {
+                return m_clauses;
+            }
+            public TimerOptions getTimerOptions() {
+                return m_timerOps;
+            }
+            public int getMetagame() {
+                return m_metagame;
             }
         };
     }
@@ -211,6 +249,27 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         setPersonalMessage(msg);
     }
 
+    public void enableCustomFields(boolean enable) {
+        chkTimed.setEnabled(enable);
+        txtTimerLength.setEnabled(enable);
+        txtTimerPeriods.setEnabled(enable);
+        txtTimerPool.setEnabled(enable);
+        listClauses.setEnabled(enable);
+    }
+
+    private boolean validateFields() {
+        try {
+            Integer.parseInt(txtTimerLength.getText());
+            Integer.parseInt(txtTimerPool.getText());
+            Integer.parseInt(txtTimerPeriods.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Invalid timer options - please" +
+                    " enter only numbers");
+            return false;
+        }
+        return true;
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -224,7 +283,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         lblName = new javax.swing.JLabel();
         lblMessage = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        tabSettings = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         cmbRules = new javax.swing.JComboBox();
@@ -253,7 +312,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         lblName.setFont(new java.awt.Font("Lucida Grande", 1, 16));
         lblName.setText("bearzly");
 
-        lblMessage.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+        lblMessage.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         lblMessage.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         jLabel3.setFont(new java.awt.Font("Lucida Grande", 1, 13));
@@ -267,7 +326,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(lblName)
                     .add(jLabel3)
-                    .add(lblMessage, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE))
+                    .add(lblMessage, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -287,6 +346,11 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         jLabel1.setText("Rules:");
 
         cmbRules.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Standard", "Ubers", "Custom..." }));
+        cmbRules.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbRulesActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Lucida Grande", 1, 13));
         jLabel2.setText("Pokemon per side:");
@@ -366,10 +430,11 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Basic", jPanel2);
+        tabSettings.addTab("Basic", jPanel2);
 
         jPanel3.setOpaque(false);
 
+        listClauses.setEnabled(false);
         jScrollPane1.setViewportView(listClauses);
 
         chkTimed.setSelected(true);
@@ -411,12 +476,12 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
                                     .add(jPanel3Layout.createSequentialGroup()
                                         .add(jLabel7)
                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(txtTimerLength, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                                        .add(txtTimerLength)))
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(jLabel6)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(txtTimerPeriods, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 31, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap())
+                .add(10, 10, 10))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -437,7 +502,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Advanced", jPanel3);
+        tabSettings.addTab("Advanced", jPanel3);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -446,16 +511,16 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 266, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(tabSettings, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 270, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE)
+                    .add(tabSettings, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addContainerGap())))
@@ -467,6 +532,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         if (m_incoming) {
             m_link.resolveChallenge(m_opponent, true, m_team);
         } else {
+            if (!validateFields()) return;
             m_link.postChallenge(new ChallengeMediator() {
                 public Pokemon[] getTeam() {
                     return m_team;
@@ -492,6 +558,23 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
                 public int getActivePartySize() {
                     return Integer.parseInt((String)cmbN.getSelectedItem());
                 }
+                public int[] getClauses() {
+                    return ((ClauseListModel)listClauses.getModel()).getSelected();
+                }
+                public TimerOptions getTimerOptions() {
+                    if (!chkTimed.isSelected()) return null;
+                    int pool = Integer.parseInt(txtTimerPool.getText());
+                    int periods = Integer.parseInt(txtTimerPeriods.getText());
+                    int periodLength = Integer.parseInt(txtTimerLength.getText());
+                    return new TimerOptions(pool, periods, periodLength);
+                }
+                public int getMetagame() {
+                    int idx = cmbRules.getSelectedIndex();
+                    if (idx >= m_link.getMetagames().length) {
+                        return -1;
+                    }
+                    return idx;
+                }
             });
             btnChallenge.setEnabled(false);
             btnLoad.setEnabled(false);
@@ -515,6 +598,16 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         }
     }//GEN-LAST:event_btnLoadActionPerformed
 
+    private void cmbRulesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbRulesActionPerformed
+        String val = cmbRules.getSelectedItem().toString();
+        if ("Custom...".equals(val)) {
+            enableCustomFields(true);
+            tabSettings.setSelectedIndex(1);
+        } else {
+            enableCustomFields(false);
+        }
+    }//GEN-LAST:event_cmbRulesActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChallenge;
@@ -534,11 +627,11 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lblMessage;
     private javax.swing.JLabel lblName;
     private javax.swing.JList listClauses;
     private javax.swing.JPanel panelSprites;
+    private javax.swing.JTabbedPane tabSettings;
     private javax.swing.JTextField txtTimerLength;
     private javax.swing.JTextField txtTimerPeriods;
     private javax.swing.JTextField txtTimerPool;

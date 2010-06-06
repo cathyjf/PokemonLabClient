@@ -39,6 +39,8 @@ import shoddybattleclient.AdminPanel.ChannelLookup;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.network.ServerLink.BanElement;
 import shoddybattleclient.network.ServerLink.ChallengeMediator;
+import shoddybattleclient.network.ServerLink.RuleSet;
+import shoddybattleclient.network.ServerLink.TimerOptions;
 import shoddybattleclient.utils.*;
 import shoddybattleclient.utils.CloseableTabbedPane.TabCloseListener;
 
@@ -546,12 +548,13 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         return ret;
     }
 
-    public void addChallenge(String name, boolean incoming, int gen, int n) {
+    public void addChallenge(String name, boolean incoming, int gen, int n,
+                                                            RuleSet rules) {
         if (Preference.ignoring(name)) {
             m_link.resolveChallenge(name, false, null);
             return;
         }
-        UserPanel panel = openUserPanel(name, gen, n);
+        UserPanel panel = openUserPanel(name, gen, n, rules);
         CloseableTabbedPane closeable = (CloseableTabbedPane)tabChats;
         int idx = closeable.indexOfComponent(panel);
         closeable.setFlashingAt(idx, true);
@@ -626,7 +629,8 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         tabChats.removeTabAt(index);
     }
 
-    public UserPanel openUserPanel(String user, boolean incoming, int generation, int n) {
+    public UserPanel openUserPanel(String user, boolean incoming, int generation, 
+                                                        int n, RuleSet rules) {
         UserPanel panel = m_userPanels.get(user);
         if (panel == null) {
             int index = tabChats.getTabCount();
@@ -636,7 +640,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         }
         if (incoming) {
             panel.setIncoming();
-            panel.setOptions(n, generation);
+            panel.setOptions(n, generation, rules);
         } else {
             tabChats.setSelectedComponent(panel);
         }
@@ -650,11 +654,11 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
     }
 
     public void openUserPanel(String user) {
-        openUserPanel(user, false, 0, 0);
+        openUserPanel(user, false, 0, 0, null);
     }
 
-    public UserPanel openUserPanel(String user, int generation, int n) {
-        return openUserPanel(user, true, generation, n);
+    public UserPanel openUserPanel(String user, int generation, int n, RuleSet rules) {
+        return openUserPanel(user, true, generation, n, rules);
     }
 
     @Override

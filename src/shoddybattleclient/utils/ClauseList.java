@@ -24,15 +24,10 @@
 package shoddybattleclient.utils;
 
 import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import javax.swing.AbstractListModel;
 import javax.swing.JCheckBox;
 import javax.swing.JList;
@@ -51,6 +46,12 @@ public class ClauseList extends JList {
         public Clause(String name, String description) {
             this.name = name;
             this.description = description;
+        }
+        public boolean equals(Object o2) {
+            if (o2 instanceof String) {
+                return ((String)o2).equals(name);
+            }
+            return super.equals(o2);
         }
     }
 
@@ -72,11 +73,15 @@ public class ClauseList extends JList {
             return m_data.get(index);
         }
 
-        public boolean[] getSelected() {
-            boolean[] ret = new boolean[m_data.size()];
+        public int[] getSelected() {
+            List<Integer> clauses = new ArrayList<Integer>();
             for (int i = 0; i < m_data.size(); i++) {
-                Clause c = m_data.get(i);
-                ret[i] = c.selected;
+                Clause clause = m_data.get(i);
+                if (clause.selected) clauses.add(i);
+            }
+            int[] ret = new int[clauses.size()];
+            for (int i = 0; i < clauses.size(); i++) {
+                ret[i] = clauses.get(i);
             }
             return ret;
         }
@@ -86,6 +91,19 @@ public class ClauseList extends JList {
             c.selected = !c.selected;
             this.fireContentsChanged(this, index, index);
         }
+
+        public void setSelected(int[] selected) {
+            for (int i = 0; i < m_data.size(); i++) {
+                boolean found = false;
+                for (int j = 0; j < selected.length; j++) {
+                    if (selected[j] == i) {
+                        found = true;
+                        break;
+                    }
+                }
+                m_data.get(i).selected = found;
+            }
+        }
     }
 
     private static class ClauseListRenderer extends JCheckBox implements
@@ -94,7 +112,7 @@ public class ClauseList extends JList {
         public Component getListCellRendererComponent(JList list, Object value,
                         int index, boolean isSelected, boolean cellHasFocus) {
             Clause c = (Clause)value;
-            setEnabled(!((ClauseList)list).m_disabled);
+            setEnabled(((ClauseList)list).isEnabled());
             setText(c.name);
             setToolTipText("<html>" + c.description + "</html>");
             setSelected(c.selected);
@@ -107,13 +125,11 @@ public class ClauseList extends JList {
         }
     }
 
-    private boolean m_disabled = true;
-
     public ClauseList() {
         this.setCellRenderer(new ClauseListRenderer());
         this.addMouseListener(new MouseAdapter() {
             public void mouseReleased(MouseEvent e) {
-                if (ClauseList.this.m_disabled) return;
+                if (!ClauseList.this.isEnabled()) return;
                 int index = ClauseList.this.locationToIndex(e.getPoint());
                 ClauseListModel clm = (ClauseListModel)ClauseList.this.getModel();
                 clm.toggleSelected(index);
@@ -121,7 +137,4 @@ public class ClauseList extends JList {
         });
     }
 
-    public void setDisabled(boolean disable) {
-        m_disabled = disable;
-    }
 }

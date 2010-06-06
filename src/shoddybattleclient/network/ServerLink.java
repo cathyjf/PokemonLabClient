@@ -55,6 +55,22 @@ import shoddybattleclient.utils.Text;
  */
 public class ServerLink extends Thread {
 
+    public static class TimerOptions {
+        public int pool;
+        public int periods;
+        public int periodLength;
+        public TimerOptions(int pool, int pers, int periodLen) {
+            this.pool = pool;
+            this.periods = pers;
+            this.periodLength = periodLen;
+        }
+    }
+
+    public static interface RuleSet {
+        public TimerOptions getTimerOptions();
+        public int[] getClauses(List<Clause> clauses);
+    }
+
     public interface ChallengeMediator {
         /**
          * Get the team being used for this challenge.
@@ -83,10 +99,23 @@ public class ServerLink extends Thread {
          */
         public int getActivePartySize();
 
-        // TODO: Clauses
+        /**
+         * Get the applied clauses
+         */
+        public int[] getClauses();
+
+        /**
+         * Gets the timer options
+         */
+        public TimerOptions getTimerOptions();
+
+        /**
+         * Gets the metagame, or -1 if custom rules are being used
+         */
+        public int getMetagame();
     }
 
-    public static class Metagame {
+    public static class Metagame implements RuleSet {
         private int m_idx;
         private String m_name;
         private String m_id;
@@ -96,9 +125,10 @@ public class ServerLink extends Thread {
         private List<String> m_banList;
         private List<String> m_clauses;
         private Pokemon[] m_team;
+        private TimerOptions m_timerOptions;
         public Metagame(int idx, String name, String id, String description,
                 int partySize, int maxTeamLength, List<String> banList,
-                List<String> clauses) {
+                List<String> clauses, TimerOptions timeOps) {
             m_idx = idx;
             m_name = name;
             m_id = id;
@@ -107,6 +137,7 @@ public class ServerLink extends Thread {
             m_maxTeamLength = maxTeamLength;
             m_banList = banList;
             m_clauses = clauses;
+            m_timerOptions = timeOps;
         }
         public int getIdx() {
             return m_idx;
@@ -129,8 +160,19 @@ public class ServerLink extends Thread {
         public String[] getBanList() {
             return m_banList.toArray(new String[m_banList.size()]);
         }
-        public String[] getClauses() {
+        public String[] getClauseList() {
             return m_clauses.toArray(new String[m_clauses.size()]);
+        }
+        public int[] getClauses(List<Clause> clauses) {
+            int[] ret = new int[m_clauses.size()];
+            for (int i = 0; i < m_clauses.size(); i++) {
+                String name = m_clauses.get(i);
+                ret[i] = clauses.indexOf(name);
+            }
+            return ret;
+        }
+        public TimerOptions getTimerOptions() {
+            return m_timerOptions;
         }
         public void setTeam(Pokemon[] team) {
             m_team = team;
@@ -249,9 +291,26 @@ public class ServerLink extends Thread {
             super(6);
             try {
                 m_stream.writeUTF(mediator.getOpponent());
-                m_stream.write(mediator.getGeneration());
+                m_stream.writeByte(mediator.getGeneration());
                 m_stream.writeInt(mediator.getActivePartySize());
-                // TODO: clauses
+                m_stream.writeInt(mediator.getMetagame());
+                if (mediator.getMetagame() != -1) {
+                    return;
+                }
+                int[] clauses = mediator.getClauses();
+                m_stream.write(clauses.length);
+                for (int i = 0; i < clauses.length; i++) {
+                    m_stream.write(clauses[i]);
+                }
+                TimerOptions ops = mediator.getTimerOptions();
+                if (ops == null) {
+                    m_stream.write(0);
+                } else {
+                    m_stream.write(1);
+                    m_stream.writeInt(ops.pool);
+                    m_stream.write(ops.periods);
+                    m_stream.writeInt(ops.periodLength);
+                }
             } catch (Exception e) {
 
             }
@@ -670,16 +729,59 @@ public class ServerLink extends Thread {
                 // string : user
                 // byte : generation
                 // int32 : active party size
-                // ... [ TODO: clauses ] ...
+                // byte : metagame
+                // if metagame != -1:
+                //     byte : number of clauses
+                //     for each:
+                //         byte : clause index
+                // byte : if timing is enabled
+                // if timing is enabled:
+                //     int16 : starting time bank
+                //     byte  : number of periods
+                //     int16 : period length
                 public void handle(ServerLink link, DataInputStream is)
                         throws IOException {
-                    // todo: use all of the information
                     String user = is.readUTF();
                     int generation = is.read();
                     int partySize = is.readInt();
-
-                    link.m_lobby.addChallenge(user, true,
-                            generation, partySize);
+                    int metagame = is.readInt();
+                    int pool = 0;
+                    int periods = 0;
+                    int periodLength = 0;
+                    if (metagame != -1) {
+                        Metagame mg = link.getMetagames()[metagame];
+                        link.m_lobby.addChallenge(user, true, generation, 
+                                                                partySize, mg);
+                    } else {
+                        int size = is.read();
+                        System.out.println("num of clauses " + size);
+                        final int[] clauses = new int[size];
+                        for (int i = 0; i < size; i++) {
+                            clauses[i] = is.read();
+                        }
+                        final TimerOptions ops;
+                        if (is.read() != 0) {
+                            pool = is.readInt();
+                            periods = is.read();
+                            periodLength = is.readInt();
+                             ops = new TimerOptions(pool,
+                                                        periods, periodLength);
+                        } else {
+                            ops = null;
+                        }
+                        RuleSet rules = new RuleSet() {
+                            @Override
+                            public TimerOptions getTimerOptions() {
+                                return ops;
+                            }
+                            @Override
+                            public int[] getClauses(List<Clause> cl) {
+                                return clauses;
+                            }
+                        };
+                        link.m_lobby.addChallenge(user, true, generation,
+                                                            partySize, rules);
+                    }
                 }
             });
 
@@ -1247,9 +1349,10 @@ public class ServerLink extends Thread {
                             String clause = is.readUTF();
                             clauses.add(clause);
                         }
+                        //todo: timer options
                         metagames[i] = new Metagame(idx, name, id,
                                 description, partySize, maxTeamLength,
-                                banList, clauses);
+                                banList, clauses, null);
                     }
                     link.m_metagames = metagames;
                     if (link.m_lobby != null) {

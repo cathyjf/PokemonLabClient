@@ -310,11 +310,11 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         listUsers.setCellRenderer(new UserCellRenderer());
         
         if (m_participant == 0) {
-            lblPlayer1.setText(users[0]);
-            lblPlayer0.setText(users[1]);
-        } else {
             lblPlayer1.setText(users[1]);
             lblPlayer0.setText(users[0]);
+        } else {
+            lblPlayer1.setText(users[0]);
+            lblPlayer0.setText(users[1]);
         }
         m_chat = new HTMLPane();
         m_chat.setTimeStampsEnabled(false);
