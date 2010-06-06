@@ -657,7 +657,7 @@ public class TeamBuilder extends javax.swing.JFrame {
         if (BoxTreeModel.isDefaultNode(obj)) {
             PokemonSpecies sp = (PokemonSpecies)cmbSpecies.getSelectedItem();
             ((TeamBuilderForm)tabForms.getSelectedComponent()).setPokemon(new Pokemon(
-                sp.getName(), "", false, Gender.GENDER_MALE, 100, 255, null, null, null,
+                sp.getName(), "", false, Gender.GENDER_MALE, 100, 255, "", "", "",
                 new String[] {null, null, null, null}, new int[] {3,3,3,3},
                 new int[] {31,31,31,31,31,31}, new int[] {0,0,0,0,0,0}), false);
         } else if (obj instanceof Pokemon) {
@@ -729,7 +729,7 @@ public class TeamBuilder extends javax.swing.JFrame {
         BoxTreeModel treeModel = (BoxTreeModel)treeBox.getModel();
         Object obj = treeBox.getLastSelectedPathComponent();
         PokemonBox box = null;
-        if (BoxTreeModel.isBoxRoot(obj)) {
+        if (obj == null || BoxTreeModel.isDefaultNode(obj) || BoxTreeModel.isBoxRoot(obj)) {
             ArrayList<String> boxes = new ArrayList<String>();
             String newBox = "<html><i>New Box</i> ";
             boxes.add(newBox);
