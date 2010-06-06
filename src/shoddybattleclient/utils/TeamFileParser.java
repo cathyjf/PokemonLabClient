@@ -223,7 +223,7 @@ public class TeamFileParser extends DefaultHandler {
 
     private int m_handle;
     private Map<Integer, StreamObject> m_objects;
-    //translate between Shoddy Battle 1 and 2 nature IDs
+    //translate between Shoddy Battle 1 and 2 nature IDs (unused)
     private int[] m_natures = { 1, 2, 3, 4, 5, 7, 8, 9, 10, 11,
     13, 14, 15, 16, 17, 19, 20, 21, 22, 23, 24, 0, 12, 18, 6 };
 
@@ -349,7 +349,7 @@ public class TeamFileParser extends DefaultHandler {
                 StreamNature ret = new StreamNature();
                 ret.handle = handle;
                 ret.type = TC_OBJECT;
-                ret.nature = m_natures[nature];
+                ret.nature = nature;
                 return storeObject(ret);
             }
         }
@@ -483,8 +483,7 @@ public class TeamFileParser extends DefaultHandler {
                     }
                 } else if (obj.type == TC_OBJECT) {
                     if (f.name.equals("m_nature")) {
-                        p.nature = PokemonNature.getNature(
-                                m_natures[((StreamNature)obj).nature]).getName();
+                        p.nature = PokemonNature.getNature(((StreamNature)obj).nature).getName();
                     }
                 }
             }
