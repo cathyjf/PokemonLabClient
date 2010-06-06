@@ -102,6 +102,8 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         initComponents();
         tblMoves = new JButtonTable();
         tblMoves.setModel(new MoveTableModel(null, new String[0], this));
+        tblMoves.setRowSelectionAllowed(false);
+        tblMoves.setColumnSelectionAllowed(false);
         scrollMoves.add(tblMoves);
         scrollMoves.setViewportView(tblMoves);
         tblSelected = new JButtonTable();
@@ -109,6 +111,8 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         tblSelected.getColumnModel().getColumn(0).setPreferredWidth(80);
         tblSelected.getColumnModel().getColumn(1).setPreferredWidth(100);
         tblSelected.getColumnModel().getColumn(2).setPreferredWidth(170);
+        tblSelected.setRowSelectionAllowed(false);
+        tblSelected.setColumnSelectionAllowed(false);
         scrollSelected.add(tblSelected);
         scrollSelected.setViewportView(tblSelected);
 
