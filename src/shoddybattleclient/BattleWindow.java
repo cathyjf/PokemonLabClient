@@ -174,7 +174,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             g2.setPaint(new GradientPaint(0, 0, c.brighter(), 0, h/2-2, c));
             g2.fillRect(2, 2, w - 4, h/2 - 2);
             if (isSelected()) {
-                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.15f));
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.25f));
                 g2.setColor(Color.BLACK);
                 g2.fillRect(2, 2, w-4, h-4);
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
@@ -603,6 +603,8 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         btnSwitch.setEnabled(true);
         btnSwitchCancel.setEnabled(false);
         tabAction.setSelectedIndex(1);
+        for (MoveButton button : m_moveButtons)
+            button.setEnabled(false);
     }
 
     private void requestTarget(TargetClass mode) {
@@ -648,6 +650,8 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         btnMoveCancel.setEnabled(false);
         btnSwitch.setEnabled(false);
         btnSwitchCancel.setEnabled(false);
+        for (MoveButton button : m_moveButtons)
+            button.setEnabled(false);
     }
 
     public void setValidMoves(boolean[] valid) {

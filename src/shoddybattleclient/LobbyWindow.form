@@ -153,7 +153,7 @@
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
-                      <Component id="jScrollPane1" pref="325" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" pref="327" max="32767" attributes="0"/>
                       <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
                       <Component id="btnChallenge" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -182,7 +182,7 @@
             <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
               <StringArray count="0"/>
             </Property>
-            <Property name="selectionMode" type="int" value="1"/>
+            <Property name="selectionMode" type="int" value="0"/>
           </Properties>
         </Component>
       </SubComponents>

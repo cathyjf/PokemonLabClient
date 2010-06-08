@@ -43,11 +43,11 @@ public class HTMLPane extends JTextPane {
 
 
     private int m_lines = 0;
-    private boolean m_timestamps = false;
+    //This being true means to use the user's settings
+    private boolean m_timestamps = true;
 
     public HTMLPane() {
         super();
-        m_timestamps = Preference.timeStampsEnabled();
         setContentType("text/html");
         setEditable(false);
         setBackground(Color.WHITE);
@@ -100,7 +100,7 @@ public class HTMLPane extends JTextPane {
             message = htmlEntityEncode(message);
         }
         StringBuffer buffer = new StringBuffer();
-        if (m_timestamps) {
+        if (m_timestamps && Preference.timeStampsEnabled()) {
             try {
                 Date d = new Date();
                 String format = Preference.getTimeStampFormat();

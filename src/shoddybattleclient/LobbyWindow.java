@@ -399,6 +399,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
             if (e.isPopupTrigger()) {
                 int idx = listUsers.locationToIndex(e.getPoint());
                 if (idx < 0) return;
+                listUsers.setSelectedIndex(idx);
                 User u = (User)((UserListModel)listUsers.getModel()).getElementAt(idx);
                 new UserPopupMenu(LobbyWindow.this, u, m_level)
                                 .show(e.getComponent(), e.getX(), e.getY());
@@ -759,7 +760,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
             }
         });
 
-        listUsers.setSelectionMode(1);
+        listUsers.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(listUsers);
 
         jMenu3.setText("File");
@@ -855,7 +856,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(layout.createSequentialGroup()
-                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
                         .add(9, 9, 9)
                         .add(btnChallenge))
                     .add(org.jdesktop.layout.GroupLayout.LEADING, tabChats, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 363, Short.MAX_VALUE))
