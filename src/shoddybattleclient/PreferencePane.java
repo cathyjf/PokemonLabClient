@@ -43,12 +43,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.ListModel;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.DefaultTableModel;
 import shoddybattleclient.Preference.HealthDisplay;
 import shoddybattleclient.Preference.LogOption;
-import shoddybattleclient.utils.Alias;
 import shoddybattleclient.utils.SwingWorker;
 import shoddybattleclient.utils.Text;
 import shoddybattleclient.utils.bzip2.CBZip2InputStream;
@@ -158,7 +154,6 @@ public class PreferencePane extends javax.swing.JFrame {
         initChatPanel();
         initBattlePanel();
         initSpritePanel();
-        initAliasPanel();
     }
 
     private void initChatPanel() {
@@ -228,35 +223,6 @@ public class PreferencePane extends javax.swing.JFrame {
         cmbSpriteDefaults.setModel(new DefaultComboBoxModel(SpriteLink.values()));
     }
 
-
-    private List<Alias> m_aliases;
-
-    private void initAliasPanel() {
-        m_aliases = Preference.getAliases();
-
-        DefaultTableModel model = (DefaultTableModel)tblAliases.getModel();
-        for(Alias alias : m_aliases) {
-            model.addRow(new String[] {alias.getKey(), alias.getAlias()});
-        }
-
-        model.addTableModelListener(new TableModelListener() {
-            public void tableChanged(TableModelEvent e) {
-                if(e.getType() != e.UPDATE)
-                    return;
-                
-                DefaultTableModel model = (DefaultTableModel)tblAliases.getModel();
-                int row = e.getFirstRow();
-                int col = e.getColumn();
-                if(col == 0)
-                    m_aliases.get(row).setKey(model.getValueAt(row, col).toString());
-                else
-                    m_aliases.get(row).setAlias(model.getValueAt(row, col).toString());
-                Preference.setAliases(m_aliases);
-                
-            }
-        });
-    }
-
     private void saveSpriteDirectories() {
         ListModel m = lstPackages.getModel();
         String[] dirs = new String[m.getSize()];
@@ -314,11 +280,6 @@ public class PreferencePane extends javax.swing.JFrame {
         btnAdd = new javax.swing.JButton();
         txtProgress = new javax.swing.JLabel();
         progress = new javax.swing.JProgressBar();
-        jPanel5 = new javax.swing.JPanel();
-        btnAddAlias = new javax.swing.JButton();
-        btnRemoveAlias = new javax.swing.JButton();
-        scrollAliases = new javax.swing.JScrollPane();
-        tblAliases = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Preferences");
@@ -386,26 +347,26 @@ public class PreferencePane extends javax.swing.JFrame {
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1Layout.createSequentialGroup()
                         .add(6, 6, 6)
-                        .add(lblTimestampInfo, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE))
+                        .add(lblTimestampInfo, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1Layout.createSequentialGroup()
                         .add(chkTimestamps)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jLabel1)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(txtTimestampFormat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE))
+                        .add(txtTimestampFormat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE))
                     .add(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .add(jLabel2)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(txtIgnored, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 363, Short.MAX_VALUE))
+                        .add(txtIgnored, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE))
                     .add(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
-                        .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE))
+                        .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE))
                     .add(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .add(jLabel10)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(txtLogDir, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 303, Short.MAX_VALUE)
+                        .add(txtLogDir, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(btnBrowseLogDir))
                     .add(jPanel1Layout.createSequentialGroup()
@@ -435,7 +396,7 @@ public class PreferencePane extends javax.swing.JFrame {
                     .add(btnBrowseLogDir))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(chkSaveChatLogs)
-                .addContainerGap(78, Short.MAX_VALUE))
+                .addContainerGap(106, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Chat", jPanel1);
@@ -483,15 +444,15 @@ public class PreferencePane extends javax.swing.JFrame {
                     .add(jPanel2Layout.createSequentialGroup()
                         .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(jLabel4)
-                            .add(jLabel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE))
+                            .add(jLabel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                             .add(cmbOppHealth, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .add(cmbUserHealth, 0, 93, Short.MAX_VALUE))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(lblEnemyHealth, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
-                            .add(lblUserHealth, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)))
+                            .add(lblEnemyHealth, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
+                            .add(lblUserHealth, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)))
                     .add(chkAnimateHealth)
                     .add(jPanel2Layout.createSequentialGroup()
                         .add(jLabel11)
@@ -517,7 +478,7 @@ public class PreferencePane extends javax.swing.JFrame {
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel11)
                     .add(cmbBattleLogOption, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(114, Short.MAX_VALUE))
+                .addContainerGap(131, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Battle", jPanel2);
@@ -596,12 +557,12 @@ public class PreferencePane extends javax.swing.JFrame {
                                         .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel8)
                                         .add(org.jdesktop.layout.GroupLayout.LEADING, cmbSpriteDefaults, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 139, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                         .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel9)
-                                        .add(org.jdesktop.layout.GroupLayout.LEADING, txtURL, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 245, Short.MAX_VALUE))
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, txtURL, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE))
                                     .add(6, 6, 6))
                                 .add(txtProgress))
                             .addContainerGap())
                         .add(jPanel4Layout.createSequentialGroup()
-                            .add(progress, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
+                            .add(progress, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
                             .add(12, 12, 12)))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel4Layout.createSequentialGroup()
                         .add(btnAdd, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 84, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -662,9 +623,9 @@ public class PreferencePane extends javax.swing.JFrame {
                                 .add(btnUp, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 29, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(btnDown)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 145, Short.MAX_VALUE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 162, Short.MAX_VALUE)
                                 .add(btnDelete))
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)))
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)))
                     .add(jPanel3Layout.createSequentialGroup()
                         .add(6, 6, 6)
                         .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
@@ -673,66 +634,12 @@ public class PreferencePane extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Sprites", jPanel3);
 
-        btnAddAlias.setText("Add");
-        btnAddAlias.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddAliasActionPerformed(evt);
-            }
-        });
-
-        btnRemoveAlias.setText("Remove");
-        btnRemoveAlias.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRemoveAliasActionPerformed(evt);
-            }
-        });
-
-        tblAliases.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Key", "Alias"
-            }
-        ));
-        scrollAliases.setViewportView(tblAliases);
-
-        org.jdesktop.layout.GroupLayout jPanel5Layout = new org.jdesktop.layout.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(scrollAliases, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
-                .add(18, 18, 18)
-                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                    .add(btnAddAlias, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(btnRemoveAlias, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel5Layout.createSequentialGroup()
-                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel5Layout.createSequentialGroup()
-                        .add(24, 24, 24)
-                        .add(btnAddAlias)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(btnRemoveAlias))
-                    .add(jPanel5Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(scrollAliases, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-
-        jTabbedPane1.addTab("Chat Aliases", jPanel5);
-
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(jTabbedPane1)
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 498, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -897,24 +804,6 @@ public class PreferencePane extends javax.swing.JFrame {
         Preference.setBattleLogOption(cmbBattleLogOption.getSelectedIndex());
     }//GEN-LAST:event_cmbBattleLogOptionActionPerformed
 
-    private void btnAddAliasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddAliasActionPerformed
-        m_aliases.add(new Alias("", ""));
-        Preference.setAliases(m_aliases);
-        DefaultTableModel model = (DefaultTableModel)tblAliases.getModel();
-        model.addRow(new String[]{"", ""});
-    }//GEN-LAST:event_btnAddAliasActionPerformed
-
-    private void btnRemoveAliasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveAliasActionPerformed
-        int[] rows = tblAliases.getSelectedRows();
-
-        DefaultTableModel model = (DefaultTableModel)tblAliases.getModel();
-        for(int i = rows.length-1; i >= 0; i--) {
-            model.removeRow(rows[i]);
-            m_aliases.remove(rows[i]);
-        }
-        Preference.setAliases(m_aliases);
-    }//GEN-LAST:event_btnRemoveAliasActionPerformed
-
 
     private void deleteDirectory(File f) {
         File[] files = f.listFiles();
@@ -941,11 +830,9 @@ public class PreferencePane extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
-    private javax.swing.JButton btnAddAlias;
     private javax.swing.JButton btnBrowseLogDir;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnDown;
-    private javax.swing.JButton btnRemoveAlias;
     private javax.swing.JButton btnUp;
     private javax.swing.JCheckBox chkAnimateHealth;
     private javax.swing.JCheckBox chkSaveChatLogs;
@@ -969,7 +856,6 @@ public class PreferencePane extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lblEnemyHealth;
@@ -977,8 +863,6 @@ public class PreferencePane extends javax.swing.JFrame {
     private javax.swing.JLabel lblUserHealth;
     private javax.swing.JList lstPackages;
     private javax.swing.JProgressBar progress;
-    private javax.swing.JScrollPane scrollAliases;
-    private javax.swing.JTable tblAliases;
     private javax.swing.JTextField txtIgnored;
     private javax.swing.JTextField txtLogDir;
     private javax.swing.JLabel txtProgress;
