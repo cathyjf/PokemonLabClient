@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
+import shoddybattleclient.utils.Alias;
 
 /**
  *
@@ -50,6 +51,7 @@ public class Preference {
     private static final String AUTOSAVE_CHAT_LOGS = "autosaveChatLogs";
     private static final String BATTLE_LOGS = "battleLogs";
     private static final String TEAM_DIR = "teamDir";
+    private static final String CHAT_ALIASES = "chatAliases";
 
     public static void setStorageLocation(String loc) {
         m_prefs.put(STORAGE_LOCATION, loc);
@@ -240,5 +242,25 @@ public class Preference {
     public static File getTeamDirectory() {
         return new File(m_prefs.get(TEAM_DIR,
                 new JFileChooser().getCurrentDirectory().toString()));
+    }
+
+    public static List<Alias> getAliases() {
+        List<Alias> aliases = new ArrayList<Alias>();
+        String[] aliasData = m_prefs.get(CHAT_ALIASES, "").split("\n", -1);
+        int ndata = aliasData.length / 2;
+        for(int i = 0; i < ndata; i++) {
+            aliases.add(new Alias(aliasData[i*2], aliasData[i*2 + 1]));
+        }
+        return aliases;
+    }
+
+    public static void setAliases(List<Alias> aliases) {
+        StringBuffer buf = new StringBuffer();
+        for(Alias alias : aliases) {
+            buf.append(alias.getKey() + "\n");
+            buf.append(alias.getAlias() + "\n");
+        }
+        buf.deleteCharAt(buf.length()-1);
+        m_prefs.put(CHAT_ALIASES, new String(buf));
     }
 }

@@ -38,6 +38,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JScrollPane;
 import shoddybattleclient.LobbyWindow.Channel;
+import shoddybattleclient.utils.Alias;
 import shoddybattleclient.utils.CloseableTabbedPane.CloseableTab;
 import shoddybattleclient.utils.HTMLPane;
 import shoddybattleclient.utils.Text;
@@ -297,6 +298,15 @@ public class ChatPane extends javax.swing.JPanel implements CloseableTab {
         message = message.trim();
         if (message.equals("")) {
             return;
+        }
+
+        List<Alias> aliases = Preference.getAliases();
+        for (Alias alias : aliases) {
+            String conversion = alias.convert(message);
+            if (conversion != null) {
+                message = conversion;
+                break;
+            }
         }
 
         if (message.indexOf('/') == 0) {
