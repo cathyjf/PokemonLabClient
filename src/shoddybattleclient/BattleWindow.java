@@ -183,7 +183,12 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             g2.setFont(g2.getFont().deriveFont(Font.BOLD).deriveFont(17f));
             g2.setColor(Color.GRAY);
             g2.drawString(m_move.name, 11, 26);
-            g2.setColor(Color.WHITE);
+            if (isSelected()) {
+                //todo: other defining features
+                g2.setColor(new Color(0xffe42d));
+            } else {
+                g2.setColor(Color.WHITE);
+            }
             g2.drawString(m_move.name, 10, 25);
             
             g2.setFont(g2.getFont().deriveFont(Font.PLAIN).deriveFont(12f));
@@ -538,6 +543,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         m_visual = new GameVisualisation(m_participant, m_n, m_length, m_link.getSpeciesList());
         m_visual.setSize(m_visual.getPreferredSize());
         panelVisual.add(m_visual);
+        if (m_n > 2) return;
         int p1 = m_participant;
         int p2 = 1 - p1;
         if (m_n == 1) {
