@@ -1762,7 +1762,6 @@ public class ServerLink extends Thread {
         while (true) {
             try {
                 int type = m_input.read();
-                System.out.println(type);
                 int length = m_input.readInt();
                 byte[] body = new byte[length];
                 m_input.readFully(body);
