@@ -48,6 +48,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
+import javax.swing.JToolTip;
 import shoddybattleclient.ChatPane.CommandException;
 import shoddybattleclient.GameVisualisation.VisualPokemon;
 import shoddybattleclient.LobbyWindow.Channel;
@@ -202,13 +203,20 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     }
 
     private static class SwitchButton extends JToggleButton {
-        private Pokemon m_pokemon = null;
+        private VisualPokemon m_pokemon = null;
         public SwitchButton() {
             this.setFocusPainted(false);
         }
-        public void setPokemon(Pokemon pokemon) {
+        public void setPokemon(VisualPokemon pokemon) {
             m_pokemon = pokemon;
-            setText((m_pokemon == null) ? null : m_pokemon.species);
+            setText((m_pokemon == null) ? null : m_pokemon.getSpecies());
+
+            //We need a dummy tooltip text
+            setToolTipText(m_pokemon.toString()); 
+        }
+        @Override
+        public JToolTip createToolTip() {
+            return new JCustomTooltip(this, new VisualToolTip(m_pokemon, true));
         }
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D)g.create();
@@ -357,7 +365,6 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     private void preparePlayer() {
         createButtons();
         setMoves(0);
-        updateSwitches();
 
         btnSwitch.setEnabled(false);
         btnSwitchCancel.setEnabled(false);
@@ -389,6 +396,8 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
                 }
             }
         }
+
+        updateSwitches();
     }
 
     public void refreshUsers() {
@@ -421,6 +430,13 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         }
         msg = Text.addClass(msg, "victory");
         addMessage(null, msg, false);
+
+        btnMove.setEnabled(false);
+        btnMoveCancel.setEnabled(false);
+        btnSwitch.setEnabled(false);
+        btnSwitchCancel.setEnabled(false);
+        for (MoveButton button : m_moveButtons)
+            button.setEnabled(false);
     }
 
     private void createButtons() {
@@ -692,22 +708,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     private void updateSwitches() {
         for (int i = 0; i < m_pokemon.length; i++) {
             Pokemon p = m_pokemon[i];
-            m_switches[i].setPokemon(p);
-            StringBuilder builder = new StringBuilder();
-            builder.append("<html>");
-            builder.append(p.species);
-            builder.append("<br>");
-            builder.append(p.ability);
-            builder.append("<br>");
-            builder.append(p.item);
-            builder.append("<br><br>");
-            for (int j = 0; j < p.moves.length; j++) {
-                builder.append("-");
-                builder.append(p.moves[j]);
-                builder.append("<br>");
-            }
-            builder.append("</html>");
-            m_switches[i].setToolTipText(builder.toString());
+            m_switches[i].setPokemon(getPokemon(m_participant, i));
         }
     }
 
