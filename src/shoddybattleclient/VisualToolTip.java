@@ -138,7 +138,7 @@ public class VisualToolTip extends javax.swing.JPanel {
         setBackground(new java.awt.Color(51, 51, 51));
         setLayout(new java.awt.GridBagLayout());
 
-        lblName.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
+        lblName.setFont(new java.awt.Font("Lucida Grande", 1, 18));
         lblName.setForeground(new java.awt.Color(255, 255, 255));
         lblName.setText("Pokemon");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -147,7 +147,7 @@ public class VisualToolTip extends javax.swing.JPanel {
 
         panelHealth.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         panelHealth.setPreferredSize(new java.awt.Dimension(150, 25));
-        panelHealth.setLayout(new java.awt.GridLayout());
+        panelHealth.setLayout(new java.awt.GridLayout(1, 0));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -156,7 +156,7 @@ public class VisualToolTip extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(2, 5, 2, 2);
         add(panelHealth, gridBagConstraints);
 
-        lblLevel.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+        lblLevel.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         lblLevel.setForeground(new java.awt.Color(255, 255, 255));
         lblLevel.setText("Level");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -185,7 +185,7 @@ public class VisualToolTip extends javax.swing.JPanel {
         panelEffects.setPreferredSize(new java.awt.Dimension(100, 50));
         panelEffects.setLayout(new javax.swing.BoxLayout(panelEffects, javax.swing.BoxLayout.PAGE_AXIS));
 
-        lblEffects.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+        lblEffects.setFont(new java.awt.Font("Monospaced", 0, 12));
         lblEffects.setForeground(new java.awt.Color(255, 255, 255));
         lblEffects.setText("No Effects");
         panelEffects.add(lblEffects);

@@ -795,9 +795,7 @@ public class ServerLink extends Thread {
                     boolean accepted = (is.read() != 0);
 
                     ChallengeMediator mediator = link.m_challenges.get(user);
-                    System.out.println("challenge was " + accepted);
                     if (mediator != null) {
-                        System.out.println("resolving!");
                         mediator.informResolved(accepted);
                     }
                     if (!accepted) {
@@ -1594,7 +1592,6 @@ public class ServerLink extends Thread {
     }
 
     public void postChallengeTeam(String opponent, Pokemon[] team) {
-        System.out.println("posting team");
         sendMessage(new ChallengeTeam(this, opponent, team));
     }
 

@@ -730,7 +730,6 @@ public class PreferencePane extends javax.swing.JFrame {
         if (result == JOptionPane.YES_OPTION) {
             String dir = ((SpritePackage)lstPackages.getSelectedValue()).getDir();
             File f = new File(new File(Preference.getSpriteLocation()), dir);
-            System.out.println(f.toString());
             if (f.exists()) {
                 deleteDirectory(f);
                 ((DefaultComboBoxModel)lstPackages.getModel()).removeElementAt(idx);

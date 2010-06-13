@@ -188,7 +188,6 @@ public class Preference {
             builder.append(",");
         }
         builder.deleteCharAt(builder.length() - 1);
-        System.out.println(builder.toString());
         m_prefs.put(SPRITE_DIRECTORIES, builder.toString());
     }
     public static String[] getSpriteDirectories() {
