@@ -61,7 +61,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
             reset();
         }
 
-        private void reset() {
+        public void reset() {
             this.removeAll();
             for (int i = 0; i < 6; i++) {
                 this.add(new SpritePanel(null, -1, null, false));
@@ -224,14 +224,12 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
 
     public boolean informClosed() {
         boolean close = true;
-        if (m_waiting) {
+        if (m_waiting && !m_incoming) {
             close = JOptionPane.showConfirmDialog(this,
                     "Are you sure you wish to cancel your challenge?", "Cancel Challenge",
                      JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
-        } else {
-            if (m_incoming) {
-                m_link.resolveChallenge(m_opponent, false, null);
-            }
+        } else if (m_incoming) {
+            m_link.resolveChallenge(m_opponent, false, null);
             close = true;
         }
         if (!close) return false;
@@ -268,6 +266,13 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
             return false;
         }
         return true;
+    }
+
+    public void unsetTeam() {
+        ((TeamBox)panelSprites).reset();
+        btnChallenge.setEnabled(false);
+        btnLoad.setEnabled(true);
+        m_waiting = true;
     }
 
     /** This method is called from within the constructor to
@@ -531,7 +536,14 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         if (m_team == null) return;
         if (m_incoming) {
             m_link.resolveChallenge(m_opponent, true, m_team);
+            btnChallenge.setEnabled(false);
+            btnLoad.setEnabled(false);
         } else {
+            if (m_waiting) {
+                m_link.postChallengeTeam(m_opponent, m_team);
+                m_waiting = false;
+                return;
+            }
             if (!validateFields()) return;
             m_link.postChallenge(new ChallengeMediator() {
                 public Pokemon[] getTeam() {

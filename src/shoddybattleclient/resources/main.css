@@ -69,3 +69,8 @@ body {
 .kick, .ban {
     color: red;
 }
+
+.important {
+    color: red;
+    font-size: larger;
+}

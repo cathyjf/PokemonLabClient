@@ -795,7 +795,9 @@ public class ServerLink extends Thread {
                     boolean accepted = (is.read() != 0);
 
                     ChallengeMediator mediator = link.m_challenges.get(user);
+                    System.out.println("challenge was " + accepted);
                     if (mediator != null) {
+                        System.out.println("resolving!");
                         mediator.informResolved(accepted);
                     }
                     if (!accepted) {
@@ -1471,6 +1473,24 @@ public class ServerLink extends Thread {
                 }
             });
 
+            //INVALID_TEAM
+            new ServerMessage(32, new MessageHandler() {
+                //string : user of the challenge or empty for matchmaking
+                //int16 : number of violations
+                //for each violation:
+                //    int16 : index of the violated clause
+                public void handle(ServerLink link, DataInputStream is)
+                                                        throws IOException {
+                    String user = is.readUTF();
+                    int count = is.readShort();
+                    int[] clauses = new int[count];
+                    for (int i = 0; i < count; i++) {
+                        clauses[i] = is.readShort();
+                    }
+                    link.m_lobby.informInvalidTeam(user, clauses);
+                }
+            });
+
             // add additional messages here
         }
 
@@ -1574,6 +1594,7 @@ public class ServerLink extends Thread {
     }
 
     public void postChallengeTeam(String opponent, Pokemon[] team) {
+        System.out.println("posting team");
         sendMessage(new ChallengeTeam(this, opponent, team));
     }
 
@@ -1741,6 +1762,7 @@ public class ServerLink extends Thread {
         while (true) {
             try {
                 int type = m_input.read();
+                System.out.println(type);
                 int length = m_input.readInt();
                 byte[] body = new byte[length];
                 m_input.readFully(body);
@@ -1778,6 +1800,7 @@ public class ServerLink extends Thread {
 
         // interrupt the message thread
         m_messageThread.interrupt();
+        m_lobby.addImportantMessage("Disconnected from server");
     }
 
     public static void main(String[] args) throws Exception {

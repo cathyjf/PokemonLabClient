@@ -42,6 +42,7 @@ import shoddybattleclient.network.ServerLink.ChallengeMediator;
 import shoddybattleclient.network.ServerLink.RuleSet;
 import shoddybattleclient.network.ServerLink.TimerOptions;
 import shoddybattleclient.utils.*;
+import shoddybattleclient.utils.ClauseList.Clause;
 import shoddybattleclient.utils.CloseableTabbedPane.TabCloseListener;
 
 /**
@@ -706,6 +707,35 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
     public int getActiveChannel() {
         if (m_recentChannel == null) return -1;
         return m_recentChannel.getId();
+    }
+
+    public void informInvalidTeam(String user, int[] clauses) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("The supplied team does not conform to:\n");
+        List<Clause> cl = m_link.getClauseList();
+        for (int i = 0; i < clauses.length; i++) {
+            sb.append(" -");
+            sb.append(cl.get(clauses[i]).name);
+            sb.append("\n");
+        }
+        if (!"".equals(user)) {
+            UserPanel panel = m_userPanels.get(user);
+            if (panel != null) {
+                panel.unsetTeam();
+            }
+        } else {
+            m_findPanel.unsetTeam();
+        }
+        JOptionPane.showMessageDialog(this, sb.toString());
+    }
+
+    public void addImportantMessage(String msg) {
+        msg = Text.addClass(msg, "important");
+        for (Component c : tabChats.getComponents()) {
+            if (c instanceof ChatPane) {
+                ((ChatPane)c).addMessage(null, msg, false);
+            }
+        }
     }
 
     /** This method is called from within the constructor to

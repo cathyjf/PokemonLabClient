@@ -60,6 +60,12 @@ public class FindPanel extends javax.swing.JPanel {
         }
     }
 
+    public void unsetTeam() {
+        ((TeamBox)panelSprites).reset();
+        btnLoad.setEnabled(true);
+        btnCancel.setEnabled(false);
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -276,6 +282,7 @@ public class FindPanel extends javax.swing.JPanel {
         btnFind.setEnabled(m_team != null);
         btnCancel.setEnabled(false);
         btnLoad.setEnabled(true);
+        btnFind.setEnabled(false);
     }
 
     private void cmbLadderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbLadderActionPerformed
