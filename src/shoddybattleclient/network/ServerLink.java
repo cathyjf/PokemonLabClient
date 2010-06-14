@@ -520,10 +520,20 @@ public class ServerLink extends Thread {
             // PASSWORD_CHALLENGE
             new ServerMessage(1, new MessageHandler() {
                 // byte[16] : the challenge
+                // byte     : style of secret:
+                //                0 - secret := password
+                //                1 - secret := md5(password)
+                //                2 - secret := md5(md5(password) + salt)
+                // string   : salt, if relevant
                 public void handle(ServerLink link, DataInputStream is)
                         throws IOException {
                     byte[] challenge = new byte[16];
                     is.readFully(challenge);
+                    int style = is.readUnsignedByte();
+                    String salt = is.readUTF();
+
+                    link.createKeySpec(style, salt);
+                    link.m_password = null;
 
                     // decrypt the challenge
                     try {
@@ -1524,7 +1534,7 @@ public class ServerLink extends Thread {
     private DataInputStream m_input;
     private DataOutputStream m_output;
     private SecretKeySpec[] m_key = new SecretKeySpec[2];
-    private String m_name;
+    private String m_name, m_password;
     private Thread m_messageThread;
     private ServerConnect m_serverConnect;
     private LobbyWindow m_lobby;
@@ -1687,17 +1697,69 @@ public class ServerLink extends Thread {
         sendMessage(new RequestUserMessage(user));
     }
 
-    public void attemptAuthentication(String user, String password) {
-        m_name = user;
+    private static char[] HEX_TABLE = {
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+        'a', 'b', 'c', 'd', 'e', 'f'
+    };
+
+    /**
+     * Convert an encoded String to a String with a hexadecimal format.
+     */
+    public static String toHexString(String encodedString) {
+        byte[] data = new byte[0];
         try {
+            data = encodedString.getBytes("ISO-8859-1");
+        } catch (UnsupportedEncodingException ex) {
+        }
+
+        int end = data.length;
+        StringBuffer s = new StringBuffer(end * 2);
+
+        for (int i = 0; i < end; i++) {
+            int high_nibble = (data[i] & 0xf0) >>> 4;
+            int low_nibble = (data[i] & 0x0f);
+            s.append(HEX_TABLE[high_nibble]);
+            s.append(HEX_TABLE[low_nibble]);
+        }
+
+        return s.toString();
+    }
+
+    private static String md5(String input) throws NoSuchAlgorithmException,
+            UnsupportedEncodingException {
+        MessageDigest digest = MessageDigest.getInstance("MD5");
+        byte[] hash = digest.digest(input.getBytes("ISO-8859-1"));
+        return toHexString(new String(hash, "ISO-8859-1"));
+    }
+
+    private void createKeySpec(int style, String salt) {
+        try {
+            String secret;
+            if (style == 0) {
+                secret = m_password;
+            } else if (style == 1) {
+                secret = md5(m_password);
+            } else if (style == 2) {
+                secret = md5(md5(m_password) + salt);
+            } else {
+                System.out.println("Unknown secret style = " + style);
+                m_key[0] = m_key[1] = null;
+                return;
+            }
+
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] key = digest.digest(password.getBytes("ISO-8859-1"));
+            byte[] key = digest.digest(secret.getBytes("ISO-8859-1"));
             m_key[0] = new SecretKeySpec(key, 0, 16, "AES");
             m_key[1] = new SecretKeySpec(key, 16, 16, "AES");
-            sendMessage(new RequestChallengeMessage(user));
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void attemptAuthentication(String user, String password) {
+        m_name = user;
+        m_password = password;
+        sendMessage(new RequestChallengeMessage(user));
     }
 
     /**
