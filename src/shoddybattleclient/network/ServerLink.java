@@ -83,7 +83,7 @@ public class ServerLink extends Thread {
          * send the client's team to the server.
          */
         public void informResolved(boolean accepted);
-        
+
         /**
          * Get the name of the user who has been challenged.
          */
@@ -201,7 +201,7 @@ public class ServerLink extends Thread {
                 m_stream.write(type);
                 m_stream.writeInt(0); // insert in 0 for size for now
             } catch (IOException e) {
-                
+
             }
         }
         @Override
@@ -267,7 +267,7 @@ public class ServerLink extends Thread {
                 m_stream.writeInt(channel);
                 m_stream.writeUTF(message);
             } catch (Exception e) {
-                
+
             }
         }
     }
@@ -402,7 +402,7 @@ public class ServerLink extends Thread {
             try {
                 m_stream.writeInt(channel);
             } catch (Exception e) {
-                
+
             }
         }
     }
@@ -446,7 +446,7 @@ public class ServerLink extends Thread {
             try {
                 m_stream.writeUTF(user);
             } catch (Exception e) {
-                
+
             }
         }
     }
@@ -457,7 +457,7 @@ public class ServerLink extends Thread {
             try {
                 m_stream.writeUTF(message);
             } catch (Exception e) {
-                
+
             }
         }
     }
@@ -516,7 +516,7 @@ public class ServerLink extends Thread {
                     //System.out.println("Welcome message: " + welcome);
                 }
             });
-            
+
             // PASSWORD_CHALLENGE
             new ServerMessage(1, new MessageHandler() {
                 // byte[16] : the challenge
@@ -558,7 +558,7 @@ public class ServerLink extends Thread {
                         // pass 2
                         cipher.init(Cipher.ENCRYPT_MODE, link.m_key[1]);
                         challenge = cipher.doFinal(challenge, 0, 16);
-                        
+
                         link.sendMessage(
                                 new ChallengeResponseMessage(challenge));
 
@@ -760,7 +760,7 @@ public class ServerLink extends Thread {
                     int periodLength = 0;
                     if (metagame != -1) {
                         Metagame mg = link.getMetagames()[metagame];
-                        link.m_lobby.addChallenge(user, true, generation, 
+                        link.m_lobby.addChallenge(user, true, generation,
                                                                 partySize, mg);
                     } else {
                         int size = is.read();
@@ -891,7 +891,7 @@ public class ServerLink extends Thread {
                 public void handle(ServerLink link, DataInputStream is)
                         throws IOException {
                     int fid = is.readInt();
-                    
+
                     BattleWindow wnd = link.m_battles.get(fid);
                     if (wnd == null) return;
 
@@ -1036,7 +1036,7 @@ public class ServerLink extends Thread {
                             PokemonMove.getNameFromId(link.m_moveList, idx);
                     name = Text.formatName(name, (party == wnd.getParty()));
                     move = "<font class='move'>" + move + "</font>";
-                    
+
                     String message = Text.getText(4, 10,
                             new String[] { name, move });
 
@@ -1296,7 +1296,7 @@ public class ServerLink extends Thread {
                             } else {
                                 int hp = is.read();
                                 p.setHealth(hp, 48);
-                                
+
                                 // TODO: statuses, stat levels, etc.
                             }
                         }
@@ -1770,7 +1770,7 @@ public class ServerLink extends Thread {
         try {
             m_queue.put(msg);
         } catch (InterruptedException e) {
-            
+
         }
     }
 
