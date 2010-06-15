@@ -122,42 +122,37 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         m_colourMap.put("Dark", new Color(0x221448));
         m_colourMap.put("Steel", new Color(0x7b7b7b));
         m_colourMap.put("Typeless", new Color(0x2299a7));
-        }
+    }
 
-    private class MoveButton extends JToggleButton {
-        private int m_i, m_j;
-        private PokemonMove m_move = null;
-        public MoveButton() {
+    /**
+     * JToggleButton subclass that has a fancy gradient. This will be used
+     * by the move, switch, and target buttons
+     */
+    private class GradientButton extends JToggleButton {
+        //The gradient will be derived from this colour. It should be the
+        //colour for the top half of the button
+        protected Color m_colour;
+
+        //this is the default font colour for a selected button
+        protected Color SELECTION_FONT = new Color(0xffe42d);
+        //this is the default font colour for an active button
+        //e.g. the active pokemon
+        protected Color ACTIVE_FONT = new Color(0x78dcee);
+
+        public GradientButton() {
             setFocusPainted(false);
         }
-        public void setMove(int i, int j, PokemonMove move) {
-            m_i = i;
-            m_j = j;
-            m_move = move;
-            repaint();
-        }
-        public PokemonMove getMove() {
-            return m_move;
-        }
-        private int getPp() {
-            int pp = m_pp[m_i][m_j];
-            if (pp != -1) {
-                return pp;
-            }
-            return m_move.pp;
-        }
-
         protected void paintComponent(Graphics g) {
-            if (m_move == null) return;
             Graphics2D g2 = (Graphics2D)g.create();
-            
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
 
             if (!isEnabled()) {
-                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+                g2.setComposite(
+                    AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
             }
 
-            Color c = m_colourMap.get(m_move.type);
+            Color c = m_colour;
             int diff = 20;
             int red = c.getRed() - diff;
             if (red < 0) red = 0;
@@ -180,20 +175,49 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
                 g2.fillRect(2, 2, w-4, h-4);
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
             }
-            
+            g2.dispose();
+        }
+    }
+
+    private class MoveButton extends GradientButton {
+        private int m_i, m_j;
+        private PokemonMove m_move = null;
+        public void setMove(int i, int j, PokemonMove move) {
+            m_i = i;
+            m_j = j;
+            m_move = move;
+            if (move != null)
+                m_colour = m_colourMap.get(move.type);
+            repaint();
+        }
+        public PokemonMove getMove() {
+            return m_move;
+        }
+        private int getPp() {
+            int pp = m_pp[m_i][m_j];
+            if (pp != -1) {
+                return pp;
+            }
+            return m_move.pp;
+        }
+
+        protected void paintComponent(Graphics g) {
+            if (m_move == null) return;
+            super.paintComponent(g);
+            Graphics2D g2 = (Graphics2D)g.create();
             g2.setFont(g2.getFont().deriveFont(Font.BOLD).deriveFont(17f));
             g2.setColor(Color.GRAY);
             g2.drawString(m_move.name, 11, 26);
             if (isSelected()) {
                 //todo: other defining features
-                g2.setColor(new Color(0xffe42d));
+                g2.setColor(SELECTION_FONT);
             } else {
                 g2.setColor(Color.WHITE);
             }
             g2.drawString(m_move.name, 10, 25);
             
             g2.setFont(g2.getFont().deriveFont(Font.PLAIN).deriveFont(12f));
-            int y = getHeight() - g2.getFontMetrics().getHeight();
+            int y = getHeight() - g2.getFontMetrics().getHeight() + 4;
             g2.drawString(m_move.type, 10, y);
             String pp = getPp() + "/" + m_maxPp[m_i][m_j];
             int left = getWidth() - g2.getFontMetrics().stringWidth(pp) - 5;
@@ -202,15 +226,14 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         }
     }
 
-    private static class SwitchButton extends JToggleButton {
+    private class SwitchButton extends GradientButton {
         private VisualPokemon m_pokemon = null;
+        private final Color HEALTH_COLOUR = new Color(0x28ae3b);
         public SwitchButton() {
-            this.setFocusPainted(false);
+            m_colour = new Color(0x4b5278);
         }
         public void setPokemon(VisualPokemon pokemon) {
             m_pokemon = pokemon;
-            setText((m_pokemon == null) ? null : m_pokemon.getSpecies());
-
             //We need a dummy tooltip text
             setToolTipText(m_pokemon.toString()); 
         }
@@ -219,15 +242,36 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             return new JCustomTooltip(this, new VisualToolTip(m_pokemon, true));
         }
         protected void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D)g.create();
-            super.paintComponent(g2);
             if (m_pokemon == null) return;
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            super.paintComponent(g);
+            Graphics2D g2 = (Graphics2D)g.create();
             if (!isEnabled()) {
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
             }
+            Color fontCol = isSelected() ? SELECTION_FONT : Color.WHITE;
+            if (m_pokemon.getSlot() != -1) fontCol = ACTIVE_FONT;
+            if (m_pokemon.isFainted()) fontCol = Color.DARK_GRAY;
+            
             g2.setFont(g2.getFont().deriveFont(Font.BOLD));
-            //g2.drawString(m_pokemon.species, 5, getHeight() / 2 - g2.getFontMetrics().getHeight() / 2 + 7);
+            int speciesY = getHeight() / 2 - g2.getFontMetrics().getHeight() / 2 + 4;
+            g2.setColor(Color.GRAY);
+            g2.drawString(m_pokemon.getSpecies(), 6, speciesY + 1);
+            g2.setColor(fontCol);
+            g2.drawString(m_pokemon.getSpecies(), 5, speciesY);
+            
+            int n = m_pokemon.getNumerator();
+            int d = m_pokemon.getDenominator();
+            int y = getHeight() / 2 + 3;
+            int x = 3;
+            int healthW = getWidth() / 2 - x;
+            double frac = (double)n / d;
+            g2.setColor(Color.BLACK);
+            g2.drawRect(x, y, healthW, 10);
+            g2.setColor(HEALTH_COLOUR);
+            int barW = (int)(healthW * frac) - 1;
+            g2.fillRect(x + 1, y + 1, barW, 9);
+            g2.setColor(Color.DARK_GRAY);
+            g2.fillRect(x + 1 + barW, y + 1, healthW - barW - 1, 9);
             g2.dispose();
         }
     }
@@ -468,7 +512,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         }
 
         ButtonGroup switchButtons = new ButtonGroup();
-        panelSwitch.setLayout(new GridLayout(3, 2));
+        panelSwitch.setLayout(new GridLayout(3, 2, 3, 3));
         m_switches = new SwitchButton[m_pokemon.length];
         for (int i = 0; i < m_switches.length; i++) {
             final int idx = i;

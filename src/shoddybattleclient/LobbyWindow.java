@@ -40,7 +40,6 @@ import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.network.ServerLink.BanElement;
 import shoddybattleclient.network.ServerLink.ChallengeMediator;
 import shoddybattleclient.network.ServerLink.RuleSet;
-import shoddybattleclient.network.ServerLink.TimerOptions;
 import shoddybattleclient.utils.*;
 import shoddybattleclient.utils.ClauseList.Clause;
 import shoddybattleclient.utils.CloseableTabbedPane.TabCloseListener;
