@@ -100,6 +100,11 @@ public class ServerLink extends Thread {
         public int getActivePartySize();
 
         /**
+         * Get the maximum team length
+         */
+        public int getMaxTeamLength();
+
+        /**
          * Get the applied clauses
          */
         public int[] getClauses();
@@ -293,6 +298,7 @@ public class ServerLink extends Thread {
                 m_stream.writeUTF(mediator.getOpponent());
                 m_stream.writeByte(mediator.getGeneration());
                 m_stream.writeInt(mediator.getActivePartySize());
+                m_stream.writeInt(mediator.getMaxTeamLength());
                 m_stream.writeInt(mediator.getMetagame());
                 if (mediator.getMetagame() != -1) {
                     return;
@@ -754,6 +760,7 @@ public class ServerLink extends Thread {
                     String user = is.readUTF();
                     int generation = is.read();
                     int partySize = is.readInt();
+                    int teamLength = is.readInt();
                     int metagame = is.readInt();
                     int pool = 0;
                     int periods = 0;
@@ -761,7 +768,7 @@ public class ServerLink extends Thread {
                     if (metagame != -1) {
                         Metagame mg = link.getMetagames()[metagame];
                         link.m_lobby.addChallenge(user, true, generation,
-                                                                partySize, mg);
+                                                            partySize, teamLength, mg);
                     } else {
                         int size = is.read();
                         System.out.println("num of clauses " + size);
@@ -790,7 +797,7 @@ public class ServerLink extends Thread {
                             }
                         };
                         link.m_lobby.addChallenge(user, true, generation,
-                                                            partySize, rules);
+                                                        partySize, teamLength, rules);
                     }
                 }
             });
@@ -860,10 +867,10 @@ public class ServerLink extends Thread {
                         }
                         partySize = mediator.getActivePartySize();
                         team = mediator.getTeam();
-                        maxTeamLength = 6; // TODO: Include this in challenge.
+                        maxTeamLength = mediator.getMaxTeamLength();
                         link.m_lobby.removeUserPanel(user);
                     }
-                    // TODO: send maximum team length
+                    
                     BattleWindow wnd = new BattleWindow(link, id, partySize,
                             maxTeamLength, party, users, team);
 

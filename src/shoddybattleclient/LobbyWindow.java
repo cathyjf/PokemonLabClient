@@ -551,12 +551,12 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
     }
 
     public void addChallenge(String name, boolean incoming, int gen, int n,
-                                                            RuleSet rules) {
+                                                        int teamLength, RuleSet rules) {
         if (Preference.ignoring(name)) {
             m_link.resolveChallenge(name, false, null);
             return;
         }
-        UserPanel panel = openUserPanel(name, gen, n, rules);
+        UserPanel panel = openUserPanel(name, gen, n, teamLength, rules);
         CloseableTabbedPane closeable = (CloseableTabbedPane)tabChats;
         int idx = closeable.indexOfComponent(panel);
         closeable.setFlashingAt(idx, true);
@@ -632,7 +632,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
     }
 
     public UserPanel openUserPanel(String user, boolean incoming, int generation, 
-                                                        int n, RuleSet rules) {
+                                                        int n, int teamLength, RuleSet rules) {
         UserPanel panel = m_userPanels.get(user);
         if (panel == null) {
             int index = tabChats.getTabCount();
@@ -642,7 +642,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         }
         if (incoming) {
             panel.setIncoming();
-            panel.setOptions(n, generation, rules);
+            panel.setOptions(n, teamLength, generation, rules);
         } else {
             tabChats.setSelectedComponent(panel);
         }
@@ -656,11 +656,11 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
     }
 
     public void openUserPanel(String user) {
-        openUserPanel(user, false, 0, 0, null);
+        openUserPanel(user, false, 0, 0, 0, null);
     }
 
-    public UserPanel openUserPanel(String user, int generation, int n, RuleSet rules) {
-        return openUserPanel(user, true, generation, n, rules);
+    public UserPanel openUserPanel(String user, int generation, int n, int teamLength, RuleSet rules) {
+        return openUserPanel(user, true, generation, n, teamLength, rules);
     }
 
     @Override

@@ -316,7 +316,14 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         m_length = length;
         m_participant = participant;
         m_users = users;
-        m_pokemon = team;
+
+        if (team.length <= length)
+            m_pokemon = team;
+        else {
+            m_pokemon = new Pokemon[length];
+            for (int i = 0; i < length; i++)
+                m_pokemon[i] = team[i];
+        }
 
         m_channel = m_link.getLobby().getChannel(fid);
         listUsers.setModel(m_channel.getModel());
