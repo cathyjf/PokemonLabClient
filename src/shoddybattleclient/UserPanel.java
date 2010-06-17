@@ -121,7 +121,9 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
                 return null;
             }
             m_speciesList = speciesList;
-            loadTeam();
+
+            if (m_team != null)
+                loadTeam();
             return team;
         }
     }

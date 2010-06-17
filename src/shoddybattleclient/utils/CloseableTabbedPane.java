@@ -22,16 +22,34 @@
 
 package shoddybattleclient.utils;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import java.util.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.MediaTracker;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.Timer;
+import shoddybattleclient.GameVisualisation;
 
 /**
  *
  * @author ben
  */
-public class CloseableTabbedPane extends JTabbedPane implements MouseListener, MouseMotionListener {
+public class CloseableTabbedPane extends JTabbedPane {
 
     public interface CloseableTab {
         // Tell a tab that it is closing
@@ -43,12 +61,110 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener, M
         public void tabClosed(Component c);
     }
 
-    private java.util.List<TabCloseListener> m_listeners = new ArrayList<TabCloseListener>();
+    //These variables are used by the CloseableTabComponent
+    private static final Image m_x = GameVisualisation.getImageFromResource("x.gif");
+    private static final Color COLOR_NORMAL = Color.BLACK;
+    private static final Color COLOR_FLASH = Color.RED;
 
-    public CloseableTabbedPane() {
-        addMouseListener(this);
-        addMouseMotionListener(this);
+    /**
+     * The component used to display the tabs
+     */
+    private class CloseableTabComponent extends JPanel implements ActionListener {
+        private class CloseButton extends JButton implements MouseListener {
+            private boolean m_highlight = false;
+
+            public CloseButton() {
+                MediaTracker tracker = new MediaTracker(CloseableTabComponent.this);
+                tracker.addImage(m_x, 0);
+                try {
+                    tracker.waitForAll();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                this.setPreferredSize(new Dimension(13, 13));
+
+                addMouseListener(this);
+                setAction(new AbstractAction() {
+                    @Override
+                    public void actionPerformed(ActionEvent evt) {
+                        removeTabAt(indexOfTabComponent(CloseableTabComponent.this));
+                    }
+                });
+            }
+
+            @Override
+            public void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D)g.create();
+                if (m_highlight) {
+                    int r = 12;
+                    g2.setColor(new Color(235, 235, 235));
+                    g2.fillOval(0, 0, r, r);
+                    g2.setColor(new Color(200, 200, 200));
+                    g2.drawOval(0, 0, r, r);
+                }
+                g2.drawImage(m_x, (13 - m_x.getWidth(null))/2, (13 - m_x.getHeight(null))/2, this);
+            }
+
+            public void mouseClicked(MouseEvent e) {}
+            public void mousePressed(MouseEvent e) {}
+            public void mouseReleased(MouseEvent e) {}
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                m_highlight = true;
+                repaint();
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                m_highlight = false;
+                repaint();
+            }
+        }
+
+        private Timer m_timer = new Timer(500, this);
+        private JLabel m_label;
+        private CloseButton m_close;
+
+        public CloseableTabComponent(String text) {
+
+            m_label = new JLabel(text);
+            m_close = new CloseButton();
+
+            setOpaque(false);
+            GridBagLayout layout = new GridBagLayout();
+            setLayout(layout);
+            GridBagConstraints constraints = new GridBagConstraints();
+            constraints.anchor = GridBagConstraints.PAGE_END;
+            constraints.insets = new Insets(0, 4, 0, 0);
+            layout.setConstraints(m_close, constraints);
+
+            add(m_label);
+            add(m_close);
+            
+        }
+
+        public void setFlashing(boolean flashing) {
+            if (flashing) {
+                m_timer.start();
+            } else {
+                m_label.setForeground(COLOR_NORMAL);
+                m_timer.stop();
+                repaint();
+            }
+        }
+
+        public void setText(String text) {
+            m_label.setText(text);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            Color colour = (m_label.getForeground() == COLOR_NORMAL) ? COLOR_FLASH : COLOR_NORMAL;
+            m_label.setForeground(colour);
+        }
     }
+
+    private java.util.List<TabCloseListener> m_listeners = new ArrayList<TabCloseListener>();
 
     public void addTabCloseListener(TabCloseListener lst) {
         m_listeners.add(lst);
@@ -62,17 +178,18 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener, M
 
     @Override
     public void addTab(String name, Component c) {
-        super.addTab("", c);
-        this.setIconAt(this.getTabCount() - 1,
-                new CloseableTabIcon(this, name, getFontMetrics(getFont())));
+        addTab(name, c, true);
     }
 
-    private int indexAt(MouseEvent e) {
-        return getUI().tabForCoordinate(this, e.getX(), e.getY());
+    public void addTab(String name, Component c, boolean closeable) {
+        super.addTab(name, c);
+        if (closeable)
+            setTabComponentAt(getTabCount() - 1, new CloseableTabComponent(name));
     }
 
     @Override
     public void removeTabAt(int idx) {
+        if (idx >= getTabCount()) return;
         Component tab = getComponentAt(idx);
         if (tab instanceof CloseableTab) {
             CloseableTab cTab = (CloseableTab)tab;
@@ -85,50 +202,10 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener, M
     }
 
     public void setFlashingAt(int idx, boolean flashing) {
-        CloseableTabIcon icon = (CloseableTabIcon)getIconAt(idx);
-        if (icon != null) icon.setFlashing(flashing);
+        Component component = getTabComponentAt(idx);
+        if (!(component instanceof CloseableTabComponent)) return;
+        CloseableTabComponent tab = (CloseableTabComponent)component;
+        if (tab != null)
+            tab.setFlashing(flashing);
     }
-
-    public void repaint(Icon icon) {
-        int idx = this.indexOfTab(icon);
-        if (idx != -1) {
-            repaint(getBoundsAt(idx));
-        }
-    }
-
-    public void mouseReleased(MouseEvent e) {
-        int tabIndex = indexAt(e);
-        if (tabIndex == -1) return;
-        CloseableTabIcon icon = (CloseableTabIcon)this.getIconAt(tabIndex);
-        Rectangle r = getBoundsAt(tabIndex);
-        if (icon.isOnX((int)(e.getX() - r.getX()), (int)(e.getY() - r.getY()))) {
-            removeTabAt(tabIndex);
-        }
-    }
-
-    public void mouseMoved(MouseEvent e) {
-        int tabIndex = indexAt(e);
-        if (tabIndex == -1) {
-            for (int i = 0; i < getTabCount(); i++) {
-                CloseableTabIcon icon = (CloseableTabIcon)this.getIconAt(i);
-                icon.setHighlight(false);
-                repaint(this.getBoundsAt(i));
-            }
-            return;
-        }
-        CloseableTabIcon icon = (CloseableTabIcon)this.getIconAt(tabIndex);
-        Rectangle r = getBoundsAt(tabIndex);
-        if (icon.isOnX((int)(e.getX() - r.getX()), (int)(e.getY() - r.getY()))) {
-            icon.setHighlight(true);
-        } else {
-            icon.setHighlight(false);
-        }
-        repaint(r);
-    }
-
-    public void mouseDragged(MouseEvent e) { }
-    public void mouseEntered(MouseEvent e) { }
-    public void mouseExited(MouseEvent e) { }
-    public void mouseClicked(MouseEvent arg0) { }
-    public void mousePressed(MouseEvent arg0) { }
 }
