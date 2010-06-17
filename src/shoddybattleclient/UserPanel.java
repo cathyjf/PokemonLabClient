@@ -27,6 +27,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.Graphics;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.util.List;
@@ -66,8 +67,8 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         }
 
         public TeamBox(int teamLength) {
-            m_teamLength = teamLength;
-            reset();
+            super.setLayout(new GridLayout(2, (int)Math.ceil(teamLength/2)));
+            setTeamLength(teamLength);
         }
 
         public void reset() {
@@ -75,12 +76,19 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
             for (int i = 0; i < m_teamLength; i++) {
                 this.add(new SpritePanel(null, -1, null, false));
             }
+            if (m_teamLength > 1 && m_teamLength % 2 == 1)
+                this.add(new JPanel());
         }
 
         public void setTeamLength(int teamLength) {
             m_teamLength = teamLength;
 
-            //Reload the team into this TeamBox
+            GridLayout layout = (GridLayout)this.getLayout();
+            if (m_teamLength == 1)
+                layout.setRows(1);
+            else
+                layout.setRows(2);
+            
             if (m_team != null)
                 loadTeam();
             else
@@ -96,6 +104,8 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
                         PokemonSpecies.getIdFromName(m_speciesList, p.species), p.gender, p.shiny);
                 this.add(panel);
             }
+            if (m_teamLength > 1 && m_teamLength % 2 == 1)
+                this.add(new JPanel());
         }
 
         /**
@@ -487,7 +497,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(btnLoad)
                     .add(btnChallenge))
-                .add(145, 145, 145))
+                .add(148, 148, 148))
         );
 
         tabSettings.addTab("Basic", jPanel2);
