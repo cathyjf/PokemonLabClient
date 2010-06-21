@@ -658,7 +658,8 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         openUserPanel(user, false, 0, 0, 0, null);
     }
 
-    public UserPanel openUserPanel(String user, int generation, int n, int teamLength, RuleSet rules) {
+    public UserPanel openUserPanel(String user, int generation, int n,
+                int teamLength, RuleSet rules) {
         return openUserPanel(user, true, generation, n, teamLength, rules);
     }
 

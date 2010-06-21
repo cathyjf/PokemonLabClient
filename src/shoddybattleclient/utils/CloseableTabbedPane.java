@@ -103,7 +103,8 @@ public class CloseableTabbedPane extends JTabbedPane {
                     g2.setColor(new Color(200, 200, 200));
                     g2.drawOval(0, 0, r, r);
                 }
-                g2.drawImage(m_x, (13 - m_x.getWidth(null))/2, (13 - m_x.getHeight(null))/2, this);
+                g2.drawImage(m_x, (13 - m_x.getWidth(null))/2,
+                                            (13 - m_x.getHeight(null))/2, this);
             }
 
             public void mouseClicked(MouseEvent e) {}
@@ -159,7 +160,8 @@ public class CloseableTabbedPane extends JTabbedPane {
         }
 
         public void actionPerformed(ActionEvent e) {
-            Color colour = (m_label.getForeground() == COLOR_NORMAL) ? COLOR_FLASH : COLOR_NORMAL;
+            Color colour = (m_label.getForeground() == COLOR_NORMAL) ?
+                    COLOR_FLASH : COLOR_NORMAL;
             m_label.setForeground(colour);
         }
     }

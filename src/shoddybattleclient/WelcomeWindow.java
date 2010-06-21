@@ -83,8 +83,8 @@ public class WelcomeWindow extends javax.swing.JFrame {
                 "This is only for testing", "colin.shoddybattle.com",
                 8446, 220, 250);
         ServerListEntry sle2 = new ServerListEntry("Smogon", 
-                "Official server of smogon.com", "shoddy.smogon.com",
-                50000, 150, 250);
+                "Official server of smogon.com", "smogon.com",
+                8446, 150, 250);
         ServerListEntry sle3 = new ServerListEntry("Pokemonexperte",
                 "A german server.", "shoddy.pokemonexperte.com",
                 1234, 5, 250);

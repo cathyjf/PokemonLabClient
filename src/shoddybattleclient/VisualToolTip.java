@@ -135,7 +135,8 @@ public class VisualToolTip extends javax.swing.JPanel {
         panelEffects = new javax.swing.JPanel();
         lblEffects = new javax.swing.JLabel();
 
-        setBackground(new java.awt.Color(51, 51, 51));
+        setBackground(new Color(51, 51, 51, 225));
+        setOpaque(false);
         setLayout(new java.awt.GridBagLayout());
 
         lblName.setFont(new java.awt.Font("Lucida Grande", 1, 18));
@@ -165,7 +166,7 @@ public class VisualToolTip extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 2, 0, 0);
         add(lblLevel, gridBagConstraints);
 
-        panelStats.setBackground(new java.awt.Color(79, 79, 79));
+        panelStats.setBackground(new Color(79, 79, 79, 225));
         panelStats.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         panelStats.setPreferredSize(new java.awt.Dimension(100, 115));
         panelStats.setLayout(new java.awt.GridLayout(7, 1, 2, 0));
@@ -180,7 +181,7 @@ public class VisualToolTip extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(2, 5, 5, 2);
         add(panelStats, gridBagConstraints);
 
-        panelEffects.setBackground(new java.awt.Color(79, 79, 79));
+        panelEffects.setBackground(new Color(79, 79, 79, 225));
         panelEffects.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         panelEffects.setPreferredSize(new java.awt.Dimension(100, 50));
         panelEffects.setLayout(new javax.swing.BoxLayout(panelEffects, javax.swing.BoxLayout.PAGE_AXIS));
