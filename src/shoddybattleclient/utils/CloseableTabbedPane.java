@@ -142,7 +142,6 @@ public class CloseableTabbedPane extends JTabbedPane {
 
             add(m_label);
             add(m_close);
-            
         }
 
         public void setFlashing(boolean flashing) {

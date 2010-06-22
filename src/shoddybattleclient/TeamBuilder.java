@@ -23,6 +23,7 @@
 
 package shoddybattleclient;
 
+import java.awt.Component;
 import java.awt.FileDialog;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -31,16 +32,25 @@ import java.awt.event.ItemEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
@@ -106,8 +116,8 @@ public class TeamBuilder extends javax.swing.JFrame {
             if (m_front) {
                 g.drawImage(m_background, -130, -17, this);
                 if (m_img == null) return;
-                g.drawImage(m_img, panelSprite.getWidth() / 2 - m_img.getWidth(this) / 2,
-                        panelSprite.getHeight() - 10 - m_img.getHeight(this), this);
+                g.drawImage(m_img, this.getWidth() / 2 - m_img.getWidth(this) / 2,
+                        this.getHeight() - 10 - m_img.getHeight(this), this);
             } else {
                 g.drawImage(m_background, 0, getHeight() - m_background.getHeight(this), this);
                 if (m_img == null) return;
@@ -121,9 +131,11 @@ public class TeamBuilder extends javax.swing.JFrame {
     private ArrayList<PokemonMove> m_moves;
     private File m_save;
 
-    //A hacky fix similar to TeamBuilderForm's hpProgramSelect
-    //Set to true if we don't want cmbSpeciesItemStateChange from clearing data
-    //on tab switch
+    private DefaultComboBoxModel m_speciesModel;
+    
+    // A hacky fix similar to TeamBuilderForm's hpProgramSelect
+    // Set to true if we don't want cmbSpeciesItemStateChange clearing
+    // EVs/IVs and other data on a tab switch
     private boolean speciesProgramSelect = false;
 
     /** Creates new form TeamBuilder */
@@ -147,7 +159,9 @@ public class TeamBuilder extends javax.swing.JFrame {
         System.out.println("Loaded moves in " + (t2-t1) + " milliseconds");
         System.out.println("Loaded species in " + (t3-t2) + " milliseconds");
         System.out.println("Sorted species in " + (t4-t3) + " milliseconds");
-        cmbSpecies.setModel(new DefaultComboBoxModel(m_species.toArray(new PokemonSpecies[m_species.size()])));
+
+        m_speciesModel = new DefaultComboBoxModel(m_species.toArray(new PokemonSpecies[m_species.size()]));
+        cmbSpecies.setModel(m_speciesModel);
         addDefaultTeam();
         treeBox.setModel(new BoxTreeModel());
         treeBox.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -176,7 +190,7 @@ public class TeamBuilder extends javax.swing.JFrame {
     private void addDefaultForm() {
         TeamBuilderForm tbf = new TeamBuilderForm(this, m_forms.size());
         m_forms.add(tbf);
-        tabForms.addTab("", tbf);
+        ((CloseableTabbedPane)tabForms).addTab("", tbf, false);
         tbf.setPokemon(new Pokemon("Bulbasaur", "", false, Gender.GENDER_MALE, 100, 255,
             "", "", "", new String[] {null, null, null, null}, new int[] {3,3,3,3},
             new int[] {31,31,31,31,31,31}, new int[] {0,0,0,0,0,0}), true);
@@ -206,13 +220,6 @@ public class TeamBuilder extends javax.swing.JFrame {
 
     public ArrayList<PokemonMove> getMoveList() {
         return m_moves;
-    }
-
-    public void setSpriteShiny(boolean shiny) {
-        String tab = tabForms.getTitleAt(tabForms.getSelectedIndex());
-        String current = ((PokemonSpecies)cmbSpecies.getSelectedItem()).getName();
-        if (!tab.equals(current)) return;
-        ((SpritePanel)panelSprite).setShiny(shiny);
     }
 
     private void saveTeam() {
@@ -256,6 +263,11 @@ public class TeamBuilder extends javax.swing.JFrame {
     }
 
     private void setSpecies(String name) {
+        // Boxes may interfere with setSpecies, so we prepare it beforehand
+        scrTreeBox.setViewportView(treeBox);
+        cmbSpecies.setModel(m_speciesModel);
+        cmbSpecies.setEnabled(true);
+
         speciesProgramSelect = true;
         PokemonSpecies species = null;
         for (PokemonSpecies s : m_species) {
@@ -275,6 +287,13 @@ public class TeamBuilder extends javax.swing.JFrame {
         speciesProgramSelect = false;
     }
 
+    public void setSpriteShiny(boolean shiny) {
+        String tab = tabForms.getTitleAt(tabForms.getSelectedIndex());
+        String current = ((PokemonSpecies)cmbSpecies.getSelectedItem()).getName();
+        if (!tab.equals(current)) return;
+        ((SpritePanel)panelSprite).setShiny(shiny);
+    }
+
     public Pokemon getSelectedPokemon() {
         return m_forms.get(tabForms.getSelectedIndex()).getPokemon();
     }
@@ -282,10 +301,10 @@ public class TeamBuilder extends javax.swing.JFrame {
     public void setSelectedPokemon(Pokemon poke) {
         int idx = tabForms.getSelectedIndex();
 
-        if(idx < 0)
+        if (idx < 0)
             return;
 
-        if(!poke.toString().equals(getSelectedPokemon().toString()))
+        if (!poke.toString().equals(getSelectedPokemon().toString()))
             setSpecies(poke.toString());
         setSpriteShiny(poke.shiny);
         m_forms.get(idx).setPokemon(poke.clone(), true);
@@ -332,6 +351,45 @@ public class TeamBuilder extends javax.swing.JFrame {
         }
     }
 
+    private void updateBoxes(boolean updateTree) {
+        Component last = tabForms.getComponentAt(tabForms.getTabCount() - 1);
+        if (last instanceof BoxForm) {
+            ((BoxForm)last).updateBoxes();
+        }
+
+        if (updateTree) {
+            treeBox.setModel(new BoxTreeModel());
+            treeBox.setSelectionRow(0);
+        }
+    }
+
+    // This will ask the user for input, returns if it succeeded
+    private boolean addPokemonToBox(PokemonBox box, Pokemon poke) {
+        String name = JOptionPane.showInputDialog(this, "New Pokemon's name:");
+        if (name == null || name.trim().equals("")) {
+            return false;
+        }
+
+        if (box.getPokemon(name) != null) {
+            int confirm = JOptionPane.showConfirmDialog(this, "This Pokemon already exists, are " +
+                    "you sure you want to replace it?", "", JOptionPane.YES_NO_OPTION);
+            if (confirm != JOptionPane.YES_OPTION) {
+                return false;
+            }
+        }
+
+        try {
+            name = name.trim();
+            box.removePokemon(name); //May be a rename
+            box.addPokemon(name, poke);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error adding pokemon", "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+
+        return true;
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -341,9 +399,9 @@ public class TeamBuilder extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        tabForms = new javax.swing.JTabbedPane();
+        tabForms = new CloseableTabbedPane();
         cmbSpecies = new javax.swing.JComboBox();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        scrTreeBox = new javax.swing.JScrollPane();
         treeBox = new javax.swing.JTree();
         btnLoadFromBox = new javax.swing.JButton();
         btnSaveToBox = new javax.swing.JButton();
@@ -355,11 +413,14 @@ public class TeamBuilder extends javax.swing.JFrame {
         menuSave = new javax.swing.JMenuItem();
         menuSaveAs = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
-        menuChangeSize = new javax.swing.JMenuItem();
+        menuImportBox = new javax.swing.JMenuItem();
+        menuExportBox = new javax.swing.JMenuItem();
+        menuDeleteBox = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JSeparator();
         menuExport = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         mnuHappiness = new javax.swing.JMenuItem();
+        menuChangeSize = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         menuFront = new javax.swing.JMenuItem();
         menuRandomise = new javax.swing.JMenuItem();
@@ -389,7 +450,7 @@ public class TeamBuilder extends javax.swing.JFrame {
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
         treeBox.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
         treeBox.setRootVisible(false);
-        jScrollPane1.setViewportView(treeBox);
+        scrTreeBox.setViewportView(treeBox);
 
         btnLoadFromBox.setText("Load >>");
         btnLoadFromBox.addActionListener(new java.awt.event.ActionListener() {
@@ -458,13 +519,29 @@ public class TeamBuilder extends javax.swing.JFrame {
         jMenu1.add(menuSaveAs);
         jMenu1.add(jSeparator1);
 
-        menuChangeSize.setText("Change Team Size");
-        menuChangeSize.addActionListener(new java.awt.event.ActionListener() {
+        menuImportBox.setText("Import Boxes");
+        menuImportBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuChangeSizeActionPerformed(evt);
+                menuImportBoxActionPerformed(evt);
             }
         });
-        jMenu1.add(menuChangeSize);
+        jMenu1.add(menuImportBox);
+
+        menuExportBox.setText("Export Boxes");
+        menuExportBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuExportBoxActionPerformed(evt);
+            }
+        });
+        jMenu1.add(menuExportBox);
+
+        menuDeleteBox.setText("Delete Boxes");
+        menuDeleteBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuDeleteBoxActionPerformed(evt);
+            }
+        });
+        jMenu1.add(menuDeleteBox);
         jMenu1.add(jSeparator2);
 
         menuExport.setText("Export to Text");
@@ -486,6 +563,14 @@ public class TeamBuilder extends javax.swing.JFrame {
             }
         });
         jMenu3.add(mnuHappiness);
+
+        menuChangeSize.setText("Change Team Size");
+        menuChangeSize.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuChangeSizeActionPerformed(evt);
+            }
+        });
+        jMenu3.add(menuChangeSize);
 
         jMenuBar1.add(jMenu3);
 
@@ -524,7 +609,7 @@ public class TeamBuilder extends javax.swing.JFrame {
                         .add(14, 14, 14)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, btnLoadFromBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 121, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 121, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, scrTreeBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 121, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, btnSaveToBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 121, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(panelSprite, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                     .add(layout.createSequentialGroup()
@@ -539,18 +624,18 @@ public class TeamBuilder extends javax.swing.JFrame {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(tabForms, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
+                    .add(tabForms, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 429, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(cmbSpecies, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(panelSprite, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 163, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(scrTreeBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 163, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(btnLoadFromBox)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(btnSaveToBox)
-                        .add(0, 62, Short.MAX_VALUE)))
+                        .add(0, 68, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -568,34 +653,32 @@ public class TeamBuilder extends javax.swing.JFrame {
         String file = choose.getDirectory() + choose.getFile();
         if (file == null || !(new File(file).exists())) return;
 
-        try {
-            TeamFileParser tfp = new TeamFileParser();
-            Pokemon[] team = tfp.parseTeam(file);
+        TeamFileParser tfp = new TeamFileParser();
+        Pokemon[] team = tfp.parseTeam(file);
 
-            m_forms.clear();
-            tabForms.removeAll();
-
-            int nPokemon = Math.min(team.length, 24);
-            for (int i = 0; i < nPokemon; i++) {
-                m_forms.add(new TeamBuilderForm(this, i));
-                tabForms.add("", m_forms.get(i));
-                m_forms.get(i).setPokemon(team[i], true);
-            }
-            setSpecies(team[0].species);
-            setSpriteShiny(team[0].shiny);
-
-            m_save = new File(file);
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
-            addDefaultTeam();
+        if (team == null) {
             JOptionPane.showMessageDialog(null, "Error reading file",
-                    "Error", JOptionPane.ERROR_MESSAGE);
+                "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
+        
+        m_forms.clear();
+        tabForms.removeAll();
+
+        int nPokemon = Math.min(team.length, 24);
+        for (int i = 0; i < nPokemon; i++) {
+            m_forms.add(new TeamBuilderForm(this, i));
+            ((CloseableTabbedPane)tabForms).addTab("", m_forms.get(i), false);
+            m_forms.get(i).setPokemon(team[i], true);
+        }
+        setSpecies(team[0].species);
+        setSpriteShiny(team[0].shiny);
+
+        m_save = new File(file);
 }//GEN-LAST:event_menuLoadActionPerformed
 
     private void menuSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSaveActionPerformed
-        if(m_save == null)
+        if (m_save == null)
             saveTeam();
         else
             saveTeam(m_save.getAbsolutePath());
@@ -623,10 +706,19 @@ public class TeamBuilder extends javax.swing.JFrame {
             return;
         }
 
+        //If the last tab is a box, pick it up and move it to the end
+        Component last = tabForms.getComponentAt(tabForms.getTabCount() - 1);
+
         if (size > m_forms.size()) {
+            if (last instanceof BoxForm)
+                tabForms.remove(tabForms.getTabCount() - 1);
+
             while (size > m_forms.size()) {
                 addDefaultForm();
             }
+
+            if (last instanceof BoxForm)
+                tabForms.addTab("Boxes", last);
         } else {
             while (m_forms.size() > size) {
                 int idx = m_forms.size() - 1;
@@ -634,6 +726,8 @@ public class TeamBuilder extends javax.swing.JFrame {
                 tabForms.remove(idx);
             }
         }
+
+        
 }//GEN-LAST:event_menuChangeSizeActionPerformed
 
     private void cmbSpeciesItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbSpeciesItemStateChanged
@@ -654,22 +748,43 @@ public class TeamBuilder extends javax.swing.JFrame {
     }//GEN-LAST:event_cmbSpeciesItemStateChanged
 
     private void btnLoadFromBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadFromBoxActionPerformed
-        Object obj = treeBox.getLastSelectedPathComponent();
-        if (obj == null) return;
-        if (BoxTreeModel.isDefaultNode(obj)) {
-            PokemonSpecies sp = (PokemonSpecies)cmbSpecies.getSelectedItem();
-            ((TeamBuilderForm)tabForms.getSelectedComponent()).setPokemon(new Pokemon(
-                sp.getName(), "", false, Gender.GENDER_MALE, 100, 255, "", "", "",
-                new String[] {null, null, null, null}, new int[] {3,3,3,3},
-                new int[] {31,31,31,31,31,31}, new int[] {0,0,0,0,0,0}), false);
-        } else if (obj instanceof Pokemon) {
-            setSelectedPokemon((Pokemon)obj);
-        } else if (obj instanceof PokemonWrapper) {
-            setSelectedPokemon(((PokemonWrapper)obj).pokemon);
+        Component selectedTab = tabForms.getSelectedComponent();
+        if (selectedTab instanceof BoxForm) {
+            BoxForm boxForm = (BoxForm)selectedTab;
+            JList teamList = (JList)scrTreeBox.getViewport().getView();
+            
+            PokemonBox box = boxForm.getSelectedBox();
+            Object selected = teamList.getSelectedValue();
+
+            if (box == null || selected == null) {
+                return;
+            }
+
+            Pokemon poke = (Pokemon)selected;
+            addPokemonToBox(box, poke);
+            updateBoxes(false);
+
+        } else {
+            Object obj = treeBox.getLastSelectedPathComponent();
+            if (obj == null) return;
+            if (BoxTreeModel.isDefaultNode(obj)) {
+                PokemonSpecies sp = (PokemonSpecies)cmbSpecies.getSelectedItem();
+                ((TeamBuilderForm)tabForms.getSelectedComponent()).setPokemon(new Pokemon(
+                    sp.getName(), "", false, Gender.GENDER_MALE, 100, 255, "", "", "",
+                    new String[] {null, null, null, null}, new int[] {3,3,3,3},
+                    new int[] {31,31,31,31,31,31}, new int[] {0,0,0,0,0,0}), false);
+            } else if (obj instanceof Pokemon) {
+                setSelectedPokemon((Pokemon)obj);
+            } else if (obj instanceof PokemonWrapper) {
+                setSelectedPokemon(((PokemonWrapper)obj).pokemon);
+            }
         }
     }//GEN-LAST:event_btnLoadFromBoxActionPerformed
 
     private void mnuHappinessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuHappinessActionPerformed
+        int selected = tabForms.getSelectedIndex();
+        if (selected >= m_forms.size()) return;
+
         int happiness = ((TeamBuilderForm)tabForms.getSelectedComponent()).getHappiness();
         String resp = JOptionPane.showInputDialog(this, "Enter a new value in [0,255]", happiness);
         try {
@@ -687,15 +802,28 @@ public class TeamBuilder extends javax.swing.JFrame {
         if (idx < 0) return;
         String name = tabForms.getTitleAt(idx);
         if ((name == null) || name.equals("")) return;
-        setSpecies(name);
+
+        if (idx < m_forms.size()) {
+            setSpecies(name);
+        } else {
+            cmbSpecies.setModel(new DefaultComboBoxModel());
+            cmbSpecies.setEnabled(false);
+
+            DefaultListModel pModel = new DefaultListModel();
+            for (int i = 0; i < m_forms.size(); i++)
+                pModel.addElement(m_forms.get(i).getPokemon());
+
+            scrTreeBox.setViewportView(new JList(pModel));
+        }
+
     }//GEN-LAST:event_tabFormsStateChanged
 
     private void menuNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuNewActionPerformed
         int result = JOptionPane.showOptionDialog(null,
                  "This team may have unsaved changes, create new anyways?",
                  "Unsaved Changes", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-        if(result == JOptionPane.OK_OPTION)
-        addDefaultTeam();
+        if (result == JOptionPane.OK_OPTION)
+            addDefaultTeam();
     }//GEN-LAST:event_menuNewActionPerformed
 
     private void menuExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuExportActionPerformed
@@ -710,86 +838,251 @@ public class TeamBuilder extends javax.swing.JFrame {
 
     private void menuFrontActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuFrontActionPerformed
         int selected = tabForms.getSelectedIndex();
-        if (selected < 1)
+        if (selected < 1 || selected >= m_forms.size())
             return;
 
         TeamBuilderForm temp = m_forms.get(selected);
         m_forms.set(selected, m_forms.get(0));
         m_forms.set(0, temp);
 
-        // JTabbedPane.setComponentAt() "apparently" removes tabs
+        Component last = tabForms.getComponentAt(tabForms.getTabCount() - 1);
         tabForms.removeAll();
-        for(TeamBuilderForm tab : m_forms)
-            tabForms.addTab(tab.getPokemon().toString(), tab);
+        for (TeamBuilderForm tab : m_forms)
+            ((CloseableTabbedPane)tabForms).addTab(tab.getPokemon().toString(), tab, false);
+
+        if (last instanceof BoxForm)
+            tabForms.add("Boxes", last);
     }//GEN-LAST:event_menuFrontActionPerformed
 
     private void menuBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBoxActionPerformed
-        new BoxDialog(this);
+        Component last = tabForms.getComponentAt(tabForms.getTabCount() - 1);
+        if (!(last instanceof BoxForm))
+            tabForms.addTab("Boxes", new BoxForm(this));
+        tabForms.setSelectedIndex(tabForms.getTabCount() - 1);
     }//GEN-LAST:event_menuBoxActionPerformed
 
     private void btnSaveToBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveToBoxActionPerformed
-        BoxTreeModel treeModel = (BoxTreeModel)treeBox.getModel();
-        Object obj = treeBox.getLastSelectedPathComponent();
+        Component selectedTab = tabForms.getSelectedComponent();
+        if (selectedTab instanceof BoxForm) {
+            BoxForm boxForm = (BoxForm)selectedTab;
+            JList teamList = (JList)scrTreeBox.getViewport().getView();
 
-        PokemonBox box = null;
-        if (obj == null || BoxTreeModel.isDefaultNode(obj) || BoxTreeModel.isBoxRoot(obj)) {
-            ArrayList<String> boxes = new ArrayList<String>();
-            String newBox = "<html><i>New Box</i> ";
-            for (File boxFile : new File(Preference.getBoxLocation()).listFiles()) {
-                if (boxFile.isDirectory())
-                    boxes.add(boxFile.getName());
+            Pokemon poke = boxForm.getSelectedPokemon();
+            int selectedTeamIndex = teamList.getSelectedIndex();
+
+            if (poke == null || selectedTeamIndex < 0 || selectedTeamIndex >= m_forms.size()) {
+                return;
             }
-            Collections.sort(boxes);
-            boxes.add(0, newBox);
 
-            Object selection = JOptionPane.showInputDialog(this, "Select a box", "Save to Box",
-                    JOptionPane.PLAIN_MESSAGE, null, boxes.toArray(), boxes.get(0));
-            if (selection == null) return;
+            m_forms.get(selectedTeamIndex).setPokemon(poke.clone(), true);
+            updateTitle(selectedTeamIndex, poke.toString());
+            ((DefaultListModel)teamList.getModel()).set(selectedTeamIndex, poke);
 
-            if (selection.equals(newBox)) { //No system allows a foldername like newBox
-                String boxName = JOptionPane.showInputDialog(this, "New box name:");
+        } else {
+            // A TeamBuilderForm is selected
+            BoxTreeModel treeModel = (BoxTreeModel)treeBox.getModel();
+            Object obj = treeBox.getLastSelectedPathComponent();
 
-                if(boxName == null) return;
-                if(new File(Preference.getBoxLocation() + File.separatorChar + boxName).exists()) {
-                    JOptionPane.showMessageDialog(this, "This box already exists", "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                    return;
+            PokemonBox box = null;
+            if (obj == null || BoxTreeModel.isDefaultNode(obj) || BoxTreeModel.isBoxRoot(obj)) {
+                ArrayList<String> boxes = new ArrayList<String>();
+                String newBox = "<html><i>New Box</i> ";
+                for (File boxFile : new File(Preference.getBoxLocation()).listFiles()) {
+                    if (boxFile.isDirectory())
+                        boxes.add(boxFile.getName());
                 }
-                selection = boxName;
+                Collections.sort(boxes);
+                boxes.add(0, newBox);
+
+                Object selection = JOptionPane.showInputDialog(this, "Select a box", "Save to Box",
+                        JOptionPane.PLAIN_MESSAGE, null, boxes.toArray(), boxes.get(0));
+                if (selection == null) return;
+
+                if (selection.equals(newBox)) { //No system allows a foldername like newBox
+                    String boxName = JOptionPane.showInputDialog(this, "New box name:");
+
+                    if (boxName == null) return;
+                    if (new File(Preference.getBoxLocation() + File.separatorChar + boxName).exists()) {
+                        JOptionPane.showMessageDialog(this, "This box already exists", "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    selection = boxName;
+                }
+
+                box = new PokemonBox((String)selection, getSelectedPokemon().toString());
+
+            } else if (obj instanceof PokemonBox) {
+                box = (PokemonBox)obj;
+            } else if (obj instanceof PokemonWrapper) {
+                box = ((PokemonWrapper)obj).getParent();
             }
 
-            box = new PokemonBox((String)selection, getSelectedPokemon().toString());
-
-        } else if (obj instanceof PokemonBox) {
-            box = (PokemonBox)obj;
-        } else if (obj instanceof PokemonWrapper) {
-            box = ((PokemonWrapper)obj).getParent();
-        }
-
-        if (box != null) {
-            String name = JOptionPane.showInputDialog(this, "New Pokemon's name:");
-            if(name == null || name.trim().equals("")) return;
-
-            if(box.getPokemon(name) != null) {
-                int confirm = JOptionPane.showConfirmDialog(this, "This Pokemon already exists, are " +
-                        "you sure you want to replace it?", "", JOptionPane.YES_NO_OPTION);
-                if(confirm != JOptionPane.YES_OPTION)
-                    return;
-            }
-
-            try {
-                name = name.trim();
-                box.removePokemon(name); //May be a rename
-                box.addPokemon(name, getSelectedPokemon());
-
-                //Adds it in if it doesn't exist. Updates the tree if it does.
-                treeModel.addBox(box);
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error adding pokemon", "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            if (box != null) {
+                boolean succeeded = addPokemonToBox(box, getSelectedPokemon());
+                
+                
+                if (succeeded) {
+                    // Updates the tree if its already in
+                    treeModel.addBox(box); 
+                }
+                
+                updateBoxes(false);
             }
         }
     }//GEN-LAST:event_btnSaveToBoxActionPerformed
+
+    private void menuImportBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuImportBoxActionPerformed
+        FileDialog choose = new FileDialog(this, "Import Boxes", FileDialog.LOAD);
+        // todo: make it obvious these are zips with better file choosers
+        choose.setVisible(true);
+        if (choose.getFile() == null) return;
+        File inFile = new File(choose.getDirectory() + choose.getFile());
+        if (!inFile.exists()) return;
+
+        // These are for overwriting pokemon.
+        boolean asked = false; // Has the user been asked if overriding pokemon is ok?
+        boolean okOverwrite = false; // Is it ok to overwrite?
+
+        try {
+            ZipFile file = new ZipFile(inFile);
+
+            Enumeration<? extends ZipEntry> entries = file.entries();
+            while(entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
+                String[] path = entry.toString().split("[/\\\\]");
+                if (path.length > 2) {
+                    continue;
+                }
+
+                if (path.length == 1 && entry.isDirectory()) {
+                    //Its a box
+                    File box = new File(Preference.getBoxLocation() + "/" + entry.toString());
+                    if (!box.exists())
+                        box.mkdirs();
+                } else if (path.length == 2 && !entry.isDirectory()) {
+                    //Its a pokemon
+                    File pokemon = new File(Preference.getBoxLocation() + "/" + entry.toString());
+
+                    if (pokemon.exists()) {
+                        if (!asked) {
+                            int result = JOptionPane.showConfirmDialog(this,
+                                    "There are some pokemon conflicts. Ok to overwrite them?",
+                                    "", JOptionPane.YES_NO_OPTION);
+                            if (result == JOptionPane.YES_OPTION)
+                                okOverwrite = true;
+                            asked = true;
+                        }
+                        
+                        if (asked && !okOverwrite) {
+                            continue;
+                        }
+                    }
+
+                    InputStream in = file.getInputStream(entry);
+                    byte[] data = new byte[in.available()];
+                    in.read(data);
+                    in.close();
+
+                    FileOutputStream out = new FileOutputStream(pokemon, false);
+                    out.write(data);
+                    out.flush();
+                    out.close();
+                }
+            }
+            
+            file.close();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error importing boxes",
+                                            "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        updateBoxes(true);
+    }//GEN-LAST:event_menuImportBoxActionPerformed
+
+    private void menuExportBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuExportBoxActionPerformed
+        FileDialog choose = new FileDialog(this, "Export Boxes", FileDialog.SAVE);
+        choose.setVisible(true);
+        if (choose.getFile() == null) return;
+        File outFile = new File(choose.getDirectory() + choose.getFile());
+
+        try {
+            ZipOutputStream out = new ZipOutputStream(new FileOutputStream(outFile));
+            File boxFolder = new File(Preference.getBoxLocation());
+            for (File box : boxFolder.listFiles()) {
+                if (!box.isDirectory()) continue;
+
+                // Write the box folder
+                out.putNextEntry(new ZipEntry(box.getName() + "/"));
+                out.closeEntry();
+
+                // Write the pokemon
+                for (File pokemon : box.listFiles()) {
+                    if (pokemon.isDirectory()) return;
+                    
+                    FileInputStream in = new FileInputStream(pokemon);
+                    byte[] data = new byte[in.available()];
+                    in.read(data);
+                    in.close();
+
+                    out.putNextEntry(new ZipEntry(box.getName() + "/" + pokemon.getName()));
+                    out.write(data);
+                    out.closeEntry();
+                }
+            }
+
+            out.finish();
+            out.close();
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error exporting boxes",
+                                            "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_menuExportBoxActionPerformed
+
+    private void menuDeleteBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuDeleteBoxActionPerformed
+        int result = JOptionPane.showConfirmDialog(this,
+                "Once you delete boxes they're gone forever, are you sure you want to continue?",
+                "", JOptionPane.YES_NO_OPTION);
+
+        if (result == JOptionPane.NO_OPTION) return;
+
+        // Variables to give an indication of a serious problem
+        boolean badFormat = false;
+        boolean deleteFailed = false;
+
+        File boxFolder = new File(Preference.getBoxLocation());
+        for (File box : boxFolder.listFiles()) {
+            if (!box.isDirectory())
+                continue;
+
+            for (File pokemon : box.listFiles()) {
+                if (pokemon.isDirectory()) {
+                    if (!pokemon.delete()) {
+                        badFormat = true;
+                    }
+                } else if (!pokemon.delete()) {
+                    deleteFailed = true;
+                }
+            }
+
+            if (!box.delete())
+                deleteFailed = true;
+        }
+
+        if (badFormat) {
+            JOptionPane.showMessageDialog(this,
+                    "The boxes are badly formatted, so some files couldn't be deleted",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (deleteFailed) {
+            JOptionPane.showMessageDialog(this, "Some files couldn't be deleted",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Boxes deleted");
+        }
+
+        updateBoxes(true);
+    }//GEN-LAST:event_menuDeleteBoxActionPerformed
 
     /**
     * @param args the command line arguments
@@ -816,13 +1109,15 @@ public class TeamBuilder extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JMenuItem menuBox;
     private javax.swing.JMenuItem menuChangeSize;
+    private javax.swing.JMenuItem menuDeleteBox;
     private javax.swing.JMenuItem menuExport;
+    private javax.swing.JMenuItem menuExportBox;
     private javax.swing.JMenuItem menuFront;
+    private javax.swing.JMenuItem menuImportBox;
     private javax.swing.JMenuItem menuLoad;
     private javax.swing.JMenuItem menuNew;
     private javax.swing.JMenuItem menuRandomise;
@@ -830,6 +1125,7 @@ public class TeamBuilder extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuSaveAs;
     private javax.swing.JMenuItem mnuHappiness;
     private javax.swing.JPanel panelSprite;
+    private javax.swing.JScrollPane scrTreeBox;
     private javax.swing.JTabbedPane tabForms;
     private javax.swing.JTree treeBox;
     // End of variables declaration//GEN-END:variables
