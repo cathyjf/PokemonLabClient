@@ -146,6 +146,10 @@ public class BoxForm extends javax.swing.JPanel {
             return new String(buf);
         }
 
+        public void fireTableDataChanged() {
+            super.fireTableDataChanged();
+        }
+
         @Override
         public Object getValueAt(int row, int col) {
             PokemonWrapper wrapper = getPokemonAt(row);
@@ -313,10 +317,29 @@ public class BoxForm extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        popupBoxes = new javax.swing.JPopupMenu();
+        menuRenameBox = new javax.swing.JMenuItem();
+        menuDeleteBox = new javax.swing.JMenuItem();
         scrollPokemon = new javax.swing.JScrollPane();
         jScrollPane2 = new javax.swing.JScrollPane();
         listBoxes = new javax.swing.JList();
         btnNewBox = new javax.swing.JButton();
+
+        menuRenameBox.setText("Rename");
+        menuRenameBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuRenameBoxActionPerformed(evt);
+            }
+        });
+        popupBoxes.add(menuRenameBox);
+
+        menuDeleteBox.setText("Delete");
+        menuDeleteBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuDeleteBoxActionPerformed(evt);
+            }
+        });
+        popupBoxes.add(menuDeleteBox);
 
         setOpaque(false);
         setPreferredSize(new java.awt.Dimension(662, 352));
@@ -325,6 +348,17 @@ public class BoxForm extends javax.swing.JPanel {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
+        });
+        listBoxes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                listBoxesMouseClicked(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                listBoxesMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                listBoxesMouseReleased(evt);
+            }
         });
         listBoxes.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
@@ -359,10 +393,10 @@ public class BoxForm extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnNewBox))
-                    .addComponent(scrollPokemon, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE))
+                    .addComponent(scrollPokemon, javax.swing.GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -395,11 +429,101 @@ public class BoxForm extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnNewBoxActionPerformed
 
+    private void menuDeleteBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuDeleteBoxActionPerformed
+        PokemonBox box = (PokemonBox)listBoxes.getSelectedValue();
+        int option = JOptionPane.showConfirmDialog(this, "Are you sure you want " +
+                " to delete " + box.getName() + "?", "", JOptionPane.YES_NO_OPTION);
+        if(option != JOptionPane.YES_OPTION)
+            return;
+
+        while(box.getSize() != 0) {
+            box.removePokemonAt(box.getSize()-1);
+        }
+
+        //If the user has rigged it with duplicates, files may remain
+        boolean badlyFormatted = true;
+        File boxFile = box.getBoxFolder();
+        for(File file : boxFile.listFiles()) {
+            if (file.isDirectory() && file.listFiles().length > 0) {
+                badlyFormatted = true;
+            } else {
+                file.delete();
+            }
+        }
+
+        if (boxFile.delete()) {
+            m_boxModel.removeBox(box);
+        } else if (!badlyFormatted) {
+            JOptionPane.showMessageDialog(this, "Error deleting box", "Error",
+                JOptionPane.ERROR_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "The box is badly formatted, so it couldn't be removed", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
+        m_boxModel.fireListChanged();
+        m_pokemonModel.fireTableDataChanged();
+        
+        listBoxes.clearSelection();
+    }//GEN-LAST:event_menuDeleteBoxActionPerformed
+
+    private void menuRenameBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuRenameBoxActionPerformed
+        PokemonBox box = (PokemonBox)listBoxes.getSelectedValue();
+        String newName = JOptionPane.showInputDialog(this, "New name for "+box.getName()+":");
+        if(newName == null || (newName = newName.trim()).equals(""))
+            return;
+
+        //Check for duplicates.
+        PokemonBox previous = m_boxModel.getBox(newName);
+        if(previous != null && previous != box) {
+            JOptionPane.showMessageDialog(this, "A box with this name already exists",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        File oldFile = box.getBoxFolder();
+        File newFile = new File(Preference.getBoxLocation() + "/" + newName);
+
+        try {
+            oldFile.renameTo(newFile);
+
+            PokemonBox newBox = new PokemonBox(newName);
+            m_boxModel.removeBox(box);
+            m_boxModel.addBox(newBox);
+            listBoxes.setSelectedValue(newBox, true);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error renaming box", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }       
+    }//GEN-LAST:event_menuRenameBoxActionPerformed
+
+    private void listBoxesMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listBoxesMouseReleased
+        listBoxesMouseClicked(evt);
+    }//GEN-LAST:event_listBoxesMouseReleased
+
+    private void listBoxesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listBoxesMouseClicked
+        if (evt.isPopupTrigger()) {
+            int index = listBoxes.locationToIndex(evt.getPoint());
+            if (index >= 0 && index < m_boxModel.getSize()) {
+                listBoxes.setSelectedIndex(index);
+                popupBoxes.show(this, evt.getX(), evt.getY());
+            }
+        }
+    }//GEN-LAST:event_listBoxesMouseClicked
+
+    private void listBoxesMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listBoxesMousePressed
+        listBoxesMouseClicked(evt);
+    }//GEN-LAST:event_listBoxesMousePressed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnNewBox;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JList listBoxes;
+    private javax.swing.JMenuItem menuDeleteBox;
+    private javax.swing.JMenuItem menuRenameBox;
+    private javax.swing.JPopupMenu popupBoxes;
     private javax.swing.JScrollPane scrollPokemon;
     // End of variables declaration//GEN-END:variables
 
