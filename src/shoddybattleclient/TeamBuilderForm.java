@@ -348,6 +348,8 @@ public class TeamBuilderForm extends javax.swing.JPanel {
     }
 
     public Pokemon getPokemon() {
+        if (m_pokemon == null) return null;
+        
         m_pokemon.nickname = txtNickname.getText();
         try {
             m_pokemon.level = Integer.parseInt(txtLevel.getText());

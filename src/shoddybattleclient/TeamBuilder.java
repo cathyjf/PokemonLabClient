@@ -185,7 +185,7 @@ public class TeamBuilder extends javax.swing.JFrame {
         for (int i = 0; i < 6; i++) {
             addDefaultForm();
         }
-        setSpecies(tabForms.getTitleAt(0));
+        setSpecies("Bulbasaur");
     }
     private void addDefaultForm() {
         TeamBuilderForm tbf = new TeamBuilderForm(this, m_forms.size());
@@ -288,7 +288,7 @@ public class TeamBuilder extends javax.swing.JFrame {
     }
 
     public void setSpriteShiny(boolean shiny) {
-        String tab = tabForms.getTitleAt(tabForms.getSelectedIndex());
+        String tab = m_forms.get(tabForms.getSelectedIndex()).getPokemon().toString();
         String current = ((PokemonSpecies)cmbSpecies.getSelectedItem()).getName();
         if (!tab.equals(current)) return;
         ((SpritePanel)panelSprite).setShiny(shiny);
@@ -800,11 +800,11 @@ public class TeamBuilder extends javax.swing.JFrame {
     private void tabFormsStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabFormsStateChanged
         int idx = tabForms.getSelectedIndex();
         if (idx < 0) return;
-        String name = tabForms.getTitleAt(idx);
-        if ((name == null) || name.equals("")) return;
 
         if (idx < m_forms.size()) {
-            setSpecies(name);
+            Pokemon poke = m_forms.get(idx).getPokemon();
+            if (poke == null) return;
+            setSpecies(poke.toString());
         } else {
             cmbSpecies.setModel(new DefaultComboBoxModel());
             cmbSpecies.setEnabled(false);
