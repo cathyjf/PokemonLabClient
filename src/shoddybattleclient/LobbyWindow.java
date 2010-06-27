@@ -710,14 +710,24 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
     }
 
     public void informInvalidTeam(String user, int[] clauses) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("The supplied team does not conform to:\n");
+        boolean invalidPokemon = false;
+        StringBuilder clauseList = new StringBuilder();
         List<Clause> cl = m_link.getClauseList();
         for (int i = 0; i < clauses.length; i++) {
-            sb.append(" -");
-            sb.append(cl.get(clauses[i]).name);
-            sb.append("\n");
+            if (clauses[i] < 0) {
+                invalidPokemon = true;
+            } else {
+                clauseList.append(" -");
+                clauseList.append(cl.get(clauses[i]).name);
+                clauseList.append("\n");
+            }
         }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("The supplied team does not conform to:\n");
+        if (invalidPokemon) sb.append(" -Legal Pokemon\n");
+        sb.append(clauseList.toString());
+
         if (!"".equals(user)) {
             UserPanel panel = m_userPanels.get(user);
             if (panel != null) {
@@ -726,6 +736,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         } else {
             m_findPanel.unsetTeam();
         }
+
         JOptionPane.showMessageDialog(this, sb.toString());
     }
 
