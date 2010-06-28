@@ -132,6 +132,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         private Image m_image;
         public SpritePanel(String species, int speciesId, Gender g, boolean shiny) {
             setBorder(BorderFactory.createEtchedBorder());
+            if (speciesId < 0) return;
             m_image = GameVisualisation.getSprite(speciesId, true,
                     !Gender.GENDER_FEMALE.equals(g), shiny);
             if (m_image == null) return;

@@ -755,7 +755,10 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
             if (qualified != null) break;
         }
 
-        if (qualified == null) return null;
+        if (qualified == null) {
+            String image = (front) ? "missingno_front.png" : "missingno_back.png";
+            return GameVisualisation.getImageFromResource(image);
+        }
         return Toolkit.getDefaultToolkit().createImage(qualified);
     }
 
