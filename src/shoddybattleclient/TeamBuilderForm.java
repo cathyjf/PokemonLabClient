@@ -23,10 +23,14 @@
 
 package shoddybattleclient;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -116,8 +120,9 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         scrollSelected.add(tblSelected);
         scrollSelected.setViewportView(tblSelected);
 
+        Insets insets = scrollSelected.getInsets();
         splitPane.setDividerLocation(tblSelected.getTableHeader().getPreferredSize().height
-                + (tblSelected.getRowHeight() + tblSelected.getRowMargin()) * 4);
+                + (tblSelected.getRowHeight() * 4) + insets.top + insets.bottom);
 
         m_parent = parent;
         m_idx = idx;
@@ -191,33 +196,26 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                 private boolean m_increasing = false;
                 private JTextField m_caller = null;
                 boolean stopped = false;
-                private Timer m_timer = new Timer(100, new ActionListener() {
+                private Timer m_timer = new Timer(150, new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        try {
-                            if(stopped) {
-                                m_timer.stop();
-                                return;
-                            }
-                            
-                            int current = Integer.parseInt(m_caller.getText());
-                            current += m_increasing ? 4 : -4;
-                            if (current < 0) current = 0;
-                            else if (current > 255) current = 255;
-                            m_caller.setText(String.valueOf(current));
-                            updateStat(index);
-                        } catch (NumberFormatException ex) {    }
+                        if(stopped) {
+                            m_timer.stop();
+                            return;
+                        }
+                        updateNumber();
                     }
                 });
-                public void keyTyped(KeyEvent e) {
-                }
+                public void keyTyped(KeyEvent e) {}
                 public void keyPressed(KeyEvent e) {
                     m_caller = (JTextField)e.getSource();
                     if (e.getKeyCode() == KeyEvent.VK_UP) {
                         m_increasing = true;
+                        if (stopped) updateNumber();
                         m_timer.start();
                         stopped = false;
                     } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
                         m_increasing = false;
+                        if (stopped) updateNumber();
                         m_timer.start();
                         stopped = false;
                     }
@@ -225,6 +223,16 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                 public void keyReleased(KeyEvent e) {
                     stopped = true;
                     updateStat(index);
+                }
+                private void updateNumber() {
+                    try {
+                        int current = Integer.parseInt(m_caller.getText());
+                        current += m_increasing ? 4 : -4;
+                        if (current < 0) current = 0;
+                        else if (current > 255) current = 255;
+                        m_caller.setText(String.valueOf(current));
+                        updateStat(index);
+                    } catch (NumberFormatException ex) {    }
                 }
             };
             KeyListener ivListener = new KeyListener() {
@@ -235,8 +243,19 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                     updateHiddenPower();
                 }
             };
+            FocusListener releaseListener = new FocusListener() {
+                public void focusLost(FocusEvent evt) {
+                    Component c = (Component)evt.getSource();
+                    for (KeyListener listener : c.getKeyListeners()) {
+                        listener.keyReleased(null);
+                    }
+                }
+                public void focusGained(FocusEvent evt) {}
+            };
             m_ivs[i].addKeyListener(ivListener);
             m_evs[i].addKeyListener(evListener);
+            m_ivs[i].addFocusListener(releaseListener);
+            m_evs[i].addFocusListener(releaseListener);
         }
     }
 
