@@ -24,17 +24,30 @@
 package shoddybattleclient;
 
 import java.awt.Component;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.AbstractListModel;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.TransferHandler;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.table.AbstractTableModel;
@@ -146,6 +159,7 @@ public class BoxForm extends javax.swing.JPanel {
             return new String(buf);
         }
 
+        @Override
         public void fireTableDataChanged() {
             super.fireTableDataChanged();
         }
@@ -176,6 +190,22 @@ public class BoxForm extends javax.swing.JPanel {
         }
     }
 
+    private class BoxListRenderer extends DefaultListCellRenderer {
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value,
+                            int index, boolean isSelected, boolean cellHasFocus) {
+            JLabel label = null;
+            if (m_focusedBox == index) {
+                label = (JLabel)super.getListCellRendererComponent(list, value,
+                    index, isSelected, true);
+            } else {
+                label = (JLabel)super.getListCellRendererComponent(list, value,
+                    index, isSelected, cellHasFocus);
+            }
+            return label;
+        }
+    }
+
     private class IconCellRenderer extends JLabel implements TableCellRenderer {
         public IconCellRenderer() {
             setOpaque(true);
@@ -196,8 +226,113 @@ public class BoxForm extends javax.swing.JPanel {
         }
     }
 
+    private static DataFlavor m_wrapperFlavor = new DataFlavor(PokemonWrapper.class, "PokemonWrapper");
+    private class PokemonTableTransferHandler extends TransferHandler {
+        private class WrapperTransferable implements Transferable {
+            private PokemonWrapper m_poke;
+            public WrapperTransferable(PokemonWrapper poke) {
+                m_poke = poke;
+            }
+            @Override
+            public DataFlavor[] getTransferDataFlavors() {
+                return new DataFlavor[] {m_wrapperFlavor};
+            }
+            @Override
+            public boolean isDataFlavorSupported(DataFlavor flavor) {
+                if(flavor.match(m_wrapperFlavor))
+                    return true;
+                return false;
+            }
+            @Override
+            public Object getTransferData(DataFlavor flavor) {
+                return m_poke;
+            }
+        }
+        @Override
+        public boolean canImport(JComponent comp, DataFlavor[] transferFlavors) {
+            return false;
+        }
+        @Override
+        public int getSourceActions(JComponent c) {
+            return TransferHandler.MOVE;
+        }
+        @Override
+        public Transferable createTransferable(JComponent c) {
+            JTable table = (JTable)c;
+            Point p = c.getMousePosition();
+            int idx = table.rowAtPoint(p);
+            if (idx < 0) return null;
+            return new WrapperTransferable(m_pokemonModel.getPokemonAt(idx));
+        }
+    }
+
+    private class ListBoxesDropTarget extends DropTarget {
+        @Override
+        public void dragOver(DropTargetDragEvent dtde) {
+            if (dtde.isDataFlavorSupported(m_wrapperFlavor)) {
+                int idx = listBoxes.locationToIndex(dtde.getLocation());
+                Rectangle r = listBoxes.getCellBounds(idx, idx);
+                if(idx < 0 || !r.contains(dtde.getLocation())) {
+                    dtde.rejectDrag();
+                    return;
+                }
+                m_focusedBox = idx;
+                listBoxes.repaint();
+                dtde.acceptDrag(DnDConstants.ACTION_MOVE);
+            } else {
+                dtde.rejectDrag();
+            }
+        }
+        @Override
+        public void dragExit(DropTargetEvent dte) {
+            m_focusedBox = -1;
+            listBoxes.repaint();
+        }
+        @Override
+        public void drop(DropTargetDropEvent dtde) {
+            m_focusedBox = -1;
+            listBoxes.repaint();
+
+            Transferable transfer = dtde.getTransferable();
+            if (!transfer.isDataFlavorSupported(m_wrapperFlavor)) {
+                dtde.rejectDrop();
+                return;
+            }
+            
+            try {
+                PokemonWrapper wrapper = (PokemonWrapper)transfer.getTransferData(m_wrapperFlavor);
+                PokemonBox previousBox = (PokemonBox)listBoxes.getSelectedValue();
+                PokemonBox newBox = (PokemonBox)m_boxModel.getElementAt(
+                            listBoxes.locationToIndex(dtde.getLocation()));
+                if (previousBox == newBox) {
+                    dtde.rejectDrop();
+                    return;
+                }
+
+                if (newBox.getPokemon(wrapper.name) != null) {
+                    int option = JOptionPane.showConfirmDialog(m_teamBuilder,
+                            "This pokemon already exists in this box. Overwrite?",
+                            "", JOptionPane.YES_NO_OPTION);
+                    if (option != JOptionPane.YES_OPTION) {
+                        dtde.rejectDrop();
+                        return;
+                    }
+                }
+
+                previousBox.removePokemon(wrapper.name);
+                newBox.addPokemon(wrapper.name, wrapper.pokemon);
+                m_pokemonModel.fireTableDataChanged();
+                dtde.acceptDrop(DnDConstants.ACTION_MOVE);
+            } catch (Exception ex) {
+                dtde.rejectDrop();
+                return;
+            }
+        }
+    }
+
     private TeamBuilder m_teamBuilder;
 
+    private int m_focusedBox = -1;
     private BoxListModel m_boxModel;
     private PokemonTableModel m_pokemonModel;
     private JTable tblPokemon;
@@ -219,6 +354,8 @@ public class BoxForm extends javax.swing.JPanel {
         }
         m_boxModel.addBoxes(boxes);
         listBoxes.setModel(m_boxModel);
+        listBoxes.setCellRenderer(new BoxListRenderer());
+        listBoxes.setDropTarget(new ListBoxesDropTarget());
         listBoxes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         
         tblPokemon = new JTable();
@@ -228,7 +365,9 @@ public class BoxForm extends javax.swing.JPanel {
         tblPokemon.setRowSelectionAllowed(true);
         tblPokemon.setColumnSelectionAllowed(false);
         tblPokemon.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
+        tblPokemon.setDragEnabled(true);
+        tblPokemon.setTransferHandler(new PokemonTableTransferHandler());
+
         TableColumnModel model = tblPokemon.getColumnModel();
         model.getColumn(0).setHeaderValue("");
         model.getColumn(0).setCellRenderer(new IconCellRenderer());
