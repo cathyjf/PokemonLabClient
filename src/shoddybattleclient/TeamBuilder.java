@@ -276,11 +276,11 @@ public class TeamBuilder extends javax.swing.JFrame {
 
                 int id = PokemonSpecies.getIdFromName(m_species, species.getName());
                 ((SpritePanel)panelSprite).setSpecies(id, false, true);
-                treeBox.setModel(new BoxTreeModel());
-                treeBox.setSelectionRow(0);
 
-                cmbSpecies.setSelectedItem(species);
-
+                if (!cmbSpecies.getSelectedItem().equals(species)) {
+                    cmbSpecies.setSelectedItem(species);
+                    updateTree();
+                }
                 break;
             }
         }
@@ -358,23 +358,44 @@ public class TeamBuilder extends javax.swing.JFrame {
         }
 
         if (updateTree) {
-            treeBox.setModel(new BoxTreeModel());
-            treeBox.setSelectionRow(0);
+            updateTree();
         }
     }
 
-    // This will ask the user for input, returns if it succeeded
-    private boolean addPokemonToBox(PokemonBox box, Pokemon poke) {
+    private void updateTree() {
+        if (!(treeBox.getModel() instanceof BoxTreeModel)) {
+            treeBox.setModel(new BoxTreeModel());
+            return;
+        }
+        
+        BoxTreeModel model = (BoxTreeModel)treeBox.getModel();
+        boolean teamRootCollapsed = treeBox.isCollapsed(model.getTeamPath());
+        boolean boxRootCollapsed = treeBox.isCollapsed(model.getBoxPath());
+        TreePath treePath = treeBox.getSelectionPath();
+
+        treeBox.setModel(new BoxTreeModel());
+        if (treePath != null && treePath.getPathCount() > 1) {
+            Object[] path = treePath.getPath();
+            treeBox.setSelectionPath(
+                    new TreePath(model.getRoot()).pathByAddingChild(path[1]));
+        }
+
+        if (!teamRootCollapsed) treeBox.expandPath(model.getTeamPath());
+        if (!boxRootCollapsed) treeBox.expandPath(model.getBoxPath());
+    }
+
+    // This will ask the user for input, returns null on fail, or the resultant pokemon if it succeeded
+    private PokemonWrapper addPokemonToBox(PokemonBox box, Pokemon poke) {
         String name = JOptionPane.showInputDialog(this, "New Pokemon's name:");
         if (name == null || name.trim().equals("")) {
-            return false;
+            return null;
         }
 
         if (box.getPokemon(name) != null) {
             int confirm = JOptionPane.showConfirmDialog(this, "This Pokemon already exists, are " +
                     "you sure you want to replace it?", "", JOptionPane.YES_NO_OPTION);
             if (confirm != JOptionPane.YES_OPTION) {
-                return false;
+                return null;
             }
         }
 
@@ -387,7 +408,7 @@ public class TeamBuilder extends javax.swing.JFrame {
                 JOptionPane.ERROR_MESSAGE);
         }
 
-        return true;
+        return box.getPokemon(name);
     }
 
     /** This method is called from within the constructor to
@@ -630,12 +651,12 @@ public class TeamBuilder extends javax.swing.JFrame {
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(panelSprite, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                        .add(scrTreeBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 163, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(scrTreeBox, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(btnLoadFromBox)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(btnSaveToBox)
-                        .add(0, 68, Short.MAX_VALUE)))
+                        .add(88, 88, 88)))
                 .addContainerGap())
         );
 
@@ -737,14 +758,14 @@ public class TeamBuilder extends javax.swing.JFrame {
         if (sp == null) return;
         int id = PokemonSpecies.getIdFromName(m_species, sp.getName());
         ((SpritePanel)panelSprite).setSpecies(id, false, true);
-        treeBox.setModel(new BoxTreeModel());
-        treeBox.setSelectionRow(0);
 
         //If the species has no gender or is only female, GENDER_MALE is ignored
         TeamBuilderForm tbf = (TeamBuilderForm)tabForms.getSelectedComponent();
         tbf.setPokemon(new Pokemon(sp.getName(), "", false, Gender.GENDER_MALE, 100, 255,
             "", "", "", new String[] {null, null, null, null}, new int[] {3,3,3,3},
             new int[] {31,31,31,31,31,31}, new int[] {0,0,0,0,0,0}), false);
+
+        updateTree();
     }//GEN-LAST:event_cmbSpeciesItemStateChanged
 
     private void btnLoadFromBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadFromBoxActionPerformed
@@ -775,8 +796,8 @@ public class TeamBuilder extends javax.swing.JFrame {
                     new int[] {31,31,31,31,31,31}, new int[] {0,0,0,0,0,0}), false);
             } else if (obj instanceof Pokemon) {
                 setSelectedPokemon((Pokemon)obj);
-            } else if (obj instanceof PokemonWrapper) {
-                setSelectedPokemon(((PokemonWrapper)obj).pokemon);
+            } else if (obj instanceof BoxTreeModel.BoxPokemonWrapper) {
+                setSelectedPokemon(((BoxTreeModel.BoxPokemonWrapper)obj).wrapper.pokemon);
             }
         }
     }//GEN-LAST:event_btnLoadFromBoxActionPerformed
@@ -864,6 +885,7 @@ public class TeamBuilder extends javax.swing.JFrame {
     private void btnSaveToBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveToBoxActionPerformed
         Component selectedTab = tabForms.getSelectedComponent();
         if (selectedTab instanceof BoxForm) {
+            // Boxes is selected
             BoxForm boxForm = (BoxForm)selectedTab;
             JList teamList = (JList)scrTreeBox.getViewport().getView();
 
@@ -881,10 +903,10 @@ public class TeamBuilder extends javax.swing.JFrame {
         } else {
             // A TeamBuilderForm is selected
             BoxTreeModel treeModel = (BoxTreeModel)treeBox.getModel();
-            Object obj = treeBox.getLastSelectedPathComponent();
+            TreePath path = treeBox.getSelectionPath();
 
             PokemonBox box = null;
-            if (obj == null || BoxTreeModel.isDefaultNode(obj) || BoxTreeModel.isBoxRoot(obj)) {
+            if (path == null || path.getPathCount() < 2 || !BoxTreeModel.isTeamRoot(path.getPath()[1])) {
                 ArrayList<String> boxes = new ArrayList<String>();
                 String newBox = "<html><i>New Box</i> ";
                 for (File boxFile : new File(Preference.getBoxLocation()).listFiles()) {
@@ -898,9 +920,8 @@ public class TeamBuilder extends javax.swing.JFrame {
                         JOptionPane.PLAIN_MESSAGE, null, boxes.toArray(), boxes.get(0));
                 if (selection == null) return;
 
-                if (selection.equals(newBox)) { //No system allows a foldername like newBox
+                if (selection.equals(newBox)) { //No system allows a foldername like newBox's
                     String boxName = JOptionPane.showInputDialog(this, "New box name:");
-
                     if (boxName == null) return;
                     if (new File(Preference.getBoxLocation() + File.separatorChar + boxName).exists()) {
                         JOptionPane.showMessageDialog(this, "This box already exists", "Error",
@@ -911,22 +932,11 @@ public class TeamBuilder extends javax.swing.JFrame {
                 }
 
                 box = new PokemonBox((String)selection, getSelectedPokemon().toString());
+                PokemonWrapper poke = addPokemonToBox(box, getSelectedPokemon());
 
-            } else if (obj instanceof PokemonBox) {
-                box = (PokemonBox)obj;
-            } else if (obj instanceof PokemonWrapper) {
-                box = ((PokemonWrapper)obj).getParent();
-            }
-
-            if (box != null) {
-                boolean succeeded = addPokemonToBox(box, getSelectedPokemon());
-                
-                
-                if (succeeded) {
-                    // Updates the tree if its already in
-                    treeModel.addBox(box); 
+                if (poke != null) {
+                    treeModel.addBoxPokemon(poke);
                 }
-                
                 updateBoxes(false);
             }
         }
