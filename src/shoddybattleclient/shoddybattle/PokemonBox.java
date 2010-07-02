@@ -112,12 +112,12 @@ public class PokemonBox implements Comparable<PokemonBox> {
     //On *nix systems, PokemonBox allows duplicates on first load.
     //This clears those duplicates from the list.
     //This list MUST be sorted before using this method
-    private void clearDuplicates(List<? extends Comparable> list) {
+    private void clearDuplicates(List<PokemonWrapper> list) {
         //Sorted lists allow us to do this in O(n)
-        Iterator<? extends Comparable> iter = list.iterator();
+        Iterator<PokemonWrapper> iter = list.iterator();
         Comparable previous = null;
         while (iter.hasNext()) {
-            Comparable current = iter.next();
+            PokemonWrapper current = iter.next();
 
             //this only happens once, but it makes the code cleaner
             if (previous == null) {
@@ -125,7 +125,6 @@ public class PokemonBox implements Comparable<PokemonBox> {
                 continue;
             }
 
-            //FIXME: Find a way to do this without the compiler throwing a hissy fit
             if (previous.compareTo(current) == 0)
                 iter.remove();
             previous = current;

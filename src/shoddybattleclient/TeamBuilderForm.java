@@ -496,11 +496,6 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         txtHiddenPower.setEditable(false);
         txtHiddenPower.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
         txtHiddenPower.setText("70");
-        txtHiddenPower.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtHiddenPowerKeyTyped(evt);
-            }
-        });
 
         cmbHiddenPower.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         cmbHiddenPower.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Bug", "Dark", "Dragon", "Electric", "Fighting", "Fire", "Flying", "Ghost", "Grass", "Ground", "Ice", "Poison", "Psychic", "Rock", "Steel", "Water" }));
@@ -626,10 +621,6 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         }
         updateHiddenPower();
     }//GEN-LAST:event_cmbHiddenPowerItemStateChanged
-
-    private void txtHiddenPowerKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtHiddenPowerKeyTyped
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtHiddenPowerKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -235,7 +235,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         public void setPokemon(VisualPokemon pokemon) {
             m_pokemon = pokemon;
             //We need a dummy tooltip text
-            setToolTipText(m_pokemon.toString()); 
+            setToolTipText("asdf");
         }
         @Override
         public JToolTip createToolTip() {
@@ -734,14 +734,25 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             m_moveButtons[i].setEnabled(allowed);
             if (allowed) struggle = false;
         }
-        if (struggle && !m_forced) {
-            btnMove.setText("Struggle");
+
+        if (m_forced) {
+            //todo: Determine which move has been forced
+            btnMove.setText("Forced Move");
+        } else {
+            btnMove.setText("Attack");
         }
     }
 
     public void setValidSwitches(boolean[] valid) {
+        boolean canSwitch = false;
         for (int i = 0; i < m_switches.length; i++) {
             m_switches[i].setEnabled(valid[i]);
+            if (valid[i]) canSwitch = true;
+        }
+
+        if (!canSwitch) {
+            btnSwitch.setEnabled(false);
+            btnSwitchCancel.setEnabled(false);
         }
     }
 

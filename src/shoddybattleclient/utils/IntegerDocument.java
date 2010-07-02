@@ -46,19 +46,19 @@ public class IntegerDocument extends PlainDocument {
         @Override
         public void focusLost(FocusEvent e) {
             try {
-                int num = Integer.parseInt(owner.getText());
-                if (num < min)
-                    owner.setText("" + min);
+                int num = Integer.parseInt(m_owner.getText());
+                if (num < m_min)
+                    m_owner.setText("" + m_min);
             } catch (NumberFormatException ex) {
-                owner.setText(""+defaultValue);
+                m_owner.setText(""+m_defaultValue);
             }
         }
     }
 
-    private int min;
-    private int max;
-    private int defaultValue;
-    private JTextComponent owner;
+    private int m_min;
+    private int m_max;
+    private int m_defaultValue;
+    private JTextComponent m_owner;
 
     public IntegerDocument(JTextComponent owner) {
         this(0, Integer.MAX_VALUE, owner);
@@ -80,11 +80,10 @@ public class IntegerDocument extends PlainDocument {
      * @param owner The owner of this document
      */
     public IntegerDocument(int min, int max, int defaultValue, JTextComponent owner) {
-        //TODO: Someone who knows more programming than me decide on the this.var = var
-        this.min = min;
-        this.max = max;
-        this.defaultValue = defaultValue;
-        this.owner = owner;
+        m_min = min;
+        m_max = max;
+        m_defaultValue = defaultValue;
+        m_owner = owner;
         if(owner != null)
             owner.addFocusListener(new IntegerFocusListener());
     }
@@ -101,11 +100,11 @@ public class IntegerDocument extends PlainDocument {
                         + previousStr.substring(offs, getLength());
         try {
             Integer num = Integer.parseInt(newStr);
-            if (num <= max) {
+            if (num <= m_max) {
                 super.insertString(offs, str, a);
             } else {
                 super.remove(0, getLength());
-                super.insertString(0, ""+max, a);
+                super.insertString(0, ""+m_max, a);
             }
 
             //Strip all starting 0s (up until the length is one)
