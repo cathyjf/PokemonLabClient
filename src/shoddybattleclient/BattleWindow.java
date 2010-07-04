@@ -1235,7 +1235,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             }
         } else if (m_forced) {
             // Forced move.
-            m_link.sendMoveAction(m_fid, -1, -1);
+            sendAction(Action.MOVE, -1, -1);
         } else {
             for (int i = 0; i < m_moveButtons.length; i++) {
                 if (m_moveButtons[i].isSelected() &&
