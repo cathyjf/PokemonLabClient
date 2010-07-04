@@ -39,6 +39,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -227,40 +230,42 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     }
 
     private class SwitchButton extends GradientButton {
-        private VisualPokemon m_pokemon = null;
+        private int m_index;
         private final Color HEALTH_COLOUR = new Color(0x28ae3b);
-        public SwitchButton() {
+        public SwitchButton(int index) {
+            m_index = index;
             m_colour = new Color(0x4b5278);
-        }
-        public void setPokemon(VisualPokemon pokemon) {
-            m_pokemon = pokemon;
-            //We need a dummy tooltip text
             setToolTipText("asdf");
+        }
+        public int getRealIndex() {
+            return m_sortedPokemon.get(m_index);
         }
         @Override
         public JToolTip createToolTip() {
-            return new JCustomTooltip(this, new VisualToolTip(m_pokemon, true));
+            return new JCustomTooltip(this, new VisualToolTip(getPokemon(
+                    m_participant, getRealIndex()), true));
         }
         protected void paintComponent(Graphics g) {
-            if (m_pokemon == null) return;
+            VisualPokemon pokemon = getPokemon(m_participant, getRealIndex());
+            if (pokemon == null) return;
             super.paintComponent(g);
             Graphics2D g2 = (Graphics2D)g.create();
             if (!isEnabled()) {
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
             }
             Color fontCol = isSelected() ? SELECTION_FONT : Color.WHITE;
-            if (m_pokemon.getSlot() != -1) fontCol = ACTIVE_FONT;
-            if (m_pokemon.isFainted()) fontCol = Color.DARK_GRAY;
+            if (pokemon.getSlot() != -1) fontCol = ACTIVE_FONT;
+            if (pokemon.isFainted()) fontCol = Color.DARK_GRAY;
             
             g2.setFont(g2.getFont().deriveFont(Font.BOLD));
             int speciesY = getHeight() / 2 - g2.getFontMetrics().getHeight() / 2 + 4;
             g2.setColor(Color.GRAY);
-            g2.drawString(m_pokemon.getSpecies(), 6, speciesY + 1);
+            g2.drawString(pokemon.getSpecies(), 6, speciesY + 1);
             g2.setColor(fontCol);
-            g2.drawString(m_pokemon.getSpecies(), 5, speciesY);
+            g2.drawString(pokemon.getSpecies(), 5, speciesY);
             
-            int n = m_pokemon.getNumerator();
-            int d = m_pokemon.getDenominator();
+            int n = pokemon.getNumerator();
+            int d = pokemon.getDenominator();
             int y = getHeight() / 2 + 3;
             int x = 3;
             int healthW = getWidth() / 2 - x;
@@ -300,6 +305,8 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     private int[][] m_maxPp;
     // Your Pokemon in this match
     private Pokemon[] m_pokemon;
+    // Your Pokemon mapped from display ID to real ID
+    private ArrayList<Integer> m_sortedPokemon;
     // Users in this match
     private String[] m_users;
     // Pp of moves
@@ -430,7 +437,9 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         }
 
         m_maxPp = new int[m_pokemon.length][Pokemon.MOVE_COUNT];
+        m_sortedPokemon = new ArrayList<Integer>();
         for (int i = 0; i < m_pokemon.length; i++) {
+            m_sortedPokemon.add(i);
             Pokemon poke = m_pokemon[i];
             m_visual.setPokemon(m_participant, i, poke);
             VisualPokemon p = m_visual.getPokemon(m_participant, i);
@@ -447,8 +456,6 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
                 }
             }
         }
-
-        updateSwitches();
     }
 
     public void refreshUsers() {
@@ -516,13 +523,13 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         m_switches = new SwitchButton[m_pokemon.length];
         for (int i = 0; i < m_switches.length; i++) {
             final int idx = i;
-            final SwitchButton button = new SwitchButton();
+            final SwitchButton button = new SwitchButton(idx);
             button.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (!button.isEnabled()) return;
                     if (e.getClickCount() == 2) {
-                        sendSwitch(idx);
+                        sendSwitch(button.getRealIndex());
                     }
                 }
             });
@@ -746,7 +753,11 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     public void setValidSwitches(boolean[] valid) {
         boolean canSwitch = false;
         for (int i = 0; i < m_switches.length; i++) {
-            m_switches[i].setEnabled(valid[i]);
+            for (int j = 0; j < m_switches.length; j++) {
+                if (m_sortedPokemon.get(j) == i) {
+                    m_switches[j].setEnabled(valid[i]);
+                }
+            }
             if (valid[i]) canSwitch = true;
         }
 
@@ -767,13 +778,6 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         m_visual.faint(party, slot);
     }
 
-    private void updateSwitches() {
-        for (int i = 0; i < m_pokemon.length; i++) {
-            Pokemon p = m_pokemon[i];
-            m_switches[i].setPokemon(getPokemon(m_participant, i));
-        }
-    }
-
     public void setSpecies(int party, int slot, String species) {
         if (m_n == 2) {
             m_healthBars[party][slot].setToolTipText(species);
@@ -788,6 +792,20 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     public void sendOut(int party, int slot, int index, String species,
                                             String name, int gender, int level) {
         m_visual.sendOut(party, slot, index, species, name, gender, level);
+
+        if (party == m_participant) {
+            Collections.sort(m_sortedPokemon, new Comparator<Integer>() {
+                public int compare(Integer lhs, Integer rhs) {
+                    VisualPokemon first = getPokemon(m_participant, lhs);
+                    VisualPokemon second = getPokemon(m_participant, rhs);
+                    int lhsVal = (first.getSlot() == -1) ? Integer.MAX_VALUE : first.getSlot();
+                    int rhsVal = (second.getSlot() == -1) ? Integer.MAX_VALUE : second.getSlot();
+                    return lhsVal-rhsVal;
+                }
+            });
+            panelSwitch.repaint();
+        }
+
         if (m_n <= 2) {
             HealthBar bar = m_healthBars[party][slot];
             VisualPokemon p = m_visual.getPokemonForSlot(party, slot);
@@ -1236,7 +1254,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         int selected = -1;
         for (int i = 0; i < m_switches.length; i++) {
             if (m_switches[i].isSelected()) {
-                selected = i;
+                selected = m_switches[i].getRealIndex();
                 break;
             }
         }
