@@ -78,6 +78,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
             }
             if (m_teamLength > 1 && m_teamLength % 2 == 1)
                 this.add(new JPanel());
+            repaint();
         }
 
         public void setTeamLength(int teamLength) {
@@ -97,7 +98,6 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
 
         private void loadTeam() {
             this.removeAll();
-            this.repaint();
             for (int i = 0; i < m_teamLength; i++) {
                 Pokemon p = m_team[i];
                 SpritePanel panel = new SpritePanel(p.species,
@@ -106,6 +106,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
             }
             if (m_teamLength > 1 && m_teamLength % 2 == 1)
                 this.add(new JPanel());
+            repaint();
         }
 
         /**
