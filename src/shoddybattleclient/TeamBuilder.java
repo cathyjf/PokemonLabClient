@@ -796,8 +796,8 @@ public class TeamBuilder extends javax.swing.JFrame {
                     new int[] {31,31,31,31,31,31}, new int[] {0,0,0,0,0,0}), false);
             } else if (obj instanceof Pokemon) {
                 setSelectedPokemon((Pokemon)obj);
-            } else if (obj instanceof BoxTreeModel.BoxPokemonWrapper) {
-                setSelectedPokemon(((BoxTreeModel.BoxPokemonWrapper)obj).wrapper.pokemon);
+            } else if (obj instanceof PokemonWrapper) {
+                setSelectedPokemon(((PokemonWrapper)obj).pokemon);
             }
         }
     }//GEN-LAST:event_btnLoadFromBoxActionPerformed
@@ -905,8 +905,7 @@ public class TeamBuilder extends javax.swing.JFrame {
             BoxTreeModel treeModel = (BoxTreeModel)treeBox.getModel();
             TreePath path = treeBox.getSelectionPath();
 
-            PokemonBox box = null;
-            if (path == null || path.getPathCount() < 2 || !BoxTreeModel.isTeamRoot(path.getPath()[1])) {
+            if (path == null || BoxTreeModel.isBoxRoot(path.getLastPathComponent())) {
                 ArrayList<String> boxes = new ArrayList<String>();
                 String newBox = "<html><i>New Box</i> ";
                 for (File boxFile : new File(Preference.getBoxLocation()).listFiles()) {
@@ -930,15 +929,37 @@ public class TeamBuilder extends javax.swing.JFrame {
                     }
                     selection = boxName;
                 }
-
-                box = new PokemonBox((String)selection, getSelectedPokemon().toString());
+                
+                PokemonBox box = new PokemonBox((String)selection, getSelectedPokemon().toString());
                 PokemonWrapper poke = addPokemonToBox(box, getSelectedPokemon());
-
                 if (poke != null) {
                     treeModel.addBoxPokemon(poke);
                 }
-                updateBoxes(false);
+            } else if (path.getLastPathComponent() instanceof PokemonWrapper) {
+                PokemonWrapper wrapper = (PokemonWrapper)path.getLastPathComponent();
+                String name = wrapper.name;
+                PokemonBox box = wrapper.getParent();
+                int confirm = JOptionPane.showConfirmDialog(this, "Are you sure "
+                        + "you want to replace " + name + "?", "", JOptionPane.YES_NO_OPTION);
+                if (confirm != JOptionPane.YES_OPTION) {
+                    return;
+                }
+                try {
+                    box.removePokemon(name);
+                    box.addPokemon(name, getSelectedPokemon());
+                    treeModel.addBoxPokemon(box.getPokemon(name));
+
+                    //This is needed or immediately clicking Load afterwards creates a bug
+                    treeBox.setSelectionPath(path.getParentPath().pathByAddingChild(box.getPokemon(name)));
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Error adding pokemon", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                return;
             }
+
+            updateBoxes(false);
         }
     }//GEN-LAST:event_btnSaveToBoxActionPerformed
 

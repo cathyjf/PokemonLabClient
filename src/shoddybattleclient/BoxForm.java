@@ -133,7 +133,7 @@ public class BoxForm extends javax.swing.JPanel {
 
         @Override
         public int getColumnCount() {
-            return 4;
+            return 5;
         }
 
         @Override
@@ -145,18 +145,6 @@ public class BoxForm extends javax.swing.JPanel {
 
         public PokemonWrapper getPokemonAt(int row) {
             return owner.getPokemonAt(row);
-        }
-
-        private String getMovesString(Pokemon p) {
-            if (p.moves.length == 0) return "";
-
-            StringBuffer buf = new StringBuffer();
-            for (int i = 0; i < p.moves.length-1; i++) {
-                buf.append(p.moves[i]);
-                buf.append("/");
-            }
-            buf.append(p.moves[p.moves.length-1]);
-            return new String(buf);
         }
 
         @Override
@@ -182,9 +170,11 @@ public class BoxForm extends javax.swing.JPanel {
                 case 1:
                     return wrapper.name;
                 case 2:
-                    return wrapper.pokemon.item;
+                    return wrapper.pokemon.ability;
                 case 3:
-                    return getMovesString(wrapper.pokemon);
+                    return wrapper.pokemon.nature;
+                case 4:
+                    return wrapper.pokemon.item;
             }
             return null;
         }
@@ -373,12 +363,10 @@ public class BoxForm extends javax.swing.JPanel {
         model.getColumn(0).setCellRenderer(new IconCellRenderer());
         model.getColumn(0).setMaxWidth(34);
         model.getColumn(1).setHeaderValue("Name");
-        model.getColumn(2).setHeaderValue("Item");
-        model.getColumn(3).setHeaderValue("Moves");
-        model.getColumn(1).setPreferredWidth(60);
-        model.getColumn(2).setPreferredWidth(60);
-        model.getColumn(3).setPreferredWidth(220);
-        
+        model.getColumn(2).setHeaderValue("Ability");
+        model.getColumn(3).setHeaderValue("Nature");
+        model.getColumn(4).setHeaderValue("Item");
+
         scrollPokemon.setViewportView(tblPokemon);
     }
 

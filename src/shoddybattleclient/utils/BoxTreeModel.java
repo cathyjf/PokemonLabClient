@@ -39,15 +39,6 @@ import shoddybattleclient.shoddybattle.PokemonBox.PokemonWrapper;
  * @author ben
  */
 public class BoxTreeModel implements TreeModel {
-    //This is necessary to support duplicates
-    public class BoxPokemonWrapper implements Comparable<BoxPokemonWrapper> {
-        public PokemonWrapper wrapper;
-        private BoxPokemonWrapper(PokemonWrapper poke) { wrapper = poke; }
-        public String toString() { return wrapper.toString(); }
-        public int compareTo(BoxPokemonWrapper rhs) {
-            return wrapper.compareTo(rhs.wrapper);
-        }
-    }
 
     private static final String m_root = "Root";
     private static final String m_default = "(default)";
@@ -55,7 +46,7 @@ public class BoxTreeModel implements TreeModel {
     private static final String m_boxRoot = "Boxes";
     private List<TreeModelListener> m_listeners = new ArrayList<TreeModelListener>();
     private List<Pokemon> m_teamPokemon = new ArrayList<Pokemon>();
-    private List<BoxPokemonWrapper> m_boxPokemon = new ArrayList<BoxPokemonWrapper>();
+    private List<PokemonWrapper> m_boxPokemon = new ArrayList<PokemonWrapper>();
 
     public static boolean isDefaultNode(Object name) {
         return m_default.equals(name);
@@ -111,7 +102,7 @@ public class BoxTreeModel implements TreeModel {
     }
 
     public boolean isLeaf(Object node) {
-        return (node instanceof Pokemon) ||(node instanceof BoxPokemonWrapper) || (node.equals(m_default));
+        return (node instanceof Pokemon) || (node instanceof PokemonWrapper) || (node.equals(m_default));
     }
 
     public void valueForPathChanged(TreePath path, Object val) {
@@ -143,26 +134,41 @@ public class BoxTreeModel implements TreeModel {
         m_teamPokemon.add(p);
     }
 
-    public void addBoxPokemon(PokemonWrapper poke) {
+    public void addBoxPokemon(PokemonWrapper wrapper) {
         //This is faster for already sorted lists
-        BoxPokemonWrapper wrapper = new BoxPokemonWrapper(poke);
         int i = 0;
         for (i = 0; i < m_boxPokemon.size(); i++) {
             int compare = wrapper.compareTo(m_boxPokemon.get(i));
-            if (compare <= 0) break;
+            if (compare == 0 && m_boxPokemon.get(i).getParent().equals(wrapper.getParent())) {
+                m_boxPokemon.set(i, wrapper);
+                fireChange(wrapper, i);
+                return;
+            }
+            if (compare < 0) break;
         }
         m_boxPokemon.add(i, wrapper);
+        fireInsert(wrapper, i);
+    }
 
+    private void fireInsert(PokemonWrapper wrapper, int index) {
         TreePath path = getBoxPath();
-        TreeModelEvent evt = new TreeModelEvent(this, path, new int[]{i}, new Object[]{wrapper});
+        TreeModelEvent evt = new TreeModelEvent(this, path, new int[]{index}, new Object[]{wrapper});
         for (TreeModelListener listener : m_listeners) {
             listener.treeNodesInserted(evt);
         }
     }
 
+    private void fireChange(PokemonWrapper wrapper, int index) {
+        TreePath path = getBoxPath();
+        TreeModelEvent evt = new TreeModelEvent(this, path, new int[]{index}, new Object[]{wrapper});
+        for (TreeModelListener listener : m_listeners) {
+            listener.treeNodesChanged(evt);
+        }
+    }
+
     public void addBox(PokemonBox box) {
         for (int i = 0; i < box.getSize(); i++) {
-            m_boxPokemon.add(new BoxPokemonWrapper(box.getPokemonAt(i)));
+            m_boxPokemon.add(box.getPokemonAt(i));
         }
         Collections.sort(m_boxPokemon);
     }

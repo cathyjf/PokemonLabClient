@@ -56,14 +56,18 @@ public class PokemonBox implements Comparable<PokemonBox> {
         }
         @Override
         public int compareTo(PokemonWrapper o) {
-            return name.compareToIgnoreCase(o.name);
+            int compare = name.compareToIgnoreCase(o.name);
+            if (compare == 0)
+                compare = getParent().compareTo(o.getParent());
+            return compare;
         }
         @Override
         public boolean equals(Object o2) {
             if (o2 == null) return false;
             if (!o2.getClass().equals(getClass())) return false;
 
-            if (name.equalsIgnoreCase(((PokemonWrapper)o2).name))
+            PokemonWrapper other = (PokemonWrapper)o2;
+            if (name.equalsIgnoreCase(other.name) && getParent().equals(other.getParent()))
                 return true;
             else
                 return false;

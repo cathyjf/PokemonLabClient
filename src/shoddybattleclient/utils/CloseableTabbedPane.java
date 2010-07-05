@@ -212,6 +212,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseMotionListe
         CloseableTabIcon icon = (CloseableTabIcon)getIconAt(idx);
         if (icon == null) return;
         icon.setText(text, getFontMetrics(getFont()));
+        repaint();
     }
 
     @Override
