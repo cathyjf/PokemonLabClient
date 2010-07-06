@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -43,13 +44,19 @@ import javax.swing.event.AncestorListener;
  * this example</a> for an instance of using HTML formatting in
  * a JLabel. The same HTML string could be used as the input to
  * JComponent's <code>setToolTipText</code> method.</p>
+ *
+ * I, Carlos Fernandez, have extended this class to remove the tooltip for
+ * non-persistant versions in any situation the mouse leaves the tooltip's
+ * owner component. The tooltip will not obstruct selections.
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
+ * @author Carlos Fernandez
  */
 public class JCustomTooltip extends JToolTip {
     
     private boolean  m_persist = false;
-    private Listener m_lstnr = null;
+    private Listener m_lstnr = new Listener();
+    private NonPersistantListener m_removeListener = new NonPersistantListener();
    
     /**
      * Create a new JCustomTooltip
@@ -90,15 +97,13 @@ public class JCustomTooltip extends JToolTip {
      * @param inter true for persistence, false otherwise.
      */
     public void setPersistent(boolean inter) {
-        if ( inter == m_persist )
-            return;
+        this.removeAncestorListener(m_lstnr);
+        this.removeMouseMotionListener(m_removeListener);
         
         if ( inter ) {
-            m_lstnr = new Listener();
             this.addAncestorListener(m_lstnr);
         } else {
-            this.removeAncestorListener(m_lstnr);
-            m_lstnr = null;
+            this.addMouseMotionListener(m_removeListener);
         }
         m_persist = inter;
     }
@@ -136,6 +141,22 @@ public class JCustomTooltip extends JToolTip {
             g.drawRect(0,0,getWidth()-1,getHeight()-1);
             g.setColor(getComponent(0).getBackground());
             g.fillRect(1,1,getWidth()-2,getHeight()-2);
+        }
+    }
+
+    // Handles killing the tooltip when the mouse leaves the component
+    private class NonPersistantListener extends MouseAdapter {
+        public void mouseMoved(MouseEvent evt) {
+            Point mouseLocation = evt.getLocationOnScreen();
+
+            Rectangle bounds = getComponent().getBounds();
+            bounds.setLocation(getComponent().getLocationOnScreen());
+
+            if (!bounds.contains(mouseLocation)) {
+                MouseEvent exitEvent = new MouseEvent(getComponent(), MouseEvent.MOUSE_EXITED,
+                        System.currentTimeMillis(), 0, -1, -1, 0, false);
+                ToolTipManager.sharedInstance().mouseExited(exitEvent);
+            }
         }
     }
     
@@ -221,3 +242,4 @@ public class JCustomTooltip extends JToolTip {
     }
     
 } // end of class JCustomTooltip
+
