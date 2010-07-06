@@ -57,6 +57,8 @@ import shoddybattleclient.utils.JButtonTable;
 public class TeamBuilderForm extends javax.swing.JPanel {
 
     private TeamBuilder m_parent;
+    //The generation the team builder represents
+    private Generation m_generation;
     //The current species
     private PokemonSpecies m_species = null;
     //index of this tab
@@ -104,6 +106,10 @@ public class TeamBuilderForm extends javax.swing.JPanel {
     /** Creates new form TeamBuilderForm */
     public TeamBuilderForm(TeamBuilder parent, int idx) {
         initComponents();
+        m_parent = parent;
+        m_generation = parent.getGeneration();
+        m_idx = idx;
+        
         tblMoves = new JButtonTable();
         tblMoves.setModel(new MoveTableModel(null, new String[0], this));
         tblMoves.setRowSelectionAllowed(false);
@@ -124,10 +130,13 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         splitPane.setDividerLocation(tblSelected.getTableHeader().getPreferredSize().height
                 + (tblSelected.getRowHeight() * 4) + insets.top + insets.bottom);
 
-        m_parent = parent;
-        m_idx = idx;
+        String[] items = new String[m_generation.getItems().size() + 1];
+        items[0] = "No Item";
+        for (int i = 0; i < m_generation.getItems().size(); i++)
+            items[i+1] = m_generation.getItems().get(i);
 
         cmbNature.setModel(new DefaultComboBoxModel(PokemonNature.getNatures()));
+        cmbItem.setModel(new DefaultComboBoxModel(items));
 
         setupStats();
 
@@ -154,12 +163,12 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         panelStats.add(stat); panelStats.add(totalHeader); panelStats.add(baseHeader);
         panelStats.add(ivHeader); panelStats.add(m_evHeader);
         for (int i = 0; i < m_ivs.length; i++) {
-            JTextField iv = new JTextField("31");
+            JTextField iv = new JTextField(""+m_generation.getMaxIv());
             iv.setFont(iv.getFont().deriveFont(11.0f));
             iv.setSize(new Dimension(0, 0));
             iv.setPreferredSize(new Dimension(0, 0));
             iv.setMaximumSize(new Dimension(0, 0));
-            iv.setDocument(new IntegerDocument(31, iv));
+            iv.setDocument(new IntegerDocument(m_generation.getMaxIv(), iv));
             m_ivs[i] = iv;
             JTextField ev = new JTextField("0");
             ev.setFont(iv.getFont());
@@ -311,7 +320,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         }
         
         ((SelectedMoveModel)tblSelected.getModel()).clear();
-        MoveTableModel mtm = new MoveTableModel(m_parent.getMoveList(), 
+        MoveTableModel mtm = new MoveTableModel(m_generation.getMoves(),
                 m_species.getMoves(), this);
         mtm.selectMoves(p.moves, p.ppUps);
         tblMoves.setModel(mtm);

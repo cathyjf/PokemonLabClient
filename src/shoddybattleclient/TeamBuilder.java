@@ -127,8 +127,7 @@ public class TeamBuilder extends javax.swing.JFrame {
     }
 
     private List<TeamBuilderForm> m_forms = new ArrayList<TeamBuilderForm>();
-    private ArrayList<PokemonSpecies> m_species;
-    private ArrayList<PokemonMove> m_moves;
+    private Generation m_generation;
     private File m_save;
 
     private DefaultComboBoxModel m_speciesModel;
@@ -143,24 +142,28 @@ public class TeamBuilder extends javax.swing.JFrame {
         initComponents();
         long t1 = System.currentTimeMillis();
         MoveListParser mlp = new MoveListParser();
-        m_moves = mlp.parseDocument(TeamBuilder.class.getResource("resources/moves.xml").toString());
+        ArrayList<PokemonMove> moves = mlp.parseDocument(TeamBuilder.class.getResource("resources/moves.xml").toString());
         long t2 = System.currentTimeMillis();
         mlp = null;
         SpeciesListParser parser = new SpeciesListParser();
-        m_species = parser.parseDocument(TeamBuilder.class.getResource("resources/species.xml").toString());
+        ArrayList<PokemonSpecies> species = parser.parseDocument(TeamBuilder.class.getResource("resources/species.xml").toString());
         parser = null;
         long t3 = System.currentTimeMillis();
-        Collections.sort(m_species, new Comparator<PokemonSpecies>() {
+        Collections.sort(species, new Comparator<PokemonSpecies>() {
             public int compare(PokemonSpecies arg0, PokemonSpecies arg1) {
                 return arg0.getName().compareToIgnoreCase(arg1.getName());
             }
         });
         long t4 = System.currentTimeMillis();
+        ArrayList<String> items = new ArrayList<String>();
+        items.add("Leftovers");
+        m_generation = new Generation(species, moves, items);
         System.out.println("Loaded moves in " + (t2-t1) + " milliseconds");
         System.out.println("Loaded species in " + (t3-t2) + " milliseconds");
         System.out.println("Sorted species in " + (t4-t3) + " milliseconds");
 
-        m_speciesModel = new DefaultComboBoxModel(m_species.toArray(new PokemonSpecies[m_species.size()]));
+        m_speciesModel = new DefaultComboBoxModel(m_generation.getSpecies().toArray(
+                                new PokemonSpecies[m_generation.getSpecies().size()]));
         cmbSpecies.setModel(m_speciesModel);
         addDefaultTeam();
         treeBox.setModel(new BoxTreeModel());
@@ -197,7 +200,7 @@ public class TeamBuilder extends javax.swing.JFrame {
     }
 
     public PokemonSpecies getSpecies(String species) {
-        for (PokemonSpecies sp : m_species) {
+        for (PokemonSpecies sp : m_generation.getSpecies()) {
             if (sp.getName().equals(species)) {
                 return sp;
             }
@@ -206,9 +209,9 @@ public class TeamBuilder extends javax.swing.JFrame {
     }
 
     public String[] getSpeciesList() {
-        String[] ret = new String[m_species.size()];
+        String[] ret = new String[m_generation.getSpecies().size()];
         int i = 0;
-        for (PokemonSpecies ps : m_species) {
+        for (PokemonSpecies ps : m_generation.getSpecies()) {
             ret[i++] = ps.getName();
         }
         return ret;
@@ -218,8 +221,8 @@ public class TeamBuilder extends javax.swing.JFrame {
         tabForms.setTitleAt(index, title);
     }
 
-    public ArrayList<PokemonMove> getMoveList() {
-        return m_moves;
+    public Generation getGeneration() {
+        return m_generation;
     }
 
     private void saveTeam() {
@@ -270,11 +273,11 @@ public class TeamBuilder extends javax.swing.JFrame {
 
         speciesProgramSelect = true;
         PokemonSpecies species = null;
-        for (PokemonSpecies s : m_species) {
+        for (PokemonSpecies s : m_generation.getSpecies()) {
             if (s.getName().equals(name)) {
                 species = s;
 
-                int id = PokemonSpecies.getIdFromName(m_species, species.getName());
+                int id = PokemonSpecies.getIdFromName(m_generation.getSpecies(), species.getName());
                 ((SpritePanel)panelSprite).setSpecies(id, false, true);
 
                 if (!cmbSpecies.getSelectedItem().equals(species)) {
@@ -756,7 +759,7 @@ public class TeamBuilder extends javax.swing.JFrame {
         if (speciesProgramSelect) return;
         PokemonSpecies sp = (PokemonSpecies)cmbSpecies.getSelectedItem();
         if (sp == null) return;
-        int id = PokemonSpecies.getIdFromName(m_species, sp.getName());
+        int id = PokemonSpecies.getIdFromName(m_generation.getSpecies(), sp.getName());
         ((SpritePanel)panelSprite).setSpecies(id, false, true);
 
         //If the species has no gender or is only female, GENDER_MALE is ignored
