@@ -1248,18 +1248,19 @@ public class ServerLink extends Thread {
                 // for 0...1:
                 //     byte : party size
                 //     for 0...party size:
-                //         int16 : slot the pokemon is in or -1 if no slot
-                //         if slot != -1:
+                //         byte : has the pokemon been revealed
+                //         if revealed:
+                //             int16  : slot the pokemon is in or -1 if no slot
                 //             string : the nickname of the pokemon
                 //             int16  : species id
                 //             if species != -1:
                 //                 byte : gender
                 //                 byte : level
                 //                 byte : whether the pokemon is shiny
-                //         byte : whether the pokemon is fainted
-                //         if not fainted:
-                //             byte : present hp in [0, 48]
-                //             // TODO: statuses, stat levels, etc.
+                //             byte : whether the pokemon is fainted
+                //             if not fainted:
+                //                 byte : present hp in [0, 48]
+                //                 // TODO: statuses, stat levels, etc.
                 public void handle(ServerLink link, DataInputStream is)
                         throws IOException {
                     int fid = is.readInt();
@@ -1279,8 +1280,9 @@ public class ServerLink extends Thread {
                         int size = is.readUnsignedByte();
                         for (int j = 0; j < size; ++j) {
                             VisualPokemon p = battle.getPokemon(i, j);
-                            int slot = is.readShort();
-                            if (slot != -1) {
+                            int revealed = is.readUnsignedByte();
+                            if (revealed != 0) {
+                                int slot = is.readShort();
                                 String name = is.readUTF();
                                 int id = is.readShort();
                                 if (id != -1) {
@@ -1289,23 +1291,35 @@ public class ServerLink extends Thread {
                                     boolean shiny = (is.read() != 0);
                                     String species = PokemonSpecies.getNameFromId(
                                             link.m_speciesList, id);
-                                    VisualPokemon visual =
-                                            new VisualPokemon(id, level,
-                                            gender, shiny);
-                                    active[i][slot] = visual;
-                                    battle.setSpecies(i, slot, species);
-                                    battle.sendOut(i, slot, j, species, name, gender, level);
-                                }
-                            }
-                            boolean fainted = (is.read() != 0);
-                            if (fainted) {
-                                p.faint();
-                                p.setHealth(0, 48);
-                            } else {
-                                int hp = is.read();
-                                p.setHealth(hp, 48);
+                                    
 
-                                // TODO: statuses, stat levels, etc.
+                                    if (slot != -1) {
+                                        battle.setSpecies(i, slot, species);
+                                        battle.sendOut(i, slot, j, species, name, gender, level);
+
+                                        VisualPokemon visual = new VisualPokemon(id,
+                                                                    level, gender, shiny);
+                                        active[i][slot] = visual;
+                                    } else {
+                                        p.setSpecies(species);
+                                        p.setName(name);
+                                        p.setLevel(level);
+                                        p.setGender(gender);
+                                    }
+                                }
+                            
+                                boolean fainted = (is.read() != 0);
+                                if (fainted) {
+                                    p.faint();
+                                    p.setHealth(0, 48);
+                                } else {
+                                    int hp = is.read();
+                                    p.setHealth(hp, 48);
+                                    if (p.getSlot() != -1) {
+                                        battle.updateHealth(i, p.getSlot(), hp, 48);
+                                    }
+                                    // TODO: statuses, stat levels, etc.
+                                }
                             }
                         }
                     }
