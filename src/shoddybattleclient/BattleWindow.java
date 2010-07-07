@@ -367,14 +367,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         m_length = length;
         m_participant = participant;
         m_users = users;
-
-        if (team.length <= length)
-            m_pokemon = team;
-        else {
-            m_pokemon = new Pokemon[length];
-            for (int i = 0; i < length; i++)
-                m_pokemon[i] = team[i];
-        }
+        m_pokemon = team;
 
         m_channel = m_link.getLobby().getChannel(fid);
         listUsers.setModel(m_channel.getModel());
@@ -421,6 +414,13 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     }
 
     private void preparePlayer() {
+        if (m_pokemon.length > m_length) {
+            Pokemon[] temp = new Pokemon[m_length];
+            for (int i = 0; i < m_length; i++)
+                temp[i] = m_pokemon[i];
+            m_pokemon = temp;
+        }
+        
         createButtons();
         setMoves(0);
 
@@ -793,7 +793,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
                                             String name, int gender, int level) {
         m_visual.sendOut(party, slot, index, species, name, gender, level);
 
-        if (party == m_participant) {
+        if (party == m_participant && m_pokemon != null) {
             Collections.sort(m_sortedPokemon, new Comparator<Integer>() {
                 public int compare(Integer lhs, Integer rhs) {
                     VisualPokemon first = getPokemon(m_participant, lhs);
