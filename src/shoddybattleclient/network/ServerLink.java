@@ -1253,10 +1253,9 @@ public class ServerLink extends Thread {
                 //             int16  : slot the pokemon is in or -1 if no slot
                 //             string : the nickname of the pokemon
                 //             int16  : species id
-                //             if species != -1:
-                //                 byte : gender
-                //                 byte : level
-                //                 byte : whether the pokemon is shiny
+                //             byte : gender
+                //             byte : level
+                //             byte : whether the pokemon is shiny
                 //             byte : whether the pokemon is fainted
                 //             if not fainted:
                 //                 byte : present hp in [0, 48]
@@ -1285,38 +1284,38 @@ public class ServerLink extends Thread {
                                 int slot = is.readShort();
                                 String name = is.readUTF();
                                 int id = is.readShort();
-                                if (id != -1) {
-                                    int gender = is.read();
-                                    int level = is.readUnsignedByte();
-                                    boolean shiny = (is.read() != 0);
-                                    String species = PokemonSpecies.getNameFromId(
-                                            link.m_speciesList, id);
-                                    
+                                int gender = is.read();
+                                int level = is.readUnsignedByte();
+                                boolean shiny = (is.read() != 0);
 
-                                    if (slot != -1) {
-                                        battle.setSpecies(i, slot, species);
-                                        battle.sendOut(i, slot, j, species, name, gender, level);
+                                String species = PokemonSpecies.getNameFromId(
+                                        link.m_speciesList, id);
 
-                                        VisualPokemon visual = new VisualPokemon(id,
-                                                                    level, gender, shiny);
-                                        active[i][slot] = visual;
-                                    } else {
-                                        p.setSpecies(species);
-                                        p.setName(name);
-                                        p.setLevel(level);
-                                        p.setGender(gender);
-                                    }
+                                p.setSpecies(species);
+                                p.setName(name);
+                                p.setLevel(level);
+                                p.setGender(gender);
+
+                                if (slot != -1) {
+                                    battle.sendOut(i, slot, j, species, name, gender, level);
+                                    battle.setSpecies(i, slot, species);
                                 }
-                            
+                                
                                 boolean fainted = (is.read() != 0);
                                 if (fainted) {
                                     p.faint();
                                     p.setHealth(0, 48);
+                                    if (p.getSlot() != -1) {
+                                        battle.updateHealth(i, p.getSlot(), 0, 48);
+                                    }
                                 } else {
                                     int hp = is.read();
                                     p.setHealth(hp, 48);
                                     if (p.getSlot() != -1) {
                                         battle.updateHealth(i, p.getSlot(), hp, 48);
+                                        VisualPokemon visual = new VisualPokemon(id,
+                                                                    level, gender, shiny);
+                                        active[i][slot] = visual;
                                     }
                                     // TODO: statuses, stat levels, etc.
                                 }

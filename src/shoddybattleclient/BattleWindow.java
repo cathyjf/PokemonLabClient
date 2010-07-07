@@ -489,12 +489,14 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         msg = Text.addClass(msg, "victory");
         addMessage(null, msg, false);
 
-        btnMove.setEnabled(false);
-        btnMoveCancel.setEnabled(false);
-        btnSwitch.setEnabled(false);
-        btnSwitchCancel.setEnabled(false);
-        for (MoveButton button : m_moveButtons)
-            button.setEnabled(false);
+        if (m_pokemon != null) {
+            btnMove.setEnabled(false);
+            btnMoveCancel.setEnabled(false);
+            btnSwitch.setEnabled(false);
+            btnSwitchCancel.setEnabled(false);
+            for (MoveButton button : m_moveButtons)
+                button.setEnabled(false);
+        }
     }
 
     private void createButtons() {
