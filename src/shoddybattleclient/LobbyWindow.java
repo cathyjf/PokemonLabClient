@@ -962,6 +962,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
 
     // prompts the user to confirm that they wish to leave the server
     private boolean confirmLeave() {
+        if (!m_link.isAlive()) return true;
         int response = JOptionPane.showConfirmDialog(this, "Are you sure you " +
                 "want to leave this server?", "Disconnecting...", JOptionPane.YES_NO_OPTION);
         return (response == JOptionPane.YES_OPTION);
