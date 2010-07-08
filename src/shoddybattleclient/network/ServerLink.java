@@ -1880,6 +1880,10 @@ public class ServerLink extends Thread {
         // interrupt the message thread
         m_messageThread.interrupt();
         m_lobby.addImportantMessage("Disconnected from server");
+        String message = Text.addClass("Disconnected from server", "important");
+        for (BattleWindow battle : m_battles.values()) {
+            battle.addMessage(null, message, false);
+        }
     }
 
     public static void main(String[] args) throws Exception {

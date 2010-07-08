@@ -1185,7 +1185,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         int result = -1;
-        if (!m_finished && (m_pokemon != null)) {
+        if (!m_finished && m_pokemon != null && m_link.isAlive()) {
             result = JOptionPane.showConfirmDialog(this, "Leaving will cause you " +
                 "to forfeit this battle. Are you sure you want to leave?",
                 "Leaving Battle", JOptionPane.YES_NO_OPTION);
