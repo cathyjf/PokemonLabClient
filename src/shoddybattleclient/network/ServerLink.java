@@ -1259,7 +1259,10 @@ public class ServerLink extends Thread {
                 //             byte : whether the pokemon is fainted
                 //             if not fainted:
                 //                 byte : present hp in [0, 48]
-                //                 // TODO: statuses, stat levels, etc.
+                //                 byte : number of status effects
+                //                 for each status:
+                //                     string : message
+                //                     byte   : effect radius
                 public void handle(ServerLink link, DataInputStream is)
                         throws IOException {
                     int fid = is.readInt();
@@ -1317,7 +1320,14 @@ public class ServerLink extends Thread {
                                                                     level, gender, shiny);
                                         active[i][slot] = visual;
                                     }
-                                    // TODO: statuses, stat levels, etc.
+
+                                    int nStatus = is.readUnsignedByte();
+                                    for (int k = 0; k < nStatus; k++) {
+                                        String msg = is.readUTF();
+                                        int radius = is.readUnsignedByte();
+                                        msg = Text.parse(msg, battle);
+                                        battle.updateStatus(i, j, radius, msg, true);
+                                    }
                                 }
                             }
                         }
