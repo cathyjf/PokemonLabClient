@@ -77,6 +77,8 @@ public class TeamBuilder extends javax.swing.JFrame {
         private Image m_img = null;
         private Image m_background =
                 GameVisualisation.getImageFromResource("backgrounds/background2.png");
+        private Image m_boxBackground =
+                GameVisualisation.getImageFromResource("backgrounds/background23.png");
         public SpritePanel() {
             MediaTracker tracker = new MediaTracker(null);
             tracker.addImage(m_background, 0);
@@ -113,7 +115,9 @@ public class TeamBuilder extends javax.swing.JFrame {
         @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
-            if (m_front) {
+            if (tabForms.getSelectedComponent() instanceof BoxForm) {
+                g.drawImage(m_boxBackground, -130, -17, this);
+            } else if(m_front) {
                 g.drawImage(m_background, -130, -17, this);
                 if (m_img == null) return;
                 g.drawImage(m_img, this.getWidth() / 2 - m_img.getWidth(this) / 2,
@@ -302,15 +306,19 @@ public class TeamBuilder extends javax.swing.JFrame {
     }
 
     public void setSelectedPokemon(Pokemon poke) {
-        int idx = tabForms.getSelectedIndex();
+        setPokemonAt(tabForms.getSelectedIndex(), poke);
+    }
 
-        if (idx < 0)
+    public void setPokemonAt(int index, Pokemon poke) {
+        if (index < 0)
             return;
-
-        if (!poke.toString().equals(getSelectedPokemon().toString()))
-            setSpecies(poke.toString());
-        setSpriteShiny(poke.shiny);
-        m_forms.get(idx).setPokemon(poke.clone(), true);
+        if (index == tabForms.getSelectedIndex()) {
+            if (!poke.toString().equals(getSelectedPokemon().toString()))
+                setSpecies(poke.toString());
+            setSpriteShiny(poke.shiny);
+        }
+        m_forms.get(index).setPokemon(poke.clone(), true);
+        updateTitle(index, poke.toString());
     }
 
     //updates the Tree by looking through our teams for any of the same pokemon
@@ -832,12 +840,11 @@ public class TeamBuilder extends javax.swing.JFrame {
         } else {
             cmbSpecies.setModel(new DefaultComboBoxModel());
             cmbSpecies.setEnabled(false);
+            
+            BoxForm form = (BoxForm)tabForms.getSelectedComponent();
+            scrTreeBox.setViewportView(form.getTeamList(m_forms));
 
-            DefaultListModel pModel = new DefaultListModel();
-            for (int i = 0; i < m_forms.size(); i++)
-                pModel.addElement(m_forms.get(i).getPokemon());
-
-            scrTreeBox.setViewportView(new JList(pModel));
+            panelSprite.repaint();
         }
 
     }//GEN-LAST:event_tabFormsStateChanged
@@ -899,8 +906,7 @@ public class TeamBuilder extends javax.swing.JFrame {
                 return;
             }
 
-            m_forms.get(selectedTeamIndex).setPokemon(poke.clone(), true);
-            updateTitle(selectedTeamIndex, poke.toString());
+            setPokemonAt(selectedTeamIndex, poke.clone());
             ((DefaultListModel)teamList.getModel()).set(selectedTeamIndex, poke);
 
         } else {

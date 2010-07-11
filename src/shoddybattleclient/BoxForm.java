@@ -40,6 +40,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.swing.AbstractListModel;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -196,6 +197,22 @@ public class BoxForm extends javax.swing.JPanel {
         }
     }
 
+    private class TeamListRenderer extends DefaultListCellRenderer {
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value,
+                            int index, boolean isSelected, boolean cellHasFocus) {
+            JLabel label = null;
+            if (m_focusedTeamPokemon == index) {
+                label = (JLabel)super.getListCellRendererComponent(list, value,
+                    index, isSelected, true);
+            } else {
+                label = (JLabel)super.getListCellRendererComponent(list, value,
+                    index, isSelected, cellHasFocus);
+            }
+            return label;
+        }
+    }
+
     private class IconCellRenderer extends JLabel implements TableCellRenderer {
         public IconCellRenderer() {
             setOpaque(true);
@@ -280,8 +297,7 @@ public class BoxForm extends javax.swing.JPanel {
         }
         @Override
         public void drop(DropTargetDropEvent dtde) {
-            m_focusedBox = -1;
-            listBoxes.repaint();
+            this.dragExit(null);
 
             Transferable transfer = dtde.getTransferable();
             if (!transfer.isDataFlavorSupported(m_wrapperFlavor)) {
@@ -320,12 +336,63 @@ public class BoxForm extends javax.swing.JPanel {
         }
     }
 
+    private class ListTeamDropTarget extends DropTarget {
+        @Override
+        public void dragOver(DropTargetDragEvent dtde) {
+            if (dtde.isDataFlavorSupported(m_wrapperFlavor)) {
+                int idx = listTeam.locationToIndex(dtde.getLocation());
+                Rectangle r = listTeam.getCellBounds(idx, idx);
+                if(idx < 0 || !r.contains(dtde.getLocation())) {
+                    dtde.rejectDrag();
+                    return;
+                }
+                m_focusedTeamPokemon = idx;
+                listTeam.repaint();
+                dtde.acceptDrag(DnDConstants.ACTION_MOVE);
+            } else {
+                dtde.rejectDrag();
+            }
+        }
+        @Override
+        public void dragExit(DropTargetEvent dte) {
+            m_focusedTeamPokemon = -1;
+            listTeam.repaint();
+        }
+        @Override
+        public void drop(DropTargetDropEvent dtde) {
+            this.dragExit(null);
+
+            Transferable transfer = dtde.getTransferable();
+            if (!transfer.isDataFlavorSupported(m_wrapperFlavor)) {
+                dtde.rejectDrop();
+                return;
+            }
+
+            try {
+                PokemonWrapper wrapper = (PokemonWrapper)transfer.getTransferData(m_wrapperFlavor);
+                int teamIndex = listTeam.locationToIndex(dtde.getLocation());
+                m_teamBuilder.setPokemonAt(teamIndex, wrapper.pokemon);
+                ((DefaultListModel)listTeam.getModel()).set(teamIndex, wrapper.pokemon);
+                
+                dtde.acceptDrop(DnDConstants.ACTION_MOVE);
+            } catch (Exception ex) {
+                dtde.rejectDrop();
+                return;
+            }
+        }
+    }
+
     private TeamBuilder m_teamBuilder;
 
-    private int m_focusedBox = -1;
     private BoxListModel m_boxModel;
     private PokemonTableModel m_pokemonModel;
     private JTable tblPokemon;
+    private JList listTeam;
+
+    // Swing doesn't allow us to give a selected look to lists easily, 
+    // so we use hacks to do it
+    private int m_focusedBox = -1;
+    private int m_focusedTeamPokemon = -1;
 
     /** Creates new form BoxForm */
     public BoxForm(TeamBuilder teamBuilder) {
@@ -366,8 +433,11 @@ public class BoxForm extends javax.swing.JPanel {
         model.getColumn(2).setHeaderValue("Ability");
         model.getColumn(3).setHeaderValue("Nature");
         model.getColumn(4).setHeaderValue("Item");
-
         scrollPokemon.setViewportView(tblPokemon);
+
+        listTeam = new JList();
+        listTeam.setDropTarget(new ListTeamDropTarget());
+        listTeam.setCellRenderer(new TeamListRenderer());
     }
 
     public void updateBoxes() {
@@ -396,6 +466,13 @@ public class BoxForm extends javax.swing.JPanel {
         }
     }
 
+    public PokemonBox getSelectedBox() {
+        Object obj = listBoxes.getSelectedValue();
+        if (obj == null)
+            return null;
+        return (PokemonBox)obj;
+    }
+
     public Pokemon getSelectedPokemon() {
         int selected = tblPokemon.getSelectedRow();
         if (selected < 0 || selected >= tblPokemon.getRowCount()) {
@@ -405,11 +482,14 @@ public class BoxForm extends javax.swing.JPanel {
         return m_pokemonModel.getPokemonAt(selected).pokemon;
     }
 
-    public PokemonBox getSelectedBox() {
-        Object obj = listBoxes.getSelectedValue();
-        if (obj == null)
-            return null;
-        return (PokemonBox)obj;
+    // This is so that we can rig it with drag and drop support before sending it
+    public JList getTeamList(List<TeamBuilderForm> forms) {
+        DefaultListModel pModel = new DefaultListModel();
+        for (int i = 0; i < forms.size(); i++)
+             pModel.addElement(forms.get(i).getPokemon());
+
+        listTeam.setModel(pModel);
+        return listTeam;
     }
 
     //On *nix systems, both Box and Pokemon loading allow for duplicates on
