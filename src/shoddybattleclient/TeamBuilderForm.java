@@ -205,7 +205,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                 private boolean m_increasing = false;
                 private JTextField m_caller = null;
                 boolean stopped = false;
-                private Timer m_timer = new Timer(150, new ActionListener() {
+                private Timer m_timer = new Timer(200, new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         if(stopped) {
                             m_timer.stop();
@@ -334,7 +334,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         for (int i = 0; i < m_evs.length; i++) {
             total += m_pokemon.evs[i];
         }
-        Color c = (total > 510) ? Color.RED : Color.BLACK;
+        Color c = (total > m_generation.getMaxTotalEvs()) ? Color.RED : Color.BLACK;
         m_evHeader.setText(String.valueOf(total));
         m_evHeader.setForeground(c);
     }
@@ -362,7 +362,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         for (int i = 0; i < m_evs.length; i++) {
             total += m_pokemon.evs[i];
         }
-        Color c = (total > 510) ? Color.RED : Color.BLACK;
+        Color c = (total > m_generation.getMaxTotalEvs()) ? Color.RED : Color.BLACK;
         m_evHeader.setText(String.valueOf(total));
         m_evHeader.setForeground(c);
     }
@@ -420,15 +420,6 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         }
         return success;
     }
-
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TeamBuilder().setVisible(true);
-            }
-        });
-    }
-
 
     /** This method is called from within the constructor to
      * initialize the form.

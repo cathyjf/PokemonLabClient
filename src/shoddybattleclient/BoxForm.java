@@ -185,15 +185,9 @@ public class BoxForm extends javax.swing.JPanel {
         @Override
         public Component getListCellRendererComponent(JList list, Object value,
                             int index, boolean isSelected, boolean cellHasFocus) {
-            JLabel label = null;
-            if (m_focusedBox == index) {
-                label = (JLabel)super.getListCellRendererComponent(list, value,
-                    index, isSelected, true);
-            } else {
-                label = (JLabel)super.getListCellRendererComponent(list, value,
-                    index, isSelected, cellHasFocus);
-            }
-            return label;
+            boolean focused = (m_focusedBox == index) ? true : cellHasFocus;
+            return super.getListCellRendererComponent(list, value,
+                    index, isSelected, focused);
         }
     }
 
@@ -201,15 +195,9 @@ public class BoxForm extends javax.swing.JPanel {
         @Override
         public Component getListCellRendererComponent(JList list, Object value,
                             int index, boolean isSelected, boolean cellHasFocus) {
-            JLabel label = null;
-            if (m_focusedTeamPokemon == index) {
-                label = (JLabel)super.getListCellRendererComponent(list, value,
-                    index, isSelected, true);
-            } else {
-                label = (JLabel)super.getListCellRendererComponent(list, value,
-                    index, isSelected, cellHasFocus);
-            }
-            return label;
+            boolean focused = (m_focusedTeamPokemon == index) ? true : cellHasFocus;
+            return super.getListCellRendererComponent(list, value,
+                    index, isSelected, focused);
         }
     }
 

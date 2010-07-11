@@ -142,40 +142,19 @@ public class TeamBuilder extends javax.swing.JFrame {
     private boolean speciesProgramSelect = false;
 
     /** Creates new form TeamBuilder */
-    public TeamBuilder() {
+    public TeamBuilder(Generation mod) {
         initComponents();
-        long t1 = System.currentTimeMillis();
-        MoveListParser mlp = new MoveListParser();
-        ArrayList<PokemonMove> moves = mlp.parseDocument(TeamBuilder.class.getResource("resources/moves.xml").toString());
-        long t2 = System.currentTimeMillis();
-        mlp = null;
-        SpeciesListParser parser = new SpeciesListParser();
-        ArrayList<PokemonSpecies> species = parser.parseDocument(TeamBuilder.class.getResource("resources/species.xml").toString());
-        parser = null;
-        long t3 = System.currentTimeMillis();
-        Collections.sort(species, new Comparator<PokemonSpecies>() {
-            public int compare(PokemonSpecies arg0, PokemonSpecies arg1) {
-                return arg0.getName().compareToIgnoreCase(arg1.getName());
-            }
-        });
-        long t4 = System.currentTimeMillis();
-        ArrayList<String> items = new ArrayList<String>();
-        items.add("Leftovers");
-        m_generation = new Generation(species, moves, items);
-        System.out.println("Loaded moves in " + (t2-t1) + " milliseconds");
-        System.out.println("Loaded species in " + (t3-t2) + " milliseconds");
-        System.out.println("Sorted species in " + (t4-t3) + " milliseconds");
+        m_generation = mod;
 
-        m_speciesModel = new DefaultComboBoxModel(m_generation.getSpecies().toArray(
-                                new PokemonSpecies[m_generation.getSpecies().size()]));
+        ArrayList<PokemonSpecies> species = m_generation.getSpecies();
+        m_speciesModel = new DefaultComboBoxModel(species.toArray(new PokemonSpecies[species.size()]));
         cmbSpecies.setModel(m_speciesModel);
-        addDefaultTeam();
+        
         treeBox.setModel(new BoxTreeModel());
         treeBox.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         treeBox.addTreeWillExpandListener(new TreeWillExpandListener() {
             public void treeWillExpand(TreeExpansionEvent e) throws ExpandVetoException {
-                TreePath path = e.getPath();
-                String root = (String)path.getPathComponent(1);
+                String root = (String)e.getPath().getPathComponent(1);
                 if (BoxTreeModel.isTeamRoot(root)) {
                     loadPokemonFromTeams();
                 } else if (BoxTreeModel.isBoxRoot(root)) {
@@ -184,6 +163,8 @@ public class TeamBuilder extends javax.swing.JFrame {
             }
             public void treeWillCollapse(TreeExpansionEvent e) throws ExpandVetoException { }
         });
+
+        addDefaultTeam();
     }
 
     private void addDefaultTeam() {
@@ -1133,10 +1114,31 @@ public class TeamBuilder extends javax.swing.JFrame {
                 try {
                     UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                } catch (Exception e) {
-                    
-                }
-                new TeamBuilder().setVisible(true);
+                } catch (Exception e) {}
+                
+                long t1 = System.currentTimeMillis();
+                MoveListParser mlp = new MoveListParser();
+                ArrayList<PokemonMove> moves = mlp.parseDocument(TeamBuilder.class.getResource("resources/moves.xml").toString());
+                long t2 = System.currentTimeMillis();
+                mlp = null;
+                SpeciesListParser parser = new SpeciesListParser();
+                ArrayList<PokemonSpecies> species = parser.parseDocument(TeamBuilder.class.getResource("resources/species.xml").toString());
+                parser = null;
+                long t3 = System.currentTimeMillis();
+                Collections.sort(species, new Comparator<PokemonSpecies>() {
+                    public int compare(PokemonSpecies arg0, PokemonSpecies arg1) {
+                        return arg0.getName().compareToIgnoreCase(arg1.getName());
+                    }
+                });
+                long t4 = System.currentTimeMillis();
+                ArrayList<String> items = new ArrayList<String>();
+                items.add("Leftovers");
+                Generation mod = new Generation(species, moves, items);
+                System.out.println("Loaded moves in " + (t2-t1) + " milliseconds");
+                System.out.println("Loaded species in " + (t3-t2) + " milliseconds");
+                System.out.println("Sorted species in " + (t4-t3) + " milliseconds");
+
+                new TeamBuilder(mod).setVisible(true);
             }
         });
     }

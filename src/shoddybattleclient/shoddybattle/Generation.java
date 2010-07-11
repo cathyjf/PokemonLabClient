@@ -55,7 +55,13 @@ public class Generation {
         return m_items;
     }
 
+    // If anyone wants to implement RBY/GSC, the following methods will make
+    // their lives a little bit easier
     public int getMaxIv() {
         return 31;
+    }
+
+    public int getMaxTotalEvs() {
+        return 510;
     }
 }
