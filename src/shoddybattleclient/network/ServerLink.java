@@ -1515,18 +1515,20 @@ public class ServerLink extends Thread {
             //INVALID_TEAM
             new ServerMessage(32, new MessageHandler() {
                 //string : user of the challenge or empty for matchmaking
-                //int16 : number of violations
+                //byte   : size of team
+                //int16  : number of violations
                 //for each violation:
                 //    int16 : index of the violated clause
                 public void handle(ServerLink link, DataInputStream is)
                                                         throws IOException {
                     String user = is.readUTF();
+                    int teamSize = is.readUnsignedByte();
                     int count = is.readShort();
                     int[] clauses = new int[count];
                     for (int i = 0; i < count; i++) {
                         clauses[i] = is.readShort();
                     }
-                    link.m_lobby.informInvalidTeam(user, clauses);
+                    link.m_lobby.informInvalidTeam(user, teamSize, clauses);
                 }
             });
 

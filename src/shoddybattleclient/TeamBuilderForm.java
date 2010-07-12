@@ -163,12 +163,12 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         panelStats.add(stat); panelStats.add(totalHeader); panelStats.add(baseHeader);
         panelStats.add(ivHeader); panelStats.add(m_evHeader);
         for (int i = 0; i < m_ivs.length; i++) {
-            JTextField iv = new JTextField(""+m_generation.getMaxIv());
+            JTextField iv = new JTextField(""+31);
             iv.setFont(iv.getFont().deriveFont(11.0f));
             iv.setSize(new Dimension(0, 0));
             iv.setPreferredSize(new Dimension(0, 0));
             iv.setMaximumSize(new Dimension(0, 0));
-            iv.setDocument(new IntegerDocument(m_generation.getMaxIv(), iv));
+            iv.setDocument(new IntegerDocument(31, iv));
             m_ivs[i] = iv;
             JTextField ev = new JTextField("0");
             ev.setFont(iv.getFont());
@@ -334,7 +334,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         for (int i = 0; i < m_evs.length; i++) {
             total += m_pokemon.evs[i];
         }
-        Color c = (total > m_generation.getMaxTotalEvs()) ? Color.RED : Color.BLACK;
+        Color c = (total > 510) ? Color.RED : Color.BLACK;
         m_evHeader.setText(String.valueOf(total));
         m_evHeader.setForeground(c);
     }
@@ -362,7 +362,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         for (int i = 0; i < m_evs.length; i++) {
             total += m_pokemon.evs[i];
         }
-        Color c = (total > m_generation.getMaxTotalEvs()) ? Color.RED : Color.BLACK;
+        Color c = (total > 510) ? Color.RED : Color.BLACK;
         m_evHeader.setText(String.valueOf(total));
         m_evHeader.setForeground(c);
     }

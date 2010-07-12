@@ -709,13 +709,14 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         return m_recentChannel.getId();
     }
 
-    public void informInvalidTeam(String user, int[] clauses) {
-        boolean invalidPokemon = false;
+    public void informInvalidTeam(String user, int teamSize, int[] clauses) {
+        boolean[] invalidTraits = new boolean[5];
         StringBuilder clauseList = new StringBuilder();
         List<Clause> cl = m_link.getClauseList();
         for (int i = 0; i < clauses.length; i++) {
             if (clauses[i] < 0) {
-                invalidPokemon = true;
+                int problem = -(clauses[i]+1) / teamSize;
+                invalidTraits[-problem] = true;
             } else {
                 clauseList.append(" -");
                 clauseList.append(cl.get(clauses[i]).name);
@@ -725,7 +726,11 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
 
         StringBuilder sb = new StringBuilder();
         sb.append("The supplied team does not conform to:\n");
-        if (invalidPokemon) sb.append(" -Legal Pokemon\n");
+        if (invalidTraits[0]) sb.append(" -Legal Pokemon\n");
+        if (invalidTraits[1]) sb.append(" -Legal Moves\n");
+        if (invalidTraits[2]) sb.append(" -Legal Move Combinations\n");
+        if (invalidTraits[3]) sb.append(" -Legal Items\n");
+        if (invalidTraits[4]) sb.append(" -Legal Stats\n");
         sb.append(clauseList.toString());
 
         if (!"".equals(user)) {
