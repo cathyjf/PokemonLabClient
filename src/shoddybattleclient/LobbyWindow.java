@@ -715,8 +715,8 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         List<Clause> cl = m_link.getClauseList();
         for (int i = 0; i < clauses.length; i++) {
             if (clauses[i] < 0) {
-                int problem = -(clauses[i]+1) / teamSize;
-                invalidTraits[-problem] = true;
+                int problem = (-clauses[i]-1) / teamSize;
+                invalidTraits[problem] = true;
             } else {
                 clauseList.append(" -");
                 clauseList.append(cl.get(clauses[i]).name);

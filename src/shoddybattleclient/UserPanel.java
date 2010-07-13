@@ -99,10 +99,14 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         private void loadTeam() {
             this.removeAll();
             for (int i = 0; i < m_teamLength; i++) {
-                Pokemon p = m_team[i];
-                SpritePanel panel = new SpritePanel(p.species,
-                        PokemonSpecies.getIdFromName(m_speciesList, p.species), p.gender, p.shiny);
-                this.add(panel);
+                if (i < m_team.length) {
+                    Pokemon p = m_team[i];
+                    SpritePanel panel = new SpritePanel(p.species,
+                            PokemonSpecies.getIdFromName(m_speciesList, p.species), p.gender, p.shiny);
+                    this.add(panel);
+                } else {
+                    this.add(new SpritePanel(null, -1, null, false));
+                }
             }
             if (m_teamLength > 1 && m_teamLength % 2 == 1)
                 this.add(new JPanel());
