@@ -331,6 +331,9 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         public String getName() {
             return m_name;
         }
+        public boolean hasMute() {
+            return ((m_flags & Channel.MUTE) != 0);
+        }
         @Override
         public int compareTo(Object o2) {
             User u2 = ((User)o2);

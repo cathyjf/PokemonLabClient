@@ -1734,6 +1734,10 @@ public class ServerLink extends Thread {
         sendMessage(new BanMessage(channel, user, date));
     }
 
+    public void sendMuteMessage(int channel, String user, boolean enable) {
+        sendMessage(new ModeMessage(channel, user, 3 , enable));
+    }
+
     public void requestUserLookup(String user) {
         sendMessage(new UserDetailMessage(user));
     }

@@ -71,6 +71,22 @@ public class UserPopupMenu extends JPopupMenu {
             }
 
         });
+        JMenuItem mute = new JMenuItem("Mute");
+        mute.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                m_lobby.getLink().sendMuteMessage(m_lobby.getActiveChannel(), m_user.getName(), true);
+            }
+
+        });
+        JMenuItem unmute = new JMenuItem("Unmute");
+        unmute.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                m_lobby.getLink().sendMuteMessage(m_lobby.getActiveChannel(), m_user.getName(), false);
+            }
+
+        });
         JMenuItem lookup = new JMenuItem("Lookup");
         lookup.addActionListener(new ActionListener() {
             @Override
@@ -88,6 +104,12 @@ public class UserPopupMenu extends JPopupMenu {
             this.addSeparator();
             this.add(kick);
             this.add(ban);
+            if (!m_user.hasMute()) {
+                this.add(mute);
+            }
+            else {
+                this.add(unmute);
+            }
             this.add(lookup);
         }
     }
