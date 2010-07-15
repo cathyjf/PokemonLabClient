@@ -43,7 +43,7 @@ public class ServerConnect extends javax.swing.JFrame {
     private ServerLink m_link;
 
     /** Creates new form ServerConnect */
-    public ServerConnect(ServerLink link, String name, String message) {
+    public ServerConnect(ServerLink link, String name, String message, boolean canRegister) {
         initComponents();
         m_link = link;
         lblName.setText(name);
@@ -79,6 +79,10 @@ public class ServerConnect extends javax.swing.JFrame {
                 ServerConnect.class.getResource(
                 "resources/species.xml").toString());
         txtLoginPassword.setText("admin");
+
+        if (!canRegister) {
+            tabbedPane.removeTabAt(1);
+        }
     }
 
     /** This method is called from within the constructor to
