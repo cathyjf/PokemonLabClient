@@ -166,14 +166,17 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             Color c2 = new Color(red, green, blue);
             int w = getWidth();
             int h = getHeight();
-            g2.setColor(c.darker());
+            if(isSelected())
+                g2.setColor(SELECTION_FONT);
+            else
+                g2.setColor(c.darker());
             g2.fillRoundRect(0, 0, w, h, 5, 5);
             g2.setPaint(new GradientPaint(0, h/2, c2, 0, h-2, c2.darker()));
             g2.fillRect(2, h/2, w-4, h/2 - 2);
             g2.setPaint(new GradientPaint(0, 0, c.brighter(), 0, h/2-2, c));
             g2.fillRect(2, 2, w - 4, h/2 - 2);
             if (isSelected()) {
-                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.25f));
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.20f));
                 g2.setColor(Color.BLACK);
                 g2.fillRect(2, 2, w-4, h-4);
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
