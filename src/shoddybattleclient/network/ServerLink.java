@@ -1365,6 +1365,21 @@ public class ServerLink extends Thread {
 
             // METAGAME_LIST
             new ServerMessage(26, new MessageHandler() {
+                // int16  : metagame count
+                // for each metagame:
+                //     byte   : id
+                //     string : name
+                //     string : "id", the table name of the metagame
+                //     string : description
+                //     byte   : party size (n)
+                //     byte   : max team length
+                //     int16  : number of bans
+                //     for each ban:
+                //         int16  : pokemon id
+                //     int16  : number of clauses
+                //     for each clause:
+                //         string : name of clause
+                //     TODO: Timer options
                 public void handle(ServerLink link, DataInputStream is)
                         throws IOException {
                     int count = is.readShort();
@@ -1418,6 +1433,7 @@ public class ServerLink extends Thread {
                 }
             });
 
+            //USER_DETAILS
             new ServerMessage(28, new MessageHandler() {
                 //string : name of the user
                 //string : ip
