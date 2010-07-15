@@ -51,14 +51,16 @@ import shoddybattleclient.utils.CloseableTabbedPane.TabCloseListener;
 public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener, ChannelLookup {
 
     public static class Channel {
+        //User flags
         public static final int PROTECTED = 1; // +a
         public static final int OP = 2;        // +o
         public static final int VOICE = 4;     // +v
         public static final int MUTE = 8;      // +b
         public static final int IDLE = 16;     // inactive
         public static final int BUSY = 32;     // ("ignoring challenges")
-        public static final int MUTED = 64;    // +m muted room
-        public static final int INVITE = 128;  // +i invite only
+        //Channel flags
+        public static final int MUTED = 1;    // +m muted room
+        public static final int INVITE = 2;  // +i invite only
 
         public static final String[] MODES =
                 { "a", "o", "v", "b"};
@@ -161,6 +163,15 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
             m_chat.getLobby().showChannelMessage(this, null,
                     msg, false);
             m_users.setLevel(user, flags);
+        }
+
+        public boolean isMuted() {            
+            if ((m_flags & MUTED) != 0) { return true; }
+            return false;
+        }
+        public boolean isInviteOnly() {
+            if ((m_flags & INVITE) != 0) { return true; }
+            return false;
         }
 
         public void informBan(String mod, String user, int date) {
@@ -400,12 +411,19 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         }
         private void triggerPopup(MouseEvent e) {
             if (e.isPopupTrigger()) {
-                int idx = listUsers.locationToIndex(e.getPoint());
-                if (idx < 0) return;
-                listUsers.setSelectedIndex(idx);
-                User u = (User)((UserListModel)listUsers.getModel()).getElementAt(idx);
-                new UserPopupMenu(LobbyWindow.this, u, m_level)
-                                .show(e.getComponent(), e.getX(), e.getY());
+                //If the source is an HTMLPane then it is the chat
+                if (e.getSource().getClass().getSimpleName().equals("HTMLPane")) {
+                    new ChatPopupMenu(LobbyWindow.this, m_level)
+                            .show(e.getComponent(), e.getX(), e.getY());
+                }
+                else {
+                    int idx = listUsers.locationToIndex(e.getPoint());
+                    if (idx < 0) return;
+                    listUsers.setSelectedIndex(idx);
+                    User u = (User)((UserListModel)listUsers.getModel()).getElementAt(idx);
+                    new UserPopupMenu(LobbyWindow.this, u, m_level)
+                                    .show(e.getComponent(), e.getX(), e.getY());
+                }
             }
         }
     };
@@ -498,6 +516,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
                 if (comp instanceof ChatPane) {
                     ChatPane c = (ChatPane)comp;
                     Channel channel = c.getChannel();
+                    c.getChat().addMouseListener(m_popupListener);
                     m_recentChannel = channel;
                     listUsers.setModel(channel.getModel());
                     User u = channel.getUser(m_name);

@@ -1735,7 +1735,13 @@ public class ServerLink extends Thread {
     }
 
     public void sendMuteMessage(int channel, String user, boolean enable) {
-        sendMessage(new ModeMessage(channel, user, 3 , enable));
+        //3 is +b for user, 4 is +m for the channel
+        if (user.equals("")) {
+            sendMessage(new ModeMessage(channel, user, 4, enable));
+        }
+        else {
+            sendMessage(new ModeMessage(channel, user, 3 , enable));
+        }
     }
 
     public void requestUserLookup(String user) {
