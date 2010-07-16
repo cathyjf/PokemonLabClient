@@ -670,6 +670,14 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         return panel;
     }
 
+    public boolean isUserPanelSelected(String user) {
+        UserPanel panel = m_userPanels.get(user);
+        Component selected = tabChats.getSelectedComponent();
+        if (panel == selected)
+            return true;
+        return false;
+    }
+    
     public void removeUserPanel(String user) {
         UserPanel panel = m_userPanels.get(user);
         this.closeTab(tabChats.indexOfComponent(panel));

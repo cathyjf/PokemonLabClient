@@ -277,6 +277,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
             close = JOptionPane.showConfirmDialog(this,
                     "Are you sure you wish to cancel your challenge?", "Cancel Challenge",
                      JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
+            if (close) m_link.withdrawChallenge(m_opponent);
         } else if (m_incoming) {
             m_link.resolveChallenge(m_opponent, false, null);
             close = true;

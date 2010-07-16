@@ -31,6 +31,7 @@ import java.util.concurrent.*;
 import java.security.*;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import javax.swing.JOptionPane;
 import shoddybattleclient.BattlePanel;
 import shoddybattleclient.BattleWindow;
 import shoddybattleclient.ChatPane;
@@ -382,6 +383,17 @@ public class ServerLink extends Thread {
             try {
                 m_stream.writeUTF(opponent);
                 link.writeTeam(team, m_stream);
+            } catch (Exception e) {
+
+            }
+        }
+    }
+
+    public static class WithdrawChallenge extends OutMessage {
+        public WithdrawChallenge(String opponent) {
+            super(9);
+            try {
+                m_stream.writeUTF(opponent);
             } catch (Exception e) {
 
             }
@@ -824,7 +836,19 @@ public class ServerLink extends Thread {
                 }
             });
 
-            // TODO : 11 (CHALLENGE_WITHDRAWN)
+            // CHALLENGE_WITHDRAWN
+            new ServerMessage(11, new MessageHandler() {
+               // string : opponent
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException {
+                    String user = is.readUTF();
+                    if (link.m_lobby.isUserPanelSelected(user)) {
+                        JOptionPane.showMessageDialog(link.m_lobby, user +
+                                " withdrew his/her challenge");
+                    }
+                    link.m_lobby.removeUserPanel(user);
+                }
+            });
 
             // BATTLE_BEGIN
             new ServerMessage(12, new MessageHandler() {
@@ -1654,6 +1678,10 @@ public class ServerLink extends Thread {
 
     public void postChallengeTeam(String opponent, Pokemon[] team) {
         sendMessage(new ChallengeTeam(this, opponent, team));
+    }
+
+    public void withdrawChallenge(String opponent) {
+        sendMessage(new WithdrawChallenge(opponent));
     }
 
     public void addMessageListener(MessageListener ml) {
