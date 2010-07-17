@@ -377,7 +377,7 @@ public class TeamBuilder extends javax.swing.JFrame {
     }
 
     // This will ask the user for input, returns null on fail, or the resultant pokemon if it succeeded
-    private PokemonWrapper addPokemonToBox(PokemonBox box, Pokemon poke) {
+    public PokemonWrapper addPokemonToBox(PokemonBox box, Pokemon poke) {
         String name = JOptionPane.showInputDialog(this, "New Pokemon's name:");
         if (name == null || name.trim().equals("")) {
             return null;

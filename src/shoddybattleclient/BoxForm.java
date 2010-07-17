@@ -191,16 +191,6 @@ public class BoxForm extends javax.swing.JPanel {
         }
     }
 
-    private class TeamListRenderer extends DefaultListCellRenderer {
-        @Override
-        public Component getListCellRendererComponent(JList list, Object value,
-                            int index, boolean isSelected, boolean cellHasFocus) {
-            boolean focused = (m_focusedTeamPokemon == index) ? true : cellHasFocus;
-            return super.getListCellRendererComponent(list, value,
-                    index, isSelected, focused);
-        }
-    }
-
     private class IconCellRenderer extends JLabel implements TableCellRenderer {
         public IconCellRenderer() {
             setOpaque(true);
@@ -222,6 +212,7 @@ public class BoxForm extends javax.swing.JPanel {
     }
 
     private static DataFlavor m_wrapperFlavor = new DataFlavor(PokemonWrapper.class, "PokemonWrapper");
+    private static DataFlavor m_pokemonFlavor = new DataFlavor(Pokemon.class, "Pokemon");
     private class PokemonTableTransferHandler extends TransferHandler {
         private class WrapperTransferable implements Transferable {
             private PokemonWrapper m_poke;
@@ -234,9 +225,7 @@ public class BoxForm extends javax.swing.JPanel {
             }
             @Override
             public boolean isDataFlavorSupported(DataFlavor flavor) {
-                if(flavor.match(m_wrapperFlavor))
-                    return true;
-                return false;
+                return flavor.match(m_wrapperFlavor);
             }
             @Override
             public Object getTransferData(DataFlavor flavor) {
@@ -244,8 +233,12 @@ public class BoxForm extends javax.swing.JPanel {
             }
         }
         @Override
-        public boolean canImport(JComponent comp, DataFlavor[] transferFlavors) {
-            return false;
+        public boolean canImport(JComponent c, DataFlavor[] transferFlavors) {
+            if (transferFlavors.length != 1)
+                return false;
+            if (!m_pokemonFlavor.equals(transferFlavors[0]))
+                return false;
+            return true;
         }
         @Override
         public int getSourceActions(JComponent c) {
@@ -264,7 +257,8 @@ public class BoxForm extends javax.swing.JPanel {
     private class ListBoxesDropTarget extends DropTarget {
         @Override
         public void dragOver(DropTargetDragEvent dtde) {
-            if (dtde.isDataFlavorSupported(m_wrapperFlavor)) {
+            if (dtde.isDataFlavorSupported(m_wrapperFlavor) ||
+                    dtde.isDataFlavorSupported(m_pokemonFlavor)) {
                 int idx = listBoxes.locationToIndex(dtde.getLocation());
                 Rectangle r = listBoxes.getCellBounds(idx, idx);
                 if(idx < 0 || !r.contains(dtde.getLocation())) {
@@ -285,38 +279,46 @@ public class BoxForm extends javax.swing.JPanel {
         }
         @Override
         public void drop(DropTargetDropEvent dtde) {
-            this.dragExit(null);
-
-            Transferable transfer = dtde.getTransferable();
-            if (!transfer.isDataFlavorSupported(m_wrapperFlavor)) {
-                dtde.rejectDrop();
-                return;
-            }
-            
+            this.dragExit(null);      
             try {
-                PokemonWrapper wrapper = (PokemonWrapper)transfer.getTransferData(m_wrapperFlavor);
-                PokemonBox previousBox = (PokemonBox)listBoxes.getSelectedValue();
-                PokemonBox newBox = (PokemonBox)m_boxModel.getElementAt(
-                            listBoxes.locationToIndex(dtde.getLocation()));
-                if (previousBox == newBox) {
-                    dtde.rejectDrop();
-                    return;
-                }
-
-                if (newBox.getPokemon(wrapper.name) != null) {
-                    int option = JOptionPane.showConfirmDialog(m_teamBuilder,
-                            "This pokemon already exists in this box. Overwrite?",
-                            "", JOptionPane.YES_NO_OPTION);
-                    if (option != JOptionPane.YES_OPTION) {
+                Transferable transfer = dtde.getTransferable();
+                if (transfer.isDataFlavorSupported(m_pokemonFlavor)) {
+                    int idx = listBoxes.locationToIndex(dtde.getLocation());
+                    listBoxes.setSelectedIndex(idx);
+                    PokemonBox box = (PokemonBox)m_boxModel.getElementAt(idx);
+                    PokemonWrapper result = m_teamBuilder.addPokemonToBox(box,
+                            (Pokemon)transfer.getTransferData(m_pokemonFlavor));
+                    if (result != null) {
+                        m_pokemonModel.fireTableDataChanged();
+                    }
+                } else if (transfer.isDataFlavorSupported(m_wrapperFlavor)) {
+                    PokemonWrapper wrapper = (PokemonWrapper)transfer.getTransferData(m_wrapperFlavor);
+                    PokemonBox previousBox = (PokemonBox)listBoxes.getSelectedValue();
+                    PokemonBox newBox = (PokemonBox)m_boxModel.getElementAt(
+                                listBoxes.locationToIndex(dtde.getLocation()));
+                    if (previousBox == newBox) {
                         dtde.rejectDrop();
                         return;
                     }
-                }
 
-                previousBox.removePokemon(wrapper.name);
-                newBox.addPokemon(wrapper.name, wrapper.pokemon);
-                m_pokemonModel.fireTableDataChanged();
-                dtde.acceptDrop(DnDConstants.ACTION_MOVE);
+                    if (newBox.getPokemon(wrapper.name) != null) {
+                        int option = JOptionPane.showConfirmDialog(m_teamBuilder,
+                                "This pokemon already exists in this box. Overwrite?",
+                                "", JOptionPane.YES_NO_OPTION);
+                        if (option != JOptionPane.YES_OPTION) {
+                            dtde.rejectDrop();
+                            return;
+                        }
+                    }
+
+                    previousBox.removePokemon(wrapper.name);
+                    newBox.addPokemon(wrapper.name, wrapper.pokemon);
+                    m_pokemonModel.fireTableDataChanged();
+                    dtde.acceptDrop(DnDConstants.ACTION_MOVE);
+                } else {
+                    dtde.rejectDrop();
+                    return;
+                }
             } catch (Exception ex) {
                 dtde.rejectDrop();
                 return;
@@ -324,48 +326,59 @@ public class BoxForm extends javax.swing.JPanel {
         }
     }
 
-    private class ListTeamDropTarget extends DropTarget {
-        @Override
-        public void dragOver(DropTargetDragEvent dtde) {
-            if (dtde.isDataFlavorSupported(m_wrapperFlavor)) {
-                int idx = listTeam.locationToIndex(dtde.getLocation());
-                Rectangle r = listTeam.getCellBounds(idx, idx);
-                if(idx < 0 || !r.contains(dtde.getLocation())) {
-                    dtde.rejectDrag();
-                    return;
-                }
-                m_focusedTeamPokemon = idx;
-                listTeam.repaint();
-                dtde.acceptDrag(DnDConstants.ACTION_MOVE);
-            } else {
-                dtde.rejectDrag();
+    private class ListTeamTransferHandler extends TransferHandler {
+        private class PokemonTransferable implements Transferable {
+            private Pokemon m_poke;
+            public PokemonTransferable(Pokemon poke) {
+                m_poke = poke;
+            }
+            @Override
+            public DataFlavor[] getTransferDataFlavors() {
+                return new DataFlavor[] {m_pokemonFlavor};
+            }
+            @Override
+            public boolean isDataFlavorSupported(DataFlavor flavor) {
+                return flavor.match(m_pokemonFlavor);
+            }
+            @Override
+            public Object getTransferData(DataFlavor flavor) {
+                return m_poke;
             }
         }
         @Override
-        public void dragExit(DropTargetEvent dte) {
-            m_focusedTeamPokemon = -1;
-            listTeam.repaint();
+        public boolean canImport(JComponent c, DataFlavor[] transferFlavors) {
+            if (transferFlavors.length != 1)
+                return false;
+            if (!m_wrapperFlavor.equals(transferFlavors[0]))
+                return false;
+            return true;
         }
         @Override
-        public void drop(DropTargetDropEvent dtde) {
-            this.dragExit(null);
-
-            Transferable transfer = dtde.getTransferable();
-            if (!transfer.isDataFlavorSupported(m_wrapperFlavor)) {
-                dtde.rejectDrop();
-                return;
-            }
+        public int getSourceActions(JComponent c) {
+            return TransferHandler.MOVE;
+        }
+        @Override
+        public Transferable createTransferable(JComponent c) {
+            JList list = (JList)c;
+            Point p = c.getMousePosition();
+            int idx = list.locationToIndex(p);
+            if (idx < 0) return null;
+            return new PokemonTransferable((Pokemon)list.getSelectedValue());
+        }
+        @Override
+        public boolean importData(JComponent comp, Transferable transfer) {
+            if (!transfer.isDataFlavorSupported(m_wrapperFlavor))
+                return false;
 
             try {
                 PokemonWrapper wrapper = (PokemonWrapper)transfer.getTransferData(m_wrapperFlavor);
-                int teamIndex = listTeam.locationToIndex(dtde.getLocation());
+                int teamIndex = listTeam.locationToIndex(listTeam.getMousePosition());
                 m_teamBuilder.setPokemonAt(teamIndex, wrapper.pokemon);
                 ((DefaultListModel)listTeam.getModel()).set(teamIndex, wrapper.pokemon);
-                
-                dtde.acceptDrop(DnDConstants.ACTION_MOVE);
+
+                return true;
             } catch (Exception ex) {
-                dtde.rejectDrop();
-                return;
+                return false;
             }
         }
     }
@@ -380,7 +393,6 @@ public class BoxForm extends javax.swing.JPanel {
     // Swing doesn't allow us to give a selected look to lists easily, 
     // so we use hacks to do it
     private int m_focusedBox = -1;
-    private int m_focusedTeamPokemon = -1;
 
     /** Creates new form BoxForm */
     public BoxForm(TeamBuilder teamBuilder) {
@@ -424,8 +436,8 @@ public class BoxForm extends javax.swing.JPanel {
         scrollPokemon.setViewportView(tblPokemon);
 
         listTeam = new JList();
-        listTeam.setDropTarget(new ListTeamDropTarget());
-        listTeam.setCellRenderer(new TeamListRenderer());
+        listTeam.setDragEnabled(true);
+        listTeam.setTransferHandler(new ListTeamTransferHandler());
     }
 
     public void updateBoxes() {
