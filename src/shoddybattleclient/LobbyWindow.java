@@ -572,12 +572,12 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
     }
 
     public void addChallenge(String name, boolean incoming, int gen, int n,
-                                                        int teamLength, RuleSet rules) {
+                                                        int teamLength, int metagame, RuleSet rules) {
         if (Preference.ignoring(name)) {
             m_link.resolveChallenge(name, false, null);
             return;
         }
-        UserPanel panel = openUserPanel(name, gen, n, teamLength, rules);
+        UserPanel panel = openUserPanel(name, gen, n, teamLength, metagame, rules);
         CloseableTabbedPane closeable = (CloseableTabbedPane)tabChats;
         int idx = closeable.indexOfComponent(panel);
         closeable.setFlashingAt(idx, true);
@@ -653,7 +653,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
     }
 
     public UserPanel openUserPanel(String user, boolean incoming, int generation, 
-                                                        int n, int teamLength, RuleSet rules) {
+                                                        int n, int teamLength, int metagame, RuleSet rules) {
         UserPanel panel = m_userPanels.get(user);
         if (panel == null) {
             int index = tabChats.getTabCount();
@@ -663,7 +663,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         }
         if (incoming) {
             panel.setIncoming();
-            panel.setOptions(n, teamLength, generation, rules);
+            panel.setOptions(n, teamLength, generation, metagame, rules);
         } else {
             tabChats.setSelectedComponent(panel);
         }
@@ -685,12 +685,12 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
     }
 
     public void openUserPanel(String user) {
-        openUserPanel(user, false, 0, 0, 0, null);
+        openUserPanel(user, false, 0, 0, 0, -1, null);
     }
 
     public UserPanel openUserPanel(String user, int generation, int n,
-                int teamLength, RuleSet rules) {
-        return openUserPanel(user, true, generation, n, teamLength, rules);
+                int teamLength, int metagame, RuleSet rules) {
+        return openUserPanel(user, true, generation, n, teamLength, metagame, rules);
     }
 
     @Override

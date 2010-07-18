@@ -48,8 +48,8 @@ public class ClauseList extends JList {
             this.description = description;
         }
         public boolean equals(Object o2) {
-            if (o2 instanceof String) {
-                return ((String)o2).equals(name);
+            if (o2 instanceof Clause) {
+                return ((Clause)o2).name.equals(name);
             }
             return super.equals(o2);
         }

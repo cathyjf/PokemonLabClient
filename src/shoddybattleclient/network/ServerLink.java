@@ -173,7 +173,7 @@ public class ServerLink extends Thread {
             int[] ret = new int[m_clauses.size()];
             for (int i = 0; i < m_clauses.size(); i++) {
                 String name = m_clauses.get(i);
-                ret[i] = clauses.indexOf(name);
+                ret[i] = clauses.indexOf(new Clause(name, null));
             }
             return ret;
         }
@@ -783,7 +783,7 @@ public class ServerLink extends Thread {
                     if (metagame != -1) {
                         Metagame mg = link.getMetagames()[metagame];
                         link.m_lobby.addChallenge(user, true, generation,
-                                                            partySize, teamLength, mg);
+                                                            partySize, teamLength, metagame, mg);
                     } else {
                         int size = is.read();
                         System.out.println("num of clauses " + size);
@@ -812,7 +812,7 @@ public class ServerLink extends Thread {
                             }
                         };
                         link.m_lobby.addChallenge(user, true, generation,
-                                                        partySize, teamLength, rules);
+                                                        partySize, teamLength, metagame, rules);
                     }
                 }
             });

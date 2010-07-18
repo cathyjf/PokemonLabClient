@@ -191,6 +191,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         DefaultComboBoxModel model = new DefaultComboBoxModel(metagames);
         model.addElement("Custom...");
         cmbRules.setModel(model);
+        cmbRules.setSelectedIndex(0);
     }
 
     public void setPersonalMessage(String msg) {
@@ -210,8 +211,16 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         m_incoming = true;
     }
 
-    public void setOptions(int n, int teamLength, int generation, RuleSet rules) {
+    public void setOptions(int n, int teamLength, int generation, int metagame, RuleSet rules) {
         if (m_waiting) return;
+        
+        if (metagame < 0) {
+            cmbRules.setSelectedIndex(cmbRules.getItemCount()-1);
+            tabSettings.setSelectedIndex(0);
+        } else {
+            cmbRules.setSelectedIndex(metagame);
+        }
+
         m_n = n;
         m_teamLength = teamLength;
         m_generation = generation;
@@ -399,7 +408,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
 
         jPanel2.setOpaque(false);
 
-        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 13));
         jLabel1.setText("Rules:");
 
         cmbRules.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Standard", "Ubers", "Custom..." }));
@@ -409,7 +418,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
             }
         });
 
-        jLabel2.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Lucida Grande", 1, 13));
         jLabel2.setText("Pokemon per side:");
 
         cmbN.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5", "6" }));
@@ -454,38 +463,35 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel2Layout.createSequentialGroup()
-                .add(20, 20, 20)
-                .add(jLabel1)
-                .add(12, 12, 12)
-                .add(cmbRules, 0, 162, Short.MAX_VALUE)
-                .add(19, 19, 19))
-            .add(jPanel2Layout.createSequentialGroup()
-                .add(20, 20, 20)
-                .add(jLabel2)
-                .add(12, 12, 12)
-                .add(cmbN, 0, 67, Short.MAX_VALUE)
-                .add(19, 19, 19))
-            .add(jPanel2Layout.createSequentialGroup()
-                .add(20, 20, 20)
-                .add(jLabel8)
-                .add(22, 22, 22)
-                .add(cmbTeamLength, 0, 67, Short.MAX_VALUE)
-                .add(19, 19, 19))
-            .add(jPanel2Layout.createSequentialGroup()
-                .add(20, 20, 20)
-                .add(jLabel4)
-                .add(4, 4, 4)
-                .add(cmbGen, 0, 129, Short.MAX_VALUE)
-                .add(19, 19, 19))
-            .add(jPanel2Layout.createSequentialGroup()
-                .add(20, 20, 20)
-                .add(panelSprites, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
-                .add(19, 19, 19))
-            .add(jPanel2Layout.createSequentialGroup()
-                .add(23, 23, 23)
-                .add(btnLoad, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
-                .add(6, 6, 6)
-                .add(btnChallenge, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel2Layout.createSequentialGroup()
+                        .add(20, 20, 20)
+                        .add(jLabel1)
+                        .add(12, 12, 12)
+                        .add(cmbRules, 0, 175, Short.MAX_VALUE))
+                    .add(jPanel2Layout.createSequentialGroup()
+                        .add(20, 20, 20)
+                        .add(jLabel2)
+                        .add(12, 12, 12)
+                        .add(cmbN, 0, 95, Short.MAX_VALUE))
+                    .add(jPanel2Layout.createSequentialGroup()
+                        .add(20, 20, 20)
+                        .add(jLabel8)
+                        .add(22, 22, 22)
+                        .add(cmbTeamLength, 0, 93, Short.MAX_VALUE))
+                    .add(jPanel2Layout.createSequentialGroup()
+                        .add(20, 20, 20)
+                        .add(jLabel4)
+                        .add(4, 4, 4)
+                        .add(cmbGen, 0, 147, Short.MAX_VALUE))
+                    .add(jPanel2Layout.createSequentialGroup()
+                        .add(20, 20, 20)
+                        .add(panelSprites, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE))
+                    .add(jPanel2Layout.createSequentialGroup()
+                        .add(23, 23, 23)
+                        .add(btnLoad, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
+                        .add(6, 6, 6)
+                        .add(btnChallenge, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)))
                 .add(19, 19, 19))
         );
         jPanel2Layout.setVerticalGroup(
@@ -568,7 +574,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
                                     .add(jPanel3Layout.createSequentialGroup()
                                         .add(jLabel7)
                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(txtTimerLength, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)))
+                                        .add(txtTimerLength, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)))
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(jLabel6)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -590,7 +596,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
                     .add(jLabel7)
                     .add(txtTimerLength, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -612,7 +618,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(tabSettings, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
+                    .add(tabSettings, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 351, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addContainerGap())))
@@ -710,6 +716,9 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
             Metagame meta = m_link.getMetagames()[idx];
             cmbN.setSelectedIndex(meta.getPartySize()-1);
             cmbTeamLength.setSelectedIndex(meta.getMaxTeamLength()-1);
+            m_clauses = meta.getClauses(m_link.getClauseList());
+            ((ClauseListModel)listClauses.getModel()).setSelected(m_clauses);
+            
             enableCustomFields(false);
         }
     }//GEN-LAST:event_cmbRulesActionPerformed
