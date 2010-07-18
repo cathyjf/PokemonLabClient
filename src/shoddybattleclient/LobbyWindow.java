@@ -190,8 +190,12 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
             }
         }
 
+        public static String getUserHtml(User user, Color color) {
+            return user.getHtml(color);
+        }
+
         public static String getUserHtml(User user) {
-            return user.getHtml(COLOUR_MAP.getColour(user.getName()));
+            return getUserHtml(user, COLOUR_MAP.getColour(user.getName()));
         }
         
         public String getTopic() {
@@ -237,7 +241,6 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
                 Object value, int index, boolean isSelected,
                 boolean cellHasFocus) {
             User user = (User)value;
-            setText("<html>" + Channel.getUserHtml(user) + "</html>");
             int level = user.getLevel();
             if (level > 0) {
                 setIcon(STATUS_ICONS[level - 1]);
@@ -245,9 +248,12 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
                 setIcon(null);
             }
             if (isSelected) {
+                setText("<html>" + Channel.getUserHtml(
+                        user, list.getSelectionForeground()) + "</html>");
                 setBackground(list.getSelectionBackground());
                 setForeground(list.getSelectionForeground());
             } else {
+                setText("<html>" + Channel.getUserHtml(user) + "</html>");
                 setBackground(list.getBackground());
                 setForeground(list.getForeground());
             }

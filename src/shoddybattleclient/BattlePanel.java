@@ -84,6 +84,8 @@ public class BattlePanel extends javax.swing.JPanel {
         btnRefresh = new javax.swing.JButton();
         btnJoin = new javax.swing.JButton();
 
+        setOpaque(false);
+
         tblBattles.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
