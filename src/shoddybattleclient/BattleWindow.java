@@ -32,6 +32,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -52,6 +53,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.JToolTip;
+import javax.swing.KeyStroke;
 import shoddybattleclient.ChatPane.CommandException;
 import shoddybattleclient.GameVisualisation.VisualPokemon;
 import shoddybattleclient.LobbyWindow.Channel;
@@ -375,6 +377,9 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         m_channel = m_link.getLobby().getChannel(fid);
         listUsers.setModel(m_channel.getModel());
         listUsers.setCellRenderer(new UserCellRenderer());
+
+        mnuLeaveBattle.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W,
+              Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         
         if (m_participant == 0) {
             lblPlayer1.setText(users[1]);
@@ -913,6 +918,9 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         panelHealth1 = new javax.swing.JPanel();
         panelVisual = new javax.swing.JPanel();
         panelHealth0 = new javax.swing.JPanel();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        mnuLeaveBattle = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setLocationByPlatform(true);
@@ -1110,6 +1118,20 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
         panelGame.add(panelHealth0, gridBagConstraints);
 
+        jMenu1.setText("File");
+
+        mnuLeaveBattle.setText("Leave Battle");
+        mnuLeaveBattle.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuLeaveBattleActionPerformed(evt);
+            }
+        });
+        jMenu1.add(mnuLeaveBattle);
+
+        jMenuBar1.add(jMenu1);
+
+        setJMenuBar(jMenuBar1);
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -1277,6 +1299,10 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         btnSwitchCancel.setEnabled(false);
     }//GEN-LAST:event_btnSwitchCancelActionPerformed
 
+    private void mnuLeaveBattleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLeaveBattleActionPerformed
+        formWindowClosing(null);
+    }//GEN-LAST:event_mnuLeaveBattleActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -1305,6 +1331,8 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     private javax.swing.JButton btnMoveCancel;
     private javax.swing.JButton btnSwitch;
     private javax.swing.JButton btnSwitchCancel;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -1315,6 +1343,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     private javax.swing.JLabel lblPlayer0;
     private javax.swing.JLabel lblPlayer1;
     private javax.swing.JList listUsers;
+    private javax.swing.JMenuItem mnuLeaveBattle;
     private javax.swing.JPanel panelGame;
     private javax.swing.JPanel panelHealth0;
     private javax.swing.JPanel panelHealth1;
