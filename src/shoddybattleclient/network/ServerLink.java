@@ -897,9 +897,13 @@ public class ServerLink extends Thread {
                         maxTeamLength = mediator.getMaxTeamLength();
                         link.m_lobby.removeUserPanel(user);
                     }
-                    
+
+                    TimerOptions opts = mediator.getTimerOptions();
+                    int periods = (opts == null) ? -1 : opts.periods;
+                    int periodLength = (opts == null) ? -1 : opts.periodLength;
+
                     BattleWindow wnd = new BattleWindow(link, id, partySize,
-                            maxTeamLength, party, users, team);
+                            maxTeamLength, party, users, team, periods, periodLength);
 
                     link.m_battles.put(id, wnd);
                     wnd.setVisible(true);
@@ -1247,6 +1251,11 @@ public class ServerLink extends Thread {
             new ServerMessage(23, new MessageHandler() {
                 // int32 : field id
                 // int16 : turn count
+                // bool  : if timing is enabled
+                // if timing is enabled:
+                //     for each player:
+                //        int16 : remaining time in the pool/period
+                //        byte  : number of periods remaining
                 public void handle(ServerLink link, DataInputStream is)
                         throws IOException {
                     int fid = is.readInt();
@@ -1255,11 +1264,16 @@ public class ServerLink extends Thread {
                     if (wnd == null) return;
 
                     int count = is.readShort();
+                    wnd.informTurnStart(count);
 
-                    wnd.addMessage(null, "<b>===============</b>", false);
-                    String message = Text.getText(4, 16,
-                            new String[] { String.valueOf(count) });
-                    wnd.addMessage(null, "<b>" + message + "</b>", false);
+                    boolean timing = (is.read() != 0);
+                    if (timing) {
+                        for (int i = 0; i < 2; i++) {
+                            int remaining = is.readShort();
+                            int periods = is.read();
+                            wnd.synchroniseClock(i, remaining, periods);
+                        }
+                    }
                 }
             });
 
@@ -1270,6 +1284,7 @@ public class ServerLink extends Thread {
                 // string : second player
                 // byte   : active party size
                 // byte   : maximum party size
+                // byte   : maximum timer periods or -1 if no timing
                 //
                 // for 0...1:
                 //     byte : party size
@@ -1297,9 +1312,10 @@ public class ServerLink extends Thread {
                     player[1] = is.readUTF();
                     int n = is.read();
                     int max = is.read();
+                    int maxPeriods = is.readByte();
 
                     BattleWindow battle =
-                            new BattleWindow(link, fid, n, max, player);
+                            new BattleWindow(link, fid, n, max, player, maxPeriods);
                     link.m_battles.put(fid, battle);
 
                     VisualPokemon[][] active = new VisualPokemon[2][n];

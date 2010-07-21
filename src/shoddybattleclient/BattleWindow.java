@@ -25,6 +25,7 @@ package shoddybattleclient;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.Font;
 import java.awt.GradientPaint;
@@ -33,6 +34,8 @@ import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -49,11 +52,13 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.JToolTip;
 import javax.swing.KeyStroke;
+import javax.swing.Timer;
 import shoddybattleclient.ChatPane.CommandException;
 import shoddybattleclient.GameVisualisation.VisualPokemon;
 import shoddybattleclient.LobbyWindow.Channel;
@@ -298,6 +303,88 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         }
     }
 
+    public static class TimerLabel extends JLabel {
+        private static final int FULL_RADIUS = 6;
+        private static final int EMPTY_RADIUS = 3;
+        private static final int PAD_X = 3;
+        private static final int PAD_Y = 2;
+        
+        private int m_time = -1;
+        private int m_periods = -1;
+        private int m_maxPeriods = -1;
+        private int m_periodLength = -1;
+        public void setPeriodLength(int length) {
+            m_periodLength = length;
+        }
+        public void setMaxPeriods(int periods) {
+            m_maxPeriods = periods;
+        }
+        public void update(int time, int periods) {
+            m_time = time;
+            m_periods = periods;
+            int minutes = time / 60;
+            int seconds = time % 60;
+            StringBuilder sb = new StringBuilder();
+            sb.append(minutes);
+            sb.append(":");
+            if (seconds < 10) sb.append(0);
+            sb.append(seconds);
+            setText(sb.toString());
+            repaint();
+        }
+        public void tick() {
+            if (m_time < 0) {
+                return;
+            }
+            int time = m_time;
+            int periods = m_periods;
+            if (--time == 0) {
+                time = m_periodLength;
+                periods--;
+            }
+            update(time, periods);
+        }
+        @Override
+        public Dimension getPreferredSize() {
+            Dimension d = super.getPreferredSize();
+            int cols = (m_maxPeriods) > 5 ? 5 : m_maxPeriods;
+            return new Dimension(d.width + cols * (FULL_RADIUS + PAD_X) + 10, d.height);
+        }
+
+        @Override
+        public void paintComponent(Graphics g) {
+            if (m_maxPeriods == 0) return;
+            Graphics2D g2 = (Graphics2D)g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
+            super.paintComponent(g2);
+            int x = super.getPreferredSize().width + 5;
+            g2.setColor(Color.BLACK);
+            for (int i = 0; i < m_maxPeriods; i++) {
+                int y;
+                int left;
+                if (m_maxPeriods <= 5) {
+                    y = 5;
+                    left = x + i * (FULL_RADIUS + PAD_X);
+                } else {
+                    y = 2 + (i / 5) * (FULL_RADIUS + PAD_Y);
+                    left = x + (i % 5) * (FULL_RADIUS + PAD_X);
+                }
+                int radius;
+                if (i < m_periods) {
+                    radius = FULL_RADIUS;
+                } else {
+                    radius = EMPTY_RADIUS;
+                    int diff = (FULL_RADIUS - EMPTY_RADIUS) / 2;
+                    y += diff;
+                }
+                
+                g2.fillOval(left, y, radius, radius);
+            }
+            g2.dispose();
+        }
+    }
+
     private ServerLink m_link;
     private MoveButton[] m_moveButtons;
     private SwitchButton[] m_switches;
@@ -332,6 +419,10 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     private int m_current;
     // the move that we are targeting for
     private int m_selectedMove = -1;
+    // if timing is enabled
+    private boolean m_timing;
+    // Timer that controls the clock display
+    private Timer m_timer;
 
     // whether the battle is finished
     private boolean m_finished = false;
@@ -351,8 +442,8 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
      * Constructor for spectators.
      */
     public BattleWindow(ServerLink link, int fid,
-            int n, int length, String[] users) {
-        this(link, fid, n, length, 0, users, null);
+            int n, int length, String[] users, int maxPeriods) {
+        this(link, fid, n, length, 0, users, null, maxPeriods, -1);
     }
 
     /** Creates new form BattleWindow */
@@ -361,7 +452,9 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             int length,
             int participant,
             String[] users,
-            Pokemon[] team) {
+            Pokemon[] team,
+            int maxPeriods,
+            int periodLength) {
         initComponents();
 
         setTitle(users[0] + " v. " + users[1] + " - Shoddy Battle");
@@ -373,6 +466,10 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         m_participant = participant;
         m_users = users;
         m_pokemon = team;
+        m_timing = (maxPeriods != -1) && (periodLength != -1);
+        ((TimerLabel)lblClock0).setMaxPeriods(maxPeriods);
+        ((TimerLabel)lblClock1).setMaxPeriods(maxPeriods);
+        if (m_timing) ((TimerLabel)lblClock0).setPeriodLength(periodLength);
 
         m_channel = m_link.getLobby().getChannel(fid);
         listUsers.setModel(m_channel.getModel());
@@ -421,7 +518,27 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         return m_visual.getPokemon(party, idx);
     }
 
+    private void setTicking(boolean tick) {
+        if (m_timing) {
+            if (tick) {
+                m_timer.start();
+            } else {
+                m_timer.stop();
+            }
+        }
+    }
+
     private void preparePlayer() {
+        if (m_timing) {
+            m_timer = new Timer(1000, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    ((TimerLabel)lblClock0).tick();
+                }
+            });
+            m_timer.start();
+        }
+
         if (m_pokemon.length > m_length) {
             Pokemon[] temp = new Pokemon[m_length];
             for (int i = 0; i < m_length; i++)
@@ -487,6 +604,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
 
     public void informVictory(int party) {
         // todo: improve this
+        setTicking(false);
         m_finished = true;
         String msg;
         if (party == -1) {
@@ -685,6 +803,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         btnSwitchCancel.setEnabled(false);
         tabAction.setSelectedIndex(0);
         if (m_n > 1) m_visual.setSelected(slot);
+        setTicking(true);
     }
 
     public void requestReplacement() {
@@ -695,6 +814,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         tabAction.setSelectedIndex(1);
         for (MoveButton button : m_moveButtons)
             button.setEnabled(false);
+        setTicking(true);
     }
 
     private void requestTarget(TargetClass mode) {
@@ -740,8 +860,10 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         btnMoveCancel.setEnabled(false);
         btnSwitch.setEnabled(false);
         btnSwitchCancel.setEnabled(false);
-        for (MoveButton button : m_moveButtons)
+        for (MoveButton button : m_moveButtons) {
             button.setEnabled(false);
+        }
+        setTicking(false);
     }
 
     public void setValidMoves(boolean[] valid) {
@@ -884,6 +1006,18 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         }
     }
 
+    public void synchroniseClock(int i, int time, int periods) {
+        TimerLabel timer = (TimerLabel)((i == m_participant) ? lblClock0 : lblClock1);
+        timer.update(time, periods);
+        m_timer.start();
+    }
+
+    public void informTurnStart(int turn) {
+        addMessage(null, "<b>===============</b>", false);
+        String message = Text.getText(4, 16, new String[] { String.valueOf(turn) });
+        addMessage(null, "<b>" + message + "</b>", false);
+    }
+
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -912,9 +1046,9 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         scrollChat = new javax.swing.JScrollPane();
         panelGame = new javax.swing.JPanel();
         lblPlayer1 = new javax.swing.JLabel();
-        lblClock1 = new javax.swing.JLabel();
+        lblClock1 = new TimerLabel();
         lblPlayer0 = new javax.swing.JLabel();
-        lblClock0 = new javax.swing.JLabel();
+        lblClock0 = new TimerLabel();
         panelHealth1 = new javax.swing.JPanel();
         panelVisual = new javax.swing.JPanel();
         panelHealth0 = new javax.swing.JPanel();
@@ -1059,8 +1193,6 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         panelGame.add(lblPlayer1, gridBagConstraints);
-
-        lblClock1.setText("00:00:00");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -1073,8 +1205,6 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         panelGame.add(lblPlayer0, gridBagConstraints);
-
-        lblClock0.setText("00:00:00");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 4;
@@ -1309,20 +1439,12 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     public static void main(String args[]) {
         JFrame frame = new JFrame();
         JPanel panel = new JPanel();
-        frame.setSize(370, 180);
-        panel.setLayout(new GridLayout(2, 2, 3, 3));
-        java.util.Random r = new java.util.Random();
-        /*for (int i = 0; i < 4; i++) {
-            MoveButton button = new MoveButton();
-            PokemonMove move = new PokemonMove();
-            move.name = "Tackle";
-            move.type = Text.getText(0, r.nextInt(17));
-            button.setMove(0, 0, move);
-            panel.add(button);
-        }*/
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        panel.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        TimerLabel label = new TimerLabel();
+        label.setMaxPeriods(3);
+        label.update(300, 3);
+        panel.add(label);
         frame.add(panel);
+        frame.setSize(150, 50);
         frame.setVisible(true);
     }
 
