@@ -338,11 +338,11 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             }
             int time = m_time;
             int periods = m_periods;
-            if (--time == 0) {
+            if (time-- == 0) {
                 time = m_periodLength;
                 periods--;
             }
-            update(time, periods);
+            if (periods >= 0) update(time, periods);
         }
         @Override
         public Dimension getPreferredSize() {
@@ -1009,7 +1009,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     public void synchroniseClock(int i, int time, int periods) {
         TimerLabel timer = (TimerLabel)((i == m_participant) ? lblClock0 : lblClock1);
         timer.update(time, periods);
-        m_timer.start();
+        setTicking(true);
     }
 
     public void informTurnStart(int turn) {

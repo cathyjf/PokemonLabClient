@@ -783,10 +783,9 @@ public class ServerLink extends Thread {
                     if (metagame != -1) {
                         Metagame mg = link.getMetagames()[metagame];
                         link.m_lobby.addChallenge(user, true, generation,
-                                                            partySize, teamLength, metagame, mg);
+                                partySize, teamLength, metagame, mg);
                     } else {
                         int size = is.read();
-                        System.out.println("num of clauses " + size);
                         final int[] clauses = new int[size];
                         for (int i = 0; i < size; i++) {
                             clauses[i] = is.read();
@@ -796,8 +795,7 @@ public class ServerLink extends Thread {
                             pool = is.readInt();
                             periods = is.read();
                             periodLength = is.readInt();
-                             ops = new TimerOptions(pool,
-                                                        periods, periodLength);
+                            ops = new TimerOptions(pool, periods, periodLength);
                         } else {
                             ops = null;
                         }
@@ -812,7 +810,7 @@ public class ServerLink extends Thread {
                             }
                         };
                         link.m_lobby.addChallenge(user, true, generation,
-                                                        partySize, teamLength, metagame, rules);
+                                partySize, teamLength, metagame, rules);
                     }
                 }
             });
@@ -876,11 +874,13 @@ public class ServerLink extends Thread {
                     int partySize;
                     int maxTeamLength;
                     Pokemon[] team;
+                    TimerOptions opts;
                     if (metagameId != -1) {
                         Metagame metagame = link.m_metagames[metagameId];
                         partySize = metagame.getPartySize();
                         maxTeamLength = metagame.getMaxTeamLength();
                         team = metagame.getTeam();
+                        opts = metagame.getTimerOptions();
                         link.getLobby().getFindPanel().informMatchStarted();
                     } else {
                         if (party == 0) {
@@ -895,10 +895,10 @@ public class ServerLink extends Thread {
                         partySize = mediator.getActivePartySize();
                         team = mediator.getTeam();
                         maxTeamLength = mediator.getMaxTeamLength();
+                        opts = mediator.getTimerOptions();
                         link.m_lobby.removeUserPanel(user);
                     }
 
-                    TimerOptions opts = mediator.getTimerOptions();
                     int periods = (opts == null) ? -1 : opts.periods;
                     int periodLength = (opts == null) ? -1 : opts.periodLength;
 
@@ -1421,7 +1421,11 @@ public class ServerLink extends Thread {
                 //     int16  : number of clauses
                 //     for each clause:
                 //         string : name of clause
-                //     TODO: Timer options
+                //     byte   : if timing is enabled
+                //     if timing is enabled:
+                //         short : pool length
+                //         byte  : number of periods
+                //         short : period length
                 public void handle(ServerLink link, DataInputStream is)
                         throws IOException {
                     int count = is.readShort();
@@ -1447,10 +1451,19 @@ public class ServerLink extends Thread {
                             String clause = is.readUTF();
                             clauses.add(clause);
                         }
-                        //todo: timer options
+                        TimerOptions ops;
+                        boolean timing = (is.read() != 0);
+                        if (timing) {
+                            int pool = is.readShort();
+                            int periods = is.read();
+                            int periodLength = is.readShort();
+                            ops = new TimerOptions(pool, periods, periodLength);
+                        } else {
+                            ops = null;
+                        }
                         metagames[i] = new Metagame(idx, name, id,
                                 description, partySize, maxTeamLength,
-                                banList, clauses, null);
+                                banList, clauses, ops);
                     }
                     link.m_metagames = metagames;
                     if (link.m_lobby != null) {

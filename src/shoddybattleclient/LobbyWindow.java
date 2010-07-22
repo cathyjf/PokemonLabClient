@@ -578,7 +578,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
     }
 
     public void addChallenge(String name, boolean incoming, int gen, int n,
-                                                        int teamLength, int metagame, RuleSet rules) {
+            int teamLength, int metagame, RuleSet rules) {
         if (Preference.ignoring(name)) {
             m_link.resolveChallenge(name, false, null);
             return;
@@ -659,7 +659,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
     }
 
     public UserPanel openUserPanel(String user, boolean incoming, int generation, 
-                                                        int n, int teamLength, int metagame, RuleSet rules) {
+            int n, int teamLength, int metagame, RuleSet rules) {
         UserPanel panel = m_userPanels.get(user);
         if (panel == null) {
             int index = tabChats.getTabCount();

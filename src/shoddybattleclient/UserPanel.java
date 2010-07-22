@@ -230,6 +230,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         m_clauses = rules.getClauses(m_link.getClauseList());
         ((ClauseListModel)listClauses.getModel()).setSelected(m_clauses);
         TimerOptions ops = rules.getTimerOptions();
+        m_timerOps = ops;
         enableCustomFields(false);
         if (ops == null) {
             chkTimed.setSelected(false);
