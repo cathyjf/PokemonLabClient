@@ -50,6 +50,8 @@ public class Preference {
     private static final String AUTOSAVE_CHAT_LOGS = "autosaveChatLogs";
     private static final String BATTLE_LOGS = "battleLogs";
     private static final String TEAM_DIR = "teamDir";
+    private static final String PREVIOUS_HOST = "advancedPreviousHost";
+    private static final String PREVIOUS_PORT = "advancedPreviousPort";
 
     public static void setStorageLocation(String loc) {
         m_prefs.put(STORAGE_LOCATION, loc);
@@ -239,5 +241,23 @@ public class Preference {
     public static File getTeamDirectory() {
         return new File(m_prefs.get(TEAM_DIR,
                 new JFileChooser().getCurrentDirectory().toString()));
+    }
+    public static String getPreviousHost() {
+        return m_prefs.get(PREVIOUS_HOST, "");
+    }
+    public static String getPreviousPort() {
+        int port = m_prefs.getInt(PREVIOUS_PORT, -1);
+        return (port < 0) ? "" : String.valueOf(port);
+    }
+    public static void setPreviousHost(String host) {
+        m_prefs.put(PREVIOUS_HOST, host);
+    }
+    public static void setPreviousPort(String port) {
+        try {
+            int p = Integer.valueOf(port);
+            m_prefs.putInt(PREVIOUS_PORT, p);
+        } catch (Exception e) {
+            // Shouldn't be possible to get here from the advanced dialog
+        }
     }
 }

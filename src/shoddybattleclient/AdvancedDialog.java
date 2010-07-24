@@ -37,7 +37,8 @@ public class AdvancedDialog extends javax.swing.JDialog {
     public AdvancedDialog(JFrame parent) {
         initComponents();
         m_parent = parent;
-
+        txtHost.setText(Preference.getPreviousHost());
+        txtPort.setText(Preference.getPreviousPort());
     }
 
     /** This method is called from within the constructor to
@@ -98,7 +99,7 @@ public class AdvancedDialog extends javax.swing.JDialog {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(jLabel1)
@@ -109,9 +110,9 @@ public class AdvancedDialog extends javax.swing.JDialog {
                             .add(txtHost, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 165, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                     .add(layout.createSequentialGroup()
                         .add(btnConnect)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 91, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .add(btnCancel)))
-                .addContainerGap())
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         layout.linkSize(new java.awt.Component[] {txtHost, txtPort}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
@@ -139,6 +140,8 @@ public class AdvancedDialog extends javax.swing.JDialog {
 
     private void btnConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectActionPerformed
         try {
+            Preference.setPreviousHost(txtHost.getText());
+            Preference.setPreviousPort(txtPort.getText());
             if (WelcomeWindow.connect(txtHost.getText(), Integer.parseInt(txtPort.getText()))) {
                 m_parent.dispose();
                 this.dispose();
