@@ -265,7 +265,9 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             }
             Color fontCol = isSelected() ? SELECTION_FONT : Color.WHITE;
             if (pokemon.getSlot() != -1) fontCol = ACTIVE_FONT;
-            if (pokemon.isFainted()) fontCol = Color.DARK_GRAY;
+            if (pokemon.isFainted()) {
+                fontCol = Color.DARK_GRAY;
+            }
             
             g2.setFont(g2.getFont().deriveFont(Font.BOLD));
             int speciesY = getHeight() / 2 - g2.getFontMetrics().getHeight() / 2 + 4;
@@ -280,6 +282,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             int x = 3;
             int healthW = getWidth() / 2 - x;
             double frac = (double)n / d;
+            if (frac < 0) frac = 0;
             g2.setColor(Color.BLACK);
             g2.drawRect(x, y, healthW, 10);
             g2.setColor(HEALTH_COLOUR);

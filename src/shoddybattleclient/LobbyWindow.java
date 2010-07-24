@@ -648,9 +648,13 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         Channel channel = m_channels.get(id);
         if (channel != null) {
             User u = channel.getUser(user);
-            String prefix = u.getPrefix();
+            String userString = user;
+            if (u != null) {
+                String prefix = u.getPrefix();
+                userString = prefix + Channel.getUserHtml(u);
+            }
             showChannelMessage(channel,
-                    prefix + Channel.getUserHtml(u), message, true);
+                    userString, message, true);
         }
     }
 
