@@ -37,10 +37,11 @@ import org.xml.sax.Attributes;
 import shoddybattleclient.shoddybattle.Pokemon;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
 import shoddybattleclient.shoddybattle.PokemonNature;
+import shoddybattleclient.shoddybattle.PokemonSpecies;
 
 /**
- * This class parses both the XML Shoddy Battle 2 team format, as well as the
- * terrible Shoddy Battle 1 binary team format
+ * This class parses the XML Shoddy Battle 2 team format, as well as the
+ * terrible Shoddy Battle 1 binary team format crafted by Catherine
  *
  * @author ben
  */
@@ -74,7 +75,7 @@ public class TeamFileParser extends DefaultHandler {
     private String tempStr;
     private int moveIndex;
 
-    public Pokemon[] parseTeam(String file) {
+    public Pokemon[] parseTeam(String file, List<PokemonSpecies> speciesList) {
         m_pokemon = new ArrayList<Pokemon>();
         DataInputStream is = null;
         try {
@@ -89,7 +90,8 @@ public class TeamFileParser extends DefaultHandler {
                 if (version != STREAM_VERSION) {
                     sb1 = false;
                 }
-                Pokemon[] team = (sb1) ? parseShoddyBattle1Team(is) : parseShoddyBattle2Team(file);
+                Pokemon[] team = (sb1) ? parseShoddyBattle1Team(is) :
+                        parseShoddyBattle2Team(file);
                 if (team.length == 0) return null;
                 for (Pokemon p : team) {
                     List<String> moves = new ArrayList<String>();
@@ -108,6 +110,15 @@ public class TeamFileParser extends DefaultHandler {
                         temp2[i] = temp[i];
                     }
                     p.ppUps = temp2;
+
+                    // If the pokemon has no ability then put in a default one
+                    if (p.ability == null) {
+                        for (PokemonSpecies ps : speciesList) {
+                            if (ps.getName().equals(p.species)) {
+                                p.ability = ps.getAbilities()[0];
+                            }
+                        }
+                    }
                 }
                 return team;
             } catch (Exception e) {
@@ -328,7 +339,8 @@ public class TeamFileParser extends DefaultHandler {
         if (desc != null) {
             if (desc.name.equals("shoddybattle.Pokemon")) {
                 readPokemon(desc, is);
-            } else if (desc.name.equals("mechanics.AdvanceMechanics")) {
+            } else if (desc.name.equals("mechanics.AdvanceMechanics")
+                    || (desc.name.equals("mechanics.JewelMechanics"))) {
                 readObject(is);
             } else if (desc.name.equals("java.util.Random")) {
                 readRandomObject(is);
@@ -512,7 +524,7 @@ public class TeamFileParser extends DefaultHandler {
 
     public static void main(String[] args) {
         TeamFileParser tfp = new TeamFileParser();
-        Pokemon[] team = tfp.parseTeam(args[0]);
+        Pokemon[] team = tfp.parseTeam("/Users/ben/Downloads/trickyteam", null);
         System.out.println("Content-type: text/plain");
         System.out.println();
         if (team != null) {

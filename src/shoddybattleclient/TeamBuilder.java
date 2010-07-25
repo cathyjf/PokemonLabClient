@@ -193,13 +193,8 @@ public class TeamBuilder extends javax.swing.JFrame {
         return null;
     }
 
-    public String[] getSpeciesList() {
-        String[] ret = new String[m_generation.getSpecies().size()];
-        int i = 0;
-        for (PokemonSpecies ps : m_generation.getSpecies()) {
-            ret[i++] = ps.getName();
-        }
-        return ret;
+    public List<PokemonSpecies> getSpeciesList() {
+        return m_generation.getSpecies();
     }
 
     public void updateTitle(int index, String title) {
@@ -314,7 +309,7 @@ public class TeamBuilder extends javax.swing.JFrame {
         File[] teams = dir.listFiles(filter);
         TeamFileParser parser = new TeamFileParser();
         for (int i = 0; i < teams.length; i++) {
-            Pokemon[] team = parser.parseTeam(teams[i].toString());
+            Pokemon[] team = parser.parseTeam(teams[i].toString(), m_generation.getSpecies());
             if (team == null) continue;
             for (Pokemon p : team) {
                 if (p.species.equalsIgnoreCase(species)) {
@@ -336,7 +331,8 @@ public class TeamBuilder extends javax.swing.JFrame {
             if (!boxFolder.isDirectory()) continue;
 
             try {
-                PokemonBox box = new PokemonBox(boxFolder.getName(), species);
+                PokemonBox box = new PokemonBox(
+                        boxFolder.getName(), m_generation.getSpecies());
                 if (box.getSize() > 0)
                     ((BoxTreeModel)treeBox.getModel()).addBox(box);
             } catch (Exception ex) {}
@@ -667,7 +663,7 @@ public class TeamBuilder extends javax.swing.JFrame {
         if (file == null || !(new File(file).exists())) return;
 
         TeamFileParser tfp = new TeamFileParser();
-        Pokemon[] team = tfp.parseTeam(file);
+        Pokemon[] team = tfp.parseTeam(file, m_generation.getSpecies());
 
         if (team == null) {
             JOptionPane.showMessageDialog(null, "Error reading file",
@@ -920,7 +916,8 @@ public class TeamBuilder extends javax.swing.JFrame {
                     selection = boxName;
                 }
                 
-                PokemonBox box = new PokemonBox((String)selection, getSelectedPokemon().toString());
+                PokemonBox box = new PokemonBox((String)selection, 
+                        getSelectedPokemon().toString(), m_generation.getSpecies());
                 PokemonWrapper poke = addPokemonToBox(box, getSelectedPokemon());
                 if (poke != null) {
                     treeModel.addBoxPokemon(poke);
@@ -1118,11 +1115,13 @@ public class TeamBuilder extends javax.swing.JFrame {
                 
                 long t1 = System.currentTimeMillis();
                 MoveListParser mlp = new MoveListParser();
-                ArrayList<PokemonMove> moves = mlp.parseDocument(TeamBuilder.class.getResource("resources/moves.xml").toString());
+                ArrayList<PokemonMove> moves = mlp.parseDocument(
+                        TeamBuilder.class.getResource("resources/moves.xml").toString());
                 long t2 = System.currentTimeMillis();
                 mlp = null;
                 SpeciesListParser parser = new SpeciesListParser();
-                ArrayList<PokemonSpecies> species = parser.parseDocument(TeamBuilder.class.getResource("resources/species.xml").toString());
+                ArrayList<PokemonSpecies> species = parser.parseDocument(
+                        TeamBuilder.class.getResource("resources/species.xml").toString());
                 parser = null;
                 long t3 = System.currentTimeMillis();
                 Collections.sort(species, new Comparator<PokemonSpecies>() {

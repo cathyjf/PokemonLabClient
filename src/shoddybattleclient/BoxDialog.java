@@ -197,7 +197,7 @@ public class BoxDialog extends javax.swing.JDialog {
             for(File boxFile : boxDir.listFiles()) {
                 if(!boxFile.isDirectory())
                     continue;
-                boxes.add(new PokemonBox(boxFile.getName()));
+                boxes.add(new PokemonBox(boxFile.getName(), parent.getSpeciesList()));
             }
         }
         boxModel.addBoxes(boxes);
@@ -417,7 +417,7 @@ public class BoxDialog extends javax.swing.JDialog {
         }
 
         try {
-            PokemonBox newBox = new PokemonBox(boxName);
+            PokemonBox newBox = new PokemonBox(boxName, teamBuilder.getSpeciesList());
             boxModel.addBox(newBox);
             listBoxes.setSelectedValue(newBox, true);
         } catch (Exception ex) {
@@ -513,7 +513,7 @@ public class BoxDialog extends javax.swing.JDialog {
             try {
                 oldFile.renameTo(newFile);
 
-                PokemonBox newBox = new PokemonBox(newName);
+                PokemonBox newBox = new PokemonBox(newName, teamBuilder.getSpeciesList());
                 boxModel.removeBox(current);
                 boxModel.addBox(newBox);
                 list.setSelectedValue(newBox, true);

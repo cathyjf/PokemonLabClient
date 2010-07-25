@@ -120,7 +120,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
             TeamFileParser tfp = new TeamFileParser();
             Pokemon[] team = null;
             try {
-                team = tfp.parseTeam(file);
+                team = tfp.parseTeam(file, ServerLink.getSpeciesList());
                 m_team = team;
             } catch (Exception e) {
                 return null;
