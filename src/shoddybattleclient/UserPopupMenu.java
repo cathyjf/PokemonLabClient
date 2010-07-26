@@ -75,7 +75,7 @@ public class UserPopupMenu extends JPopupMenu {
         mute.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                m_lobby.getLink().sendMuteMessage(m_lobby.getActiveChannel(), m_user.getName(), true);
+                m_lobby.getLink().updateMode(m_lobby.getActiveChannel(), m_user.getName(), 3, true);
             }
 
         });
@@ -83,7 +83,47 @@ public class UserPopupMenu extends JPopupMenu {
         unmute.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                m_lobby.getLink().sendMuteMessage(m_lobby.getActiveChannel(), m_user.getName(), false);
+                m_lobby.getLink().updateMode(m_lobby.getActiveChannel(), m_user.getName(), 3, false);
+            }
+
+        });
+        JMenuItem sop = new JMenuItem("Add SOp");
+        sop.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                m_lobby.getLink().updateMode(m_lobby.getActiveChannel(), m_user.getName(), 0, true);
+            }
+
+        });
+        JMenuItem op = new JMenuItem("Add Op");
+        op.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                m_lobby.getLink().updateMode(m_lobby.getActiveChannel(), m_user.getName(), 1, true);
+            }
+
+        });
+        JMenuItem removeOp = new JMenuItem("Remove Op");
+        removeOp.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                m_lobby.getLink().updateMode(m_lobby.getActiveChannel(), m_user.getName(), 1, false);
+            }
+
+        });
+        JMenuItem voice = new JMenuItem("Add Voice");
+        voice.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                m_lobby.getLink().updateMode(m_lobby.getActiveChannel(), m_user.getName(), 2, true);
+            }
+
+        });
+        JMenuItem removeVoice = new JMenuItem("Remove Voice");
+        removeVoice.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                m_lobby.getLink().updateMode(m_lobby.getActiveChannel(), m_user.getName(), 2, false);
             }
 
         });
@@ -111,6 +151,26 @@ public class UserPopupMenu extends JPopupMenu {
                 this.add(unmute);
             }
             this.add(lookup);
+        }
+        if (level > 2) {
+            this.addSeparator();
+            if (m_user.getLevel() < 3) {
+                this.add(sop);
+            }
+            //todo: determine if sops should be able to remove sops
+            //maybe we need a channel owner
+            if (m_user.getLevel() < 2) {
+                this.add(op);
+            }
+            else if (m_user.getLevel() == 2) {
+                this.add(removeOp);
+            }
+            if (m_user.getLevel() < 1) {
+                this.add(voice);
+            }
+            else if (m_user.getLevel() == 1) {
+                this.add(removeVoice);
+            }
         }
     }
 

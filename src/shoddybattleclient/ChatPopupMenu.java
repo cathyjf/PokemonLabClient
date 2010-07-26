@@ -41,7 +41,7 @@ public class ChatPopupMenu extends JPopupMenu {
         mute.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                m_lobby.getLink().sendMuteMessage(m_lobby.getActiveChannel(), "", true);
+                m_lobby.getLink().updateMode(m_lobby.getActiveChannel(), "", 4, true);
             }
 
         });
@@ -49,7 +49,7 @@ public class ChatPopupMenu extends JPopupMenu {
         unmute.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                m_lobby.getLink().sendMuteMessage(m_lobby.getActiveChannel(), "", false);
+                m_lobby.getLink().updateMode(m_lobby.getActiveChannel(), "", 4, false);
             }
 
         });
