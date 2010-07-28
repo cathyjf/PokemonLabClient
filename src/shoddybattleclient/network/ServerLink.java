@@ -1546,6 +1546,7 @@ public class ServerLink extends Thread {
                 //int32 : field id
                 //byte  : party
                 //byte  : position
+                //byte  : type
                 //byte  : effect radius
                 //string: message
                 //byte  : whether the status was applied
@@ -1554,13 +1555,32 @@ public class ServerLink extends Thread {
                     int fid = is.readInt();
                     int party = is.readUnsignedByte();
                     int position = is.readUnsignedByte();
+                    int type = is.readUnsignedByte();
                     int radius = is.readUnsignedByte();
                     String msg = is.readUTF();
                     boolean applied = (is.read() != 0);
                     BattleWindow wnd = link.getBattle(fid);
                     if (wnd == null) return;
                     msg = Text.parse(msg, wnd);
-                    wnd.updateStatus(party, position, radius, msg, applied);
+
+                    switch(type) {
+                        case 0:
+                            wnd.updateStatus(party, position, radius, msg, applied);
+                            break;
+                        case 1:
+                            if (applied)
+                                System.out.println("ITEM ADDED: " + msg);
+                            else
+                                System.out.println("ITEM REMOVED: " + msg);
+                            break;
+                        case 2:
+                            if (applied)
+                                System.out.println("ABILITY ADDED: " + msg);
+                            else
+                                System.out.println("ABILITY REMOVED: " + msg);
+                            break;
+                    }
+
                 }
             });
 
