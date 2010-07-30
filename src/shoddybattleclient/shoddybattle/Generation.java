@@ -70,12 +70,13 @@ public class Generation {
         while (left <= right) {
             int middle = (left+right)/2;
             int compare = name.compareToIgnoreCase(m_species.get(middle).getName());
-            if (compare == 0)
+            if (compare == 0) {
                 return m_species.get(middle);
-            else if (compare < 0)
+            } else if (compare < 0) {
                 right = middle - 1;
-            else
+            } else {
                 left = middle + 1;
+            }
         }
         return null;
     }

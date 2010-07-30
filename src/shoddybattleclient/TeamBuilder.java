@@ -279,8 +279,7 @@ public class TeamBuilder extends javax.swing.JFrame {
     }
 
     public void setPokemonAt(int index, Pokemon poke) {
-        if (index < 0)
-            return;
+        if (index < 0) return;
         if (index == tabForms.getSelectedIndex()) {
             if (!poke.toString().equals(getSelectedPokemon().toString()))
                 setSpecies(poke.toString());
@@ -323,7 +322,7 @@ public class TeamBuilder extends javax.swing.JFrame {
             if (!boxFolder.isDirectory()) continue;
             try {
                 PokemonBox box = new PokemonBox(
-                        boxFolder.getName(), m_generation.getSpecies());
+                        boxFolder.getName(), species, m_generation.getSpecies());
                 if (box.getSize() > 0)
                     ((BoxTreeModel)treeBox.getModel()).addBox(box);
             } catch (Exception ex) {}
@@ -678,10 +677,11 @@ public class TeamBuilder extends javax.swing.JFrame {
 }//GEN-LAST:event_menuLoadActionPerformed
 
     private void menuSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSaveActionPerformed
-        if (m_save == null)
+        if (m_save == null) {
             saveTeam();
-        else
+        } else {
             saveTeam(m_save.getAbsolutePath());
+        }
 }//GEN-LAST:event_menuSaveActionPerformed
 
     private void menuSaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSaveAsActionPerformed
@@ -697,10 +697,9 @@ public class TeamBuilder extends javax.swing.JFrame {
             return;
         }
 
-        if (size < 1)
+        if (size < 1) {
             return;
-
-        if (size > 24) {
+        } else if (size > 24) {
             JOptionPane.showMessageDialog(null, "Cannot use a size larger than 24 pokemon.",
                     "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -710,15 +709,17 @@ public class TeamBuilder extends javax.swing.JFrame {
         Component last = tabForms.getComponentAt(tabForms.getTabCount() - 1);
 
         if (size > m_forms.size()) {
-            if (last instanceof BoxForm)
+            if (last instanceof BoxForm) {
                 tabForms.remove(tabForms.getTabCount() - 1);
+            }
 
             while (size > m_forms.size()) {
                 addDefaultForm();
             }
 
-            if (last instanceof BoxForm)
+            if (last instanceof BoxForm) {
                 tabForms.addTab("Boxes", last);
+            }
         } else {
             while (m_forms.size() > size) {
                 int idx = m_forms.size() - 1;
@@ -818,8 +819,9 @@ public class TeamBuilder extends javax.swing.JFrame {
         int result = JOptionPane.showOptionDialog(null,
                  "This team may have unsaved changes, create new anyways?",
                  "Unsaved Changes", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-        if (result == JOptionPane.OK_OPTION)
+        if (result == JOptionPane.OK_OPTION) {
             addDefaultTeam();
+        }
     }//GEN-LAST:event_menuNewActionPerformed
 
     private void menuExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuExportActionPerformed
@@ -834,8 +836,9 @@ public class TeamBuilder extends javax.swing.JFrame {
 
     private void menuFrontActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuFrontActionPerformed
         int selected = tabForms.getSelectedIndex();
-        if (selected < 1 || selected >= m_forms.size())
+        if (selected < 1 || selected >= m_forms.size()) {
             return;
+        }
 
         TeamBuilderForm temp = m_forms.get(selected);
         m_forms.set(selected, m_forms.get(0));
@@ -843,11 +846,13 @@ public class TeamBuilder extends javax.swing.JFrame {
 
         Component last = tabForms.getComponentAt(tabForms.getTabCount() - 1);
         tabForms.removeAll();
-        for (TeamBuilderForm tab : m_forms)
+        for (TeamBuilderForm tab : m_forms) {
             ((CloseableTabbedPane)tabForms).addTab(tab.getPokemon().toString(), tab, false);
+        }
 
-        if (last instanceof BoxForm)
+        if (last instanceof BoxForm) {
             tabForms.add("Boxes", last);
+        }
     }//GEN-LAST:event_menuFrontActionPerformed
 
     private void menuBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBoxActionPerformed
@@ -1059,8 +1064,9 @@ public class TeamBuilder extends javax.swing.JFrame {
 
         File boxFolder = new File(Preference.getBoxLocation());
         for (File box : boxFolder.listFiles()) {
-            if (!box.isDirectory())
+            if (!box.isDirectory()) {
                 continue;
+            }
 
             for (File pokemon : box.listFiles()) {
                 if (pokemon.isDirectory()) {
@@ -1072,8 +1078,9 @@ public class TeamBuilder extends javax.swing.JFrame {
                 }
             }
 
-            if (!box.delete())
+            if (!box.delete()) {
                 deleteFailed = true;
+            }
         }
 
         if (badFormat) {
