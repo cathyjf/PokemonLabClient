@@ -33,6 +33,7 @@ import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
+import java.awt.event.MouseAdapter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -289,7 +290,9 @@ public class BoxForm extends javax.swing.JPanel {
                     PokemonWrapper result = m_teamBuilder.addPokemonToBox(box,
                             (Pokemon)transfer.getTransferData(m_pokemonFlavor));
                     if (result != null) {
+                        int row = box.indexOf(result);
                         m_pokemonModel.fireTableDataChanged();
+                        tblPokemon.setRowSelectionInterval(row, row);
                     }
                 } else if (transfer.isDataFlavorSupported(m_wrapperFlavor)) {
                     PokemonWrapper wrapper = (PokemonWrapper)transfer.getTransferData(m_wrapperFlavor);
@@ -424,6 +427,23 @@ public class BoxForm extends javax.swing.JPanel {
         tblPokemon.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblPokemon.setDragEnabled(true);
         tblPokemon.setTransferHandler(new PokemonTableTransferHandler());
+        tblPokemon.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if (evt.isPopupTrigger()) {
+                    int row = tblPokemon.rowAtPoint(evt.getPoint());
+                    if (row >= 0 && row < m_pokemonModel.getRowCount()) {
+                        tblPokemon.setRowSelectionInterval(row, row);
+                        popupPokemon.show(tblPokemon, evt.getX(), evt.getY());
+                    }
+                }
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                mouseClicked(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                mouseClicked(evt);
+            }
+        });
 
         TableColumnModel model = tblPokemon.getColumnModel();
         model.getColumn(0).setHeaderValue("");
@@ -527,6 +547,9 @@ public class BoxForm extends javax.swing.JPanel {
         popupBoxes = new javax.swing.JPopupMenu();
         menuRenameBox = new javax.swing.JMenuItem();
         menuDeleteBox = new javax.swing.JMenuItem();
+        popupPokemon = new javax.swing.JPopupMenu();
+        menuRenamePokemon = new javax.swing.JMenuItem();
+        menuDeletePokemon = new javax.swing.JMenuItem();
         scrollPokemon = new javax.swing.JScrollPane();
         jScrollPane2 = new javax.swing.JScrollPane();
         listBoxes = new javax.swing.JList();
@@ -547,6 +570,22 @@ public class BoxForm extends javax.swing.JPanel {
             }
         });
         popupBoxes.add(menuDeleteBox);
+
+        menuRenamePokemon.setText("Rename");
+        menuRenamePokemon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuRenamePokemonActionPerformed(evt);
+            }
+        });
+        popupPokemon.add(menuRenamePokemon);
+
+        menuDeletePokemon.setText("Delete");
+        menuDeletePokemon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuDeletePokemonActionPerformed(evt);
+            }
+        });
+        popupPokemon.add(menuDeletePokemon);
 
         setOpaque(false);
         setPreferredSize(new java.awt.Dimension(662, 352));
@@ -588,10 +627,10 @@ public class BoxForm extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
-                    .addComponent(btnNewBox, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                    .addComponent(btnNewBox, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addComponent(scrollPokemon, javax.swing.GroupLayout.DEFAULT_SIZE, 502, Short.MAX_VALUE)
+                .addComponent(scrollPokemon, javax.swing.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -600,10 +639,10 @@ public class BoxForm extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnNewBox))
-                    .addComponent(scrollPokemon, javax.swing.GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE))
+                    .addComponent(scrollPokemon, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -714,7 +753,7 @@ public class BoxForm extends javax.swing.JPanel {
             int index = listBoxes.locationToIndex(evt.getPoint());
             if (index >= 0 && index < m_boxModel.getSize()) {
                 listBoxes.setSelectedIndex(index);
-                popupBoxes.show(this, evt.getX(), evt.getY());
+                popupBoxes.show(listBoxes, evt.getX(), evt.getY());
             }
         }
     }//GEN-LAST:event_listBoxesMouseClicked
@@ -723,14 +762,69 @@ public class BoxForm extends javax.swing.JPanel {
         listBoxesMouseClicked(evt);
     }//GEN-LAST:event_listBoxesMousePressed
 
+    private void menuRenamePokemonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuRenamePokemonActionPerformed
+        PokemonWrapper current = (PokemonWrapper)m_pokemonModel.getPokemonAt(
+                tblPokemon.getSelectedRow());
+        String newName = JOptionPane.showInputDialog(this, "New name for "+current.name+":");
+        if(newName == null || (newName = newName.trim()).equals(""))
+            return;
+
+        PokemonBox box = (PokemonBox)listBoxes.getSelectedValue();
+
+        //Duplicates are fine if we're merely changing the case
+        PokemonWrapper previous = box.getPokemon(newName);
+        if(previous != null && previous.pokemon != current.pokemon) {
+            JOptionPane.showMessageDialog(this, "A pokemon with this name already exists",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            box.removePokemon(current.name);
+            box.addPokemon(newName, current.pokemon);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error renaming pokemon", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
+        int row = box.indexOf(newName);
+        m_pokemonModel.fireTableDataChanged();
+        tblPokemon.setRowSelectionInterval(row, row);
+    }//GEN-LAST:event_menuRenamePokemonActionPerformed
+
+    private void menuDeletePokemonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuDeletePokemonActionPerformed
+        PokemonWrapper wrapper = (PokemonWrapper)m_pokemonModel.getPokemonAt(
+                tblPokemon.getSelectedRow());
+        int option = JOptionPane.showConfirmDialog(this, "Are you sure you want " +
+                " to delete " + wrapper.name + "?", "", JOptionPane.YES_NO_OPTION);
+
+        if(option != JOptionPane.YES_OPTION)
+            return;
+
+        PokemonBox box = (PokemonBox)listBoxes.getSelectedValue();
+
+        try {
+            box.removePokemon(wrapper.name);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error deleting pokemon", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
+        m_pokemonModel.fireTableDataChanged();
+        tblPokemon.clearSelection();
+    }//GEN-LAST:event_menuDeletePokemonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnNewBox;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JList listBoxes;
     private javax.swing.JMenuItem menuDeleteBox;
+    private javax.swing.JMenuItem menuDeletePokemon;
     private javax.swing.JMenuItem menuRenameBox;
+    private javax.swing.JMenuItem menuRenamePokemon;
     private javax.swing.JPopupMenu popupBoxes;
+    private javax.swing.JPopupMenu popupPokemon;
     private javax.swing.JScrollPane scrollPokemon;
     // End of variables declaration//GEN-END:variables
 
