@@ -228,17 +228,9 @@ public class WelcomeWindow extends javax.swing.JFrame {
         MoveListParser mlp = new MoveListParser();
         ArrayList<PokemonMove> moves = mlp.parseDocument(TeamBuilder.class.getResource("resources/moves.xml").toString());
         long t2 = System.currentTimeMillis();
-        mlp = null;
         SpeciesListParser parser = new SpeciesListParser();
         ArrayList<PokemonSpecies> species = parser.parseDocument(TeamBuilder.class.getResource("resources/species.xml").toString());
-        parser = null;
         long t3 = System.currentTimeMillis();
-        Collections.sort(species, new Comparator<PokemonSpecies>() {
-            public int compare(PokemonSpecies arg0, PokemonSpecies arg1) {
-                return arg0.getName().compareToIgnoreCase(arg1.getName());
-            }
-        });
-        long t4 = System.currentTimeMillis();
         ArrayList<String> items = new ArrayList<String>();
         try {
             Scanner itemScanner = new Scanner(new URL(
@@ -249,12 +241,9 @@ public class WelcomeWindow extends javax.swing.JFrame {
                     items.add(line);
             }
         } catch (Exception ex) {}
-        Collections.sort(items);
         Generation mod = new Generation(species, moves, items);
         System.out.println("Loaded moves in " + (t2-t1) + " milliseconds");
         System.out.println("Loaded species in " + (t3-t2) + " milliseconds");
-        System.out.println("Sorted species in " + (t4-t3) + " milliseconds");
-
         
         new TeamBuilder(mod).setVisible(true);
 }//GEN-LAST:event_cmdTeamBuilderActionPerformed

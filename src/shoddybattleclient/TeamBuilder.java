@@ -42,7 +42,6 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -252,19 +251,13 @@ public class TeamBuilder extends javax.swing.JFrame {
         cmbSpecies.setEnabled(true);
 
         speciesProgramSelect = true;
-        PokemonSpecies species = null;
-        for (PokemonSpecies s : m_generation.getSpecies()) {
-            if (s.getName().equals(name)) {
-                species = s;
+        PokemonSpecies species = m_generation.getSpeciesByName(name);
+        if (species != null) {
+            ((SpritePanel)panelSprite).setSpecies(species.getId(), false, true);
 
-                int id = PokemonSpecies.getIdFromName(m_generation.getSpecies(), species.getName());
-                ((SpritePanel)panelSprite).setSpecies(id, false, true);
-
-                if (!cmbSpecies.getSelectedItem().equals(species)) {
-                    cmbSpecies.setSelectedItem(species);
-                    updateTree();
-                }
-                break;
+            if (!cmbSpecies.getSelectedItem().equals(species)) {
+                cmbSpecies.setSelectedItem(species);
+                updateTree();
             }
         }
         speciesProgramSelect = false;
@@ -323,13 +316,11 @@ public class TeamBuilder extends javax.swing.JFrame {
     private void loadPokemonFromBoxes() {
         String species = ((PokemonSpecies)cmbSpecies.getSelectedItem()).getName();
         File dir = new File(Preference.getBoxLocation());
-
         if (!dir.exists()) return;
 
         //We need to look through all the boxes for matches of the same species
         for (File boxFolder : dir.listFiles()) {
             if (!boxFolder.isDirectory()) continue;
-
             try {
                 PokemonBox box = new PokemonBox(
                         boxFolder.getName(), m_generation.getSpecies());
@@ -735,17 +726,14 @@ public class TeamBuilder extends javax.swing.JFrame {
                 tabForms.remove(idx);
             }
         }
-
-        
-}//GEN-LAST:event_menuChangeSizeActionPerformed
+    }//GEN-LAST:event_menuChangeSizeActionPerformed
 
     private void cmbSpeciesItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbSpeciesItemStateChanged
         if (evt.getStateChange() != ItemEvent.SELECTED) return;
         if (speciesProgramSelect) return;
         PokemonSpecies sp = (PokemonSpecies)cmbSpecies.getSelectedItem();
         if (sp == null) return;
-        int id = PokemonSpecies.getIdFromName(m_generation.getSpecies(), sp.getName());
-        ((SpritePanel)panelSprite).setSpecies(id, false, true);
+        ((SpritePanel)panelSprite).setSpecies(sp.getId(), false, true);
 
         //If the species has no gender or is only female, GENDER_MALE is ignored
         TeamBuilderForm tbf = (TeamBuilderForm)tabForms.getSelectedComponent();
@@ -1118,24 +1106,15 @@ public class TeamBuilder extends javax.swing.JFrame {
                 ArrayList<PokemonMove> moves = mlp.parseDocument(
                         TeamBuilder.class.getResource("resources/moves.xml").toString());
                 long t2 = System.currentTimeMillis();
-                mlp = null;
                 SpeciesListParser parser = new SpeciesListParser();
                 ArrayList<PokemonSpecies> species = parser.parseDocument(
                         TeamBuilder.class.getResource("resources/species.xml").toString());
-                parser = null;
                 long t3 = System.currentTimeMillis();
-                Collections.sort(species, new Comparator<PokemonSpecies>() {
-                    public int compare(PokemonSpecies arg0, PokemonSpecies arg1) {
-                        return arg0.getName().compareToIgnoreCase(arg1.getName());
-                    }
-                });
-                long t4 = System.currentTimeMillis();
                 ArrayList<String> items = new ArrayList<String>();
                 items.add("Leftovers");
                 Generation mod = new Generation(species, moves, items);
                 System.out.println("Loaded moves in " + (t2-t1) + " milliseconds");
                 System.out.println("Loaded species in " + (t3-t2) + " milliseconds");
-                System.out.println("Sorted species in " + (t4-t3) + " milliseconds");
 
                 new TeamBuilder(mod).setVisible(true);
             }

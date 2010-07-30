@@ -23,6 +23,8 @@
 package shoddybattleclient.shoddybattle;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * This class loads generation information for the teambuilder. Currently
@@ -38,6 +40,13 @@ public class Generation {
 
     public Generation(ArrayList<PokemonSpecies> species, ArrayList<PokemonMove> moves,
             ArrayList<String> items) {
+        Collections.sort(species, new Comparator<PokemonSpecies>() {
+            public int compare(PokemonSpecies arg0, PokemonSpecies arg1) {
+                return arg0.getName().compareToIgnoreCase(arg1.getName());
+            }
+        });
+        Collections.sort(items);
+
         m_species = species;
         m_moves = moves;
         m_items = items;
@@ -53,5 +62,21 @@ public class Generation {
 
     public ArrayList<String> getItems() {
         return m_items;
+    }
+
+    public PokemonSpecies getSpeciesByName(String name) {
+        int left = 0;
+        int right = m_species.size() - 1;
+        while (left <= right) {
+            int middle = (left+right)/2;
+            int compare = name.compareToIgnoreCase(m_species.get(middle).getName());
+            if (compare == 0)
+                return m_species.get(middle);
+            else if (compare < 0)
+                right = middle - 1;
+            else
+                left = middle + 1;
+        }
+        return null;
     }
 }
