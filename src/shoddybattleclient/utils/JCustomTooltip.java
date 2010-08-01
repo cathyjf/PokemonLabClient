@@ -46,7 +46,7 @@ import javax.swing.event.AncestorListener;
  * JComponent's <code>setToolTipText</code> method.</p>
  *
  * I, Carlos Fernandez, have extended this class to remove the tooltip for
- * non-persistant versions in any situation the mouse leaves the tooltip's
+ * nonpersistent versions in any situation the mouse leaves the tooltip's
  * owner component. The tooltip will not obstruct selections.
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
@@ -56,7 +56,7 @@ public class JCustomTooltip extends JToolTip {
     
     private boolean  m_persist = false;
     private Listener m_lstnr = new Listener();
-    private NonPersistantListener m_removeListener = new NonPersistantListener();
+    private NonPersistentListener m_removeListener = new NonPersistentListener();
    
     /**
      * Create a new JCustomTooltip
@@ -145,7 +145,7 @@ public class JCustomTooltip extends JToolTip {
     }
 
     // Handles killing the tooltip when the mouse leaves the component
-    private class NonPersistantListener extends MouseAdapter {
+    private class NonPersistentListener extends MouseAdapter {
         public void mouseMoved(MouseEvent evt) {
             Point mouseLocation = evt.getLocationOnScreen();
 
