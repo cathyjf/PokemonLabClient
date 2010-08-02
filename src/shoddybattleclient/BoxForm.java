@@ -515,21 +515,20 @@ public class BoxForm extends javax.swing.JPanel {
     //On *nix systems, both Box and Pokemon loading allow for duplicates on
     //first load. This clears those duplicates from the list.
     //This list MUST be sorted before using this method
-    private void clearDuplicates(List<? extends Comparable> list) {
+    private <T extends Comparable<T>> void clearDuplicates(List<T> list) {
         //Sorted lists allow us to do this in O(n)
-        Iterator<? extends Comparable> iter = list.iterator();
-        Comparable previous = null;
-        while(iter.hasNext()) {
-            Comparable current = iter.next();
+        Iterator<T> iter = list.iterator();
+        T previous = null;
+        while (iter.hasNext()) {
+            T current = iter.next();
 
             //this only happens once, but it makes the code cleaner
-            if(previous == null) {
+            if (previous == null) {
                 previous = current;
                 continue;
             }
 
-            //FIXME: Find a way to do this without the compiler throwing a hissy fit
-            if(previous.compareTo(current) == 0)
+            if (previous.compareTo(current) == 0)
                 iter.remove();
             previous = current;
         }
@@ -658,8 +657,8 @@ public class BoxForm extends javax.swing.JPanel {
     private void btnNewBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewBoxActionPerformed
         String boxName = JOptionPane.showInputDialog(this, "New box name:");
 
-        if(boxName == null) return;
-        if(m_boxModel.getBox(boxName) != null) {
+        if (boxName == null) return;
+        if (m_boxModel.getBox(boxName) != null) {
             JOptionPane.showMessageDialog(this, "This box already exists", "Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
@@ -679,17 +678,17 @@ public class BoxForm extends javax.swing.JPanel {
         PokemonBox box = (PokemonBox)listBoxes.getSelectedValue();
         int option = JOptionPane.showConfirmDialog(this, "Are you sure you want " +
                 " to delete " + box.getName() + "?", "", JOptionPane.YES_NO_OPTION);
-        if(option != JOptionPane.YES_OPTION)
+        if (option != JOptionPane.YES_OPTION)
             return;
 
-        while(box.getSize() != 0) {
+        while (box.getSize() != 0) {
             box.removePokemonAt(box.getSize()-1);
         }
 
         //If the user has rigged it with duplicates, files may remain
         boolean badlyFormatted = true;
         File boxFile = box.getBoxFolder();
-        for(File file : boxFile.listFiles()) {
+        for (File file : boxFile.listFiles()) {
             if (file.isDirectory() && file.listFiles().length > 0) {
                 badlyFormatted = true;
             } else {
@@ -717,13 +716,14 @@ public class BoxForm extends javax.swing.JPanel {
     private void menuRenameBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuRenameBoxActionPerformed
         PokemonBox box = (PokemonBox)listBoxes.getSelectedValue();
         String newName = JOptionPane.showInputDialog(this, "New name for "+box.getName()+":");
-        if(newName == null || (newName = newName.trim()).equals(""))
+        if (newName == null || (newName = newName.trim()).equals(""))
             return;
 
         //Check for duplicates.
         PokemonBox previous = m_boxModel.getBox(newName);
         if(previous != null && previous != box) {
-            JOptionPane.showMessageDialog(this, "A box with this name already exists",
+            JOptionPane.showMessageDialog(this,
+                    "A box with this name already exists",
                     "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -766,14 +766,14 @@ public class BoxForm extends javax.swing.JPanel {
         PokemonWrapper current = (PokemonWrapper)m_pokemonModel.getPokemonAt(
                 tblPokemon.getSelectedRow());
         String newName = JOptionPane.showInputDialog(this, "New name for "+current.name+":");
-        if(newName == null || (newName = newName.trim()).equals(""))
+        if (newName == null || (newName = newName.trim()).equals(""))
             return;
 
         PokemonBox box = (PokemonBox)listBoxes.getSelectedValue();
 
         //Duplicates are fine if we're merely changing the case
         PokemonWrapper previous = box.getPokemon(newName);
-        if(previous != null && previous.pokemon != current.pokemon) {
+        if (previous != null && previous.pokemon != current.pokemon) {
             JOptionPane.showMessageDialog(this, "A pokemon with this name already exists",
                     "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -798,7 +798,7 @@ public class BoxForm extends javax.swing.JPanel {
         int option = JOptionPane.showConfirmDialog(this, "Are you sure you want " +
                 " to delete " + wrapper.name + "?", "", JOptionPane.YES_NO_OPTION);
 
-        if(option != JOptionPane.YES_OPTION)
+        if (option != JOptionPane.YES_OPTION)
             return;
 
         PokemonBox box = (PokemonBox)listBoxes.getSelectedValue();

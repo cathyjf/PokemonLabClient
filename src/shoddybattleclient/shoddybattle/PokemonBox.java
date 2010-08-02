@@ -122,7 +122,7 @@ public class PokemonBox implements Comparable<PokemonBox> {
     private void clearDuplicates(List<PokemonWrapper> list) {
         //Sorted lists allow us to do this in O(n)
         Iterator<PokemonWrapper> iter = list.iterator();
-        Comparable previous = null;
+        Comparable<PokemonWrapper> previous = null;
         while (iter.hasNext()) {
             PokemonWrapper current = iter.next();
 

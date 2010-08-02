@@ -294,7 +294,8 @@ public class FindPanel extends javax.swing.JPanel {
             String bans = join(banList, ", ");
             txtBans.setText(bans);
             int partySize = metagame.getPartySize();
-            List<String> clauseList = new ArrayList(Arrays.asList(metagame.getClauseList()));
+            List<String> clauseList = new ArrayList<String>(Arrays.asList(
+                    metagame.getClauseList()));
             clauseList.add(0, partySize + " v. " + partySize);
             clauseList.add(1, metagame.getMaxTeamLength() + " Pokemon per team");
             String clauses = join(clauseList, ", ");
