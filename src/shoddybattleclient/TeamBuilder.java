@@ -821,6 +821,7 @@ public class TeamBuilder extends javax.swing.JFrame {
                  "Unsaved Changes", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
         if (result == JOptionPane.OK_OPTION) {
             addDefaultTeam();
+            m_save = null;
         }
     }//GEN-LAST:event_menuNewActionPerformed
 
