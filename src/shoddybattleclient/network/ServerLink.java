@@ -1302,6 +1302,7 @@ public class ServerLink extends Thread {
                 //                 byte : present hp in [0, 48]
                 //                 byte : number of status effects
                 //                 for each status:
+                //                     string : id
                 //                     string : message
                 //                     byte   : effect radius
                 public void handle(ServerLink link, DataInputStream is)
@@ -1365,6 +1366,8 @@ public class ServerLink extends Thread {
 
                                     int nStatus = is.readUnsignedByte();
                                     for (int k = 0; k < nStatus; k++) {
+                                        String status_id = is.readUTF();
+                                        System.out.println(status_id);
                                         String msg = is.readUTF();
                                         int radius = is.readUnsignedByte();
                                         msg = Text.parse(msg, battle);
@@ -1543,13 +1546,14 @@ public class ServerLink extends Thread {
 
             //BATTLE_STATUS_CHANGE
             new ServerMessage(30, new MessageHandler() {
-                //int32 : field id
-                //byte  : party
-                //byte  : position
-                //byte  : type
-                //byte  : effect radius
-                //string: message
-                //byte  : whether the status was applied
+                // int32  : field id
+                // byte   : party
+                // byte   : position
+                // byte   : type
+                // byte   : effect radius
+                // string : id
+                // string : message
+                // byte   : whether the status was applied
                 public void handle(ServerLink link, DataInputStream is)
                                                         throws IOException {
                     int fid = is.readInt();
@@ -1557,6 +1561,8 @@ public class ServerLink extends Thread {
                     int position = is.readUnsignedByte();
                     int type = is.readUnsignedByte();
                     int radius = is.readUnsignedByte();
+                    String id = is.readUTF();
+                    System.out.println(id);
                     String msg = is.readUTF();
                     boolean applied = (is.read() != 0);
                     BattleWindow wnd = link.getBattle(fid);

@@ -32,7 +32,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import shoddybattleclient.Preference;
-import shoddybattleclient.TeamBuilder;
 import shoddybattleclient.utils.TeamFileParser;
 
 /**
@@ -68,7 +67,8 @@ public class PokemonBox implements Comparable<PokemonBox> {
             if (!o2.getClass().equals(getClass())) return false;
 
             PokemonWrapper other = (PokemonWrapper)o2;
-            if (name.equalsIgnoreCase(other.name) && getParent().equals(other.getParent()))
+            if (name.equalsIgnoreCase(other.name) &&
+                    getParent().equals(other.getParent()))
                 return true;
             else
                 return false;
@@ -87,7 +87,8 @@ public class PokemonBox implements Comparable<PokemonBox> {
         this(name, null, speciesList);
     }
 
-    public PokemonBox(String name, String species, List<PokemonSpecies> speciesList) {
+    public PokemonBox(String name, String species,
+            List<PokemonSpecies> speciesList) {
         m_name = name;
         m_speciesList = speciesList;
         loadContents(species);
@@ -106,7 +107,8 @@ public class PokemonBox implements Comparable<PokemonBox> {
             if (pokeFile.isDirectory()) continue;
             try {
                 TeamFileParser tfp = new TeamFileParser();
-                Pokemon poke = tfp.parseTeam(pokeFile.getAbsolutePath(), m_speciesList)[0];
+                Pokemon poke = tfp.parseTeam(
+                        pokeFile.getAbsolutePath(), m_speciesList)[0];
                 if (species == null || poke.toString().equals(species))
                     m_pokemon.add(new PokemonWrapper(pokeFile.getName(), poke));
             }
@@ -228,10 +230,7 @@ public class PokemonBox implements Comparable<PokemonBox> {
         if (o2 == null) return false;
         if (!o2.getClass().equals(getClass())) return false;
 
-        if (getName().equalsIgnoreCase(((PokemonBox)o2).getName()))
-            return true;
-        else
-            return false;
+        return (getName().equalsIgnoreCase(((PokemonBox)o2).getName()));
     }
 
     @Override
