@@ -143,7 +143,11 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
                 return;
             }
             boolean male = Gender.GENDER_MALE.ordinal() == p.m_gender;
-            m_image = GameVisualisation.getSprite(p.m_id, m_front, male, p.m_shiny);
+            m_image = p.getImage(m_front, male);
+            if (m_image == null) {
+                repaint();
+                return;
+            }
             MediaTracker tracker = new MediaTracker(this);
             tracker.addImage(m_image, 0);
             try {
@@ -174,15 +178,21 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
     }
 
     public static class StatusObject {
+        private String m_id;
         private String m_name;
         private int m_turns = -1;
         private int m_count = 0;
-        public StatusObject(String name) {
+        public StatusObject(String id, String name) {
+            m_id = id;
             m_name = name;
         }
-        public StatusObject(String name, int turns) {
+        public StatusObject(String id, String name, int turns) {
+            m_id = id;
             m_name = name;
             m_turns = turns;
+        }
+        public String getId() {
+            return m_id;
         }
         public String getName() {
             return m_name;
@@ -255,6 +265,9 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
         public Pokemon getPokemon() {
             return m_pokemon;
         }
+        public void setSpeciesId(int id) {
+            m_id = id;
+        }
         public void setSpecies(String name) {
             m_species = name;
         }
@@ -263,6 +276,9 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
         }
         public int getGender() {
             return m_gender;
+        }
+        public void setShiny(boolean shiny) {
+            m_shiny = shiny;
         }
         public boolean isShiny() {
             return m_shiny;
@@ -273,16 +289,17 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
         public int getLevel() {
             return m_level;
         }
-        public StatusObject updateStatus(String status, boolean applied) {
+        public StatusObject updateStatus(String id, String status,
+                boolean applied) {
             if (applied) {
-                return addStatus(status);
+                return addStatus(id, status);
             } else {
                 removeStatus(status);
                 return null;
             }
         }
-        public StatusObject addStatus(String status) {
-            StatusObject obj = new StatusObject(status);
+        public StatusObject addStatus(String id, String status) {
+            StatusObject obj = new StatusObject(id, status);
             m_statuses.add(obj);
             if (m_stateMap.containsKey(status)) {
                 m_state = m_stateMap.get(status);
@@ -347,6 +364,15 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
         }
         public int getFrame() {
             return m_frame;
+        }
+        public Image getImage(boolean front, boolean male) {
+            if (isFainted()) return null;
+            for (StatusObject status : m_statuses) {
+                if (status.getId().equals("SubstituteEffect")) {
+                    return GameVisualisation.getSubstitute(front);
+                }
+            }
+            return GameVisualisation.getSprite(m_id, front, male, m_shiny);
         }
     }
 
@@ -514,7 +540,8 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
         return m_parties[party][index];
     }
 
-    public void updateStatus(int party, int position, int radius, String msg, boolean applied) {
+    public void updateStatus(int party, int position, int radius,
+            String statusId, String msg, boolean applied) {
         VisualPokemon p = getPokemon(party, position);
         if (radius == RADIUS_USER_PARTY) {
             if (applied) {
@@ -542,7 +569,7 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
         }
         String[] parts = msg.split(";");
         if (parts.length == 1) {
-            p.updateStatus(msg, applied);
+            p.updateStatus(statusId, msg, applied);
         } else {
             if ("StatChangeEffect".equals(parts[0])) {
                 int stat = Integer.parseInt(parts[1]);
@@ -581,18 +608,12 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
 
     }
 
-    public void setActive(VisualPokemon[] party1, VisualPokemon[] party2) {
-        for (int i = 0; i < 2; i++) {
-            VisualPokemon[] party = (i == 0) ? party1 : party2;
-            for (int j = 0; j < party.length; j++) {
-                VisualPokemon p = party[j];
-                Sprite s = m_sprites[i][j];
-                s.setSprite(p);
-                Dimension d = s.getPreferredSize();
-                s.setLocation(getSpriteLocation(i == m_view, j, m_n,
-                                                            d.width, d.height));
-            }
-        }
+    public void updateSprite(int party, int slot) {
+        Sprite s = m_sprites[party][slot];
+        s.setSprite(getPokemonForSlot(party, slot));
+        Dimension d = s.getPreferredSize();
+        s.setLocation(getSpriteLocation(party == m_view, slot, m_n,
+                d.width, d.height));
     }
 
     public VisualPokemon getPokemonForSlot(int party, int slot) {
@@ -610,14 +631,15 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
         }
     }
 
-    public void sendOut(final int party, final int slot, int index, String species, 
-                                            String name, int gender, int level) {
+    public void sendOut(final int party, final int slot, int index, 
+            int speciesId, String species, String name, int gender, int level) {
         VisualPokemon p = getPokemonForSlot(party, slot);
         if (p != null) {
             p.setSlot(-1);
         }
         VisualPokemon newPoke = m_parties[party][index];
         newPoke.setSlot(slot);
+        newPoke.setSpeciesId(speciesId);
         newPoke.setSpecies(species);
         newPoke.setName(name);
         newPoke.setLevel(level);
@@ -716,11 +738,13 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
         g2.dispose();
     }
 
-    private static String createPath(int number, boolean front, boolean male, boolean shiny,
-            String repo, int frame) {
-        StringBuilder builder = new StringBuilder(Preference.getSpriteLocation());
-        builder.append(repo);
-        builder.append("/");
+    private static String createPath(String filename, String repo) {
+        return Preference.getSpriteLocation() + repo + "/" + filename;
+    }
+    
+    private static String createPath(int number, boolean front, boolean male,
+            boolean shiny, String repo, int frame) {
+        StringBuilder builder = new StringBuilder();
         builder.append(front ? "front" : "back");
         builder.append("/");
         builder.append(shiny ? "shiny" : "normal");
@@ -729,7 +753,7 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
         builder.append(number);
         builder.append(male ? "" : "f");
         builder.append(".png");
-        return builder.toString();
+        return createPath(builder.toString(), repo);
     }
 
     private static String getSpritePath(int number, boolean front, boolean male,
@@ -746,26 +770,31 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
         return null;
     }
 
+    private static Image getSprite(String path, boolean front) {
+        if (path == null) {
+            String image = (front) ? "missingno_front.png" :
+                    "missingno_back.png";
+            return GameVisualisation.getImageFromResource(image);
+        }
+        return Toolkit.getDefaultToolkit().createImage(path);
+    }
+    
     public static Image getSprite(int number, boolean front, boolean male,
             boolean shiny, int frame) {
-        String[] repositories = Preference.getSpriteDirectories();
         String qualified = null;
-        for (int i = 0; i < repositories.length; i++) {
-            qualified = getSpritePath(number, front, male, shiny, repositories[i], frame);
+        for (String repo : Preference.getSpriteDirectories()) {
+            qualified = getSpritePath(number, front, male, shiny, repo, frame);
             if (qualified != null) break;
         }
 
-        if (qualified == null) {
-            String image = (front) ? "missingno_front.png" : "missingno_back.png";
-            return GameVisualisation.getImageFromResource(image);
-        }
-        return Toolkit.getDefaultToolkit().createImage(qualified);
+        return getSprite(qualified, front);
     }
 
     public static Image getSprite(int number, boolean front, boolean male,
             boolean shiny) {
         return getSprite(number, front, male, shiny, 1);
     }
+
     public Image getSprite(String name, boolean front, boolean male,
             boolean shiny, int frame) {
         int number = PokemonSpecies.getIdFromName(m_speciesList, name);
@@ -774,6 +803,20 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
 
     public Image getSprite(String name, boolean front, boolean male, boolean shiny) {
         return getSprite(name, front, male, shiny, 1);
+    }
+
+    public static Image getSubstitute(boolean front) {
+        String subPath = (front) ? "substitute_front.png" : "substitute_back.png";
+        String qualified = null;
+        for (String repo : Preference.getSpriteDirectories()) {
+            String path = createPath(subPath, repo);
+            if (new File(path).exists()) {
+                qualified = path;
+                break;
+            }
+        }
+
+        return getSprite(qualified, front);
     }
 
     public static void main(String[] args) {
@@ -797,7 +840,18 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
         VisualPokemon p10 = new VisualPokemon(r.nextInt(505), 1, 100, false);
         VisualPokemon p11 = new VisualPokemon(r.nextInt(505), 1, 100, false);
         VisualPokemon p12 = new VisualPokemon(r.nextInt(505), 1, 100, false);*/
-        panel.setActive(new VisualPokemon[] {p1, p2}, new VisualPokemon[] {p3,p4});
+        panel.sendOut(0, 0, 0, p1.m_id, p1.getSpecies(), p1.getSpecies(), 
+                p1.getGender(), p1.getLevel());
+        panel.sendOut(0, 1, 1, p2.m_id, p1.getSpecies(), p2.getSpecies(),
+                p2.getGender(), p2.getLevel());
+        panel.sendOut(1, 0, 0, p3.m_id, p1.getSpecies(), p3.getSpecies(),
+                p3.getGender(), p3.getLevel());
+        panel.sendOut(1, 1, 1, p4.m_id, p1.getSpecies(), p4.getSpecies(),
+                p4.getGender(), p4.getLevel());
+        panel.updateSprite(0, 0);
+        panel.updateSprite(0, 1);
+        panel.updateSprite(1, 0);
+        panel.updateSprite(1, 1);
         frame.setSize(panel.getPreferredSize().width, panel.getPreferredSize().height + 20);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(panel);

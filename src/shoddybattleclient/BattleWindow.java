@@ -517,6 +517,10 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         }
     }
 
+    public VisualPokemon getPokemonForSlot(int party, int slot) {
+        return m_visual.getPokemonForSlot(party, slot);
+    }
+    
     public VisualPokemon getPokemon(int party, int idx) {
         return m_visual.getPokemon(party, idx);
     }
@@ -909,6 +913,10 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         m_visual.updateHealth(party, slot, total, denominator);
     }
 
+    public void updateSprite(int party, int slot) {
+        m_visual.updateSprite(party, slot);
+    }
+
     public void faint(int party, int slot) {
         m_visual.faint(party, slot);
     }
@@ -920,13 +928,10 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         m_visual.setSpecies(party, slot, species);
     }
 
-    public void setPokemon(VisualPokemon[] p1, VisualPokemon[] p2) {
-        m_visual.setActive(p1, p2);
-    }
-
-    public void sendOut(int party, int slot, int index, String species,
-                                            String name, int gender, int level) {
-        m_visual.sendOut(party, slot, index, species, name, gender, level);
+    public void sendOut(int party, int slot, int index, int speciesId, 
+            String species, String name, int gender, int level) {
+        m_visual.sendOut(party, slot, index, speciesId, species, name,
+                gender, level);
 
         if (party == m_participant && m_pokemon != null) {
             Collections.sort(m_sortedPokemon, new Comparator<Integer>() {
@@ -964,8 +969,9 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         return (p != null) ? p.getName() : null;
     }
 
-    public void updateStatus(int party, int position, int radius, String msg, boolean applied) {
-        m_visual.updateStatus(party, position, radius, msg, applied);
+    public void updateStatus(int party, int position, int radius,
+            String statusId, String msg, boolean applied) {
+        m_visual.updateStatus(party, position, radius, statusId, msg, applied);
     }
 
     public String getName(int party, int index) {

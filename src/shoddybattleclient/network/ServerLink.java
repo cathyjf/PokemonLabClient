@@ -984,26 +984,32 @@ public class ServerLink extends Thread {
                     if (wnd == null) return;
 
                     int size = wnd.getPartySize();
-
-                    VisualPokemon[][] pokemon = new VisualPokemon[2][size];
-
                     for (int i = 0; i < 2; ++i) {
                         for (int j = 0; j < size; ++j) {
                             short id = is.readShort();
-                            if (id != -1) {
-                                int gender = is.readUnsignedByte();
-                                int level = is.readUnsignedByte();
-                                boolean shiny = (is.read() != 0);
-                                String species = PokemonSpecies.getNameFromId(
-                                        link.m_speciesList, id);
-                                VisualPokemon p = new VisualPokemon(id,
-                                        gender, level, shiny);
-                                pokemon[i][j] = p;
-                                wnd.setSpecies(i, j, species);
+                            if (id == -1) {
+                                wnd.updateSprite(i, j);
+                                continue;
                             }
+
+                            String species = PokemonSpecies.getNameFromId(
+                                    link.m_speciesList, id);
+                            wnd.setSpecies(i, j, species);
+
+                            int gender = is.readUnsignedByte();
+                            int level = is.readUnsignedByte();
+                            boolean shiny = (is.read() != 0);
+
+                            VisualPokemon p = wnd.getPokemonForSlot(i, j);
+                            if (p == null) continue;
+
+                            p.setSpeciesId(id);
+                            p.setGender(gender);
+                            p.setLevel(level);
+                            p.setShiny(shiny);
+                            wnd.updateSprite(i, j);
                         }
                     }
-                    wnd.setPokemon(pokemon[0], pokemon[1]);
                 }
             });
 
@@ -1138,7 +1144,8 @@ public class ServerLink extends Thread {
                             PokemonSpecies.getNameFromId(link.m_speciesList,
                             speciesId);
 
-                    wnd.sendOut(party, slot, index, species, name, gender, level);
+                    wnd.sendOut(party, slot, index, speciesId, species,
+                            name, gender, level);
 
                     if (gender != 0) {
                         species += " ";
@@ -1315,11 +1322,9 @@ public class ServerLink extends Thread {
                     int max = is.read();
                     int maxPeriods = is.readByte();
 
-                    BattleWindow battle =
-                            new BattleWindow(link, fid, n, max, player, maxPeriods);
+                    BattleWindow battle = new BattleWindow(
+                            link, fid, n, max, player, maxPeriods);
                     link.m_battles.put(fid, battle);
-
-                    VisualPokemon[][] active = new VisualPokemon[2][n];
 
                     for (int i = 0; i < 2; ++i) {
                         int size = is.readUnsignedByte();
@@ -1337,48 +1342,47 @@ public class ServerLink extends Thread {
                                 String species = PokemonSpecies.getNameFromId(
                                         link.m_speciesList, id);
 
+                                p.setSpeciesId(id);
                                 p.setSpecies(species);
                                 p.setName(name);
                                 p.setLevel(level);
                                 p.setGender(gender);
+                                p.setShiny(shiny);
 
                                 if (slot != -1) {
-                                    battle.sendOut(i, slot, j, species, name, gender, level);
+                                    battle.sendOut(i, slot, j, id, species,
+                                            name, gender, level);
                                     battle.setSpecies(i, slot, species);
                                 }
                                 
                                 boolean fainted = (is.read() != 0);
+                                int hp = (fainted) ? 0 : is.read();
+                                p.setHealth(hp, 48);
+                                if (p.getSlot() != -1) {
+                                    battle.updateHealth(i, p.getSlot(), hp, 48);
+                                }
+
                                 if (fainted) {
                                     p.faint();
-                                    p.setHealth(0, 48);
-                                    if (p.getSlot() != -1) {
-                                        battle.updateHealth(i, p.getSlot(), 0, 48);
-                                    }
                                 } else {
-                                    int hp = is.read();
-                                    p.setHealth(hp, 48);
-                                    if (p.getSlot() != -1) {
-                                        battle.updateHealth(i, p.getSlot(), hp, 48);
-                                        VisualPokemon visual = new VisualPokemon(id,
-                                                                    level, gender, shiny);
-                                        active[i][slot] = visual;
-                                    }
-
                                     int nStatus = is.readUnsignedByte();
                                     for (int k = 0; k < nStatus; k++) {
-                                        String status_id = is.readUTF();
-                                        System.out.println(status_id);
+                                        String statusId = is.readUTF();
                                         String msg = is.readUTF();
                                         int radius = is.readUnsignedByte();
                                         msg = Text.parse(msg, battle);
-                                        battle.updateStatus(i, j, radius, msg, true);
+                                        battle.updateStatus(i, j, radius, 
+                                                statusId, msg, true);
                                     }
+                                }
+
+                                if (slot != -1) {
+                                    battle.updateSprite(i, slot);
                                 }
                             }
                         }
                     }
 
-                    battle.setPokemon(active[0], active[1]);
                     battle.setVisible(true);
                 }
             });
@@ -1562,7 +1566,6 @@ public class ServerLink extends Thread {
                     int type = is.readUnsignedByte();
                     int radius = is.readUnsignedByte();
                     String id = is.readUTF();
-                    System.out.println(id);
                     String msg = is.readUTF();
                     boolean applied = (is.read() != 0);
                     BattleWindow wnd = link.getBattle(fid);
@@ -1571,7 +1574,12 @@ public class ServerLink extends Thread {
 
                     switch(type) {
                         case 0:
-                            wnd.updateStatus(party, position, radius, msg, applied);
+                            wnd.updateStatus(party, position, radius, id,
+                                    msg, applied);
+                            VisualPokemon p = wnd.getPokemon(party, position);
+                            if (p.getSlot() != -1) {
+                                wnd.updateSprite(party, p.getSlot());
+                            }
                             break;
                         case 1:
                             if (applied)
@@ -1586,7 +1594,6 @@ public class ServerLink extends Thread {
                                 System.out.println("ABILITY REMOVED: " + msg);
                             break;
                     }
-
                 }
             });
 
