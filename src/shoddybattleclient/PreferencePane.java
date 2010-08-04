@@ -200,6 +200,7 @@ public class PreferencePane extends javax.swing.JFrame {
                             name = line.split("=")[1].trim();
                         }
                     }
+                    reader.close();
                 } catch (Exception e) {
 
                 }

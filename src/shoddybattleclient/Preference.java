@@ -184,6 +184,10 @@ public class Preference {
         return getStorageLocation() + "sprites" + File.separator;
     }
     public static void setSpriteDirectories(String[] dirs) {
+        if (dirs.length == 0) {
+            m_prefs.put(SPRITE_DIRECTORIES, "");
+            return;
+        }
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < dirs.length; i++) {
             builder.append(dirs[i]);
