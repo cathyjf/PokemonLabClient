@@ -738,22 +738,28 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
         g2.dispose();
     }
 
-    private static String createPath(String filename, String repo) {
-        return Preference.getSpriteLocation() + repo + "/" + filename;
-    }
-    
-    private static String createPath(int number, boolean front, boolean male,
+    private static String createPath(String filename, boolean front,
             boolean shiny, String repo, int frame) {
         StringBuilder builder = new StringBuilder();
+        builder.append(Preference.getSpriteLocation());
+        builder.append(repo);
+        builder.append("/");
         builder.append(front ? "front" : "back");
         builder.append("/");
         builder.append(shiny ? "shiny" : "normal");
         builder.append(frame == 1 ? "" : String.valueOf(frame));
         builder.append("/");
+        builder.append(filename);
+        return builder.toString();
+    }
+    
+    private static String createPath(int number, boolean front, boolean male,
+            boolean shiny, String repo, int frame) {
+        StringBuilder builder = new StringBuilder();
         builder.append(number);
         builder.append(male ? "" : "f");
         builder.append(".png");
-        return createPath(builder.toString(), repo);
+        return createPath(builder.toString(), front, shiny, repo, frame);
     }
 
     private static String getSpritePath(int number, boolean front, boolean male,
@@ -806,10 +812,9 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
     }
 
     public static Image getSubstitute(boolean front) {
-        String subPath = (front) ? "substitute_front.png" : "substitute_back.png";
         String qualified = null;
         for (String repo : Preference.getSpriteDirectories()) {
-            String path = createPath(subPath, repo);
+            String path = createPath("substitute.png", front, false, repo, 1);
             if (new File(path).exists()) {
                 qualified = path;
                 break;
@@ -848,6 +853,8 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
                 p3.getGender(), p3.getLevel());
         panel.sendOut(1, 1, 1, p4.m_id, p1.getSpecies(), p4.getSpecies(),
                 p4.getGender(), p4.getLevel());
+        panel.updateStatus(0, 0, 0, "SubstituteEffect", "Substitute", true);
+        panel.updateStatus(1, 1, 0, "SubstituteEffect", "Substitute", true);
         panel.updateSprite(0, 0);
         panel.updateSprite(0, 1);
         panel.updateSprite(1, 0);
