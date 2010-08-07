@@ -682,6 +682,11 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
             });
             btnChallenge.setEnabled(false);
             btnLoad.setEnabled(false);
+            cmbRules.setEnabled(false);
+            cmbN.setEnabled(false);
+            cmbTeamLength.setEnabled(false);
+            cmbGen.setEnabled(false);
+            enableCustomFields(false);
             m_waiting = true;
         }
     }//GEN-LAST:event_btnChallengeActionPerformed

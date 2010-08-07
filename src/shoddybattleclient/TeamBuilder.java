@@ -707,7 +707,7 @@ public class TeamBuilder extends javax.swing.JFrame {
 
         //If the last tab is a box, pick it up and move it to the end
         Component last = tabForms.getComponentAt(tabForms.getTabCount() - 1);
-
+        Component selected = tabForms.getSelectedComponent();
         if (size > m_forms.size()) {
             if (last instanceof BoxForm) {
                 tabForms.remove(tabForms.getTabCount() - 1);
@@ -726,6 +726,12 @@ public class TeamBuilder extends javax.swing.JFrame {
                 m_forms.remove(idx);
                 tabForms.remove(idx);
             }
+        }
+
+        try {
+            tabForms.setSelectedComponent(selected);
+        } catch (IllegalArgumentException ex) {
+            tabForms.setSelectedIndex(0);
         }
     }//GEN-LAST:event_menuChangeSizeActionPerformed
 
