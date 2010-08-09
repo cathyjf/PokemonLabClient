@@ -128,7 +128,8 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
         private int m_party;
         private int m_slot;
         private PokemonDelegate m_delegate;
-        public Sprite(int party, int slot, boolean front, PokemonDelegate delegate) {
+        public Sprite(int party, int slot, boolean front,
+                PokemonDelegate delegate) {
             setOpaque(false);
             setToolTipText("");
             m_front = front;
@@ -156,7 +157,9 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
                 
             }
             if (m_image != null) {
-                m_size = new Dimension(m_image.getWidth(this), m_image.getHeight(this));
+                m_size = new Dimension(m_image.getWidth(this),
+                        m_image.getHeight(this));
+                setSize(m_size);
             }
             repaint();
         }
