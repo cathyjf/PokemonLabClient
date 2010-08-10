@@ -389,6 +389,39 @@ public class TeamBuilder extends javax.swing.JFrame {
         return box.getPokemon(name);
     }
 
+    private void validateTeam() {
+        ArrayList<Pokemon> violations = new ArrayList<Pokemon>();
+
+        // Check for pokemon with no moves
+        for (TeamBuilderForm form : m_forms) {
+            Pokemon p = form.getPokemon();
+            if (p.moves.length == 0) {
+                violations.add(p);
+            }
+        }
+
+        if (!violations.isEmpty()) {
+            StringBuilder buf = new StringBuilder();
+            if (violations.size() == 1) {
+                Pokemon p = violations.get(0);
+                buf.append(p);
+                buf.append(" has no moves. You can save this team, but it "
+                        + "can't be used online.");
+            } else {
+                buf.append("The following pokemon have no moves. You can save\n"
+                        + "this team, but it can't be used online.\n");
+                for (Pokemon p : violations) {
+                    buf.append(" - ");
+                    buf.append(p);
+                    buf.append("\n");
+                }
+                buf.append("");
+            }
+            JOptionPane.showMessageDialog(this, buf.toString(), "Invalid Team",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -677,6 +710,7 @@ public class TeamBuilder extends javax.swing.JFrame {
 }//GEN-LAST:event_menuLoadActionPerformed
 
     private void menuSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSaveActionPerformed
+        validateTeam();
         if (m_save == null) {
             saveTeam();
         } else {
@@ -685,6 +719,7 @@ public class TeamBuilder extends javax.swing.JFrame {
 }//GEN-LAST:event_menuSaveActionPerformed
 
     private void menuSaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSaveAsActionPerformed
+        validateTeam();
         saveTeam();
     }//GEN-LAST:event_menuSaveAsActionPerformed
 
