@@ -780,6 +780,14 @@ public class ServerLink extends Thread {
                     int pool = 0;
                     int periods = 0;
                     int periodLength = 0;
+
+                    if ((partySize > 6) || (teamLength > 6)) {
+                        // The client only supports a max team/party size of 6
+                        // Block out all challenges that go beyond this limit
+                        link.resolveChallenge(user, false, null);
+                        return;
+                    }
+                    
                     if (metagame != -1) {
                         Metagame mg = link.getMetagames()[metagame];
                         link.m_lobby.addChallenge(user, true, generation,
@@ -842,7 +850,7 @@ public class ServerLink extends Thread {
                     String user = is.readUTF();
                     if (link.m_lobby.isUserPanelSelected(user)) {
                         JOptionPane.showMessageDialog(link.m_lobby, user +
-                                " withdrew his/her challenge");
+                                " withdrew his or her challenge");
                     }
                     link.m_lobby.removeUserPanel(user);
                 }
