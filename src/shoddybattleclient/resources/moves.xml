@@ -124,7 +124,7 @@
     <snatch/>
 </flags>
 </move>
-<move id="10" name="Ancientpower">
+<move id="10" name="AncientPower">
 <type>Rock</type>
 <class>Special</class>
 <power>60</power>
@@ -572,7 +572,7 @@
     <memorable/>
 </flags>
 </move>
-<move id="45" name="Bubblebeam">
+<move id="45" name="BubbleBeam">
 <type>Water</type>
 <class>Special</class>
 <power>65</power>
@@ -1206,7 +1206,7 @@
     <snatch/>
 </flags>
 </move>
-<move id="95" name="Double-edge">
+<move id="95" name="Double-Edge">
 <type>Normal</type>
 <class>Physical</class>
 <power>120</power>
@@ -1220,7 +1220,7 @@
     <flinch/>
 </flags>
 </move>
-<move id="96" name="Doubleslap">
+<move id="96" name="DoubleSlap">
 <type>Normal</type>
 <class>Physical</class>
 <power>15</power>
@@ -1312,7 +1312,7 @@
     <flinch/>
 </flags>
 </move>
-<move id="103" name="Dragonbreath">
+<move id="103" name="DragonBreath">
 <type>Dragon</type>
 <class>Special</class>
 <power>60</power>
@@ -1365,7 +1365,7 @@
     <flinch/>
 </flags>
 </move>
-<move id="107" name="Dynamicpunch">
+<move id="107" name="DynamicPunch">
 <type>Fighting</type>
 <class>Physical</class>
 <power>100</power>
@@ -1528,7 +1528,7 @@
     <memorable/>
 </flags>
 </move>
-<move id="120" name="Extremespeed">
+<move id="120" name="ExtremeSpeed">
 <type>Normal</type>
 <class>Physical</class>
 <priority>1</priority>
@@ -1611,7 +1611,7 @@
     <flinch/>
 </flags>
 </move>
-<move id="126" name="Featherdance">
+<move id="126" name="FeatherDance">
 <type>Flying</type>
 <class>Other</class>
 <power>0</power>
@@ -4692,7 +4692,7 @@ return false;
     <memorable/>
 </flags>
 </move>
-<move id="369" name="Smellingsalt">
+<move id="369" name="SmellingSalt">
 <type>Normal</type>
 <class>Physical</class>
 <power>60</power>
@@ -4717,7 +4717,7 @@ return false;
     <memorable/>
 </flags>
 </move>
-<move id="371" name="Smokescreen">
+<move id="371" name="SmokeScreen">
 <type>Normal</type>
 <class>Other</class>
 <power>0</power>
@@ -4780,7 +4780,7 @@ return false;
     <flinch/>
 </flags>
 </move>
-<move id="376" name="Sonicboom">
+<move id="376" name="SonicBoom">
 <type>Normal</type>
 <class>Special</class>
 <power>1</power>
@@ -5675,7 +5675,7 @@ return true;
     <flinch/>
 </flags>
 </move>
-<move id="446" name="Wake-up Slap">
+<move id="446" name="Wake-Up Slap">
 <type>Fighting</type>
 <class>Physical</class>
 <power>60</power>
@@ -5790,7 +5790,7 @@ return true;
     <memorable/>
 </flags>
 </move>
-<move id="455" name="Will-o-wisp">
+<move id="455" name="Will-O-Wisp">
 <type>Fire</type>
 <class>Other</class>
 <power>0</power>
