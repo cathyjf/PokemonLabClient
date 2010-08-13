@@ -580,7 +580,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             for (int j = 0; j < m_pokemon[i].moves.length; j++) {
                 String move = m_pokemon[i].moves[j];
                 for (PokemonMove m : m_moveList) {
-                    if (m.name.equals(move)) {
+                    if (m.name.equalsIgnoreCase(move)) {
                         m_maxPp[i][j] = m.maxPp * (5 + m_pokemon[i].ppUps[j]) / 5;
                         m.pp = m_maxPp[i][j];
                         break;

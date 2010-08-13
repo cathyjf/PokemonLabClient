@@ -50,7 +50,7 @@ public class PokemonMove {
 
     public static int getIdFromName(List<PokemonMove> moves, String name) {
         for (PokemonMove i : moves) {
-            if (i.name.equals(name)) {
+            if (i.name.equalsIgnoreCase(name)) {
                 return i.id;
             }
         }
