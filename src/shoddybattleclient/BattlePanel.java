@@ -23,6 +23,7 @@
 
 package shoddybattleclient;
 
+import java.util.ArrayList;
 import shoddybattleclient.utils.*;
 import javax.swing.*;
 import javax.swing.table.TableColumnModel;
@@ -45,6 +46,7 @@ public class BattlePanel extends javax.swing.JPanel {
 
     private BattleTableModel m_model = new BattleTableModel();
     private ServerLink m_link;
+    private Battle[] m_battles;
 
     /** Creates new form BattlePanel */
     public BattlePanel(ServerLink link) {
@@ -55,9 +57,30 @@ public class BattlePanel extends javax.swing.JPanel {
     }
 
     public void setBattles(Battle[] battles) {
+        m_battles = battles;
+        updateBattleTable();
+    }
+    
+    private void updateBattleTable() {
         m_model = new BattleTableModel();
-        for (int i = 0; i < battles.length; ++i) {
-            Battle battle = battles[i];
+
+        String filter = txtPlayerFilter.getText().trim().toUpperCase();
+        Battle[] battles = m_battles;
+        if (!filter.equals("")) {
+            ArrayList<Battle> filtered = new ArrayList<Battle>();
+            for (Battle battle : m_battles) {
+                String[] players = battle.players;
+                for (String p : players) {
+                    if (p.toUpperCase().startsWith(filter)) {
+                        filtered.add(battle);
+                        break;
+                    }
+                }
+            }
+            battles = (Battle[])filtered.toArray(new Battle[filtered.size()]);
+        }
+        
+        for (Battle battle : battles) {
             // NOTE: 'generation' is unused for now.
             m_model.addBattle(battle.id, battle.ladder,
                     battle.players[0], battle.players[1],
@@ -83,6 +106,8 @@ public class BattlePanel extends javax.swing.JPanel {
         tblBattles = new SortableJTable();
         btnRefresh = new javax.swing.JButton();
         btnJoin = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        txtPlayerFilter = new javax.swing.JTextField();
 
         setOpaque(false);
 
@@ -110,6 +135,14 @@ public class BattlePanel extends javax.swing.JPanel {
             }
         });
 
+        jLabel1.setText("Player:");
+
+        txtPlayerFilter.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtPlayerFilterKeyReleased(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -119,6 +152,10 @@ public class BattlePanel extends javax.swing.JPanel {
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 479, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(jLabel1)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                        .add(txtPlayerFilter, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE)
+                        .add(18, 18, 18)
                         .add(btnJoin, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 89, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(btnRefresh)))
@@ -135,7 +172,9 @@ public class BattlePanel extends javax.swing.JPanel {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(btnRefresh)
-                    .add(btnJoin))
+                    .add(btnJoin)
+                    .add(jLabel1)
+                    .add(txtPlayerFilter, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -152,12 +191,18 @@ public class BattlePanel extends javax.swing.JPanel {
         m_link.requestChannelList();
     }//GEN-LAST:event_btnRefreshActionPerformed
 
+    private void txtPlayerFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPlayerFilterKeyReleased
+        updateBattleTable();
+    }//GEN-LAST:event_txtPlayerFilterKeyReleased
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnJoin;
     private javax.swing.JButton btnRefresh;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblBattles;
+    private javax.swing.JTextField txtPlayerFilter;
     // End of variables declaration//GEN-END:variables
 
     public static void main(String[] args) {
