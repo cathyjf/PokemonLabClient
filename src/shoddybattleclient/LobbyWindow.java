@@ -459,20 +459,27 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
     }
 
     public void addChannel(Channel channel) {
+        String name = "#" + channel.getName();
+        Channel previous = m_channels.get(channel.m_id);
         m_channels.put(channel.m_id, channel);
+        if (tabChats.indexOfTab(name) == -1) {
+            previous = null;
+        }
         
-        ChatPane c = new ChatPane(channel, this, m_name);
+        ChatPane c = (previous == null) ? new ChatPane(channel, this, m_name) :
+                previous.getChatPane();
         channel.setChatPane(c);
 
         if (channel.getType() == Channel.TYPE_BATTLE) {
             return;
         }
-        String name = channel.getName();
-        c.addMessage(null, "<b>The topic for #"
+        c.addMessage(null, "<b>The topic for "
                 + name + " is: "
                 + channel.getTopic()
                 + "</b>", false);
-        tabChats.add("#" + name, c);
+        if (previous == null) {
+            tabChats.add(name, c);
+        }
         listUsers.setModel(channel.getModel());
     }
     

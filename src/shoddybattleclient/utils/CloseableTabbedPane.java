@@ -104,6 +104,10 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseMotionListe
             m_strHeight = metrics.getHeight();
         }
 
+        public String getText() {
+            return m_text;
+        }
+
         public void setHighlight(boolean highlight) {
             m_highlight = highlight;
         }
@@ -228,6 +232,17 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseMotionListe
         for (TabCloseListener lst : m_listeners) {
             lst.tabClosed(tab);
         }
+    }
+
+    @Override
+    public int indexOfTab(String title) {
+        for (int i = 0; i < getTabCount(); i++) {
+            CloseableTabIcon icon = (CloseableTabIcon)getIconAt(i);
+            if (icon.getText().equals(title)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public void setFlashingAt(int idx, boolean flashing) {
