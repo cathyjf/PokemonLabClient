@@ -64,15 +64,7 @@ public class FirstLaunch extends javax.swing.JFrame {
     }
 
     public static void initialiseLocalStorage() {
-        String path = getDefaultStoragePath();
-        if ((path == null) || !isWritable(path)) {
-            new FirstLaunch().setVisible(true);
-            return;
-        }
-        File f = new File(path);
-        f.mkdirs();
-        new File(f, "sprites").mkdirs();
-        Preference.setStorageLocation(path);
+        new FirstLaunch().setVisible(true);
     }
 
     /** This method is called from within the constructor to
@@ -173,8 +165,9 @@ public class FirstLaunch extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBrowseActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        if (JOptionPane.showConfirmDialog(this, "Closing this window will exit " +
-                "Shoddy Battle. Are you sure you wish to continue?") != JOptionPane.YES_OPTION) {
+        if (JOptionPane.showConfirmDialog(this, "Closing this window will "
+                + "exit Shoddy Battle. Are you sure you wish to continue?",
+                "Quit?", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
             return;
         }
         dispose();
@@ -196,6 +189,12 @@ public class FirstLaunch extends javax.swing.JFrame {
         f.mkdirs();
         new File(f, "sprites").mkdirs();
         Preference.setStorageLocation(path);
+
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new WelcomeWindow().setVisible(true);
+            }
+        });
     }//GEN-LAST:event_btnContinueActionPerformed
 
     /**

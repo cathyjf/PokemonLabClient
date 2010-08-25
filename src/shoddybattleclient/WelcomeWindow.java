@@ -26,8 +26,6 @@ import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -295,6 +293,12 @@ public class WelcomeWindow extends javax.swing.JFrame {
 
         if (Preference.getStorageLocation() == null) {
             FirstLaunch.initialiseLocalStorage();
+        } else {
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    new WelcomeWindow().setVisible(true);
+                }
+            });
         }
 
         /*System.setErr(new PrintStream(new OutputStream() {
@@ -308,12 +312,6 @@ public class WelcomeWindow extends javax.swing.JFrame {
                 });
             }
         }));*/
-
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new WelcomeWindow().setVisible(true);
-            }
-        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
