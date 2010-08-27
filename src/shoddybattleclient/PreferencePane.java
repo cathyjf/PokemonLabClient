@@ -27,7 +27,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,11 +44,10 @@ import javax.swing.JOptionPane;
 import javax.swing.ListModel;
 import shoddybattleclient.Preference.HealthDisplay;
 import shoddybattleclient.Preference.LogOption;
-import shoddybattleclient.utils.SwingWorker;
+import shoddybattleclient.network.SpriteDownloader;
+import shoddybattleclient.network.SpriteDownloader.DownloadListener;
+import shoddybattleclient.network.SpriteDownloader.SpriteLink;
 import shoddybattleclient.utils.Text;
-import shoddybattleclient.utils.bzip2.CBZip2InputStream;
-import shoddybattleclient.utils.tar.TarEntry;
-import shoddybattleclient.utils.tar.TarInputStream;
 
 /**
  *
@@ -68,84 +66,6 @@ public class PreferencePane extends javax.swing.JFrame {
         public String getDir() { return m_dir; }
         @Override
         public String toString() { return m_name; }
-    }
-
-    enum SpriteLink {
-        NA ("N/A", ""),
-        DP ("DP", "http://shoddybattle.com/sprites/dp.tar.bz2"),
-        PLATINUM ("Platinum", "http://shoddybattle.com/sprites/platinum.tar.bz2");
-        private String m_str;
-        private String m_url;
-        SpriteLink(String str, String url) {
-            m_str = str;
-            m_url = url;
-        }
-        @Override
-        public String toString() {
-            return m_str;
-        }
-    }
-
-    private class SpriteDownloader extends SwingWorker<Void, Integer> {
-        private InputStream m_is;
-        private int m_max;
-        private int m_total = 0;
-        public SpriteDownloader(InputStream is, int max) {
-            m_is = is;
-            m_max = max;
-        }
-
-        @Override
-        protected Void doInBackground() {
-            try {
-                try {
-                    //discard first two bytes to make the bzip library work
-                    m_is.read();
-                    m_is.read();
-                    TarInputStream tar = new TarInputStream(new CBZip2InputStream(m_is));
-                    TarEntry entry;
-                    while ((entry = tar.getNextEntry()) != null) {
-                        File file = new File(new File(Preference.getSpriteLocation()), entry.getName());
-                        if (file.exists()) {
-                            JOptionPane.showMessageDialog(PreferencePane.this,
-                                    "A package with this name is already installed.");
-                            m_is.close();
-                            tar.close();
-                            return null;
-                        }
-                        if (entry.isDirectory()) {
-                            file.mkdirs();
-                        } else {
-                            file.createNewFile();
-                            FileOutputStream out = new FileOutputStream(file);
-                            byte[] bytes = new byte[512];
-                            int length;
-                            while ((length = tar.read(bytes)) != -1) {
-                                out.write(bytes, 0, length);
-                                m_total += length;
-                                int progress = (int)(100.0 * m_total / m_max);
-                                if (progress > 100) progress = 100;
-                                setProgress(progress);
-                            }
-                            out.flush();
-                            out.close();
-                        }
-                    }
-                    tar.close();
-                } finally {
-                    m_is.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        public void done() {
-            PreferencePane.this.initSpritePanel();
-        }
-
     }
 
     /** Creates new form PreferencePane */
@@ -742,8 +662,8 @@ public class PreferencePane extends javax.swing.JFrame {
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         SpriteLink link = (SpriteLink)cmbSpriteDefaults.getSelectedItem();
         String s;
-        if ((link == null) || !"".equals(link.m_url)) {
-            s = link.m_url;
+        if ((link == null) || !"".equals(link.getUrl())) {
+            s = link.getUrl();
         } else {
             s = txtURL.getText();
         }
@@ -767,7 +687,14 @@ public class PreferencePane extends javax.swing.JFrame {
             return;
         }
 
-        SpriteDownloader task = new SpriteDownloader(input, length);
+        SpriteDownloader task = new SpriteDownloader(this, input, length);
+        task.addDownloadListener(new DownloadListener() {
+            public void informFinished(boolean success) {
+                String suffix = success ? "done" : "failed";
+                txtProgress.setText(txtProgress.getText() + " - " + suffix);
+                initSpritePanel();
+            }
+        });
         task.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
                 Object val = evt.getNewValue();
