@@ -175,12 +175,13 @@ public class TeamBuilder extends javax.swing.JFrame {
         setSpecies("Bulbasaur");
     }
     private void addDefaultForm() {
-        TeamBuilderForm tbf = new TeamBuilderForm(this, m_forms.size());
+        TeamBuilderForm tbf = new TeamBuilderForm(this);
         m_forms.add(tbf);
         ((CloseableTabbedPane)tabForms).addTab("", tbf, false);
         tbf.setPokemon(new Pokemon("Bulbasaur", "", false, Gender.GENDER_MALE, 100, 255,
             "", "", "", new String[] {null, null, null, null}, new int[] {3,3,3,3},
             new int[] {31,31,31,31,31,31}, new int[] {0,0,0,0,0,0}), true);
+        updateTitle(m_forms.size()-1, "Bulbasaur");
     }
 
     public PokemonSpecies getSpecies(String species) {
@@ -696,9 +697,10 @@ public class TeamBuilder extends javax.swing.JFrame {
 
         int nPokemon = Math.min(team.length, 24);
         for (int i = 0; i < nPokemon; i++) {
-            m_forms.add(new TeamBuilderForm(this, i));
+            m_forms.add(new TeamBuilderForm(this));
             ((CloseableTabbedPane)tabForms).addTab("", m_forms.get(i), false);
             m_forms.get(i).setPokemon(team[i], true);
+            updateTitle(i, team[i].toString());
         }
         setSpecies(team[0].species);
         setSpriteShiny(team[0].shiny);
@@ -779,7 +781,7 @@ public class TeamBuilder extends javax.swing.JFrame {
         tbf.setPokemon(new Pokemon(sp.getName(), "", false, Gender.GENDER_MALE, 100, 255,
             "", "", "", new String[] {null, null, null, null}, new int[] {3,3,3,3},
             new int[] {31,31,31,31,31,31}, new int[] {0,0,0,0,0,0}), false);
-
+        updateTitle(tabForms.getSelectedIndex(), sp.getName());
         updateTree();
     }//GEN-LAST:event_cmbSpeciesItemStateChanged
 
@@ -886,7 +888,8 @@ public class TeamBuilder extends javax.swing.JFrame {
         Component last = tabForms.getComponentAt(tabForms.getTabCount() - 1);
         tabForms.removeAll();
         for (TeamBuilderForm tab : m_forms) {
-            ((CloseableTabbedPane)tabForms).addTab(tab.getPokemon().toString(), tab, false);
+            String name = tab.getPokemon().toString();
+            ((CloseableTabbedPane)tabForms).addTab(name, tab, false);
         }
 
         if (last instanceof BoxForm) {

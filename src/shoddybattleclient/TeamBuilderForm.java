@@ -61,8 +61,6 @@ public class TeamBuilderForm extends javax.swing.JPanel {
     private Generation m_generation;
     //The current species
     private PokemonSpecies m_species = null;
-    //index of this tab
-    private int m_idx;
     //pokemon represented by this form
     private Pokemon m_pokemon = null;
 
@@ -104,11 +102,10 @@ public class TeamBuilderForm extends javax.swing.JPanel {
     }
 
     /** Creates new form TeamBuilderForm */
-    public TeamBuilderForm(TeamBuilder parent, int idx) {
+    public TeamBuilderForm(TeamBuilder parent) {
         initComponents();
         m_parent = parent;
         m_generation = parent.getGeneration();
-        m_idx = idx;
         
         tblMoves = new JButtonTable();
         tblMoves.setModel(new MoveTableModel(null, new String[0], this));
@@ -327,8 +324,6 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         //name column should be wider
         tblMoves.getColumnModel().getColumn(0).setPreferredWidth(80);
         tblMoves.getColumnModel().getColumn(1).setPreferredWidth(160);
-        
-        m_parent.updateTitle(m_idx, m_species.getName());
 
         updateEvs();
     }
