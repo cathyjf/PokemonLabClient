@@ -44,7 +44,6 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -53,7 +52,7 @@ import javax.swing.TransferHandler;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableCellRenderer;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import shoddybattleclient.shoddybattle.Pokemon;
 import shoddybattleclient.shoddybattle.PokemonBox;
@@ -185,29 +184,47 @@ public class BoxForm extends javax.swing.JPanel {
     private class BoxListRenderer extends DefaultListCellRenderer {
         @Override
         public Component getListCellRendererComponent(JList list, Object value,
-                            int index, boolean isSelected, boolean cellHasFocus) {
+                int index, boolean isSelected, boolean cellHasFocus) {
             boolean focused = (m_focusedBox == index) ? true : cellHasFocus;
             return super.getListCellRendererComponent(list, value,
                     index, isSelected, focused);
         }
     }
 
-    private class IconCellRenderer extends JLabel implements TableCellRenderer {
-        public IconCellRenderer() {
+    private class PokemonTableRenderer extends DefaultTableCellRenderer {
+        public PokemonTableRenderer() {
             setOpaque(true);
         }
         @Override
-        public Component getTableCellRendererComponent(JTable table, Object value,
-                boolean isSelected, boolean hasFocus, int row, int column) {
-            if (isSelected) {
-                this.setBackground(table.getSelectionBackground());
-                this.setForeground(table.getSelectionForeground());
+        public Component getTableCellRendererComponent(JTable table, 
+                Object value, boolean isSelected, boolean hasFocus, int row,
+                int column) {
+            super.getTableCellRendererComponent(table, value,
+                    isSelected, hasFocus, row, column);
+            
+            if (column == 0) {
+                this.setText("");
+                this.setIcon((ImageIcon)value);
             } else {
-                this.setBackground(table.getBackground());
-                this.setForeground(table.getForeground());
+                this.setText(value.toString());
+                this.setIcon(null);
             }
 
-            setIcon((ImageIcon)value);
+            Pokemon p = m_pokemonModel.getPokemonAt(row).pokemon;
+            setToolTipText("<html>" + p.toTeamText().replace("\n", "<br>"));
+            return this;
+        }
+    }
+
+    private class TeamRenderer extends DefaultListCellRenderer {
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value,
+                int index, boolean isSelected, boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value,
+                    index, isSelected, cellHasFocus);
+            Pokemon p = m_forms.get(index).getPokemon();
+            setToolTipText("<html>Index " + (index+1) + ":<br>" +
+                    p.toTeamText().replace("\n", "<br>"));
             return this;
         }
     }
@@ -392,6 +409,7 @@ public class BoxForm extends javax.swing.JPanel {
     private PokemonTableModel m_pokemonModel;
     private JTable tblPokemon;
     private JList listTeam;
+    private List<TeamBuilderForm> m_forms;
 
     // Swing doesn't allow us to give a selected look to lists easily, 
     // so we use hacks to do it
@@ -446,8 +464,8 @@ public class BoxForm extends javax.swing.JPanel {
         });
 
         TableColumnModel model = tblPokemon.getColumnModel();
+        tblPokemon.setDefaultRenderer(Object.class, new PokemonTableRenderer());
         model.getColumn(0).setHeaderValue("");
-        model.getColumn(0).setCellRenderer(new IconCellRenderer());
         model.getColumn(0).setMaxWidth(34);
         model.getColumn(1).setHeaderValue("Name");
         model.getColumn(2).setHeaderValue("Ability");
@@ -458,6 +476,7 @@ public class BoxForm extends javax.swing.JPanel {
         listTeam = new JList();
         listTeam.setDragEnabled(true);
         listTeam.setTransferHandler(new ListTeamTransferHandler());
+        listTeam.setCellRenderer(new TeamRenderer());
     }
 
     public void updateBoxes() {
@@ -502,12 +521,13 @@ public class BoxForm extends javax.swing.JPanel {
         return m_pokemonModel.getPokemonAt(selected).pokemon;
     }
 
-    // This is so that we can rig it with drag and drop support before sending it
+    // This is so that we can rig it with drag and drop support beforehand
     public JList getTeamList(List<TeamBuilderForm> forms) {
+        m_forms = forms;
         DefaultListModel pModel = new DefaultListModel();
-        for (int i = 0; i < forms.size(); i++)
+        for (int i = 0; i < forms.size(); i++) {
              pModel.addElement(forms.get(i).getPokemon());
-
+        }
         listTeam.setModel(pModel);
         return listTeam;
     }
