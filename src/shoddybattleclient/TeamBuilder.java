@@ -423,6 +423,20 @@ public class TeamBuilder extends javax.swing.JFrame {
         }
     }
 
+    // Update tabs based on m_forms
+    private void updateTabs() {
+        Component last = tabForms.getComponentAt(tabForms.getTabCount() - 1);
+        tabForms.removeAll();
+        for (TeamBuilderForm tab : m_forms) {
+            String name = tab.getPokemon().toString();
+            ((CloseableTabbedPane)tabForms).addTab(name, tab, false);
+        }
+
+        if (last instanceof BoxForm) {
+            tabForms.add("Boxes", last);
+        }
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -455,6 +469,8 @@ public class TeamBuilder extends javax.swing.JFrame {
         mnuHappiness = new javax.swing.JMenuItem();
         menuChangeSize = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+        menuLeft = new javax.swing.JMenuItem();
+        menuRight = new javax.swing.JMenuItem();
         menuFront = new javax.swing.JMenuItem();
         menuBox = new javax.swing.JMenuItem();
 
@@ -607,6 +623,22 @@ public class TeamBuilder extends javax.swing.JFrame {
         jMenuBar1.add(jMenu3);
 
         jMenu2.setText("Tools");
+
+        menuLeft.setText("Move Left");
+        menuLeft.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuLeftActionPerformed(evt);
+            }
+        });
+        jMenu2.add(menuLeft);
+
+        menuRight.setText("Move Right");
+        menuRight.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuRightActionPerformed(evt);
+            }
+        });
+        jMenu2.add(menuRight);
 
         menuFront.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.CTRL_MASK));
         menuFront.setText("Move to Front");
@@ -885,16 +917,7 @@ public class TeamBuilder extends javax.swing.JFrame {
         m_forms.remove(selected);
         m_forms.add(0, temp);
 
-        Component last = tabForms.getComponentAt(tabForms.getTabCount() - 1);
-        tabForms.removeAll();
-        for (TeamBuilderForm tab : m_forms) {
-            String name = tab.getPokemon().toString();
-            ((CloseableTabbedPane)tabForms).addTab(name, tab, false);
-        }
-
-        if (last instanceof BoxForm) {
-            tabForms.add("Boxes", last);
-        }
+        updateTabs();
     }//GEN-LAST:event_menuFrontActionPerformed
 
     private void menuBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBoxActionPerformed
@@ -1139,6 +1162,34 @@ public class TeamBuilder extends javax.swing.JFrame {
         updateBoxes(true);
     }//GEN-LAST:event_menuDeleteBoxActionPerformed
 
+    private void menuLeftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLeftActionPerformed
+        int selected = tabForms.getSelectedIndex();
+        if ((selected < 1) || (selected >= m_forms.size())) {
+            return;
+        }
+
+        TeamBuilderForm temp = m_forms.get(selected);
+        m_forms.set(selected, m_forms.get(selected - 1));
+        m_forms.set(selected - 1, temp);
+
+        updateTabs();
+        tabForms.setSelectedComponent(temp);
+    }//GEN-LAST:event_menuLeftActionPerformed
+
+    private void menuRightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuRightActionPerformed
+        int selected = tabForms.getSelectedIndex();
+        if (selected >= (m_forms.size() - 1)) {
+            return;
+        }
+
+        TeamBuilderForm temp = m_forms.get(selected);
+        m_forms.set(selected, m_forms.get(selected + 1));
+        m_forms.set(selected + 1, temp);
+
+        updateTabs();
+        tabForms.setSelectedComponent(temp);
+    }//GEN-LAST:event_menuRightActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -1187,8 +1238,10 @@ public class TeamBuilder extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuExportBox;
     private javax.swing.JMenuItem menuFront;
     private javax.swing.JMenuItem menuImportBox;
+    private javax.swing.JMenuItem menuLeft;
     private javax.swing.JMenuItem menuLoad;
     private javax.swing.JMenuItem menuNew;
+    private javax.swing.JMenuItem menuRight;
     private javax.swing.JMenuItem menuSave;
     private javax.swing.JMenuItem menuSaveAs;
     private javax.swing.JMenuItem mnuHappiness;
