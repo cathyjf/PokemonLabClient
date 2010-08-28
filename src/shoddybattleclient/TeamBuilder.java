@@ -455,7 +455,6 @@ public class TeamBuilder extends javax.swing.JFrame {
         menuChangeSize = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         menuFront = new javax.swing.JMenuItem();
-        menuRandomise = new javax.swing.JMenuItem();
         menuBox = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -608,6 +607,7 @@ public class TeamBuilder extends javax.swing.JFrame {
 
         jMenu2.setText("Tools");
 
+        menuFront.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.CTRL_MASK));
         menuFront.setText("Move to Front");
         menuFront.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -615,9 +615,6 @@ public class TeamBuilder extends javax.swing.JFrame {
             }
         });
         jMenu2.add(menuFront);
-
-        menuRandomise.setText("Randomise Team");
-        jMenu2.add(menuRandomise);
 
         menuBox.setText("Open Box");
         menuBox.addActionListener(new java.awt.event.ActionListener() {
@@ -656,13 +653,13 @@ public class TeamBuilder extends javax.swing.JFrame {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(tabForms, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 429, Short.MAX_VALUE)
+                    .add(tabForms, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(cmbSpecies, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(panelSprite, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                        .add(scrTreeBox, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE)
+                        .add(scrTreeBox, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(btnLoadFromBox)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -1189,7 +1186,6 @@ public class TeamBuilder extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuImportBox;
     private javax.swing.JMenuItem menuLoad;
     private javax.swing.JMenuItem menuNew;
-    private javax.swing.JMenuItem menuRandomise;
     private javax.swing.JMenuItem menuSave;
     private javax.swing.JMenuItem menuSaveAs;
     private javax.swing.JMenuItem mnuHappiness;
