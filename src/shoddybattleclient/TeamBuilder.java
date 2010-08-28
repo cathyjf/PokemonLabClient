@@ -882,8 +882,8 @@ public class TeamBuilder extends javax.swing.JFrame {
         }
 
         TeamBuilderForm temp = m_forms.get(selected);
-        m_forms.set(selected, m_forms.get(0));
-        m_forms.set(0, temp);
+        m_forms.remove(selected);
+        m_forms.add(0, temp);
 
         Component last = tabForms.getComponentAt(tabForms.getTabCount() - 1);
         tabForms.removeAll();
