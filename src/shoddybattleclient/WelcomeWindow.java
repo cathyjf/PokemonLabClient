@@ -291,15 +291,15 @@ public class WelcomeWindow extends javax.swing.JFrame {
 
         Text.loadText("english.lang");
 
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                if (Preference.getStorageLocation() == null) {
-                    new FirstLaunch().setVisible(true);
-                } else {
+        if (Preference.getStorageLocation() == null) {
+            FirstLaunch.initialiseLocalStorage();
+        } else {
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
                     new WelcomeWindow().setVisible(true);
                 }
-            }
-        });
+            });
+        }
 
         /*System.setErr(new PrintStream(new OutputStream() {
             ErrorBox m_box = new ErrorBox();

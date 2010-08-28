@@ -38,7 +38,6 @@ public class FirstLaunch extends javax.swing.JFrame {
     public FirstLaunch() {
         initComponents();
         this.setAlwaysOnTop(true);
-        txtDir.setText(getDefaultStoragePath());
     }
 
     public static native String getApplicationDataDirectory();
@@ -76,6 +75,24 @@ public class FirstLaunch extends javax.swing.JFrame {
         return path;
     }
 
+    public static void initialiseLocalStorage() {
+        String path = getDefaultStoragePath();
+        if ((path == null) || !isWritable(path)) {
+            new FirstLaunch().setVisible(true);
+            return;
+        }
+        File f = new File(path);
+        f.mkdirs();
+        new File(f, "sprites").mkdirs();
+        Preference.setStorageLocation(path);
+
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new SpriteDownloadForm().setVisible(true);
+            }
+        });
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -88,7 +105,6 @@ public class FirstLaunch extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         txtDir = new javax.swing.JTextField();
         btnBrowse = new javax.swing.JButton();
-        btnReset = new javax.swing.JButton();
         btnContinue = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -99,19 +115,12 @@ public class FirstLaunch extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("<html><b>Welcome to Shoddy Battle!</b><br><br>Shoddy Battle requires a location to store certain internal files. You can leave the default or select a folder of your choice.</html>");
+        jLabel1.setText("<html><b>Welcome to Shoddy Battle!</b><br><br>Shoddy Battle requires a location to store certain internal files. The<br>default failed, so select a new path.</html>");
 
         btnBrowse.setText("Browse");
         btnBrowse.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBrowseActionPerformed(evt);
-            }
-        });
-
-        btnReset.setText("Reset");
-        btnReset.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnResetActionPerformed(evt);
             }
         });
 
@@ -131,33 +140,27 @@ public class FirstLaunch extends javax.swing.JFrame {
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
                         .add(jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 337, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(6, Short.MAX_VALUE))
+                        .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(layout.createSequentialGroup()
-                                .add(txtDir, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(btnBrowse)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED))
-                            .add(layout.createSequentialGroup()
-                                .add(btnReset)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 162, Short.MAX_VALUE)
-                                .add(btnContinue)))
-                        .add(2, 2, 2))))
+                        .add(txtDir, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(btnBrowse)
+                        .addContainerGap())
+                    .add(layout.createSequentialGroup()
+                        .add(btnContinue)
+                        .addContainerGap(272, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jLabel1)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 35, Short.MAX_VALUE)
+                .add(jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(txtDir, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(btnBrowse))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(btnReset)
-                    .add(btnContinue))
+                .add(btnContinue)
                 .addContainerGap())
         );
 
@@ -182,15 +185,16 @@ public class FirstLaunch extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_formWindowClosing
 
-    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
-        txtDir.setText(getDefaultStoragePath());
-    }//GEN-LAST:event_btnResetActionPerformed
-
     private void btnContinueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinueActionPerformed
         String path = txtDir.getText();
+        if (path.trim().equals("")) {
+            JOptionPane.showMessageDialog(this, "Please select a directory.");
+            return;
+        }
         if (!isWritable(path)) {
-            JOptionPane.showMessageDialog(this, "The selected folder is not writable " +
-                    "by Shoddy Battle. Please select a different folder.");
+            JOptionPane.showMessageDialog(this, "The selected folder is not "
+                    + "writable by Shoddy Battle. Please select a different "
+                    + "folder.");
             return;
         }
         dispose();
@@ -227,7 +231,6 @@ public class FirstLaunch extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBrowse;
     private javax.swing.JButton btnContinue;
-    private javax.swing.JButton btnReset;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JTextField txtDir;
     // End of variables declaration//GEN-END:variables
