@@ -25,9 +25,11 @@ package shoddybattleclient;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import shoddybattleclient.network.SpriteDownloader;
 import shoddybattleclient.network.SpriteDownloader.DownloadListener;
@@ -39,7 +41,7 @@ import shoddybattleclient.network.SpriteDownloader.SpriteLink;
  */
 public class SpriteDownloadForm extends javax.swing.JFrame {
 
-    SpriteDownloader m_task;
+    private SpriteDownloader m_task;
 
     /** Creates new form SpriteDownloadForm */
     public SpriteDownloadForm() {
@@ -75,6 +77,17 @@ public class SpriteDownloadForm extends javax.swing.JFrame {
             public void informFinished(boolean success) {
                 String suffix = success ? "done" : "failed";
                 txtProgress.setText(txtProgress.getText() + " - " + suffix);
+
+                File spriteDir = new File(Preference.getSpriteLocation());
+                ArrayList<String> repos = new ArrayList<String>();
+                for (File dir : spriteDir.listFiles()) {
+                    if (dir.isDirectory()) {
+                        repos.add(dir.getName());
+                    }
+                }
+
+                Preference.setSpriteDirectories((String[])repos.toArray(
+                        new String[repos.size()]));
             }
         });
         m_task.addPropertyChangeListener(new PropertyChangeListener() {

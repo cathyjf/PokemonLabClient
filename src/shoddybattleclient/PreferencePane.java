@@ -693,6 +693,7 @@ public class PreferencePane extends javax.swing.JFrame {
                 String suffix = success ? "done" : "failed";
                 txtProgress.setText(txtProgress.getText() + " - " + suffix);
                 initSpritePanel();
+                saveSpriteDirectories();
             }
         });
         task.addPropertyChangeListener(new PropertyChangeListener() {
