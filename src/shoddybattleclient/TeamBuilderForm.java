@@ -330,13 +330,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         
         m_parent.updateTitle(m_idx, m_species.getName());
 
-        int total = 0;
-        for (int i = 0; i < m_evs.length; i++) {
-            total += m_pokemon.evs[i];
-        }
-        Color c = (total > 510) ? Color.RED : Color.BLACK;
-        m_evHeader.setText(String.valueOf(total));
-        m_evHeader.setForeground(c);
+        updateEvs();
     }
 
     public int calculateStat(int i)  {
@@ -344,6 +338,24 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         return Pokemon.calculateStat(m_pokemon, i, m_species, n);
     }
 
+    private void updateEvs() {
+        int left = 510;
+        for (int i = 0; i < m_evs.length; i++) {
+            left -= m_pokemon.evs[i];
+        }
+        Color c = null;
+        if (left < 0) {
+            m_evHeader.setToolTipText("<html>Pokemon have a limit of 510 total "
+                    + "EVs,<br>this pokemon has too many.");
+            c = Color.RED;
+        } else {
+            m_evHeader.setToolTipText(null);
+            c = Color.BLACK;
+        }
+        m_evHeader.setText(String.valueOf(left));
+        m_evHeader.setForeground(c);
+    }
+    
     private void updateStat(int idx) {
         if (m_pokemon == null) return;
         if ((idx < 0) || (idx > m_totals.length)) return;
@@ -358,13 +370,8 @@ public class TeamBuilderForm extends javax.swing.JPanel {
             m_pokemon.evs[idx] = 0;
         }
         m_totals[idx].setText(String.valueOf(calculateStat(idx)));
-        int total = 0;
-        for (int i = 0; i < m_evs.length; i++) {
-            total += m_pokemon.evs[i];
-        }
-        Color c = (total > 510) ? Color.RED : Color.BLACK;
-        m_evHeader.setText(String.valueOf(total));
-        m_evHeader.setForeground(c);
+
+        updateEvs();
     }
 
     private void updateHiddenPower() {
