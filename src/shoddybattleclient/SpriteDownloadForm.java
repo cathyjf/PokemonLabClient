@@ -86,8 +86,16 @@ public class SpriteDownloadForm extends javax.swing.JFrame {
                     }
                 }
 
+                btnOk.setEnabled(true);
+
                 Preference.setSpriteDirectories((String[])repos.toArray(
                         new String[repos.size()]));
+
+                java.awt.EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        new WelcomeWindow().setVisible(true);
+                    }
+                });
             }
         });
         m_task.addPropertyChangeListener(new PropertyChangeListener() {
@@ -115,8 +123,10 @@ public class SpriteDownloadForm extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         progress = new javax.swing.JProgressBar();
         txtProgress = new javax.swing.JLabel();
+        btnOk = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setLocationByPlatform(true);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -128,18 +138,35 @@ public class SpriteDownloadForm extends javax.swing.JFrame {
         txtProgress.setFont(new java.awt.Font("Lucida Grande", 0, 10));
         txtProgress.setText("0% complete");
 
+        btnOk.setText("Continue");
+        btnOk.setEnabled(false);
+        btnOk.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOkActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtProgress)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(progress, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(20, 20, 20)
+                .addComponent(txtProgress)
+                .addContainerGap(334, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(progress, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(jLabel1)))
+                .addGap(20, 20, 20))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(297, Short.MAX_VALUE)
+                .addComponent(btnOk)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -150,7 +177,9 @@ public class SpriteDownloadForm extends javax.swing.JFrame {
                 .addComponent(txtProgress)
                 .addGap(1, 1, 1)
                 .addComponent(progress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnOk)
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         pack();
@@ -164,12 +193,11 @@ public class SpriteDownloadForm extends javax.swing.JFrame {
             return;
         }
         dispose();
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new WelcomeWindow().setVisible(true);
-            }
-        });
     }//GEN-LAST:event_formWindowClosing
+
+    private void btnOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkActionPerformed
+        dispose();
+    }//GEN-LAST:event_btnOkActionPerformed
 
     /**
     * @param args the command line arguments
@@ -183,6 +211,7 @@ public class SpriteDownloadForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnOk;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JProgressBar progress;
     private javax.swing.JLabel txtProgress;
