@@ -760,8 +760,8 @@ public class ServerLink extends Thread {
                 // byte : generation
                 // int32 : active party size
                 // int32 : max team length
-                // byte : metagame
-                // if metagame != -1:
+                // int32 : metagame
+                // if metagame == -1:
                 //     byte : number of clauses
                 //     for each:
                 //         byte : clause index
