@@ -145,7 +145,7 @@ public class TeamBuilder extends javax.swing.JFrame {
         initComponents();
         m_generation = mod;
 
-        ArrayList<PokemonSpecies> species = m_generation.getSpecies();
+        List<PokemonSpecies> species = m_generation.getSpecies();
         m_speciesModel = new DefaultComboBoxModel(species.toArray(new PokemonSpecies[species.size()]));
         cmbSpecies.setModel(m_speciesModel);
         
@@ -475,7 +475,7 @@ public class TeamBuilder extends javax.swing.JFrame {
         menuBox = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle("Shoddy Battle - Team Builder");
+        setTitle("Pokemon Lab - Team Builder");
         setLocationByPlatform(true);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -650,11 +650,6 @@ public class TeamBuilder extends javax.swing.JFrame {
         jMenu2.add(menuFront);
 
         menuBox.setText("Open Box");
-        menuBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuBoxActionPerformed(evt);
-            }
-        });
         jMenu2.add(menuBox);
 
         jMenuBar1.add(jMenu2);
@@ -686,7 +681,7 @@ public class TeamBuilder extends javax.swing.JFrame {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(tabForms, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
+                    .add(tabForms, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(cmbSpecies, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)

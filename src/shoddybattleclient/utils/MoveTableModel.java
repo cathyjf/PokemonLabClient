@@ -264,9 +264,10 @@ public class MoveTableModel extends AbstractTableModel implements SortableTableM
     /**
      * Creates a new instance of MoveTableModel
      */
-    public MoveTableModel(ArrayList<PokemonMove> moveList, String[] moves, TeamBuilderForm parent) {
+    public MoveTableModel(List<PokemonMove> moveList, String[] moves,
+            TeamBuilderForm parent) {
         m_parent = parent;
-        ArrayList<TableRow> list = new ArrayList<TableRow>();
+        List<TableRow> list = new ArrayList<TableRow>();
         HashSet<String> set = new HashSet<String>();
         for (int i = 0; i < moves.length; i++) {
             if (set.contains(moves[i])) {
@@ -311,7 +312,7 @@ public class MoveTableModel extends AbstractTableModel implements SortableTableM
     }
 
     // Finds a move in an ArrayList by name
-    private PokemonMove getMove(String name, ArrayList<PokemonMove> moveList) {
+    private PokemonMove getMove(String name, List<PokemonMove> moveList) {
         for (PokemonMove m : moveList) {
             if (m.name.equals(name)) {
                 return m;

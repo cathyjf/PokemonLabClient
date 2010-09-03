@@ -22,9 +22,13 @@
 
 package shoddybattleclient.shoddybattle;
 
+import java.net.URL;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Scanner;
+import shoddybattleclient.TeamBuilder;
 
 /**
  * This class loads generation information for the teambuilder. Currently
@@ -34,13 +38,15 @@ import java.util.Comparator;
  * @author Carlos
  */
 public class Generation {
-    private ArrayList<PokemonSpecies> m_species;
-    private ArrayList<PokemonMove> m_moves;
-    private ArrayList<String> m_items;
+    private List<PokemonSpecies> m_species;
+    private List<PokemonMove> m_moves;
+    private List<String> m_items;
 
-    public Generation(ArrayList<PokemonSpecies> species, ArrayList<PokemonMove> moves,
-            ArrayList<String> items) {
+    public Generation(List<PokemonSpecies> species,
+            List<PokemonMove> moves,
+            List<String> items) {
         Collections.sort(species, new Comparator<PokemonSpecies>() {
+            @Override
             public int compare(PokemonSpecies arg0, PokemonSpecies arg1) {
                 return arg0.getName().compareToIgnoreCase(arg1.getName());
             }
@@ -52,15 +58,33 @@ public class Generation {
         m_items = items;
     }
 
-    public ArrayList<PokemonMove> getMoves() {
+    public static List<String> loadItems() {
+        List<String> items = new ArrayList<String>();
+        try {
+            Scanner itemScanner = new Scanner(new URL(
+                    TeamBuilder.class.getResource(
+                    "resources/items.txt").toString()).openStream());
+            while (itemScanner.hasNextLine()) {
+                String line = itemScanner.nextLine();
+                if (!line.equals("")) {
+                    items.add(line);
+                }
+            }
+        } catch (Exception ex) {
+
+        }
+        return items;
+    }
+
+    public List<PokemonMove> getMoves() {
         return m_moves;
     }
 
-    public ArrayList<PokemonSpecies> getSpecies() {
+    public List<PokemonSpecies> getSpecies() {
         return m_species;
     }
 
-    public ArrayList<String> getItems() {
+    public List<String> getItems() {
         return m_items;
     }
 
@@ -69,7 +93,8 @@ public class Generation {
         int right = m_species.size() - 1;
         while (left <= right) {
             int middle = (left+right)/2;
-            int compare = name.compareToIgnoreCase(m_species.get(middle).getName());
+            int compare = name.compareToIgnoreCase(
+                    m_species.get(middle).getName());
             if (compare == 0) {
                 return m_species.get(middle);
             } else if (compare < 0) {

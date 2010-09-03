@@ -1695,7 +1695,8 @@ public class ServerLink extends Thread {
     private Map<Integer, BattleWindow> m_battles =
             new HashMap<Integer, BattleWindow>();
     private Metagame[] m_metagames;
-    private List<MessageListener> m_msgListeners = new ArrayList<MessageListener>();
+    private List<MessageListener> m_msgListeners =
+            new ArrayList<MessageListener>();
     private List<Clause> m_clauseList;
 
     public Metagame[] getMetagames() {

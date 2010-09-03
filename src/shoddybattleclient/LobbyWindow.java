@@ -40,6 +40,7 @@ import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.network.ServerLink.BanElement;
 import shoddybattleclient.network.ServerLink.ChallengeMediator;
 import shoddybattleclient.network.ServerLink.RuleSet;
+import shoddybattleclient.shoddybattle.Generation;
 import shoddybattleclient.utils.*;
 import shoddybattleclient.utils.ClauseList.Clause;
 import shoddybattleclient.utils.CloseableTabbedPane.TabCloseListener;
@@ -544,7 +545,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         
         ((CloseableTabbedPane)tabChats).addTabCloseListener(this);
 
-        setTitle("Shoddy Battle - " + userName);
+        setTitle("Pokemon Lab - " + userName);
 
         mnuPreferences.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
               Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -819,6 +820,8 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         tabChats = new CloseableTabbedPane();
         jMenuBar2 = new javax.swing.JMenuBar();
         jMenu3 = new javax.swing.JMenu();
+        mnuTeamBuilder = new javax.swing.JMenuItem();
+        jSeparator3 = new javax.swing.JSeparator();
         mnuJoinMain = new javax.swing.JMenuItem();
         mnuBattleList = new javax.swing.JMenuItem();
         mnuFind = new javax.swing.JMenuItem();
@@ -857,6 +860,15 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         jScrollPane1.setViewportView(listUsers);
 
         jMenu3.setText("File");
+
+        mnuTeamBuilder.setText("Team Builder");
+        mnuTeamBuilder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuTeamBuilderActionPerformed(evt);
+            }
+        });
+        jMenu3.add(mnuTeamBuilder);
+        jMenu3.add(jSeparator3);
 
         mnuJoinMain.setText("Join #main");
         mnuJoinMain.addActionListener(new java.awt.event.ActionListener() {
@@ -949,10 +961,10 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(layout.createSequentialGroup()
-                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
                         .add(9, 9, 9)
                         .add(btnChallenge))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, tabChats, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 363, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, tabChats, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -1012,6 +1024,13 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         tabChats.setSelectedComponent(m_findPanel);
     }//GEN-LAST:event_mnuFindActionPerformed
 
+    private void mnuTeamBuilderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuTeamBuilderActionPerformed
+        List<String> items = Generation.loadItems();
+        Generation mod = new Generation(ServerLink.getSpeciesList(),
+                m_link.getMoveList(), items);
+        new TeamBuilder(mod).setVisible(true);
+    }//GEN-LAST:event_mnuTeamBuilderActionPerformed
+
     // prompts the user to confirm that they wish to leave the server
     private boolean confirmLeave() {
         if (!m_link.isAlive()) return true;
@@ -1045,6 +1064,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
     private javax.swing.JList listUsers;
     private javax.swing.JMenuItem mnuBattleList;
     private javax.swing.JMenuItem mnuFind;
@@ -1053,6 +1073,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
     private javax.swing.JMenuItem mnuPersonalMessage;
     private javax.swing.JMenuItem mnuPreferences;
     private javax.swing.JMenuItem mnuQuit;
+    private javax.swing.JMenuItem mnuTeamBuilder;
     private javax.swing.JTabbedPane tabChats;
     // End of variables declaration//GEN-END:variables
 

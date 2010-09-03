@@ -25,6 +25,7 @@ package shoddybattleclient;
 import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
@@ -85,19 +86,16 @@ public class WelcomeWindow extends javax.swing.JFrame {
     /** Creates new form WelcomeWindow */
     public WelcomeWindow() {
         initComponents();
-        ServerListEntry sle = new ServerListEntry("Test Server",
-                "This is only for testing", "colin.shoddybattle.com",
-                8446, 220, 250);
-        ServerListEntry sle2 = new ServerListEntry("Smogon", 
-                "Official server of smogon.com", "smogon.com",
-                8446, 150, 250);
-        ServerListEntry sle3 = new ServerListEntry("Pokemonexperte",
+        ServerListEntry sle = new ServerListEntry("Poke Lab Beta",
+                "Beta hosted on the Smogon server", "smogon.com",
+                8446, 0, 250);
+        /**ServerListEntry sle3 = new ServerListEntry("Pokemonexperte",
                 "A german server.", "shoddy.pokemonexperte.com",
                 1234, 5, 250);
         ServerListEntry sle4 = new ServerListEntry("Local Server",
                 "This is only for testing", "localhost",
-                8446, 221, 250);
-        lstServers.setModel(new ServerListModel(new ServerListEntry[] {sle,sle2,sle3, sle4}));
+                8446, 221, 250);**/
+        lstServers.setModel(new ServerListModel(new ServerListEntry[] { sle }));
         lstServers.setCellRenderer(new ServerListRenderer());
     }
 
@@ -140,7 +138,7 @@ public class WelcomeWindow extends javax.swing.JFrame {
         jButton1.setText("jButton1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Shoddy Battle - Server List");
+        setTitle("Pokemon Lab - Server List");
         setLocationByPlatform(true);
 
         lstServers.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -195,12 +193,12 @@ public class WelcomeWindow extends javax.swing.JFrame {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(serverListPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
+                    .add(serverListPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(btnConnect)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(btnAdvanced)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 73, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 257, Short.MAX_VALUE)
                         .add(btnRefresh)))
                 .addContainerGap())
         );
@@ -224,21 +222,12 @@ public class WelcomeWindow extends javax.swing.JFrame {
         // All this loading will be changed to a custom binary format later
         long t1 = System.currentTimeMillis();
         MoveListParser mlp = new MoveListParser();
-        ArrayList<PokemonMove> moves = mlp.parseDocument(TeamBuilder.class.getResource("resources/moves.xml").toString());
+        List<PokemonMove> moves = mlp.parseDocument(TeamBuilder.class.getResource("resources/moves.xml").toString());
         long t2 = System.currentTimeMillis();
         SpeciesListParser parser = new SpeciesListParser();
-        ArrayList<PokemonSpecies> species = parser.parseDocument(TeamBuilder.class.getResource("resources/species.xml").toString());
+        List<PokemonSpecies> species = parser.parseDocument(TeamBuilder.class.getResource("resources/species.xml").toString());
         long t3 = System.currentTimeMillis();
-        ArrayList<String> items = new ArrayList<String>();
-        try {
-            Scanner itemScanner = new Scanner(new URL(
-                    TeamBuilder.class.getResource("resources/items.txt").toString()).openStream());
-            while (itemScanner.hasNextLine()) {
-                String line = itemScanner.nextLine();
-                if (!line.equals(""))
-                    items.add(line);
-            }
-        } catch (Exception ex) {}
+        List<String> items = Generation.loadItems();
         Generation mod = new Generation(species, moves, items);
         System.out.println("Loaded moves in " + (t2-t1) + " milliseconds");
         System.out.println("Loaded species in " + (t3-t2) + " milliseconds");

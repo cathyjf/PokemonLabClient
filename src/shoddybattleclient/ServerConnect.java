@@ -78,7 +78,7 @@ public class ServerConnect extends javax.swing.JFrame {
         link.loadSpecies(
                 ServerConnect.class.getResource(
                 "resources/species.xml").toString());
-        txtLoginPassword.setText("admin");
+        //txtLoginPassword.setText("admin");
 
         if (!canRegister) {
             tabbedPane.removeTabAt(1);
@@ -135,7 +135,6 @@ public class ServerConnect extends javax.swing.JFrame {
 
         jLabel3.setText("Password:");
 
-        txtLoginName.setText("bearzly");
         txtLoginName.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtLoginNameKeyPressed(evt);
@@ -168,8 +167,8 @@ public class ServerConnect extends javax.swing.JFrame {
                             .add(jLabel3))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(txtLoginPassword, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
-                            .add(txtLoginName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)))
+                            .add(txtLoginPassword, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
+                            .add(txtLoginName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)))
                     .add(cmdLogIn))
                 .addContainerGap())
         );
@@ -239,9 +238,9 @@ public class ServerConnect extends javax.swing.JFrame {
                             .add(jLabel1))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, txtRegisterPassword, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, txtRegisterName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
-                            .add(txtRegisterConfirm, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)))
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, txtRegisterPassword, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, txtRegisterName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
+                            .add(txtRegisterConfirm, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)))
                     .add(cmdRegister))
                 .addContainerGap())
         );
