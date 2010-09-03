@@ -863,6 +863,7 @@ public class ServerLink extends Thread {
                 // byte   : party
                 // int16  : metagame (-1 for a direct challenge)
                 // byte   : rated
+                // string : unique battle ID
                 public void handle(ServerLink link, DataInputStream is)
                         throws IOException {
                     int id = is.readInt();
@@ -870,6 +871,7 @@ public class ServerLink extends Thread {
                     int party = is.read();
                     int metagameId = is.readShort();
                     boolean rated = (is.read() != 0);
+                    String battleUid = is.readUTF();
                     String[] users = null;
 
                     ChallengeMediator mediator = null;
@@ -911,7 +913,8 @@ public class ServerLink extends Thread {
                     int periodLength = (opts == null) ? -1 : opts.periodLength;
 
                     BattleWindow wnd = new BattleWindow(link, id, partySize,
-                            maxTeamLength, party, users, team, periods, periodLength);
+                            maxTeamLength, party, users, team, periods,
+                            periodLength, battleUid);
 
                     link.m_battles.put(id, wnd);
                     wnd.setVisible(true);
@@ -1590,16 +1593,18 @@ public class ServerLink extends Thread {
                             }
                             break;
                         case 1:
-                            if (applied)
+                            if (applied) {
                                 System.out.println("ITEM ADDED: " + msg);
-                            else
+                            } else {
                                 System.out.println("ITEM REMOVED: " + msg);
+                            }
                             break;
                         case 2:
-                            if (applied)
+                            if (applied) {
                                 System.out.println("ABILITY ADDED: " + msg);
-                            else
+                            } else {
                                 System.out.println("ABILITY REMOVED: " + msg);
+                            }
                             break;
                     }
                 }

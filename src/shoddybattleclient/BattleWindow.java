@@ -446,7 +446,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
      */
     public BattleWindow(ServerLink link, int fid,
             int n, int length, String[] users, int maxPeriods) {
-        this(link, fid, n, length, 0, users, null, maxPeriods, -1);
+        this(link, fid, n, length, 0, users, null, maxPeriods, -1, null);
     }
 
     /** Creates new form BattleWindow */
@@ -457,10 +457,15 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             String[] users,
             Pokemon[] team,
             int maxPeriods,
-            int periodLength) {
+            int periodLength,
+            String uid) {
         initComponents();
 
-        setTitle(users[0] + " v. " + users[1] + " - Shoddy Battle");
+        String title = users[0] + " v. " + users[1];
+        if (uid != null) {
+            title += " {" + uid + "}";
+        }
+        setTitle(title);
 
         m_link = link;
         m_fid = fid;
@@ -515,6 +520,8 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
                 }
             }
         }
+
+        addMessage(null, "The unique ID for this battle is {" + uid + "}.");
     }
 
     public VisualPokemon getPokemonForSlot(int party, int slot) {
