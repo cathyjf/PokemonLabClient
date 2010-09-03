@@ -59,16 +59,11 @@ public class FirstLaunch extends javax.swing.JFrame {
     private static String getDefaultStoragePath() {
         String path = null;
         try {
-            if (false || System.getProperty("os.name").toUpperCase().indexOf("WINDOWS") != -1) {
-                System.loadLibrary("ShoddyHelper");
-                path = getApplicationDataDirectory() + "\\Shoddy Battle\\Shoddy Battle\\2.0";
-            } else {
-                path = new JFileChooser().getCurrentDirectory().toString();
-                if (!path.endsWith(File.separator)) {
-                    path += File.separator;
-                }
-                path += ".shoddybattle";
+            path = new JFileChooser().getCurrentDirectory().toString();
+            if (!path.endsWith(File.separator)) {
+                path += File.separator;
             }
+            path += ".shoddybattle";
         } catch (Exception e) {
             
         }
