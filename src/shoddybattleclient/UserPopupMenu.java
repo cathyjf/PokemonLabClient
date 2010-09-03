@@ -138,7 +138,7 @@ public class UserPopupMenu extends JPopupMenu {
         
         this.add(chal);
         //todo: decide what to do about battles
-        this.add(bat);
+        //this.add(bat);
         //change this to enable moderator functions for unauthorized users
         if (level > 1) {
             this.addSeparator();
