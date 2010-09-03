@@ -282,7 +282,6 @@ public class FindPanel extends javax.swing.JPanel {
         btnFind.setEnabled(m_team != null);
         btnCancel.setEnabled(false);
         btnLoad.setEnabled(true);
-        btnFind.setEnabled(false);
     }
 
     private void cmbLadderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbLadderActionPerformed
