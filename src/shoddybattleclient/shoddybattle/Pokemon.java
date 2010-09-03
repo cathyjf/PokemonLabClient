@@ -133,17 +133,17 @@ public class Pokemon implements Cloneable {
 
     public static int calculateStat(Pokemon pokemon, int i,
             PokemonSpecies species, PokemonNature nature) {
-        return calculateStat(pokemon, i, species, nature, 1);
+        return calculateStat(pokemon, i, species, nature, 0);
     }
 
     public static int calculateStat(Pokemon pokemon, int i,
             PokemonSpecies species, PokemonNature nature, int level)  {
         int base = species.getBase(i);
         int common =
-                (int)((int)(((2.0 * base)
+                (int)((int)(((2 * base)
                 + pokemon.ivs[i]
-                + (pokemon.evs[i] / 4.0)))
-                * (pokemon.level / 100.0));
+                + (pokemon.evs[i] / 4)))
+                * (pokemon.level / 100));
         if (i == Pokemon.S_HP) {
             if (base == 1) {
                 // Shedinja always has 1 hp.
