@@ -47,7 +47,7 @@ public class UserPopupMenu extends JPopupMenu {
             }
 
         });
-        JMenuItem bat = new JMenuItem("View Battle");
+        /***JMenuItem bat = new JMenuItem("View Battle");**/
         JMenuItem kick = new JMenuItem("Kick");
         kick.addActionListener(new ActionListener() {
             @Override
@@ -87,7 +87,7 @@ public class UserPopupMenu extends JPopupMenu {
             }
 
         });
-        JMenuItem sop = new JMenuItem("Add SOp");
+        JMenuItem sop = new JMenuItem("Add Protect");
         sop.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
