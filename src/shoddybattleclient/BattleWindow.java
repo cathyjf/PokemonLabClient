@@ -521,7 +521,10 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             }
         }
 
-        addMessage(null, "The unique ID for this battle is {" + uid + "}.");
+        if (uid != null) {
+            addMessage(null, "The unique ID for this battle is {" +
+                    uid + "}.");
+        }
     }
 
     public VisualPokemon getPokemonForSlot(int party, int slot) {
