@@ -459,6 +459,11 @@ public class TeamBuilderForm extends javax.swing.JPanel {
 
         txtLevel.setDocument(new IntegerDocument(1, 100, txtLevel));
         txtLevel.setText("100");
+        txtLevel.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtLevelKeyReleased(evt);
+            }
+        });
 
         chkShiny.setText("Shiny?");
         chkShiny.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -496,7 +501,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         jLabel25.setText("Hidden Power:");
 
         txtHiddenPower.setEditable(false);
-        txtHiddenPower.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+        txtHiddenPower.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         txtHiddenPower.setText("70");
 
         cmbHiddenPower.setFont(new java.awt.Font("Lucida Grande", 0, 11));
@@ -624,6 +629,18 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         updateHiddenPower();
     }//GEN-LAST:event_cmbHiddenPowerItemStateChanged
 
+    private void txtLevelKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtLevelKeyReleased
+        try {
+            m_pokemon.level = Integer.parseInt(txtLevel.getText());
+        } catch (NumberFormatException e) {
+            // Integer document should prevent this
+        }
+        for (int i = 0; i < Pokemon.STAT_COUNT; i++) {
+            updateStat(i);
+        }
+        
+    }//GEN-LAST:event_txtLevelKeyReleased
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox chkShiny;
@@ -645,5 +662,9 @@ public class TeamBuilderForm extends javax.swing.JPanel {
     private javax.swing.JTextField txtLevel;
     private javax.swing.JTextField txtNickname;
     // End of variables declaration//GEN-END:variables
+
+    public static void main(String[] args) {
+        TeamBuilder.main(args);
+    }
 
 }

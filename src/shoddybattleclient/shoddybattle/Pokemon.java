@@ -143,7 +143,7 @@ public class Pokemon implements Cloneable {
                 (int)((int)(((2 * base)
                 + pokemon.ivs[i]
                 + (pokemon.evs[i] / 4)))
-                * (pokemon.level / 100));
+                * pokemon.level / 100);
         if (i == Pokemon.S_HP) {
             if (base == 1) {
                 // Shedinja always has 1 hp.
