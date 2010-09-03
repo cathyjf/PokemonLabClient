@@ -472,6 +472,7 @@ public class TeamBuilder extends javax.swing.JFrame {
         menuLeft = new javax.swing.JMenuItem();
         menuRight = new javax.swing.JMenuItem();
         menuFront = new javax.swing.JMenuItem();
+        jSeparator3 = new javax.swing.JSeparator();
         menuBox = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -648,8 +649,14 @@ public class TeamBuilder extends javax.swing.JFrame {
             }
         });
         jMenu2.add(menuFront);
+        jMenu2.add(jSeparator3);
 
         menuBox.setText("Open Box");
+        menuBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuBoxActionPerformed(evt);
+            }
+        });
         jMenu2.add(menuBox);
 
         jMenuBar1.add(jMenu2);
@@ -687,7 +694,7 @@ public class TeamBuilder extends javax.swing.JFrame {
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(panelSprite, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                        .add(scrTreeBox, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
+                        .add(scrTreeBox, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(btnLoadFromBox)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -1226,6 +1233,7 @@ public class TeamBuilder extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
     private javax.swing.JMenuItem menuBox;
     private javax.swing.JMenuItem menuChangeSize;
     private javax.swing.JMenuItem menuDeleteBox;
