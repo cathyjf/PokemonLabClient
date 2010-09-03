@@ -433,6 +433,9 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     // the underlying channel
     private Channel m_channel;
 
+    // This hack is required to unclear a button group in Java 5.
+    private JToggleButton m_dummySwitchButton;
+
     public int getPartySize() {
         return m_n;
     }
@@ -558,8 +561,9 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
 
         if (m_pokemon.length > m_length) {
             Pokemon[] temp = new Pokemon[m_length];
-            for (int i = 0; i < m_length; i++)
+            for (int i = 0; i < m_length; i++) {
                 temp[i] = m_pokemon[i];
+            }
             m_pokemon = temp;
         }
         
@@ -637,8 +641,9 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             btnMoveCancel.setEnabled(false);
             btnSwitch.setEnabled(false);
             btnSwitchCancel.setEnabled(false);
-            for (MoveButton button : m_moveButtons)
+            for (MoveButton button : m_moveButtons) {
                 button.setEnabled(false);
+            }
         }
     }
 
@@ -682,6 +687,8 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             m_switches[i] = button;
             panelSwitch.add(button);
         }
+        m_dummySwitchButton = new JToggleButton();
+        switchButtons.add(m_dummySwitchButton);
     }
 
     /**
@@ -820,6 +827,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         btnSwitchCancel.setEnabled(false);
         tabAction.setSelectedIndex(0);
         if (m_n > 1) m_visual.setSelected(slot);
+        m_dummySwitchButton.setSelected(true);
         setTicking(true);
     }
 
@@ -829,8 +837,9 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         btnSwitch.setEnabled(true);
         btnSwitchCancel.setEnabled(false);
         tabAction.setSelectedIndex(1);
-        for (MoveButton button : m_moveButtons)
+        for (MoveButton button : m_moveButtons) {
             button.setEnabled(false);
+        }
         setTicking(true);
     }
 
@@ -948,9 +957,11 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
                 public int compare(Integer lhs, Integer rhs) {
                     VisualPokemon first = getPokemon(m_participant, lhs);
                     VisualPokemon second = getPokemon(m_participant, rhs);
-                    int lhsVal = (first.getSlot() == -1) ? Integer.MAX_VALUE : first.getSlot();
-                    int rhsVal = (second.getSlot() == -1) ? Integer.MAX_VALUE : second.getSlot();
-                    return lhsVal-rhsVal;
+                    int lhsVal = (first.getSlot() == -1) ? m_length + lhs :
+                            first.getSlot();
+                    int rhsVal = (second.getSlot() == -1) ? m_length + rhs :
+                            second.getSlot();
+                    return lhsVal - rhsVal;
                 }
             });
             panelSwitch.repaint();
