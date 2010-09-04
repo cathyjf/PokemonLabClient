@@ -27,6 +27,7 @@ import java.util.Date;
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
@@ -57,6 +58,8 @@ public class HTMLPane extends JTextPane {
         css.importStyleSheet(HTMLPane.class.getResource("/shoddybattleclient/resources/main.css"));
         kit.setStyleSheet(css);
         setEditorKit(kit);
+        DefaultCaret caret = (DefaultCaret)getCaret();
+        caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
 
         this.addHyperlinkListener(new HyperlinkListener() {
             public void hyperlinkUpdate(HyperlinkEvent e) {
