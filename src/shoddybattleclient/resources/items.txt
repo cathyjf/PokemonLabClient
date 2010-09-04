@@ -113,3 +113,4 @@ Razor Claw
 Scope Lens
 Sticky Barb
 Focus Sash
+Power Herb
