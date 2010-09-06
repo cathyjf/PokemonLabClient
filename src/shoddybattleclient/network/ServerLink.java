@@ -29,6 +29,8 @@ import java.util.*;
 import java.nio.ByteBuffer;
 import java.util.concurrent.*;
 import java.security.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JOptionPane;
@@ -1685,7 +1687,7 @@ public class ServerLink extends Thread {
     private DataOutputStream m_output;
     private SecretKeySpec[] m_key = new SecretKeySpec[2];
     private String m_name, m_password;
-    private Thread m_messageThread;
+    private Thread m_messageThread, m_activityThread;
     private ServerConnect m_serverConnect;
     private LobbyWindow m_lobby;
     private static List<PokemonSpecies> m_speciesList;
@@ -1951,6 +1953,23 @@ public class ServerLink extends Thread {
         m_messageThread.start();
     }
 
+    void spawnActivityThread() {
+        m_activityThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (!interrupted()) {
+                    try {
+                        Thread.sleep(45 * 1000);
+                    } catch (InterruptedException ex) {
+                        break;
+                    }
+                    sendMessage(new OutMessage(18)); // CLIENT_ACTIVITY
+                }
+            }
+        });
+        m_activityThread.start();
+    }
+
     public void close() {
         try {
             m_input.close();
@@ -1973,6 +1992,7 @@ public class ServerLink extends Thread {
     @Override
     public void run() {
         spawnMessageQueue();
+        spawnActivityThread();
         while (true) {
             try {
                 int type = m_input.read();
@@ -2012,6 +2032,7 @@ public class ServerLink extends Thread {
         }
 
         // interrupt the message thread
+        m_activityThread.interrupt();
         m_messageThread.interrupt();
         m_lobby.addImportantMessage("Disconnected from server");
         String message = Text.addClass("Disconnected from server", "important");
