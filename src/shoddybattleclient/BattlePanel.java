@@ -119,6 +119,12 @@ public class BattlePanel extends javax.swing.JPanel {
 
             }
         ));
+        tblBattles.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tblBattles.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblBattlesMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblBattles);
 
         btnRefresh.setText("Refresh");
@@ -150,7 +156,7 @@ public class BattlePanel extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 479, Short.MAX_VALUE)
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 494, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(jLabel1)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
@@ -194,6 +200,12 @@ public class BattlePanel extends javax.swing.JPanel {
     private void txtPlayerFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPlayerFilterKeyReleased
         updateBattleTable();
     }//GEN-LAST:event_txtPlayerFilterKeyReleased
+
+    private void tblBattlesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBattlesMouseClicked
+        if (evt.getClickCount() == 2) {
+            btnJoinActionPerformed(null);
+        }
+    }//GEN-LAST:event_tblBattlesMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

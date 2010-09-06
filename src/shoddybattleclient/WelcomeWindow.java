@@ -305,7 +305,7 @@ public class WelcomeWindow extends javax.swing.JFrame {
             });
         }
 
-        System.setErr(new PrintStream(new OutputStream() {
+        /*System.setErr(new PrintStream(new OutputStream() {
             ErrorBox m_box = new ErrorBox();
             @Override
             public void write(final int b) throws IOException {
@@ -315,7 +315,7 @@ public class WelcomeWindow extends javax.swing.JFrame {
                     }
                 });
             }
-        }));
+        }));*/
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

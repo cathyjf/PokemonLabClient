@@ -563,9 +563,9 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
 
     public static void viewWebPage(URL page) {
         try {
-            throw new Exception();
+            BareBonesBrowserLaunch.openURL(page);
         } catch (Exception e) {
-            System.out.println(page);
+            System.out.println("Failed to open url " + page);
         }
     }
 

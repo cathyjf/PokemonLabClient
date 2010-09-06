@@ -105,6 +105,8 @@ public class HealthBar extends JPanel implements ActionListener {
         int width = getWidth();
         int height = getHeight();
         double ratio = m_ratio;
+        // Avoid displaying 0% if it's not actually at 0
+        if ((ratio > 0) && (ratio < 0.01)) ratio = 0.01;
         Color[] colours = (m_ratio > 0.5) ? GREENS : (m_ratio > 0.15) ? YELLOWS : REDS;
         int x = (int)((double)width * ratio);
         g2.setPaint(new GradientPaint(width/2, 0, GREYS[0], width/2, height, GREYS[1]));
@@ -137,13 +139,13 @@ public class HealthBar extends JPanel implements ActionListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(230, 55);
         final HealthBar health = new HealthBar(true);
-        health.setRatio(48, 48, false);
+        health.setRatio(1, 400, false);
         frame.getContentPane().add(health);
         health.setSize(frame.getSize());
         health.setVisible(true);
         health.setLocation(0, 0);
         frame.setVisible(true);
-        new Timer(100, new ActionListener() {
+        /*new Timer(100, new ActionListener() {
             int max = 48;
             int current = max;
             @Override
@@ -156,7 +158,7 @@ public class HealthBar extends JPanel implements ActionListener {
                 }
             }
 
-        }).start();
+        }).start();*/
     }
 
     public void actionPerformed(ActionEvent arg0) {
