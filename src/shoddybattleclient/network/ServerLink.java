@@ -2034,7 +2034,11 @@ public class ServerLink extends Thread {
         // interrupt the message thread
         m_activityThread.interrupt();
         m_messageThread.interrupt();
-        m_lobby.addImportantMessage("Disconnected from server");
+        if (m_lobby != null) {
+            m_lobby.addImportantMessage("Disconnected from server");
+        } else {
+            JOptionPane.showMessageDialog(null, "Disconnected from server");
+        }
         String message = Text.addClass("Disconnected from server", "important");
         for (BattleWindow battle : m_battles.values()) {
             battle.addMessage(null, message, false);

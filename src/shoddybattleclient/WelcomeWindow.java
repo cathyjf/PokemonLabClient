@@ -23,12 +23,16 @@
 
 package shoddybattleclient;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.shoddybattle.Generation;
@@ -146,9 +150,15 @@ public class WelcomeWindow extends javax.swing.JFrame {
                 lstServersMouseClicked(evt);
             }
         });
+        lstServers.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                lstServersValueChanged(evt);
+            }
+        });
         serverListPane.setViewportView(lstServers);
 
         btnConnect.setText("Connect");
+        btnConnect.setEnabled(false);
         btnConnect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnConnectActionPerformed(evt);
@@ -193,12 +203,12 @@ public class WelcomeWindow extends javax.swing.JFrame {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(serverListPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
+                    .add(serverListPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 429, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(btnConnect)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(btnAdvanced)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 182, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 131, Short.MAX_VALUE)
                         .add(btnRefresh)))
                 .addContainerGap())
         );
@@ -206,7 +216,7 @@ public class WelcomeWindow extends javax.swing.JFrame {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .add(serverListPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
+                .add(serverListPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(btnConnect)
@@ -265,6 +275,11 @@ public class WelcomeWindow extends javax.swing.JFrame {
         new PreferencePane().setVisible(true);
     }//GEN-LAST:event_mnuPreferencesActionPerformed
 
+    private void lstServersValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstServersValueChanged
+        Object selection = lstServers.getSelectedValue();
+        btnConnect.setEnabled(selection != null);
+    }//GEN-LAST:event_lstServersValueChanged
+
     /**
     * Main entry point for Shoddy Battle 2
     */
@@ -290,7 +305,7 @@ public class WelcomeWindow extends javax.swing.JFrame {
             });
         }
 
-        /*System.setErr(new PrintStream(new OutputStream() {
+        System.setErr(new PrintStream(new OutputStream() {
             ErrorBox m_box = new ErrorBox();
             @Override
             public void write(final int b) throws IOException {
@@ -300,7 +315,7 @@ public class WelcomeWindow extends javax.swing.JFrame {
                     }
                 });
             }
-        }));*/
+        }));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

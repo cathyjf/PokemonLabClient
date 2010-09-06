@@ -146,6 +146,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Shiny?"/>
         <Property name="horizontalTextPosition" type="int" value="2"/>
+        <Property name="opaque" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="false" type="code"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkShinyActionPerformed"/>

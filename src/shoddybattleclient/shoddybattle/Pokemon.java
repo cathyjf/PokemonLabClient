@@ -22,7 +22,6 @@
 
 package shoddybattleclient.shoddybattle;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -34,7 +33,7 @@ public class Pokemon implements Cloneable {
     public static enum Gender {
         GENDER_MALE   ("Male", 1),
         GENDER_FEMALE ("Female", 2),
-        GENDER_NONE   ("None", 0),
+        GENDER_NONE   ("No Gender", 0),
         GENDER_BOTH   ("Both", 3);
 
         private String m_name;

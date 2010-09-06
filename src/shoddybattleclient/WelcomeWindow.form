@@ -62,12 +62,12 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="serverListPane" alignment="0" pref="388" max="32767" attributes="2"/>
+                  <Component id="serverListPane" alignment="0" pref="429" max="32767" attributes="2"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="btnConnect" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnAdvanced" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="182" max="32767" attributes="0"/>
+                      <EmptySpace pref="131" max="32767" attributes="0"/>
                       <Component id="btnRefresh" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -79,7 +79,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="serverListPane" pref="188" max="32767" attributes="0"/>
+              <Component id="serverListPane" pref="185" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnConnect" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -104,6 +104,7 @@
           </Properties>
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lstServersMouseClicked"/>
+            <EventHandler event="valueChanged" listener="javax.swing.event.ListSelectionListener" parameters="javax.swing.event.ListSelectionEvent" handler="lstServersValueChanged"/>
           </Events>
         </Component>
       </SubComponents>
@@ -111,6 +112,7 @@
     <Component class="javax.swing.JButton" name="btnConnect">
       <Properties>
         <Property name="text" type="java.lang.String" value="Connect"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnConnectActionPerformed"/>

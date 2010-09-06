@@ -289,6 +289,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
             cmbGender.setModel(new DefaultComboBoxModel(new Gender[] {Gender.GENDER_NONE}));
             cmbGender.setSelectedIndex(0);
         }
+        cmbGender.setEnabled(!g.equals(Gender.GENDER_NONE));
 
         txtNickname.setText(p.nickname);
         txtLevel.setText(String.valueOf(p.level));
@@ -467,6 +468,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
 
         chkShiny.setText("Shiny?");
         chkShiny.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        chkShiny.setOpaque(false);
         chkShiny.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chkShinyActionPerformed(evt);

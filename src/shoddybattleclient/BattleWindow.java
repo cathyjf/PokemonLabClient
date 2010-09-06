@@ -513,6 +513,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             // Hide the whole action area for now. Maybe we can come up with
             // a better use of this space later.
             tabAction.removeAll();
+            tabAction.add("Spectator", new JPanel());
 
             // Set all of the health bars to use percents.
             if (m_healthBars != null) {
