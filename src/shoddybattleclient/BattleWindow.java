@@ -1355,7 +1355,9 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             str = user + ": " + message;
         }
         m_log.append(str);
-        m_log.append("\n");
+        String separator = System.getProperty("line.separator");
+        if (separator == null) separator = "\n";
+        m_log.append(separator);
     }
 
     private void txtChatKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtChatKeyReleased
