@@ -36,10 +36,6 @@ public class BanDialog extends javax.swing.JDialog {
         this.setModal(true);
     }
 
-    public boolean isGlobal() {
-        return chkGlobal.isSelected();
-    }
-
     public long getBanLength() {
         if (m_cancel) return 0;
         
@@ -79,7 +75,6 @@ public class BanDialog extends javax.swing.JDialog {
         spinMinutes = new javax.swing.JSpinner();
         jLabel4 = new javax.swing.JLabel();
         btnBan = new javax.swing.JButton();
-        chkGlobal = new javax.swing.JCheckBox();
         btnCancel = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -121,8 +116,6 @@ public class BanDialog extends javax.swing.JDialog {
             }
         });
 
-        chkGlobal.setText("Global?");
-
         btnCancel.setText("Cancel");
         btnCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -136,9 +129,7 @@ public class BanDialog extends javax.swing.JDialog {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(134, Short.MAX_VALUE)
-                .add(chkGlobal)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .addContainerGap(261, Short.MAX_VALUE)
                 .add(btnCancel)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(btnBan)
@@ -151,8 +142,7 @@ public class BanDialog extends javax.swing.JDialog {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(btnBan)
-                    .add(btnCancel)
-                    .add(chkGlobal))
+                    .add(btnCancel))
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -177,7 +167,6 @@ public class BanDialog extends javax.swing.JDialog {
                 BanDialog bd = new BanDialog("bearzly");
                 bd.setVisible(true);
                 System.out.println(bd.getBanLength());
-                System.out.println(bd.isGlobal());
             }
         });
     }
@@ -185,7 +174,6 @@ public class BanDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBan;
     private javax.swing.JButton btnCancel;
-    private javax.swing.JCheckBox chkGlobal;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

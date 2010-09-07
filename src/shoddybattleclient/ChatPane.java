@@ -141,41 +141,37 @@ public class ChatPane extends javax.swing.JPanel implements CloseableTab {
             } else {
                 addMessage(null, "You are no longer ignoring " + args);
             }
-        } else if ("ban".equals(command)) {
-            String[] parts = args.split(" ", 3);
-            int channel;
+        } else if ("ban".equals(command) || "gban".equals(command)) {
+            String[] parts = args.split(",", 2);
+            int channel = "gban".equals(command) ? -1 : m_channel.getId();
             String user;
             long d;
-            if (parts.length == 3) {
-                if (!parts[0].equalsIgnoreCase("global")) {
-                    throw new CommandException("/ban [global] user date");
-                }
-                channel = -1;
-                user = parts[1];
-                String dateFormat = parts[2];
-                d = parseDateFormat(dateFormat);
-            } else if (parts.length == 2) {
-                channel = m_channel.getId();
-                user = parts[0];
-                String dateFormat = parts[1];
+            if (parts.length == 2) {
+                user = parts[0].trim();
+                String dateFormat = parts[1].trim();
                 d = parseDateFormat(dateFormat);
             } else if (parts.length == 1) {
-                user = parts[0];
+                user = parts[0].trim();
                 BanDialog bd = new BanDialog(user);
                 bd.setVisible(true);
-                channel = bd.isGlobal() ? -1 : m_channel.getId();
                 d = bd.getBanLength();
-                if (d == 0) return;
             } else {
                 throw new CommandException("/ban user [[*y][*d][*h][*m]]");
             }
+            if (d == 0) return;
             m_lobby.getLink().sendBanMessage(channel, user, d);
+        } else if ("gunban".equals(command)) {
+            String user = args.trim();
+            m_lobby.getLink().sendBanMessage(-1, user, -1);
         } else if ("unban".equals(command)) {
             String user = args.trim();
             m_lobby.getLink().sendBanMessage(m_channel.getId(), user, -1);
         } else if ("kick".equals(command)) {
             String user = args.trim();
             m_lobby.getLink().sendBanMessage(m_channel.getId(), user, 0);
+        } else if ("kill".equals(command)) {
+            String user = args.trim();
+            m_lobby.getLink().sendBanMessage(-1, user, 0);
         } else if ("lookup".equals(command)) {
             String user = args.trim();
             m_lobby.getLink().requestUserLookup(user);
