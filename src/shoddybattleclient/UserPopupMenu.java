@@ -64,7 +64,7 @@ public class UserPopupMenu extends JPopupMenu {
                 BanDialog bd = new BanDialog(m_user.getName());
                 bd.setVisible(true);
                 long length = bd.getBanLength();
-                int channel = (bd.isGlobal()) ? -1 : m_lobby.getActiveChannel();
+                int channel = m_lobby.getActiveChannel();
                 if (length > 0) {
                     m_lobby.getLink().sendBanMessage(channel, m_user.getName(), length);
                 }
