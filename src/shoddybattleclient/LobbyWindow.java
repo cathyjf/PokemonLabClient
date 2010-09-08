@@ -744,6 +744,10 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
     }
 
     public String getChannelName(int id) {
+        if (id == -1) {
+            return "[global]";
+        }
+        
         Channel c = m_channels.get(id);
         if (c == null) {
             return null;
