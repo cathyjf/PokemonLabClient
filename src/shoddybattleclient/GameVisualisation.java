@@ -463,7 +463,7 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
             e.printStackTrace();
         }
 
-        int rows = length / 3;
+        int rows = (int)Math.ceil(length / 3d);
         for (int i = 0; i < m_parties.length; i++) {
             for (int j = 0; j < m_parties[i].length; j++) {
                 VisualPokemon p = new VisualPokemon();
@@ -480,8 +480,10 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
                 x = (j - 3*row) * (d.width + buff) + 2;
                 y = (d.width + buff) * row + 2;
                 if (view == i) {
-                    x += w - 3 * (d.width + buff) - 2;
-                    y += h - rows * (d.width + buff);
+                    int pokeballWidth = Math.min(m_parties[i].length, 3)
+                            * (d.width + buff);
+                    x += w - pokeballWidth - 2;
+                    y += h - rows * (d.height + buff);
                 }
                 ball.setLocation(x, y);
                 
