@@ -1020,6 +1020,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         int num = 1;
         while (f.exists()) {
             f = new File(path + " " + num + ".txt");
+            num++;
         }
         return f;
     }
