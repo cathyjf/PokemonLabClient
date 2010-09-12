@@ -143,7 +143,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
             String modes = getModeString(m_flags, flags, true);
             if (modes == null) return;
             m_flags = flags;
-            String msg = Text.getText(26, 0, new String[] {setter, modes, ""});
+            String msg = Text.getText(27, 0, new String[] {setter, modes, ""});
             msg = "<font class='mode'>" + msg + "</font>";
             m_chat.getLobby().showChannelMessage(this, null, msg, false);
         }
@@ -154,10 +154,10 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
             if (modes == null) return;
             String msg;
             if (setter.length() > 0) {
-                msg = Text.getText(26, 0, new String[] {
+                msg = Text.getText(27, 0, new String[] {
                     setter, modes, name });
             } else {
-                msg = Text.getText(26, 1, new String[] {
+                msg = Text.getText(27, 1, new String[] {
                     modes, name });
             }
             msg = "<font class='mode'>" + msg + "</font>";
@@ -178,15 +178,15 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         public void informBan(String mod, String user, int date) {
             if (date == 0) {
                 //kick
-                String msg = Text.getText(26, 2, new String[] {user, mod});
+                String msg = Text.getText(27, 2, new String[] {user, mod});
                 m_chat.addMessage(null, "<b class='kick'>" + msg + "</b>", false);
             } else if (date == -1) {
                 //unban
-                String msg = Text.getText(26, 4, new String[] {user});
+                String msg = Text.getText(27, 4, new String[] {user});
                 m_chat.addMessage(null, "<b class='unban'>" + msg + "</b>", false);
             } else if (date > 0) {
                 String dateStr = Text.formatDateDifference(date);
-                String msg = Text.getText(26, 3, new String[] {user, mod, dateStr});
+                String msg = Text.getText(27, 3, new String[] {user, mod, dateStr});
                 m_chat.addMessage(null, "<b class='ban'>" + msg + "</b>", false);
             }
         }

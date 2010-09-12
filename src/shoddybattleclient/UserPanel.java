@@ -196,7 +196,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
 
     public void setPersonalMessage(String msg) {
         if ("".equals(msg)) {
-            msg = Text.getText(26, 5);
+            msg = Text.getText(27, 5);
         }
         msg = "<html>" + HTMLPane.htmlEntityEncode(msg) + "</html>";
         lblMessage.setText(msg);
