@@ -124,8 +124,10 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         scrollSelected.setViewportView(tblSelected);
 
         Insets insets = scrollSelected.getInsets();
-        splitPane.setDividerLocation(tblSelected.getTableHeader().getPreferredSize().height
-                + (tblSelected.getRowHeight() * 4) + insets.top + insets.bottom);
+        splitPane.setDividerLocation(
+                tblSelected.getTableHeader().getPreferredSize().height
+                + (tblSelected.getRowHeight() * 4)
+                + insets.top + insets.bottom + 1);
 
         String[] items = new String[m_generation.getItems().size() + 1];
         items[0] = "No Item";
