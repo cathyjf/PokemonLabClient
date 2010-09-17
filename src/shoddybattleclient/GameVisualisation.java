@@ -218,6 +218,7 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
         private int m_level;
         private int m_gender;
         private boolean m_shiny;
+        private String m_item;
         private List<StatusObject> m_statuses = new ArrayList<StatusObject>();
         private int m_healthN = 48;
         private int m_healthD = 48;
@@ -292,6 +293,12 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
         public int getLevel() {
             return m_level;
         }
+        public String getItem() {
+            return m_item;
+        }
+        public void setItem(String item) {
+            m_item = item;
+        }
         public StatusObject updateStatus(String id, String status,
                 boolean applied) {
             if (applied) {
@@ -361,6 +368,7 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
         }
         public void setPokemon(Pokemon p) {
             m_pokemon = p;
+            m_item = p.item;
         }
         public void toggleFrame() {
             m_frame = (m_frame == 1) ? 2 : 1;

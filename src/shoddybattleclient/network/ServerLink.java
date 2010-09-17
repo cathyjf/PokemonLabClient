@@ -1585,20 +1585,20 @@ public class ServerLink extends Thread {
                     if (wnd == null) return;
                     msg = Text.parse(msg, wnd);
 
+                    VisualPokemon p = wnd.getPokemon(party, position);
                     switch(type) {
                         case 0:
                             wnd.updateStatus(party, position, radius, id,
-                                    msg, applied);
-                            VisualPokemon p = wnd.getPokemon(party, position);
+                                    msg, applied);                            
                             if (p.getSlot() != -1) {
                                 wnd.updateSprite(party, p.getSlot());
                             }
                             break;
                         case 1:
                             if (applied) {
-                                System.out.println("ITEM ADDED: " + msg);
+                                p.setItem(msg);
                             } else {
-                                System.out.println("ITEM REMOVED: " + msg);
+                                p.setItem(null);
                             }
                             break;
                         case 2:
