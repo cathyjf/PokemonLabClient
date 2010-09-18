@@ -115,3 +115,7 @@ Sticky Barb
 Focus Sash
 Focus Band
 Power Herb
+Damp Rock
+Heat Rock
+Icy Rock
+Smooth Rock
