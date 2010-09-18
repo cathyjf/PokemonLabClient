@@ -1598,7 +1598,7 @@ public class ServerLink extends Thread {
                             if (applied) {
                                 p.setItem(msg);
                             } else {
-                                p.setItem(null);
+                                p.setItem("No Item");
                             }
                             break;
                         case 2:

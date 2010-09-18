@@ -46,7 +46,9 @@ public class VisualToolTip extends javax.swing.JPanel {
         int longest = 0;
         for (int i = 0; i < statPrefixes.length; i++) {
             statPrefixes[i] = Pokemon.getStatName(i + 1) + ": ";
-            if (statPrefixes[i].length() > longest) longest = statPrefixes[i].length();
+            if (statPrefixes[i].length() > longest) {
+                longest = statPrefixes[i].length();
+            }
         }
         for (int i = 0; i < 7; i++) {
             while (statPrefixes[i].length() < longest) {
@@ -72,6 +74,7 @@ public class VisualToolTip extends javax.swing.JPanel {
         if (p.getName() == null) {
             lblName.setText("???");
             lblLevel.setText("");
+            lblItem.setText("");
             return;
         }
         lblName.setText(p.getSpecies());
@@ -85,6 +88,11 @@ public class VisualToolTip extends javax.swing.JPanel {
             gender = String.valueOf('\u2640');
         }
         lblLevel.setText("Level " + String.valueOf(level) + " " + gender);
+        if (p.getItem() == null) {
+            lblItem.setText("");
+        } else {
+            lblItem.setText("Item: " + p.getItem());
+        }
         
         List<StatusObject> statuses = p.getStatuses();
         if (statuses.size() == 0) {
@@ -134,12 +142,13 @@ public class VisualToolTip extends javax.swing.JPanel {
         panelStats = new javax.swing.JPanel();
         panelEffects = new javax.swing.JPanel();
         lblEffects = new javax.swing.JLabel();
+        lblItem = new javax.swing.JLabel();
 
         setBackground(new Color(51, 51, 51, 225));
         setOpaque(false);
         setLayout(new java.awt.GridBagLayout());
 
-        lblName.setFont(new java.awt.Font("Lucida Grande", 1, 18));
+        lblName.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
         lblName.setForeground(new java.awt.Color(255, 255, 255));
         lblName.setText("Pokemon");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -157,7 +166,7 @@ public class VisualToolTip extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(2, 5, 2, 2);
         add(panelHealth, gridBagConstraints);
 
-        lblLevel.setFont(new java.awt.Font("Lucida Grande", 0, 11));
+        lblLevel.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
         lblLevel.setForeground(new java.awt.Color(255, 255, 255));
         lblLevel.setText("Level");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -173,7 +182,7 @@ public class VisualToolTip extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridheight = 8;
+        gridBagConstraints.gridheight = 9;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         gridBagConstraints.weightx = 0.6;
@@ -193,7 +202,7 @@ public class VisualToolTip extends javax.swing.JPanel {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.gridheight = 7;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
@@ -201,6 +210,13 @@ public class VisualToolTip extends javax.swing.JPanel {
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(4, 5, 5, 2);
         add(panelEffects, gridBagConstraints);
+
+        lblItem.setForeground(new java.awt.Color(255, 255, 255));
+        lblItem.setText("Item");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        add(lblItem, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     public static void main(String[] args) {
@@ -214,6 +230,7 @@ public class VisualToolTip extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel lblEffects;
+    private javax.swing.JLabel lblItem;
     private javax.swing.JLabel lblLevel;
     private javax.swing.JLabel lblName;
     private javax.swing.JPanel panelEffects;
