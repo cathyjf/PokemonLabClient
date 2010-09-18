@@ -97,7 +97,7 @@ public class FindPanel extends javax.swing.JPanel {
 
         jPanel5.setLayout(new java.awt.GridLayout(1, 2));
 
-        jLabel3.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         jLabel3.setText("Ban List:");
 
         txtBans.setColumns(14);
@@ -108,7 +108,7 @@ public class FindPanel extends javax.swing.JPanel {
         txtBans.setWrapStyleWord(true);
         jScrollPane2.setViewportView(txtBans);
 
-        jLabel4.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         jLabel4.setText("Clauses:");
 
         txtClauses.setColumns(14);
@@ -161,6 +161,11 @@ public class FindPanel extends javax.swing.JPanel {
 
         btnCancel.setText("Cancel");
         btnCancel.setEnabled(false);
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelActionPerformed(evt);
+            }
+        });
         jPanel4.add(btnCancel);
 
         jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 13));
@@ -175,7 +180,7 @@ public class FindPanel extends javax.swing.JPanel {
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jPanel1Layout.createSequentialGroup()
                         .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(panelSprites, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
+                            .add(panelSprites, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
                             .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                                 .add(jPanel1Layout.createSequentialGroup()
                                     .add(jLabel1)
@@ -187,7 +192,7 @@ public class FindPanel extends javax.swing.JPanel {
                                     .add(btnLoad, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                         .addContainerGap())
                     .add(jPanel1Layout.createSequentialGroup()
-                        .add(jPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
+                        .add(jPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
                         .add(12, 12, 12))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -205,7 +210,7 @@ public class FindPanel extends javax.swing.JPanel {
                 .add(panelSprites, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 91, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
@@ -241,14 +246,14 @@ public class FindPanel extends javax.swing.JPanel {
                                     .add(layout.createSequentialGroup()
                                         .add(18, 18, 18)
                                         .add(jLabel3))))
-                            .add(lblDescription))
+                            .add(lblDescription, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 61, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jLabel4)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jScrollPane3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 61, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 8, Short.MAX_VALUE)))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 26, Short.MAX_VALUE)))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -313,6 +318,18 @@ public class FindPanel extends javax.swing.JPanel {
         btnLoad.setEnabled(false);
         btnCancel.setEnabled(true);
     }//GEN-LAST:event_btnFindActionPerformed
+
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+        Metagame metagame = (Metagame)cmbLadder.getSelectedItem();
+        if (metagame == null)
+            return;
+        int idx = metagame.getIdx();
+        boolean rated = chkRated.isSelected();
+        m_link.cancelQueue(idx, rated);
+        btnFind.setEnabled(true);
+        btnLoad.setEnabled(true);
+        btnCancel.setEnabled(false);
+    }//GEN-LAST:event_btnCancelActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -493,6 +493,18 @@ public class ServerLink extends Thread {
         }
     }
 
+    public static class MetagameQueueCancelMessage extends OutMessage {
+        public MetagameQueueCancelMessage(int metagame, boolean rated) {
+            super(19);
+            try {
+                m_stream.write(metagame);
+                m_stream.write(rated ? 1 : 0);
+            } catch (Exception e) {
+                
+            }
+        }
+    }
+
     public static abstract class MessageHandler {
         /**
          * Handle a message from the server by reading values from the
@@ -1825,6 +1837,10 @@ public class ServerLink extends Thread {
     public void queueTeam(int metagame, boolean rated, Pokemon[] team) {
         sendMessage(new MetagameQueueMessage(this, metagame, rated, team));
         m_metagames[metagame].setTeam(team);
+    }
+
+    public void cancelQueue(int metagame, boolean rated) {
+        sendMessage(new MetagameQueueCancelMessage(metagame, rated));
     }
 
     public void sendBanMessage(int channel, String user, long length) {
