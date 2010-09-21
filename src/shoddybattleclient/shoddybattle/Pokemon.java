@@ -22,7 +22,9 @@
 
 package shoddybattleclient.shoddybattle;
 
+import java.util.ArrayList;
 import java.util.List;
+import shoddybattleclient.shoddybattle.PokemonSpecies.IllegalCombo;
 
 /**
  *
@@ -177,6 +179,39 @@ public class Pokemon implements Cloneable {
             default:
                 return "Bad stat index";
         }
+    }
+
+    public List<IllegalCombo> getViolatedCombos(List<PokemonSpecies> list) {
+        PokemonSpecies s = null;
+        for (PokemonSpecies p : list) {
+            if (p.getName().equalsIgnoreCase(species)) {
+                s = p;
+                break;
+            }
+        }
+        if (s == null) {
+            return new ArrayList<IllegalCombo>();
+        }
+        
+        List<IllegalCombo> allCombos = s.getIllegalCombos();
+        ArrayList<IllegalCombo> illegal = new ArrayList<IllegalCombo>();
+        
+        comboLoop:
+        for (IllegalCombo combo : allCombos) {
+            moveLoop:
+            for (String move : combo.getMoves()) {
+                for (String ownedMove : moves) {
+                    if (ownedMove.equals(move)) {
+                        continue moveLoop;
+                    }
+                }
+
+                // Discard this combo if the move was not found
+                continue comboLoop;
+            }
+            illegal.add(combo);
+        }
+        return illegal;
     }
 
     public String toXML() {

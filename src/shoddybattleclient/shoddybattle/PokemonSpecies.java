@@ -37,6 +37,28 @@ public class PokemonSpecies {
     private Gender m_genders;
     private int[] m_bases = new int[Pokemon.STAT_COUNT];
     private ArrayList<String> m_abilities = new ArrayList<String>();
+    private ArrayList<IllegalCombo> m_illegal = new ArrayList<IllegalCombo>();
+
+    public static class IllegalCombo {
+        ArrayList<String> m_moves = new ArrayList<String>();
+        public void addMove(String move) {
+            m_moves.add(move);
+        }
+        public List<String> getMoves() {
+            return m_moves;
+        }
+        @Override
+        public String toString() {
+            StringBuilder buf = new StringBuilder();
+            for (int i = 0; i < m_moves.size(); i++) {
+                buf.append(m_moves.get(i));
+                if (i != (m_moves.size() - 1)) {
+                    buf.append(" + ");
+                }
+            }
+            return buf.toString();
+        }
+    }
 
     public PokemonSpecies() {
 
@@ -102,6 +124,12 @@ public class PokemonSpecies {
     }
     public int getBase(int i) {
         return m_bases[i];
+    }
+    public void addIllegalCombo(IllegalCombo combo) {
+        m_illegal.add(combo);
+    }
+    public List<IllegalCombo> getIllegalCombos() {
+        return m_illegal;
     }
     public String toString() {
         return m_name;

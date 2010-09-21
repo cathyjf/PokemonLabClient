@@ -58,9 +58,14 @@ import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
-import shoddybattleclient.shoddybattle.*;
+import shoddybattleclient.shoddybattle.Generation;
+import shoddybattleclient.shoddybattle.Pokemon;
 import shoddybattleclient.shoddybattle.PokemonBox.PokemonWrapper;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
+import shoddybattleclient.shoddybattle.PokemonBox;
+import shoddybattleclient.shoddybattle.PokemonMove;
+import shoddybattleclient.shoddybattle.PokemonSpecies;
+import shoddybattleclient.shoddybattle.PokemonSpecies.IllegalCombo;
 import shoddybattleclient.utils.*;
 
 /**
@@ -144,6 +149,8 @@ public class TeamBuilder extends javax.swing.JFrame {
     public TeamBuilder(Generation mod) {
         initComponents();
         m_generation = mod;
+        int id = PokemonSpecies.getIdFromName(m_generation.getSpecies(), "Bulbasaur");
+        System.out.println(id);
 
         List<PokemonSpecies> species = m_generation.getSpecies();
         m_speciesModel = new DefaultComboBoxModel(species.toArray(new PokemonSpecies[species.size()]));
@@ -420,6 +427,26 @@ public class TeamBuilder extends javax.swing.JFrame {
             }
             JOptionPane.showMessageDialog(this, buf.toString(), "Invalid Team",
                     JOptionPane.ERROR_MESSAGE);
+        }
+
+        // Check for violated combinations
+        for (TeamBuilderForm form : m_forms) {
+            Pokemon p = form.getPokemon();
+            List<IllegalCombo> illegal =
+                    p.getViolatedCombos(m_generation.getSpecies());
+            if (!illegal.isEmpty()) {
+                StringBuilder buf = new StringBuilder();
+                buf.append(p);
+                buf.append(" has the following illegal combinations:\n");
+                for (IllegalCombo combo : illegal) {
+                    buf.append("- ");
+                    buf.append(combo.toString());
+                    buf.append("\n");
+                }
+                buf.append("This team can be saved but not used online.");
+                JOptionPane.showMessageDialog(this, buf.toString(), 
+                    "Invalid Team", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 

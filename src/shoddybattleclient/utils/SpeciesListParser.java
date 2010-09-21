@@ -31,6 +31,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.Attributes;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
 import shoddybattleclient.shoddybattle.PokemonSpecies;
+import shoddybattleclient.shoddybattle.PokemonSpecies.IllegalCombo;
 
 /**
  * This file parses a species XML file and generates an array of Pokemon species
@@ -41,6 +42,7 @@ public class SpeciesListParser extends DefaultHandler {
     private ArrayList<PokemonSpecies> m_species = new ArrayList<PokemonSpecies>();
 
     private PokemonSpecies tempSpecies;
+    private IllegalCombo tempCombo;
     private String tempStr;
     int idx;
 
@@ -62,12 +64,14 @@ public class SpeciesListParser extends DefaultHandler {
     }
 
     public void startElement (String uri, String localName,
-			      String qName, Attributes attributes) throws SAXException {
+            String qName, Attributes attributes) throws SAXException {
         if (qName.equals("species")) {
             tempSpecies = new PokemonSpecies();
             tempSpecies.setName(attributes.getValue("name"));
             tempSpecies.setId(Integer.parseInt(attributes.getValue("id")));
             idx = 0;
+        } else if (qName.equals("combo")) {
+            tempCombo = new IllegalCombo();
         }
         tempStr = "";
 
@@ -92,12 +96,19 @@ public class SpeciesListParser extends DefaultHandler {
         } else if (qName.equals("ability")) {
             tempSpecies.addAbility(tempStr);
         } else if (qName.equals("move")) {
-            tempSpecies.addMove(tempStr);
+            if (tempCombo != null) {
+                tempCombo.addMove(tempStr);
+            } else {
+                tempSpecies.addMove(tempStr);
+            }
         } else if (qName.equals("base")) {
             tempSpecies.setBase(idx, Integer.valueOf(tempStr));
             idx++;
         } else if (qName.equals("species")) {
             m_species.add(tempSpecies);
+        } else if (qName.equals("combo")) {
+            tempSpecies.addIllegalCombo(tempCombo);
+            tempCombo = null;
         }
     }
 }
