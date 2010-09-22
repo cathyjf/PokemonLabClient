@@ -431,7 +431,7 @@ public class TeamBuilder extends javax.swing.JFrame {
         for (TeamBuilderForm form : m_forms) {
             Pokemon p = form.getPokemon();
             List<IllegalCombo> illegal =
-                    p.getViolatedCombos(m_generation.getSpecies());
+                    p.getViolatedCombos(m_generation);
             if (!illegal.isEmpty()) {
                 StringBuilder buf = new StringBuilder();
                 buf.append(p);

@@ -35,14 +35,18 @@ import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.Timer;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import shoddybattleclient.shoddybattle.*;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
+import shoddybattleclient.shoddybattle.PokemonSpecies.IllegalCombo;
 import shoddybattleclient.utils.FilteredDocument;
 import shoddybattleclient.utils.IntegerDocument;
 import shoddybattleclient.utils.MoveTableModel;
@@ -140,6 +144,30 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         setupStats();
 
         cmbNatureItemStateChanged(null);
+
+        // Illegal move checking
+        final Color defaultForeground = tblSelected.getForeground();
+        tblSelected.getModel().addTableModelListener(new TableModelListener() {
+            public void tableChanged(TableModelEvent e) {
+                
+                List<IllegalCombo> illegal =
+                        getPokemon().getViolatedCombos(m_generation);
+                if (!illegal.isEmpty()) {
+                    StringBuilder buf = new StringBuilder();
+                    buf.append("<html>Illegal combinations:<br>");
+                    for (IllegalCombo combo : illegal) {
+                        buf.append("- ");
+                        buf.append(combo);
+                        buf.append("<br>");
+                    }
+                    tblSelected.setToolTipText(buf.toString());
+                    tblSelected.setForeground(Color.red);
+                } else {
+                    tblSelected.setToolTipText(null);
+                    tblSelected.setForeground(defaultForeground);
+                }
+            }
+        });
     }
 
     private void setupStats() {
@@ -419,8 +447,11 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                 //Set the happiness to the max value if return or frustration is picked
                 //todo: translation?
                 String move = row.getMove();
-                if (move.equalsIgnoreCase("Return")) m_pokemon.happiness = 255;
-                else if (move.equalsIgnoreCase("Frustration")) m_pokemon.happiness = 0;
+                if (move.equalsIgnoreCase("Return")) {
+                    m_pokemon.happiness = 255;
+                } else if (move.equalsIgnoreCase("Frustration")) {
+                    m_pokemon.happiness = 0;
+                }
             }
         }
         return success;

@@ -9,6 +9,7 @@
  */
 package shoddybattleclient.utils;
 
+import java.awt.Color;
 import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.event.*;
@@ -48,6 +49,7 @@ class RightAlignRenderer implements TableCellRenderer {
         if ((val instanceof Integer) || "---".equals(val)) {
             label.setHorizontalAlignment(JLabel.RIGHT);
         }
+        label.setForeground(table.getForeground());
         return label;
     }
 }

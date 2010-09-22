@@ -181,14 +181,8 @@ public class Pokemon implements Cloneable {
         }
     }
 
-    public List<IllegalCombo> getViolatedCombos(List<PokemonSpecies> list) {
-        PokemonSpecies s = null;
-        for (PokemonSpecies p : list) {
-            if (p.getName().equalsIgnoreCase(species)) {
-                s = p;
-                break;
-            }
-        }
+    public List<IllegalCombo> getViolatedCombos(Generation gen) {
+        PokemonSpecies s = gen.getSpeciesByName(species);
         if (s == null) {
             return new ArrayList<IllegalCombo>();
         }
@@ -201,6 +195,9 @@ public class Pokemon implements Cloneable {
             moveLoop:
             for (String move : combo.getMoves()) {
                 for (String ownedMove : moves) {
+                    if (ownedMove == null) {
+                        continue;
+                    }
                     if (ownedMove.equals(move)) {
                         continue moveLoop;
                     }
