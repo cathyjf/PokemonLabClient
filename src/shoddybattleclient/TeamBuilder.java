@@ -149,8 +149,6 @@ public class TeamBuilder extends javax.swing.JFrame {
     public TeamBuilder(Generation mod) {
         initComponents();
         m_generation = mod;
-        int id = PokemonSpecies.getIdFromName(m_generation.getSpecies(), "Bulbasaur");
-        System.out.println(id);
 
         List<PokemonSpecies> species = m_generation.getSpecies();
         m_speciesModel = new DefaultComboBoxModel(species.toArray(new PokemonSpecies[species.size()]));
