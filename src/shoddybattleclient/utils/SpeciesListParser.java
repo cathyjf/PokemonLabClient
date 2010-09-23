@@ -84,17 +84,30 @@ public class SpeciesListParser extends DefaultHandler {
     
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (qName.equals("gender")) {
+            Gender gender = null;
             if (tempStr.equals("Male")) {
-                tempSpecies.setGenders(Gender.GENDER_MALE);
+                gender = Gender.GENDER_MALE;
             } else if (tempStr.equals("Female")) {
-                tempSpecies.setGenders(Gender.GENDER_FEMALE);
+                gender = Gender.GENDER_FEMALE;
             } else if (tempStr.equals("Both")) {
-                tempSpecies.setGenders(Gender.GENDER_BOTH);
+                gender = Gender.GENDER_BOTH;
             } else {
-                tempSpecies.setGenders(Gender.GENDER_NONE);
+                gender = Gender.GENDER_NONE;
+            }
+            
+            if (tempCombo != null) {
+                tempCombo.setGender(gender);
+            } else {
+                tempSpecies.setGenders(gender);
             }
         } else if (qName.equals("ability")) {
-            tempSpecies.addAbility(tempStr);
+            if (tempCombo != null) {
+                tempCombo.setAbility(tempStr);
+            } else {
+                tempSpecies.addAbility(tempStr);
+            }
+        } else if (qName.equals("nature")) {
+            tempCombo.setNature(tempStr);
         } else if (qName.equals("move")) {
             if (tempCombo != null) {
                 tempCombo.addMove(tempStr);

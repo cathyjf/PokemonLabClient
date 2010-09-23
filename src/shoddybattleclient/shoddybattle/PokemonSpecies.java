@@ -40,23 +40,61 @@ public class PokemonSpecies {
     private ArrayList<IllegalCombo> m_illegal = new ArrayList<IllegalCombo>();
 
     public static class IllegalCombo {
-        ArrayList<String> m_moves = new ArrayList<String>();
+        private ArrayList<String> m_moves = new ArrayList<String>();
+        private String m_nature = null;
+        private String m_ability = null;
+        private Gender m_gender = null;
         public void addMove(String move) {
             m_moves.add(move);
         }
         public List<String> getMoves() {
             return m_moves;
         }
-        @Override
-        public String toString() {
+        public void setNature(String nature) {
+            m_nature = nature;
+        }
+        public String getNature() {
+            return m_nature;
+        }
+        public void setAbility(String ability) {
+            m_ability = ability;
+        }
+        public String getAbility() {
+            return m_ability;
+        }
+        public void setGender(Gender gender) {
+            m_gender = gender;
+        }
+        public Gender getGender() {
+            return m_gender;
+        }
+        // Helper used to join strings with a plus
+        private String join(List<String> items) {
             StringBuilder buf = new StringBuilder();
-            for (int i = 0; i < m_moves.size(); i++) {
-                buf.append(m_moves.get(i));
-                if (i != (m_moves.size() - 1)) {
+            for (int i = 0; i < items.size(); i++) {
+                buf.append(items.get(i));
+                if (i != (items.size() - 1)) {
                     buf.append(" + ");
                 }
             }
             return buf.toString();
+        }
+        @Override
+        public String toString() {
+            ArrayList<String> items = new ArrayList<String>();
+            if (m_nature != null) {
+                items.add(m_nature);
+            }
+            if (m_ability != null) {
+                items.add(m_ability);
+            }
+            if (m_gender != null) {
+                items.add(m_gender.getName());
+            }
+            for (int i = 0; i < m_moves.size(); i++) {
+                items.add(m_moves.get(i));
+            }
+            return join(items);
         }
     }
 

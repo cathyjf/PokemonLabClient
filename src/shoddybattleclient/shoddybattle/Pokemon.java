@@ -129,8 +129,8 @@ public class Pokemon implements Cloneable {
         return calculateStat(this, i, s, n, level);
     }
 
-    private static double[] MULTIPLIERS = new double[] {0.25, 0.2857, 0.3333, 0.4, 0.5,
-        0.6667, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0};
+    private static double[] MULTIPLIERS = new double[] {0.25, 0.2857, 0.3333, 
+        0.4, 0.5, 0.6667, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0};
 
     public static int calculateStat(Pokemon pokemon, int i,
             PokemonSpecies species, PokemonNature nature) {
@@ -205,6 +205,20 @@ public class Pokemon implements Cloneable {
 
                 // Discard this combo if the move was not found
                 continue comboLoop;
+            }
+
+            // Check the nature/ability
+            if ((combo.getNature() != null) &&
+                    !combo.getNature().equals(nature)) {
+                continue;
+            }
+            if ((combo.getAbility() != null) &&
+                    !combo.getAbility().equals(ability)) {
+                continue;
+            }
+            if ((combo.getGender() != null) &&
+                    (gender != combo.getGender())) {
+                continue;
             }
             illegal.add(combo);
         }
