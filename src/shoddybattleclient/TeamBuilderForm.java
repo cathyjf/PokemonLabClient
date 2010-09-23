@@ -149,7 +149,12 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         final Color defaultForeground = tblSelected.getForeground();
         tblSelected.getModel().addTableModelListener(new TableModelListener() {
             public void tableChanged(TableModelEvent e) {
-                
+                if (tblSelected.getRowCount() == 0) {
+                    // This is necessary or the below call to getPokemon()
+                    // will wipe out moves midloading
+                    return;
+                }
+
                 List<IllegalCombo> illegal =
                         getPokemon().getViolatedCombos(m_generation);
                 if (!illegal.isEmpty()) {
