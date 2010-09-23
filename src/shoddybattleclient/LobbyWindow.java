@@ -762,7 +762,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
     }
 
     public void informInvalidTeam(String user, int teamSize, int[] clauses) {
-        boolean[] invalidTraits = new boolean[5];
+        boolean[] invalidTraits = new boolean[9];
         StringBuilder clauseList = new StringBuilder();
         List<Clause> cl = m_link.getClauseList();
         for (int i = 0; i < clauses.length; i++) {
@@ -778,11 +778,15 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
 
         StringBuilder sb = new StringBuilder();
         sb.append("The supplied team does not conform to:\n");
-        if (invalidTraits[0]) sb.append(" -Legal Pokemon\n");
-        if (invalidTraits[1]) sb.append(" -Legal Moves\n");
+        if (invalidTraits[8]) sb.append(" -Unbanned Pokemon\n");
+        if (invalidTraits[0]) sb.append(" -1 to 4 Unique Moves\n");
+        if (invalidTraits[1]) sb.append(" -Legal Learnsets\n");
         if (invalidTraits[2]) sb.append(" -Legal Move Combinations\n");
-        if (invalidTraits[3]) sb.append(" -Legal Items\n");
-        if (invalidTraits[4]) sb.append(" -Legal Stats\n");
+        if (invalidTraits[3]) sb.append(" -Valid PP ups\n");
+        if (invalidTraits[4]) sb.append(" -Legal Items\n");
+        if (invalidTraits[5]) sb.append(" -Legal Ability\n");
+        if (invalidTraits[6]) sb.append(" -Correct Genders\n");
+        if (invalidTraits[7]) sb.append(" -Legal Stats\n");
         sb.append(clauseList.toString());
 
         if (!"".equals(user)) {
