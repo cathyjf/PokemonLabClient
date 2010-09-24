@@ -34,11 +34,15 @@ import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.Timer;
@@ -60,6 +64,35 @@ import shoddybattleclient.utils.JButtonTable;
 
 public class TeamBuilderForm extends javax.swing.JPanel {
 
+    private class IllegalCheckRenderer extends DefaultListCellRenderer {
+        boolean m_illegal[];
+        public IllegalCheckRenderer (int nItems) {
+            m_illegal = new boolean[nItems];
+        }
+        public void setIllegal(int index) {
+            if (index >= 0) {
+                m_illegal[index] = true;
+            }
+        }
+        public void clear() {
+            for (int i = 0; i < m_illegal.length; i++) {
+                m_illegal[i] = false;
+            }
+        }
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value,
+                int index, boolean isSelected, boolean cellHasFocus) {
+            Component c = super.getListCellRendererComponent(list, value,
+                    index, isSelected, cellHasFocus);
+            if ((index < 0) || !m_illegal[index]) {
+                c.setForeground(defaultForeground);
+            } else {
+                c.setForeground(Color.RED);
+            }
+            return c;
+        }
+    }
+
     private TeamBuilder m_parent;
     //The generation the team builder represents
     private Generation m_generation;
@@ -79,7 +112,10 @@ public class TeamBuilderForm extends javax.swing.JPanel {
     private JButtonTable tblMoves;
     private JTable tblSelected;
 
-    private Color defaultTableForeground;
+    private Color defaultForeground;
+    private IllegalCheckRenderer genderRenderer;
+    private IllegalCheckRenderer natureRenderer;
+    private IllegalCheckRenderer abilityRenderer;
 
     //hacky solution to hacky problem
     //changing the IVs changes the hiddenpower (itemStateChanged) which changes the IVs
@@ -141,14 +177,19 @@ public class TeamBuilderForm extends javax.swing.JPanel {
             items[i+1] = m_generation.getItems().get(i);
 
         cmbNature.setModel(new DefaultComboBoxModel(PokemonNature.getNatures()));
+        natureRenderer =
+                new IllegalCheckRenderer(PokemonNature.getNatures().length);
+        cmbNature.setRenderer(natureRenderer);
         cmbItem.setModel(new DefaultComboBoxModel(items));
+        genderRenderer = new IllegalCheckRenderer(2);
+        cmbGender.setRenderer(genderRenderer);
 
         setupStats();
 
         cmbNatureItemStateChanged(null);
 
         // Illegal move checking
-        defaultTableForeground = tblSelected.getForeground();
+        defaultForeground = tblSelected.getForeground();
         tblSelected.getModel().addTableModelListener(new TableModelListener() {
             public void tableChanged(TableModelEvent e) {
                 checkIllegalMovesets();
@@ -311,6 +352,9 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         txtLevel.setText(String.valueOf(p.level));
         chkShiny.setSelected(p.shiny);
         cmbAbility.setModel(new DefaultComboBoxModel(m_species.getAbilities()));
+        abilityRenderer = 
+                new IllegalCheckRenderer(m_species.getAbilities().length);
+        cmbAbility.setRenderer(abilityRenderer);
         cmbAbility.setSelectedItem(p.ability);
         if (g.equals(Gender.GENDER_BOTH)) {
             cmbGender.setSelectedIndex(p.gender.ordinal());
@@ -450,8 +494,50 @@ public class TeamBuilderForm extends javax.swing.JPanel {
             return;
         }
 
-        List<IllegalCombo> illegal =
-                getPokemon().getViolatedCombos(m_generation);
+        natureRenderer.clear();
+        abilityRenderer.clear();
+        cmbNature.setForeground(defaultForeground);
+        cmbAbility.setForeground(defaultForeground);
+        cmbGender.setForeground(defaultForeground);
+
+        Pokemon p = getPokemon();
+        List<IllegalCombo> illegalMovesets =
+                p.getViolatedMovesets(m_generation);
+        List<IllegalCombo> illegal = new ArrayList<IllegalCombo>();
+        for (IllegalCombo combo : illegalMovesets) {
+            if (combo.getAbility() != null) {
+                abilityRenderer.setIllegal(Arrays.asList(
+                        m_species.getAbilities()).indexOf(combo.getAbility()));
+            }
+            if (combo.getNature() != null) {
+                natureRenderer.setIllegal(
+                        Arrays.asList(PokemonNature.getNatureNames()).indexOf(
+                        combo.getNature()));
+            }
+            if (combo.getGender() != null) {
+                genderRenderer.setIllegal(combo.getGender().getValue() - 1);
+            }
+
+            // Now check if we actually violated this combination
+            if ((combo.getNature() != null) &&
+                    !combo.getNature().equals(p.nature)) {
+                continue;
+            }
+            if ((combo.getAbility() != null) &&
+                    !combo.getAbility().equals(p.ability)) {
+                continue;
+            }
+            if ((combo.getGender() != null) &&
+                    (p.gender != combo.getGender())) {
+                continue;
+            }
+            illegal.add(combo);
+        }
+
+        cmbNature.repaint();
+        cmbAbility.repaint();
+        cmbGender.repaint();
+
         if (!illegal.isEmpty()) {
             StringBuilder buf = new StringBuilder();
             buf.append("<html>Illegal combinations:<br>");
@@ -459,12 +545,22 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                 buf.append("- ");
                 buf.append(combo);
                 buf.append("<br>");
+
+                if (combo.getNature() != null) {
+                    cmbNature.setForeground(Color.RED);
+                }
+                if (combo.getAbility() != null) {
+                    cmbAbility.setForeground(Color.RED);
+                }
+                if (combo.getGender() != null) {
+                    cmbGender.setForeground(Color.RED);
+                }
             }
             tblSelected.setToolTipText(buf.toString());
-            tblSelected.setForeground(Color.red);
-        } else {
+            tblSelected.setForeground(Color.RED);
+        } else if (illegal.isEmpty()) {
             tblSelected.setToolTipText(null);
-            tblSelected.setForeground(defaultTableForeground);
+            tblSelected.setForeground(defaultForeground);
         }
     }
 

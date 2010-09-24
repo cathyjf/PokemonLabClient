@@ -181,15 +181,16 @@ public class Pokemon implements Cloneable {
         }
     }
 
-    public List<IllegalCombo> getViolatedCombos(Generation gen) {
+    // Returns all illegal combinations that contain this moveset
+    public List<IllegalCombo> getViolatedMovesets(Generation gen) {
         PokemonSpecies s = gen.getSpeciesByName(species);
         if (s == null) {
             return new ArrayList<IllegalCombo>();
         }
-        
+
         List<IllegalCombo> allCombos = s.getIllegalCombos();
         ArrayList<IllegalCombo> illegal = new ArrayList<IllegalCombo>();
-        
+
         comboLoop:
         for (IllegalCombo combo : allCombos) {
             moveLoop:
@@ -206,7 +207,17 @@ public class Pokemon implements Cloneable {
                 // Discard this combo if the move was not found
                 continue comboLoop;
             }
+            illegal.add(combo);
+        }
+        return illegal;
+    }
 
+    // Returns all combinations that are an exact match
+    public List<IllegalCombo> getViolatedCombos(Generation gen) {
+        List<IllegalCombo> allCombos = getViolatedMovesets(gen);
+        ArrayList<IllegalCombo> illegal = new ArrayList<IllegalCombo>();
+        
+        for (IllegalCombo combo : allCombos) {
             // Check the nature/ability
             if ((combo.getNature() != null) &&
                     !combo.getNature().equals(nature)) {
