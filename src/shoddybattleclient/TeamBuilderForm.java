@@ -79,6 +79,8 @@ public class TeamBuilderForm extends javax.swing.JPanel {
     private JButtonTable tblMoves;
     private JTable tblSelected;
 
+    private Color defaultTableForeground;
+
     //hacky solution to hacky problem
     //changing the IVs changes the hiddenpower (itemStateChanged) which changes the IVs
     //use a flag so cmbNatureItemStateChanged knows we don't want it changed
@@ -146,31 +148,10 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         cmbNatureItemStateChanged(null);
 
         // Illegal move checking
-        final Color defaultForeground = tblSelected.getForeground();
+        defaultTableForeground = tblSelected.getForeground();
         tblSelected.getModel().addTableModelListener(new TableModelListener() {
             public void tableChanged(TableModelEvent e) {
-                if (tblSelected.getRowCount() == 0) {
-                    // This is necessary or the below call to getPokemon()
-                    // will wipe out moves midloading
-                    return;
-                }
-
-                List<IllegalCombo> illegal =
-                        getPokemon().getViolatedCombos(m_generation);
-                if (!illegal.isEmpty()) {
-                    StringBuilder buf = new StringBuilder();
-                    buf.append("<html>Illegal combinations:<br>");
-                    for (IllegalCombo combo : illegal) {
-                        buf.append("- ");
-                        buf.append(combo);
-                        buf.append("<br>");
-                    }
-                    tblSelected.setToolTipText(buf.toString());
-                    tblSelected.setForeground(Color.red);
-                } else {
-                    tblSelected.setToolTipText(null);
-                    tblSelected.setForeground(defaultForeground);
-                }
+                checkIllegalMovesets();
             }
         });
     }
@@ -462,6 +443,31 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         return success;
     }
 
+    private void checkIllegalMovesets() {
+        if (tblSelected.getRowCount() == 0) {
+            // This is necessary or the below call to getPokemon()
+            // will wipe out moves midloading
+            return;
+        }
+
+        List<IllegalCombo> illegal =
+                getPokemon().getViolatedCombos(m_generation);
+        if (!illegal.isEmpty()) {
+            StringBuilder buf = new StringBuilder();
+            buf.append("<html>Illegal combinations:<br>");
+            for (IllegalCombo combo : illegal) {
+                buf.append("- ");
+                buf.append(combo);
+                buf.append("<br>");
+            }
+            tblSelected.setToolTipText(buf.toString());
+            tblSelected.setForeground(Color.red);
+        } else {
+            tblSelected.setToolTipText(null);
+            tblSelected.setForeground(defaultTableForeground);
+        }
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -504,6 +510,12 @@ public class TeamBuilderForm extends javax.swing.JPanel {
             }
         });
 
+        cmbGender.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbGenderItemStateChanged(evt);
+            }
+        });
+
         chkShiny.setText("Shiny?");
         chkShiny.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         chkShiny.setOpaque(false);
@@ -536,6 +548,11 @@ public class TeamBuilderForm extends javax.swing.JPanel {
 
         cmbAbility.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         cmbAbility.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Overgrow", "Truant" }));
+        cmbAbility.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbAbilityItemStateChanged(evt);
+            }
+        });
 
         jLabel25.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         jLabel25.setText("Hidden Power:");
@@ -651,6 +668,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
                 m_totals[i].setForeground(Color.BLACK);
             }
         }
+        checkIllegalMovesets();
     }//GEN-LAST:event_cmbNatureItemStateChanged
 
     private void chkShinyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkShinyActionPerformed
@@ -680,6 +698,14 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         }
         
     }//GEN-LAST:event_txtLevelKeyReleased
+
+    private void cmbAbilityItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbAbilityItemStateChanged
+        checkIllegalMovesets();
+    }//GEN-LAST:event_cmbAbilityItemStateChanged
+
+    private void cmbGenderItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbGenderItemStateChanged
+        checkIllegalMovesets();
+    }//GEN-LAST:event_cmbGenderItemStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
