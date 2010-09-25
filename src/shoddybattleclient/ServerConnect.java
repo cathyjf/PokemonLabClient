@@ -25,6 +25,7 @@ package shoddybattleclient;
 
 import java.awt.event.KeyEvent;
 import java.util.Date;
+import javax.swing.JEditorPane;
 import javax.swing.JOptionPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -43,33 +44,16 @@ public class ServerConnect extends javax.swing.JFrame {
     private ServerLink m_link;
 
     /** Creates new form ServerConnect */
-    public ServerConnect(ServerLink link, String name, String message, boolean canRegister) {
+    public ServerConnect(ServerLink link, String name, String message,
+            boolean canRegister, String loginMessage,
+            String registrationMessage) {
         initComponents();
         m_link = link;
         lblName.setText(name);
         txtLoginName.requestFocus();
-        HTMLEditorKit kit = new HTMLEditorKit();
-        StyleSheet css = new StyleSheet();
-        css.addRule("a {color: blue; text-decoration: underline;}");
-        kit.setStyleSheet(css);
-        txtWelcome.setEditorKit(kit);
-        txtWelcome.addHyperlinkListener(new HyperlinkListener() {
-            public void hyperlinkUpdate(HyperlinkEvent e) {
-                if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                    LobbyWindow.viewWebPage(e.getURL());
-                }
-            }
-        });
-        message = "<p>" + message;
-        message = message.replaceAll("\n", "</p><p>");
-        message += "</p>";
-        HTMLDocument doc = (HTMLDocument)txtWelcome.getDocument();
-        try {
-            kit.insertHTML(doc, 0, message, 0, 0, null);
-        } catch (Exception e) {
-            //really should not be here
-        }
-        txtWelcome.setCaretPosition(0);
+        setHtmlMessage(txtWelcome, message);
+        txtLoginInfo.setText(loginMessage);
+        setHtmlMessage(txtRegisterInfo, registrationMessage);
 
         // TODO: temporary
         link.loadMoves(
@@ -80,9 +64,35 @@ public class ServerConnect extends javax.swing.JFrame {
                 "resources/species.xml").toString());
         //txtLoginPassword.setText("admin");
 
-        if (!canRegister) {
-            tabbedPane.removeTabAt(1);
+        tabbedPane.removeTabAt(canRegister ? 2 : 1);
+    }
+
+    private void setHtmlMessage(JEditorPane pane, String message) {
+        HTMLEditorKit kit = new HTMLEditorKit();
+        StyleSheet css = new StyleSheet();
+        css.addRule("a {color: blue; text-decoration: underline;}");
+        kit.setStyleSheet(css);
+        HyperlinkListener listener = new HyperlinkListener() {
+            public void hyperlinkUpdate(HyperlinkEvent e) {
+                System.out.println("in here");
+                if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                    LobbyWindow.viewWebPage(e.getURL());
+                }
+            }
+        };
+
+        pane.setEditorKit(kit);
+        pane.addHyperlinkListener(listener);
+        message = "<p>" + message;
+        message = message.replaceAll("\n", "</p><p>");
+        message += "</p>";
+        HTMLDocument doc = (HTMLDocument)pane.getDocument();
+        try {
+            kit.insertHTML(doc, 0, message, 0, 0, null);
+        } catch (Exception e) {
+            //really should not be here
         }
+        pane.setCaretPosition(0);
     }
 
     /** This method is called from within the constructor to
@@ -104,6 +114,7 @@ public class ServerConnect extends javax.swing.JFrame {
         txtLoginName = new javax.swing.JTextField();
         cmdLogIn = new javax.swing.JButton();
         txtLoginPassword = new javax.swing.JPasswordField();
+        txtLoginInfo = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -112,6 +123,8 @@ public class ServerConnect extends javax.swing.JFrame {
         txtRegisterPassword = new javax.swing.JPasswordField();
         txtRegisterConfirm = new javax.swing.JPasswordField();
         jLabel1 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        txtRegisterInfo = new javax.swing.JEditorPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setLocationByPlatform(true);
@@ -154,6 +167,8 @@ public class ServerConnect extends javax.swing.JFrame {
             }
         });
 
+        txtLoginInfo.setText("Enter your user name and password to login.");
+
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -166,26 +181,30 @@ public class ServerConnect extends javax.swing.JFrame {
                             .add(jLabel2)
                             .add(jLabel3))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(txtLoginPassword, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
-                            .add(txtLoginName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)))
-                    .add(cmdLogIn))
+                        .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                            .add(txtLoginName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
+                            .add(txtLoginPassword, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)))
+                    .add(cmdLogIn)
+                    .add(txtLoginInfo))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
+                .add(txtLoginInfo)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel2)
                     .add(txtLoginName, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(txtLoginPassword, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel3))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(cmdLogIn)
-                .addContainerGap())
+                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel1Layout.createSequentialGroup()
+                        .add(jLabel3)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                        .add(cmdLogIn))
+                    .add(txtLoginPassword, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(22, 22, 22))
         );
 
         tabbedPane.addTab("Log In", jPanel1);
@@ -266,6 +285,28 @@ public class ServerConnect extends javax.swing.JFrame {
 
         tabbedPane.addTab("Register", jPanel2);
 
+        txtRegisterInfo.setContentType("text/html");
+        txtRegisterInfo.setEditable(false);
+
+        org.jdesktop.layout.GroupLayout jPanel3Layout = new org.jdesktop.layout.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(txtRegisterInfo, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(txtRegisterInfo, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        tabbedPane.addTab("Register", jPanel3);
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -273,8 +314,8 @@ public class ServerConnect extends javax.swing.JFrame {
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, tabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, tabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
                     .add(lblName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -429,12 +470,15 @@ public class ServerConnect extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblName;
     private javax.swing.JTabbedPane tabbedPane;
+    private javax.swing.JLabel txtLoginInfo;
     private javax.swing.JTextField txtLoginName;
     private javax.swing.JPasswordField txtLoginPassword;
     private javax.swing.JPasswordField txtRegisterConfirm;
+    private javax.swing.JEditorPane txtRegisterInfo;
     private javax.swing.JTextField txtRegisterName;
     private javax.swing.JPasswordField txtRegisterPassword;
     private javax.swing.JEditorPane txtWelcome;

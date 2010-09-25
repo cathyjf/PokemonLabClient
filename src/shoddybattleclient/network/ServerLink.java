@@ -532,16 +532,21 @@ public class ServerLink extends Thread {
                 // int32  : server version
                 // string : server name
                 // string : welcome message
-                // byte   : can register?
+                // byte   : are registrations permitted?
+                // string : explanation of how to login
+                // string : explanation of how to register
                 public void handle(ServerLink link, DataInputStream is)
                         throws IOException {
                     int version = is.readInt();
                     String name = is.readUTF();
                     String welcome = is.readUTF();
                     boolean canRegister = (is.readUnsignedByte() != 0);
+                    String loginMessage = is.readUTF();
+                    String registerMessage = is.readUTF();
 
                     link.m_serverConnect =
-                            new ServerConnect(link, name, welcome, canRegister);
+                            new ServerConnect(link, name, welcome,
+                            canRegister, loginMessage, registerMessage);
                     link.m_serverConnect.setVisible(true);
 
                     //System.out.println("Received WELCOME_MESSAGE.");
