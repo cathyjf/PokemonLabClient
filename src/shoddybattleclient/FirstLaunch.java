@@ -59,11 +59,20 @@ public class FirstLaunch extends javax.swing.JFrame {
     private static String getDefaultStoragePath() {
         String path = null;
         try {
-            path = new JFileChooser().getCurrentDirectory().toString();
-            if (!path.endsWith(File.separator)) {
-                path += File.separator;
+            String osName = System.getProperty("os.name").toUpperCase();
+            if (osName.indexOf("WINDOWS") != -1) {
+                path = System.getenv("APPDATA");
+                if (!path.endsWith(File.separator)) {
+                    path += File.separator;
+                }
+                path += "Pokemon Lab";
+            } else {
+                path = new JFileChooser().getCurrentDirectory().toString();
+                if (!path.endsWith(File.separator)) {
+                    path += File.separator;
+                }
+                path += ".pokelab";
             }
-            path += ".shoddybattle";
         } catch (Exception e) {
             
         }

@@ -67,14 +67,13 @@ public class ServerConnect extends javax.swing.JFrame {
         tabbedPane.removeTabAt(canRegister ? 2 : 1);
     }
 
-    private void setHtmlMessage(JEditorPane pane, String message) {
+    private static void setHtmlMessage(JEditorPane pane, String message) {
         HTMLEditorKit kit = new HTMLEditorKit();
         StyleSheet css = new StyleSheet();
         css.addRule("a {color: blue; text-decoration: underline;}");
         kit.setStyleSheet(css);
         HyperlinkListener listener = new HyperlinkListener() {
             public void hyperlinkUpdate(HyperlinkEvent e) {
-                System.out.println("in here");
                 if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                     LobbyWindow.viewWebPage(e.getURL());
                 }
