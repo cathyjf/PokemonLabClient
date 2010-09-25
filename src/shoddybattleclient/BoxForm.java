@@ -229,8 +229,10 @@ public class BoxForm extends javax.swing.JPanel {
         }
     }
 
-    private static DataFlavor m_wrapperFlavor = new DataFlavor(PokemonWrapper.class, "PokemonWrapper");
-    private static DataFlavor m_pokemonFlavor = new DataFlavor(Pokemon.class, "Pokemon");
+    private static DataFlavor m_wrapperFlavor =
+            new DataFlavor(PokemonWrapper.class, "PokemonWrapper");
+    private static DataFlavor m_pokemonFlavor =
+            new DataFlavor(Pokemon.class, "Pokemon");
     private class PokemonTableTransferHandler extends TransferHandler {
         private class WrapperTransferable implements Transferable {
             private PokemonWrapper m_poke;
@@ -252,11 +254,9 @@ public class BoxForm extends javax.swing.JPanel {
         }
         @Override
         public boolean canImport(JComponent c, DataFlavor[] transferFlavors) {
-            if (transferFlavors.length != 1)
-                return false;
-            if (!m_pokemonFlavor.equals(transferFlavors[0]))
-                return false;
-            return true;
+            // The DropTarget handles importing. Letting the TransferHandler
+            // deal with importing leads to an unintuitive focus behavior
+            return false;
         }
         @Override
         public int getSourceActions(JComponent c) {
@@ -269,6 +269,40 @@ public class BoxForm extends javax.swing.JPanel {
             int idx = table.rowAtPoint(p);
             if (idx < 0) return null;
             return new WrapperTransferable(m_pokemonModel.getPokemonAt(idx));
+        }
+    }
+
+    private class TablePokemonDropTarget extends DropTarget {
+        @Override
+        public void dragOver(DropTargetDragEvent dtde) {
+            if (dtde.isDataFlavorSupported(m_pokemonFlavor)) {
+                dtde.acceptDrag(DnDConstants.ACTION_MOVE);
+            } else {
+                dtde.rejectDrag();
+            }
+        }
+        @Override
+        public void drop(DropTargetDropEvent dtde) {
+            this.dragExit(null);
+            try {
+                Transferable transfer = dtde.getTransferable();
+                if (transfer.isDataFlavorSupported(m_pokemonFlavor)) {
+                    PokemonBox box = (PokemonBox)listBoxes.getSelectedValue();
+                    PokemonWrapper result = m_teamBuilder.addPokemonToBox(box,
+                            (Pokemon)transfer.getTransferData(m_pokemonFlavor));
+                    if (result != null) {
+                        int row = box.indexOf(result);
+                        m_pokemonModel.fireTableDataChanged();
+                        tblPokemon.setRowSelectionInterval(row, row);
+                    }
+                } else {
+                    dtde.rejectDrop();
+                    return;
+                }
+            } catch (Exception ex) {
+                dtde.rejectDrop();
+                return;
+            }
         }
     }
 
@@ -445,6 +479,7 @@ public class BoxForm extends javax.swing.JPanel {
         tblPokemon.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblPokemon.setDragEnabled(true);
         tblPokemon.setTransferHandler(new PokemonTableTransferHandler());
+        tblPokemon.setDropTarget(new TablePokemonDropTarget());
         tblPokemon.addMouseListener(new MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 if (evt.isPopupTrigger()) {
