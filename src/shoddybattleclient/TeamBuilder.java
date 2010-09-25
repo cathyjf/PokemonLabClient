@@ -368,7 +368,8 @@ public class TeamBuilder extends javax.swing.JFrame {
         if (!boxRootCollapsed) treeBox.expandPath(model.getBoxPath());
     }
 
-    // This will ask the user for input, returns null on fail, or the resultant pokemon if it succeeded
+    // This will ask the user for input, returns null on fail, or the
+    // resultant pokemon if it succeeded
     public PokemonWrapper addPokemonToBox(PokemonBox box, Pokemon poke) {
         String name = JOptionPane.showInputDialog(this, "New Pokemon's name:");
         if (name == null || name.trim().equals("")) {
@@ -376,8 +377,9 @@ public class TeamBuilder extends javax.swing.JFrame {
         }
 
         if (box.getPokemon(name) != null) {
-            int confirm = JOptionPane.showConfirmDialog(this, "This Pokemon already exists, are " +
-                    "you sure you want to replace it?", "", JOptionPane.YES_NO_OPTION);
+            int confirm = JOptionPane.showConfirmDialog(this, 
+                    "This Pokemon already exists, are you sure you want to"
+                    + " replace it?", "", JOptionPane.YES_NO_OPTION);
             if (confirm != JOptionPane.YES_OPTION) {
                 return null;
             }
@@ -746,7 +748,7 @@ public class TeamBuilder extends javax.swing.JFrame {
         Pokemon[] team = tfp.parseTeam(file, m_generation.getSpecies());
 
         if (team == null) {
-            JOptionPane.showMessageDialog(null, "Error reading file",
+            JOptionPane.showMessageDialog(null, "Unknown error reading team",
                 "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -782,7 +784,8 @@ public class TeamBuilder extends javax.swing.JFrame {
     }//GEN-LAST:event_menuSaveAsActionPerformed
 
     private void menuChangeSizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuChangeSizeActionPerformed
-        String str = JOptionPane.showInputDialog(this, "Enter a new size for this team", m_forms.size());
+        String str = JOptionPane.showInputDialog(this,
+                "Enter a new size for this team", m_forms.size());
         int size = 0;
         try {
             size = Integer.parseInt(str.trim());
@@ -793,7 +796,8 @@ public class TeamBuilder extends javax.swing.JFrame {
         if (size < 1) {
             return;
         } else if (size > 24) {
-            JOptionPane.showMessageDialog(null, "Cannot use a size larger than 24 pokemon.",
+            JOptionPane.showMessageDialog(null,
+                    "You cannot make a team with more than 24 pokemon.",
                     "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -883,7 +887,8 @@ public class TeamBuilder extends javax.swing.JFrame {
         if (selected >= m_forms.size()) return;
 
         int happiness = ((TeamBuilderForm)tabForms.getSelectedComponent()).getHappiness();
-        String resp = JOptionPane.showInputDialog(this, "Enter a new value in [0,255]", happiness);
+        String resp = JOptionPane.showInputDialog(this, "Enter a new value in "
+                + "the range 0 to 255", happiness);
         try {
             happiness = Integer.valueOf(resp);
             if ((happiness >= 0) && (happiness <= 255)) {
@@ -917,7 +922,8 @@ public class TeamBuilder extends javax.swing.JFrame {
     private void menuNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuNewActionPerformed
         int result = JOptionPane.showOptionDialog(null,
                  "This team may have unsaved changes, create new anyways?",
-                 "Unsaved Changes", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+                 "Unsaved Changes", JOptionPane.YES_NO_OPTION,
+                 JOptionPane.QUESTION_MESSAGE, null, null, null);
         if (result == JOptionPane.OK_OPTION) {
             addDefaultTeam();
             m_save = null;
@@ -964,7 +970,8 @@ public class TeamBuilder extends javax.swing.JFrame {
             Pokemon poke = boxForm.getSelectedPokemon();
             int selectedTeamIndex = teamList.getSelectedIndex();
 
-            if (poke == null || selectedTeamIndex < 0 || selectedTeamIndex >= m_forms.size()) {
+            if (poke == null || (selectedTeamIndex < 0) ||
+                    (selectedTeamIndex >= m_forms.size())) {
                 return;
             }
 
@@ -980,22 +987,26 @@ public class TeamBuilder extends javax.swing.JFrame {
                 ArrayList<String> boxes = new ArrayList<String>();
                 String newBox = "<html><i>New Box</i> ";
                 for (File boxFile : new File(Preference.getBoxLocation()).listFiles()) {
-                    if (boxFile.isDirectory())
+                    if (boxFile.isDirectory()) {
                         boxes.add(boxFile.getName());
+                    }
                 }
                 Collections.sort(boxes);
                 boxes.add(0, newBox);
 
-                Object selection = JOptionPane.showInputDialog(this, "Select a box", "Save to Box",
-                        JOptionPane.PLAIN_MESSAGE, null, boxes.toArray(), boxes.get(0));
+                Object selection = JOptionPane.showInputDialog(this,
+                        "Select a box", "Save to Box",
+                        JOptionPane.PLAIN_MESSAGE, null, boxes.toArray(),
+                        boxes.get(0));
                 if (selection == null) return;
 
                 if (selection.equals(newBox)) { //No system allows a foldername like newBox's
                     String boxName = JOptionPane.showInputDialog(this, "New box name:");
                     if (boxName == null) return;
-                    if (new File(Preference.getBoxLocation() + File.separatorChar + boxName).exists()) {
-                        JOptionPane.showMessageDialog(this, "This box already exists", "Error",
-                                JOptionPane.ERROR_MESSAGE);
+                    if (new File(Preference.getBoxLocation() +
+                            File.separatorChar + boxName).exists()) {
+                        JOptionPane.showMessageDialog(this, "This box already "
+                                + "exists", "Error", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                     selection = boxName;
@@ -1011,8 +1022,9 @@ public class TeamBuilder extends javax.swing.JFrame {
                 PokemonWrapper wrapper = (PokemonWrapper)path.getLastPathComponent();
                 String name = wrapper.name;
                 PokemonBox box = wrapper.getParent();
-                int confirm = JOptionPane.showConfirmDialog(this, "Are you sure "
-                        + "you want to replace " + name + "?", "", JOptionPane.YES_NO_OPTION);
+                int confirm = JOptionPane.showConfirmDialog(this, "Are you "
+                        + "sure you want to replace " + name + "?", "",
+                        JOptionPane.YES_NO_OPTION);
                 if (confirm != JOptionPane.YES_OPTION) {
                     return;
                 }
@@ -1044,14 +1056,14 @@ public class TeamBuilder extends javax.swing.JFrame {
         if (!inFile.exists()) return;
 
         // These are for overwriting pokemon.
-        boolean asked = false; // Has the user been asked if overriding pokemon is ok?
+        boolean asked = false; // Have we asked about overriding pokemon?
         boolean okOverwrite = false; // Is it ok to overwrite?
 
         try {
             ZipFile file = new ZipFile(inFile);
 
             Enumeration<? extends ZipEntry> entries = file.entries();
-            while(entries.hasMoreElements()) {
+            while (entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
                 String[] path = entry.toString().split("[/\\\\]");
                 if (path.length > 2) {
@@ -1060,18 +1072,22 @@ public class TeamBuilder extends javax.swing.JFrame {
 
                 if (path.length == 1 && entry.isDirectory()) {
                     //Its a box
-                    File box = new File(Preference.getBoxLocation() + "/" + entry.toString());
-                    if (!box.exists())
+                    File box = new File(Preference.getBoxLocation() + "/" +
+                            entry.toString());
+                    if (!box.exists()) {
                         box.mkdirs();
+                    }
                 } else if (path.length == 2 && !entry.isDirectory()) {
                     //Its a pokemon
-                    File pokemon = new File(Preference.getBoxLocation() + "/" + entry.toString());
+                    File pokemon = new File(Preference.getBoxLocation() + "/" +
+                            entry.toString());
 
                     if (pokemon.exists()) {
                         if (!asked) {
                             int result = JOptionPane.showConfirmDialog(this,
-                                    "There are some pokemon conflicts. Ok to overwrite them?",
-                                    "", JOptionPane.YES_NO_OPTION);
+                                    "There are some pokemon conflicts. Ok to "
+                                    + "overwrite them?", "",
+                                    JOptionPane.YES_NO_OPTION);
                             if (result == JOptionPane.YES_OPTION)
                                 okOverwrite = true;
                             asked = true;
@@ -1097,7 +1113,7 @@ public class TeamBuilder extends javax.swing.JFrame {
             file.close();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Error importing boxes",
-                                            "Error", JOptionPane.ERROR_MESSAGE);
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
 
         updateBoxes(true);
@@ -1145,8 +1161,8 @@ public class TeamBuilder extends javax.swing.JFrame {
 
     private void menuDeleteBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuDeleteBoxActionPerformed
         int result = JOptionPane.showConfirmDialog(this,
-                "Once you delete boxes they're gone forever, are you sure you want to continue?",
-                "", JOptionPane.YES_NO_OPTION);
+                "Once you delete boxes they're gone forever, are you sure you "
+                + "want to continue?", "", JOptionPane.YES_NO_OPTION);
 
         if (result == JOptionPane.NO_OPTION) return;
 
@@ -1177,11 +1193,11 @@ public class TeamBuilder extends javax.swing.JFrame {
 
         if (badFormat) {
             JOptionPane.showMessageDialog(this,
-                    "The boxes are badly formatted, so some files couldn't be deleted",
-                    "Error", JOptionPane.ERROR_MESSAGE);
+                    "The boxes are badly formatted, so some files couldn't "
+                    + "be deleted", "Error", JOptionPane.ERROR_MESSAGE);
         } else if (deleteFailed) {
-            JOptionPane.showMessageDialog(this, "Some files couldn't be deleted",
-                    "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Some files couldn't be "
+                    + "deleted", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(this, "Boxes deleted");
         }
