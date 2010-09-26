@@ -847,7 +847,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     private void requestTarget(TargetClass mode) {
         showTargets(mode);
         btnMove.setEnabled(true);
-        btnMoveCancel.setEnabled(false);
+        btnMoveCancel.setEnabled(true);
     }
 
     private void sendMove(int idx) {
@@ -1454,13 +1454,13 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     }//GEN-LAST:event_btnSwitchActionPerformed
 
     private void btnMoveCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveCancelActionPerformed
-        btnMove.setEnabled(true);
-        btnMoveCancel.setEnabled(false);
+        if ((evt.getSource() == btnMoveCancel) && m_targeting) {
+            showMoves();
+        }
     }//GEN-LAST:event_btnMoveCancelActionPerformed
 
     private void btnSwitchCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSwitchCancelActionPerformed
-        btnSwitch.setEnabled(true);
-        btnSwitchCancel.setEnabled(false);
+        btnMoveCancelActionPerformed(evt);
     }//GEN-LAST:event_btnSwitchCancelActionPerformed
 
     private void mnuLeaveBattleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLeaveBattleActionPerformed
