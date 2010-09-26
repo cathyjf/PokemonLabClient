@@ -824,8 +824,8 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         setMoves(idx);
         btnMove.setEnabled(true);
         btnSwitch.setEnabled(true);
-        btnMoveCancel.setEnabled(false);
-        btnSwitchCancel.setEnabled(false);
+        btnMoveCancel.setEnabled(true);
+        btnSwitchCancel.setEnabled(true);
         tabAction.setSelectedIndex(0);
         if (m_n > 1) m_visual.setSelected(slot);
         m_dummySwitchButton.setSelected(true);
@@ -1456,6 +1456,8 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     private void btnMoveCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveCancelActionPerformed
         if ((evt.getSource() == btnMoveCancel) && m_targeting) {
             showMoves();
+        } else {
+            m_link.cancelBattleAction(m_fid);
         }
     }//GEN-LAST:event_btnMoveCancelActionPerformed
 

@@ -505,6 +505,17 @@ public class ServerLink extends Thread {
         }
     }
 
+    public static class CancelBattleAction extends OutMessage {
+        public CancelBattleAction(int fid) {
+            super(20);
+            try {
+                m_stream.writeInt(fid);
+            } catch (Exception e) {
+
+            }
+        }
+    }
+
     public static abstract class MessageHandler {
         /**
          * Handle a message from the server by reading values from the
@@ -1846,6 +1857,10 @@ public class ServerLink extends Thread {
 
     public void cancelQueue(int metagame, boolean rated) {
         sendMessage(new MetagameQueueCancelMessage(metagame, rated));
+    }
+
+    public void cancelBattleAction(int fid) {
+        sendMessage(new CancelBattleAction(fid));
     }
 
     public void sendBanMessage(int channel, String user, long length) {
