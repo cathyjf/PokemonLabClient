@@ -24,6 +24,7 @@
 package shoddybattleclient;
 
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
@@ -84,6 +85,14 @@ public class ChatPane extends javax.swing.JPanel implements CloseableTab {
         scrollChat.add(m_chatPane);
         scrollChat.setViewportView(m_chatPane);
 
+        m_chatPane.addKeyListener(new KeyListener() {
+           public void keyReleased(KeyEvent evt) {}
+           public void keyPressed(KeyEvent evt) {}
+           public void keyTyped(KeyEvent evt) {
+               txtChat.requestFocusInWindow();
+               txtChat.dispatchEvent(evt);
+           }
+        });
         initLogging();
     }
 
