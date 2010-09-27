@@ -23,7 +23,9 @@
 package shoddybattleclient.shoddybattle;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
 
 /**
@@ -33,7 +35,7 @@ import shoddybattleclient.shoddybattle.Pokemon.Gender;
 public class PokemonSpecies {
     private int m_id;
     private String m_name;
-    private ArrayList<String> m_moves = new ArrayList<String>();
+    private Set<String> m_moves = new HashSet<String>();
     private Gender m_genders;
     private int[] m_bases = new int[Pokemon.STAT_COUNT];
     private ArrayList<String> m_abilities = new ArrayList<String>();
