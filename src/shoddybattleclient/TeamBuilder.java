@@ -907,6 +907,7 @@ public class TeamBuilder extends javax.swing.JFrame {
             Pokemon poke = m_forms.get(idx).getPokemon();
             if (poke == null) return;
             setSpecies(poke.toString());
+            setSpriteShiny(poke.shiny);
         } else {
             cmbSpecies.setModel(new DefaultComboBoxModel());
             cmbSpecies.setEnabled(false);

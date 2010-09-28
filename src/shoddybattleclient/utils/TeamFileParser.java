@@ -186,6 +186,8 @@ public class TeamFileParser extends DefaultHandler {
             } catch (NumberFormatException e) {
                 tempPoke.evs[statIndex] = 0;
             }
+        } else if (qName.equals("shiny")) {
+            tempPoke.shiny = true;
         }
         tempStr = "";
 
