@@ -387,6 +387,7 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         tblMoves.getColumnModel().getColumn(1).setPreferredWidth(160);
 
         updateEvs();
+        updateHiddenPower();
     }
 
     public int calculateStat(int i)  {
@@ -434,7 +435,8 @@ public class TeamBuilderForm extends javax.swing.JPanel {
         hpProgramSelect = true;
         txtHiddenPower.setText(String.valueOf(
                 PokemonMove.calculateHiddenPowerPower(m_pokemon.ivs)));
-        cmbHiddenPower.setSelectedItem(PokemonMove.getHiddenPowerType(m_pokemon.ivs));
+        cmbHiddenPower.setSelectedItem(
+                PokemonMove.getHiddenPowerType(m_pokemon.ivs));
         hpProgramSelect = false;
     }
 
