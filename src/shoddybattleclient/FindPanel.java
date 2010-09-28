@@ -304,6 +304,7 @@ public class FindPanel extends javax.swing.JPanel {
             clauseList.add(1, metagame.getMaxTeamLength() + " Pokemon per team");
             String clauses = join(clauseList, ", ");
             txtClauses.setText(clauses);
+            ((TeamBox)panelSprites).setTeamLength(metagame.getMaxTeamLength());
         }
     }//GEN-LAST:event_cmbLadderActionPerformed
 
