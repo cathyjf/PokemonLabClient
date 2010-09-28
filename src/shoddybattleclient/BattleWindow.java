@@ -723,7 +723,15 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     private void showTargets(TargetClass mode) {
         m_targeting = true;
         panelMoves.removeAll();
-        panelMoves.setLayout(new GridLayout(2, m_n));
+
+        GridLayout layout = null;
+        if (m_n < 4) {
+            layout = new GridLayout(2, m_n);
+        } else {
+            layout = new GridLayout(4, 3);
+        }
+        panelMoves.setLayout(layout);
+    
         Target[][] targets = new Target[2][m_n];
         for (int i = 0; i < targets.length; i++) {
             boolean us = (i == m_participant);
@@ -738,7 +746,8 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
                 targets[i][j] = t;
             }
         }
-        targets = (1 == m_participant) ? targets : new Target[][] {targets[1], targets[0]};
+        targets = (1 == m_participant) ? targets :
+            new Target[][] {targets[1], targets[0]};
 
         m_targets = new TargetButton[m_n * 2];
         ButtonGroup bg = new ButtonGroup();
@@ -762,6 +771,15 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
                 bg.add(button);
                 panelMoves.add(button);
             }
+
+            // Add empty panels for 4/5
+            int totalButtons = (layout.getRows() / 2) * layout.getColumns();
+            for (int j = m_n; j < totalButtons; j++) {
+                JPanel panel = new JPanel();
+                panel.setOpaque(false);
+                panelMoves.add(panel);
+            }
+
         }
         panelMoves.repaint();
     }
