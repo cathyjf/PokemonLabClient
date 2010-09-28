@@ -111,11 +111,23 @@ public class TeamFileParser extends DefaultHandler {
                     }
                     p.ppUps = temp2;
 
-                    // If the pokemon has no ability then put in a default one
-                    if (p.ability == null) {
+                    // If the pokemon has no ability/gender
+                    // then put in a default one
+                    if ((p.ability == null) || (p.gender == null)) {
                         for (PokemonSpecies ps : speciesList) {
-                            if (ps.getName().equals(p.species)) {
+                            if (!ps.getName().equals(p.species)) {
+                                continue;
+                            }
+
+                            if (p.ability == null) {
                                 p.ability = ps.getAbilities()[0];
+                            }
+                            if (p.gender == null) {
+                                if (ps.getGenders() == Gender.GENDER_BOTH) {
+                                    p.gender = Gender.GENDER_MALE;
+                                } else {
+                                    p.gender = ps.getGenders();
+                                }
                             }
                         }
                     }
@@ -204,13 +216,13 @@ public class TeamFileParser extends DefaultHandler {
                 tempPoke.gender = Gender.GENDER_NONE;
             }
         } else if (qName.equals("nature")) {
-            tempPoke.nature = tempStr;
+            tempPoke.nature = tempStr.trim();
         } else if (qName.equals("item")) {
-            tempPoke.item = tempStr;
+            tempPoke.item = tempStr.trim();
         } else if (qName.equals("ability")) {
-            tempPoke.ability = tempStr;
+            tempPoke.ability = tempStr.trim();
         } else if (qName.equals("move")) {
-            tempPoke.moves[moveIndex] = tempStr;
+            tempPoke.moves[moveIndex] = tempStr.trim();
             moveIndex++;
         } else if (qName.equals("pokemon")) {
             m_pokemon.add(tempPoke);
