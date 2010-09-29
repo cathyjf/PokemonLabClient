@@ -113,7 +113,7 @@ public class VisualToolTip extends javax.swing.JPanel {
             int statLevel = p.getStatLevel(i + 1);
             if ((p.getPokemon() != null) && ((i + 1) < Pokemon.S_ACCURACY)) {
                 sb.append(p.getPokemon().calculateStat(i + 1,
-                        ServerLink.getSpeciesList(), statLevel));
+                        ServerLink.getGeneration(), statLevel));
                 sb.append(" ");
             }
             if (statLevel != 0) {

@@ -459,7 +459,8 @@ public class BoxForm extends javax.swing.JPanel {
             for(File boxFile : boxDir.listFiles()) {
                 if(!boxFile.isDirectory())
                     continue;
-                boxes.add(new PokemonBox(boxFile.getName(), m_teamBuilder.getSpeciesList()));
+                boxes.add(new PokemonBox(boxFile.getName(), 
+                        m_teamBuilder.getGeneration()));
             }
         }
         m_boxModel.addBoxes(boxes);
@@ -525,7 +526,7 @@ public class BoxForm extends javax.swing.JPanel {
                     continue;
                 }
                 boxes.add(new PokemonBox(boxFile.getName(),
-                        m_teamBuilder.getSpeciesList()));
+                        m_teamBuilder.getGeneration()));
             }
         }
         m_boxModel.addBoxes(boxes);
@@ -723,7 +724,8 @@ public class BoxForm extends javax.swing.JPanel {
         }
 
         try {
-            PokemonBox newBox = new PokemonBox(boxName, m_teamBuilder.getSpeciesList());
+            PokemonBox newBox = new PokemonBox(boxName, 
+                    m_teamBuilder.getGeneration());
             m_boxModel.addBox(newBox);
             listBoxes.setSelectedValue(newBox, true);
         } catch (Exception ex) {
@@ -792,7 +794,8 @@ public class BoxForm extends javax.swing.JPanel {
         try {
             oldFile.renameTo(newFile);
 
-            PokemonBox newBox = new PokemonBox(newName, m_teamBuilder.getSpeciesList());
+            PokemonBox newBox = new PokemonBox(newName,
+                    m_teamBuilder.getGeneration());
             m_boxModel.removeBox(box);
             m_boxModel.addBox(newBox);
             listBoxes.setSelectedValue(newBox, true);

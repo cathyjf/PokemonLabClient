@@ -81,16 +81,15 @@ public class PokemonBox implements Comparable<PokemonBox> {
 
     private String m_name;
     private ArrayList<PokemonWrapper> m_pokemon;
-    private List<PokemonSpecies> m_speciesList;
+    private Generation m_generation;
 
-    public PokemonBox(String name, List<PokemonSpecies> speciesList) {
-        this(name, null, speciesList);
+    public PokemonBox(String name, Generation generation) {
+        this(name, null, generation);
     }
 
-    public PokemonBox(String name, String species,
-            List<PokemonSpecies> speciesList) {
+    public PokemonBox(String name, String species, Generation generation) {
         m_name = name;
-        m_speciesList = speciesList;
+        m_generation = generation;
         loadContents(species);
     }
 
@@ -108,7 +107,7 @@ public class PokemonBox implements Comparable<PokemonBox> {
             try {
                 TeamFileParser tfp = new TeamFileParser();
                 Pokemon poke = tfp.parseTeam(
-                        pokeFile.getAbsolutePath(), m_speciesList)[0];
+                        pokeFile.getAbsolutePath(), m_generation)[0];
                 if (species == null || poke.toString().equals(species))
                     m_pokemon.add(new PokemonWrapper(pokeFile.getName(), poke));
             }

@@ -307,7 +307,8 @@ public class TeamBuilder extends javax.swing.JFrame {
         File[] teams = dir.listFiles(filter);
         TeamFileParser parser = new TeamFileParser();
         for (int i = 0; i < teams.length; i++) {
-            Pokemon[] team = parser.parseTeam(teams[i].toString(), m_generation.getSpecies());
+            Pokemon[] team = parser.parseTeam(teams[i].toString(),
+                    m_generation);
             if (team == null) continue;
             for (Pokemon p : team) {
                 if (p.species.equalsIgnoreCase(species)) {
@@ -327,8 +328,8 @@ public class TeamBuilder extends javax.swing.JFrame {
         for (File boxFolder : dir.listFiles()) {
             if (!boxFolder.isDirectory()) continue;
             try {
-                PokemonBox box = new PokemonBox(
-                        boxFolder.getName(), species, m_generation.getSpecies());
+                PokemonBox box = new PokemonBox(boxFolder.getName(),
+                        species, m_generation);
                 if (box.getSize() > 0)
                     ((BoxTreeModel)treeBox.getModel()).addBox(box);
             } catch (Exception ex) {}
@@ -745,7 +746,7 @@ public class TeamBuilder extends javax.swing.JFrame {
         if (file == null || !(new File(file).exists())) return;
 
         TeamFileParser tfp = new TeamFileParser();
-        Pokemon[] team = tfp.parseTeam(file, m_generation.getSpecies());
+        Pokemon[] team = tfp.parseTeam(file, m_generation);
 
         if (team == null) {
             JOptionPane.showMessageDialog(null, "Unknown error reading team",
@@ -1014,7 +1015,7 @@ public class TeamBuilder extends javax.swing.JFrame {
                 }
                 
                 PokemonBox box = new PokemonBox((String)selection, 
-                        getSelectedPokemon().toString(), m_generation.getSpecies());
+                        getSelectedPokemon().toString(), m_generation);
                 PokemonWrapper poke = addPokemonToBox(box, getSelectedPokemon());
                 if (poke != null) {
                     treeModel.addBoxPokemon(poke);

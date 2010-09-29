@@ -53,6 +53,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JToolTip;
 import javax.swing.ToolTipManager;
+import shoddybattleclient.shoddybattle.Generation;
 import shoddybattleclient.shoddybattle.Pokemon;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
 import shoddybattleclient.shoddybattle.PokemonSpecies;
@@ -414,7 +415,7 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
     private int m_target = Integer.MAX_VALUE;
     private Graphics2D m_mouseInput;
     private static final IndexColorModel m_colours;
-    private final List<PokemonSpecies> m_speciesList;
+    private final Generation m_generation;
     private interface StringList extends List<String> {}
     private List<String>[] m_partyStatuses = new StringList[2];
     private Set<String> m_globalStatuses = new HashSet<String>();
@@ -453,13 +454,14 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
         manager.setReshowDelay(0);*/
     }
     
-    public GameVisualisation(int view, int n, int length, List<PokemonSpecies> speciesList) {
+    public GameVisualisation(int view, int n, int length,
+            Generation generation) {
         this.setLayout(null);
         m_view = view;
         m_active = new VisualPokemon[2][n];
         m_parties = new VisualPokemon[2][length];
         m_pokeballs = new Pokeball[2][length];
-        m_speciesList = speciesList;
+        m_generation = generation;
 
         int background = new Random().nextInt(BACKGROUND_COUNT) + 1;
         m_background = getImageFromResource("backgrounds/background" + background + ".png");
@@ -816,7 +818,7 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
 
     public Image getSprite(String name, boolean front, boolean male,
             boolean shiny, int frame) {
-        int number = PokemonSpecies.getIdFromName(m_speciesList, name);
+        int number = PokemonSpecies.getIdFromName(m_generation, name);
         return getSprite(number, front, male, shiny, frame);
     }
 
@@ -843,7 +845,8 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
         SpeciesListParser slp = new SpeciesListParser();
         List<PokemonSpecies> species = slp.parseDocument(
                 GameVisualisation.class.getResource("resources/species.xml").toString());
-        GameVisualisation panel = new GameVisualisation(1, 2, 6, species);
+        Generation gen = Generation.loadGeneration();
+        GameVisualisation panel = new GameVisualisation(1, 2, 6, gen);
         frame.setSize(panel.getPreferredSize().width, panel.getPreferredSize().height + 20);
         Random r = new java.util.Random();
         VisualPokemon p1 = new VisualPokemon(1, 1, 100, false);

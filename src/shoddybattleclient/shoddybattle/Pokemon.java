@@ -122,9 +122,8 @@ public class Pokemon implements Cloneable {
                 ability, nature, moves.clone(), ppUps.clone(), ivs.clone(), evs.clone());
     }
 
-    public int calculateStat(int i, List<PokemonSpecies> list, int level) {
-        PokemonSpecies s =
-                list.get(PokemonSpecies.getIdFromName(list, species));
+    public int calculateStat(int i, Generation generation, int level) {
+        PokemonSpecies s = generation.getSpeciesByName(species);
         PokemonNature n = PokemonNature.getNature(nature);
         return calculateStat(this, i, s, n, level);
     }

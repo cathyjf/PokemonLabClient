@@ -29,8 +29,6 @@ import java.util.*;
 import java.nio.ByteBuffer;
 import java.util.concurrent.*;
 import java.security.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JOptionPane;
@@ -41,13 +39,12 @@ import shoddybattleclient.GameVisualisation.VisualPokemon;
 import shoddybattleclient.LobbyWindow;
 import shoddybattleclient.Preference;
 import shoddybattleclient.ServerConnect;
+import shoddybattleclient.shoddybattle.Generation;
 import shoddybattleclient.shoddybattle.Pokemon;
 import shoddybattleclient.shoddybattle.PokemonMove;
 import shoddybattleclient.shoddybattle.PokemonNature;
 import shoddybattleclient.shoddybattle.PokemonSpecies;
 import shoddybattleclient.utils.ClauseList.Clause;
-import shoddybattleclient.utils.MoveListParser;
-import shoddybattleclient.utils.SpeciesListParser;
 import shoddybattleclient.utils.Text;
 
 /**
@@ -329,7 +326,7 @@ public class ServerLink extends Thread {
     public void writePokemon(Pokemon pokemon, DataOutputStream stream)
                 throws IOException {
         stream.writeInt(PokemonSpecies.getIdFromName(
-                m_speciesList, pokemon.species));
+                m_generation, pokemon.species));
         stream.writeUTF(pokemon.nickname);
         stream.write(pokemon.shiny ? 1 : 0);
         stream.write(pokemon.gender.getValue());
@@ -342,7 +339,7 @@ public class ServerLink extends Thread {
         stream.writeInt(pokemon.moves.length);
         for (int i = 0; i < pokemon.moves.length; ++i) {
             stream.writeInt(PokemonMove.getIdFromName(
-                    m_moveList, pokemon.moves[i]));
+                    getMoveList(), pokemon.moves[i]));
             stream.writeInt(pokemon.ppUps[i]);
         }
         for (int i = 0; i < Pokemon.STAT_COUNT; ++i) {
@@ -1034,7 +1031,7 @@ public class ServerLink extends Thread {
                             }
 
                             String species = PokemonSpecies.getNameFromId(
-                                    link.m_speciesList, id);
+                                    link.m_generation, id);
                             wnd.setSpecies(i, j, species);
 
                             int gender = is.readUnsignedByte();
@@ -1118,7 +1115,7 @@ public class ServerLink extends Thread {
                     int idx = is.readShort();
 
                     String move =
-                            PokemonMove.getNameFromId(link.m_moveList, idx);
+                            PokemonMove.getNameFromId(link.getMoveList(), idx);
                     name = Text.formatName(name, (party == wnd.getParty()));
                     move = "<font class='move'>" + move + "</font>";
 
@@ -1181,9 +1178,8 @@ public class ServerLink extends Thread {
                     int gender = is.readUnsignedByte();
                     int level = is.readUnsignedByte();
 
-                    String species =
-                            PokemonSpecies.getNameFromId(link.m_speciesList,
-                            speciesId);
+                    String species = PokemonSpecies.getNameFromId(
+                            link.m_generation, speciesId);
 
                     wnd.sendOut(party, slot, index, speciesId, species,
                             name, gender, level);
@@ -1381,7 +1377,7 @@ public class ServerLink extends Thread {
                                 boolean shiny = (is.read() != 0);
 
                                 String species = PokemonSpecies.getNameFromId(
-                                        link.m_speciesList, id);
+                                        link.m_generation, id);
 
                                 p.setSpeciesId(id);
                                 p.setSpecies(species);
@@ -1490,7 +1486,7 @@ public class ServerLink extends Thread {
                         for (int j = 0; j < banLength; ++j) {
                             int entry = is.readShort();
                             String species = PokemonSpecies.getNameFromId(
-                                    link.m_speciesList, entry);
+                                    link.m_generation, entry);
                             banList.add(species);
                         }
                         List<String> clauses = new ArrayList<String>();
@@ -1718,8 +1714,7 @@ public class ServerLink extends Thread {
     private Thread m_messageThread, m_activityThread;
     private ServerConnect m_serverConnect;
     private LobbyWindow m_lobby;
-    private static List<PokemonSpecies> m_speciesList;
-    private List<PokemonMove> m_moveList;
+    private static Generation m_generation;
     private Map<String, ChallengeMediator> m_challenges =
             new HashMap<String, ChallengeMediator>();
     private Map<Integer, BattleWindow> m_battles =
@@ -1734,11 +1729,15 @@ public class ServerLink extends Thread {
     }
 
     public static List<PokemonSpecies> getSpeciesList() {
-        return m_speciesList;
+        return m_generation.getSpecies();
     }
 
     public List<PokemonMove> getMoveList() {
-        return m_moveList;
+        return m_generation.getMoves();
+    }
+
+    public static Generation getGeneration() {
+        return m_generation;
     }
 
     public void setClauseList(List<Clause> clauses) {
@@ -1804,14 +1803,8 @@ public class ServerLink extends Thread {
         }
     }
 
-    public void loadSpecies(String file) {
-        SpeciesListParser slp = new SpeciesListParser();
-        m_speciesList = slp.parseDocument(file);
-    }
-
-    public void loadMoves(String file) {
-        MoveListParser mlp = new MoveListParser();
-        m_moveList = mlp.parseDocument(file);
+    public void loadGeneration(Generation gen) {
+        m_generation = gen;
     }
 
     public void registerAccount(String user, String password) {

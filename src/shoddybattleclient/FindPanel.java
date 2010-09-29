@@ -264,7 +264,7 @@ public class FindPanel extends javax.swing.JPanel {
         if (fd.getFile() == null) return;
         String file = fd.getDirectory() + fd.getFile();
         TeamBox box = (TeamBox)panelSprites;
-        m_team = box.loadFromTeam(file, m_link.getSpeciesList());
+        m_team = box.loadFromTeam(file, m_link.getGeneration());
         btnFind.setEnabled(m_team != null);
         if (m_team == null) {
             JOptionPane.showMessageDialog(this, "Selected team file could not be loaded");

@@ -29,6 +29,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Scanner;
 import shoddybattleclient.TeamBuilder;
+import shoddybattleclient.utils.MoveListParser;
+import shoddybattleclient.utils.SpeciesListParser;
 
 /**
  * This class loads generation information for the teambuilder. Currently
@@ -76,6 +78,18 @@ public class Generation {
         return items;
     }
 
+    // Temporary holdover until proper generation loading is implemented
+    public static Generation loadGeneration() {
+        MoveListParser mlp = new MoveListParser();
+        List<PokemonMove> moves = mlp.parseDocument(
+                TeamBuilder.class.getResource("resources/moves.xml").toString());
+        SpeciesListParser parser = new SpeciesListParser();
+        List<PokemonSpecies> species = parser.parseDocument(
+                TeamBuilder.class.getResource("resources/species.xml").toString());
+        List<String> items = Generation.loadItems();
+        return new Generation(species, moves, items);
+    }
+
     public List<PokemonMove> getMoves() {
         return m_moves;
     }
@@ -86,6 +100,15 @@ public class Generation {
 
     public List<String> getItems() {
         return m_items;
+    }
+
+    public PokemonSpecies getSpeciesById(int id) {
+        for (PokemonSpecies ps : m_species) {
+            if (ps.getId() == id) {
+                return ps;
+            }
+        }
+        return null;
     }
 
     public PokemonSpecies getSpeciesByName(String name) {

@@ -41,6 +41,7 @@ import shoddybattleclient.network.ServerLink.MessageListener;
 import shoddybattleclient.network.ServerLink.Metagame;
 import shoddybattleclient.network.ServerLink.RuleSet;
 import shoddybattleclient.network.ServerLink.TimerOptions;
+import shoddybattleclient.shoddybattle.Generation;
 import shoddybattleclient.shoddybattle.Pokemon;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
 import shoddybattleclient.shoddybattle.PokemonSpecies;
@@ -60,7 +61,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
     public static class TeamBox extends JPanel {
         private int m_teamLength;
         private Pokemon[] m_team;
-        private List<PokemonSpecies> m_speciesList;
+        private Generation m_generation;
 
         public TeamBox() {
             this(6);
@@ -101,8 +102,10 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
             for (int i = 0; i < m_teamLength; i++) {
                 if (i < m_team.length) {
                     Pokemon p = m_team[i];
-                    SpritePanel panel = new SpritePanel(p.species,
-                            PokemonSpecies.getIdFromName(m_speciesList, p.species), p.gender, p.shiny);
+                    int id = PokemonSpecies.getIdFromName(m_generation,
+                            p.species);
+                    SpritePanel panel = new SpritePanel(p.species, id,
+                            p.gender, p.shiny);
                     this.add(panel);
                 } else {
                     this.add(new SpritePanel(null, -1, null, false));
@@ -116,19 +119,20 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         /**
          * Initialises the sprites from a team file and returns the team
          */
-        public Pokemon[] loadFromTeam(String file, List<PokemonSpecies> speciesList) {
+        public Pokemon[] loadFromTeam(String file, Generation generation) {
             TeamFileParser tfp = new TeamFileParser();
             Pokemon[] team = null;
             try {
-                team = tfp.parseTeam(file, ServerLink.getSpeciesList());
+                team = tfp.parseTeam(file, ServerLink.getGeneration());
                 m_team = team;
             } catch (Exception e) {
                 return null;
             }
-            m_speciesList = speciesList;
+            m_generation = generation;
 
-            if (m_team != null)
+            if (m_team != null) {
                 loadTeam();
+            }
             return team;
         }
     }
@@ -697,7 +701,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         if (fd.getFile() == null) return;
         String file = fd.getDirectory() + fd.getFile();
         TeamBox box = (TeamBox)panelSprites;
-        Pokemon[] team = box.loadFromTeam(file, m_link.getSpeciesList());
+        Pokemon[] team = box.loadFromTeam(file, m_link.getGeneration());
         if (team != null) {
             m_team = team;
             btnChallenge.setEnabled(true);

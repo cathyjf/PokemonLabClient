@@ -600,7 +600,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             Pokemon poke = m_pokemon[i];
             m_visual.setPokemon(m_participant, i, poke);
             VisualPokemon p = m_visual.getPokemon(m_participant, i);
-            int hp = poke.calculateStat(Pokemon.S_HP, ServerLink.getSpeciesList(), 0);
+            int hp = poke.calculateStat(Pokemon.S_HP, ServerLink.getGeneration(), 0);
             p.setHealth(hp, hp);
             for (int j = 0; j < m_pokemon[i].moves.length; j++) {
                 String move = m_pokemon[i].moves[j];
@@ -789,13 +789,15 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             if (j >= m_pokemon[i].moves.length) {
                 setMove(i, j, -1);
             } else {
-                setMove(i, j, PokemonMove.getIdFromName(m_moveList, m_pokemon[i].moves[j]));
+                setMove(i, j, PokemonMove.getIdFromName(m_moveList,
+                        m_pokemon[i].moves[j]));
             }
         }
     }
 
     private void setupVisual() {
-        m_visual = new GameVisualisation(m_participant, m_n, m_length, m_link.getSpeciesList());
+        m_visual = new GameVisualisation(m_participant, m_n, m_length,
+                m_link.getGeneration());
         m_visual.setSize(m_visual.getPreferredSize());
         panelVisual.add(m_visual);
         if (m_n > 2) return;

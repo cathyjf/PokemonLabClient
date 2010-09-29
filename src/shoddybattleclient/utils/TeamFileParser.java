@@ -34,6 +34,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.Attributes;
+import shoddybattleclient.shoddybattle.Generation;
 import shoddybattleclient.shoddybattle.Pokemon;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
 import shoddybattleclient.shoddybattle.PokemonNature;
@@ -75,7 +76,7 @@ public class TeamFileParser extends DefaultHandler {
     private String tempStr;
     private int moveIndex;
 
-    public Pokemon[] parseTeam(String file, List<PokemonSpecies> speciesList) {
+    public Pokemon[] parseTeam(String file, Generation generation) {
         m_pokemon = new ArrayList<Pokemon>();
         DataInputStream is = null;
         try {
@@ -111,12 +112,7 @@ public class TeamFileParser extends DefaultHandler {
                     }
                     p.ppUps = temp2;
 
-                    PokemonSpecies ps = null;
-                    for (PokemonSpecies species : speciesList) {
-                        if (species.getName().equalsIgnoreCase(p.species)) {
-                            ps = species;
-                        }
-                    }
+                    PokemonSpecies ps = generation.getSpeciesByName(p.species);
 
                     // Set the species to the case-sensitive version
                     p.species = ps.getName();

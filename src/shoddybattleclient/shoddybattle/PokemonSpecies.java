@@ -103,22 +103,15 @@ public class PokemonSpecies {
     public PokemonSpecies() {
 
     }
-    public static String getNameFromId(List<PokemonSpecies> species, int id) {
-        for (PokemonSpecies i : species) {
-            if (i.m_id == id) {
-                return i.m_name;
-            }
-        }
-        return null;
+    public static String getNameFromId(Generation generation, int id) {
+        PokemonSpecies ps = generation.getSpeciesById(id);
+        return (ps != null) ? ps.getName() : null;
     }
-    public static int getIdFromName(List<PokemonSpecies> species, String name) {
-        for (PokemonSpecies i : species) {
-            if (i.m_name.equals(name)) {
-                return i.m_id;
-            }
-        }
-        return -1;
+    public static int getIdFromName(Generation generation, String name) {
+        PokemonSpecies ps = generation.getSpeciesByName(name);
+        return (ps != null) ? ps.getId() : -1;
     }
+
     public void setId(int id) {
         m_id = id;
     }

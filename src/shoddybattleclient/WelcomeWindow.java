@@ -229,20 +229,7 @@ public class WelcomeWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cmdTeamBuilderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdTeamBuilderActionPerformed
-        // All this loading will be changed to a custom binary format later
-        long t1 = System.currentTimeMillis();
-        MoveListParser mlp = new MoveListParser();
-        List<PokemonMove> moves = mlp.parseDocument(TeamBuilder.class.getResource("resources/moves.xml").toString());
-        long t2 = System.currentTimeMillis();
-        SpeciesListParser parser = new SpeciesListParser();
-        List<PokemonSpecies> species = parser.parseDocument(TeamBuilder.class.getResource("resources/species.xml").toString());
-        long t3 = System.currentTimeMillis();
-        List<String> items = Generation.loadItems();
-        Generation mod = new Generation(species, moves, items);
-        System.out.println("Loaded moves in " + (t2-t1) + " milliseconds");
-        System.out.println("Loaded species in " + (t3-t2) + " milliseconds");
-        
-        new TeamBuilder(mod).setVisible(true);
+        new TeamBuilder(Generation.loadGeneration()).setVisible(true);
 }//GEN-LAST:event_cmdTeamBuilderActionPerformed
 
     private void lstServersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstServersMouseClicked

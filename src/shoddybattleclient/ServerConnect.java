@@ -34,6 +34,7 @@ import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 import shoddybattleclient.LobbyWindow.Channel;
 import shoddybattleclient.network.ServerLink;
+import shoddybattleclient.shoddybattle.Generation;
 
 /**
  *
@@ -56,13 +57,7 @@ public class ServerConnect extends javax.swing.JFrame {
         setHtmlMessage(txtRegisterInfo, registrationMessage);
 
         // TODO: temporary
-        link.loadMoves(
-                ServerConnect.class.getResource(
-                "resources/moves.xml").toString());
-        link.loadSpecies(
-                ServerConnect.class.getResource(
-                "resources/species.xml").toString());
-        //txtLoginPassword.setText("admin");
+        link.loadGeneration(Generation.loadGeneration());
 
         tabbedPane.removeTabAt(canRegister ? 2 : 1);
     }
