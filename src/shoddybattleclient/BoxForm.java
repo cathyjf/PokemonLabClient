@@ -139,9 +139,7 @@ public class BoxForm extends javax.swing.JPanel {
 
         @Override
         public int getRowCount() {
-            if (owner == null)
-                return 0;
-            return owner.getSize();
+            return (owner == null) ? 0 : owner.getSize();
         }
 
         public PokemonWrapper getPokemonAt(int row) {
@@ -521,11 +519,13 @@ public class BoxForm extends javax.swing.JPanel {
         File boxDir = new File(Preference.getBoxLocation());
         m_boxModel = new BoxListModel();
         ArrayList<PokemonBox> boxes = new ArrayList<PokemonBox>();
-        if(boxDir.exists()) {
-            for(File boxFile : boxDir.listFiles()) {
-                if(!boxFile.isDirectory())
+        if (boxDir.exists()) {
+            for (File boxFile : boxDir.listFiles()) {
+                if (!boxFile.isDirectory()) {
                     continue;
-                boxes.add(new PokemonBox(boxFile.getName(), m_teamBuilder.getSpeciesList()));
+                }
+                boxes.add(new PokemonBox(boxFile.getName(),
+                        m_teamBuilder.getSpeciesList()));
             }
         }
         m_boxModel.addBoxes(boxes);
@@ -535,8 +535,11 @@ public class BoxForm extends javax.swing.JPanel {
             for (int i = 0; i < m_boxModel.getSize(); i++) {
                 if (m_boxModel.getElementAt(i).equals(selected)) {
                     listBoxes.setSelectedIndex(i);
+                    return;
                 }
             }
+            listBoxes.clearSelection();
+            m_pokemonModel.setBox(null);
         }
     }
 

@@ -111,24 +111,27 @@ public class TeamFileParser extends DefaultHandler {
                     }
                     p.ppUps = temp2;
 
-                    // If the pokemon has no ability/gender
-                    // then put in a default one
-                    if ((p.ability == null) || (p.gender == null)) {
-                        for (PokemonSpecies ps : speciesList) {
-                            if (!ps.getName().equals(p.species)) {
-                                continue;
-                            }
+                    PokemonSpecies ps = null;
+                    for (PokemonSpecies species : speciesList) {
+                        if (species.getName().equalsIgnoreCase(p.species)) {
+                            ps = species;
+                        }
+                    }
 
-                            if (p.ability == null) {
-                                p.ability = ps.getAbilities()[0];
-                            }
-                            if (p.gender == null) {
-                                if (ps.getGenders() == Gender.GENDER_BOTH) {
-                                    p.gender = Gender.GENDER_MALE;
-                                } else {
-                                    p.gender = ps.getGenders();
-                                }
-                            }
+                    // Set the species to the case-sensitive version
+                    p.species = ps.getName();
+
+                    // If the pokemon has no ability  put in a default one
+                    if (p.ability == null) {
+                        p.ability = ps.getAbilities()[0];
+                    }
+
+                    // If the pokemon has no gender put in a default one
+                    if (p.gender == null) {
+                        if (ps.getGenders() == Gender.GENDER_BOTH) {
+                            p.gender = Gender.GENDER_MALE;
+                        } else {
+                            p.gender = ps.getGenders();
                         }
                     }
                 }
