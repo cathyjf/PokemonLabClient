@@ -205,9 +205,20 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseMotionListe
     }
 
     public void addTab(String name, Component c, boolean closeable) {
-        super.addTab("", c);
-        this.setIconAt(this.getTabCount() - 1,
-                new CloseableTabIcon(this, name, getFontMetrics(getFont()), closeable));
+        insertTab(name, c, -1, closeable);
+    }
+
+    @Override
+    public Component add(Component c, int idx) {
+        insertTab(c.getName(), c, idx, true);
+        return c;
+    }
+
+    public void insertTab(String name, Component c, int index, boolean closeable) {
+        Icon icon = new CloseableTabIcon(
+                this, name, getFontMetrics(getFont()), closeable);
+        if (index == -1) index = this.getComponentCount();
+        super.insertTab("", icon, c, null, index);
     }
 
     // While setTitleAt works, getTitleAt doesn't. This is because Swing sucks.

@@ -470,7 +470,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         ChatPane c = (previous == null) ? new ChatPane(channel, this, m_name) :
                 previous.getChatPane();
         channel.setChatPane(c);
-
+        c.setName(name);
         if (channel.getType() == Channel.TYPE_BATTLE) {
             return;
         }
@@ -479,7 +479,16 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
                 + channel.getTopic()
                 + "</b>", false);
         if (previous == null) {
-            tabChats.add(name, c);
+            int idx = 0;
+            while (true) {
+                if (idx > tabChats.getComponentCount() ||
+                        !(tabChats.getComponentAt(idx) instanceof ChatPane)) {
+                    break;
+                }
+                idx++;
+            }
+            tabChats.add(c, idx);
+            tabChats.setSelectedComponent(c);
         }
         listUsers.setModel(channel.getModel());
     }
@@ -507,6 +516,18 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         return m_findPanel;
     }
 
+    private void openBattleTab() {
+        if (tabChats.indexOfComponent(m_battlePanel) == -1) {
+            tabChats.add("Battles", m_battlePanel);
+        }
+    }
+
+    private void openFindTab() {
+        if (tabChats.indexOfComponent(m_findPanel) == -1) {
+            tabChats.add("Find", m_findPanel);
+        }
+    }
+
     /** Creates new form LobbyWindow */
     public LobbyWindow(ServerLink link, String userName) {
         initComponents();
@@ -516,6 +537,9 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         m_findPanel = new FindPanel(m_link);
         m_adminPanel = new AdminPanel(m_link);
         m_name = userName;
+
+        openBattleTab();
+        openFindTab();
 
         listUsers.setCellRenderer(new UserCellRenderer());
 
@@ -1022,13 +1046,13 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
     }//GEN-LAST:event_mnuPreferencesActionPerformed
 
     private void mnuBattleListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuBattleListActionPerformed
-        tabChats.add("Battles", m_battlePanel);
+        openBattleTab();
         tabChats.setSelectedComponent(m_battlePanel);
         m_link.requestChannelList();
     }//GEN-LAST:event_mnuBattleListActionPerformed
 
     private void mnuFindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFindActionPerformed
-        tabChats.add("Find", m_findPanel);
+        openFindTab();
         tabChats.setSelectedComponent(m_findPanel);
     }//GEN-LAST:event_mnuFindActionPerformed
 
