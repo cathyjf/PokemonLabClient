@@ -420,8 +420,9 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
             if (e.isPopupTrigger()) {
                 //If the source is an HTMLPane then it is the chat
                 if (e.getSource().getClass().getSimpleName().equals("HTMLPane")) {
-                    new ChatPopupMenu(LobbyWindow.this, m_level)
-                            .show(e.getComponent(), e.getX(), e.getY());
+                    // This menu annoys me (Cathy), so I'm disabling it for now.
+                    //new ChatPopupMenu(LobbyWindow.this, m_level)
+                    //        .show(e.getComponent(), e.getX(), e.getY());
                 }
                 else {
                     int idx = listUsers.locationToIndex(e.getPoint());

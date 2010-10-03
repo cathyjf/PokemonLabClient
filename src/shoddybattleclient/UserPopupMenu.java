@@ -53,11 +53,11 @@ public class UserPopupMenu extends JPopupMenu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 m_lobby.getLink().sendBanMessage(
-                        m_lobby.getActiveChannel(), m_user.getName(), 0);
+                        m_lobby.getActiveChannel(), m_user.getName(), 0, false);
             }
 
         });
-        JMenuItem ban = new JMenuItem("Ban");
+        JMenuItem ban = new JMenuItem("Ban user from #main");
         ban.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -66,10 +66,36 @@ public class UserPopupMenu extends JPopupMenu {
                 long length = bd.getBanLength();
                 int channel = m_lobby.getActiveChannel();
                 if (length > 0) {
-                    m_lobby.getLink().sendBanMessage(channel, m_user.getName(), length);
+                    m_lobby.getLink().sendBanMessage(channel, m_user.getName(),
+                            length, false);
                 }
             }
-
+        });
+        JMenuItem gban = new JMenuItem("Ban user from server");
+        ban.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BanDialog bd = new BanDialog(m_user.getName());
+                bd.setVisible(true);
+                long length = bd.getBanLength();
+                if (length > 0) {
+                    m_lobby.getLink().sendBanMessage(-1, m_user.getName(),
+                            length, false);
+                }
+            }
+        });
+        JMenuItem ipban = new JMenuItem("Ban user's IP address");
+        ban.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BanDialog bd = new BanDialog(m_user.getName());
+                bd.setVisible(true);
+                long length = bd.getBanLength();
+                if (length > 0) {
+                    m_lobby.getLink().sendBanMessage(-1, m_user.getName(),
+                            length, true);
+                }
+            }
         });
         JMenuItem mute = new JMenuItem("Mute");
         mute.addActionListener(new ActionListener() {
@@ -144,6 +170,8 @@ public class UserPopupMenu extends JPopupMenu {
             this.addSeparator();
             this.add(kick);
             this.add(ban);
+            this.add(gban);
+            this.add(ipban);
             if (!m_user.hasMute()) {
                 this.add(mute);
             }

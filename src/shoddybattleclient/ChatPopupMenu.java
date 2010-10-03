@@ -37,7 +37,7 @@ public class ChatPopupMenu extends JPopupMenu {
     public ChatPopupMenu(LobbyWindow lobby, int level) {
         m_lobby = lobby;
         int active = m_lobby.getActiveChannel();
-        JMenuItem mute = new JMenuItem("Mute " + m_lobby.getChannelName(active));
+        JMenuItem mute = new JMenuItem("Moderate " + m_lobby.getChannelName(active));
         mute.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -45,7 +45,7 @@ public class ChatPopupMenu extends JPopupMenu {
             }
 
         });
-        JMenuItem unmute = new JMenuItem("Unmute " + m_lobby.getChannelName(active));
+        JMenuItem unmute = new JMenuItem("Unmoderate " + m_lobby.getChannelName(active));
         unmute.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -55,7 +55,7 @@ public class ChatPopupMenu extends JPopupMenu {
         });
         
         if (level > 1) {
-            //Check if channel is muted
+            //Check if channel is moderated
             if (!m_lobby.getChannel(active).isMuted()) {
                 this.add(mute);
             }

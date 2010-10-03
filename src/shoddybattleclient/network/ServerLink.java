@@ -445,12 +445,13 @@ public class ServerLink extends Thread {
     }
 
     public static class BanMessage extends OutMessage {
-        public BanMessage(int channel, String user, int date) {
+        public BanMessage(int channel, String user, int date, boolean ipBan) {
             super(14);
             try {
                 m_stream.writeInt(channel);
                 m_stream.writeUTF(user);
                 m_stream.writeInt(date);
+                m_stream.write(ipBan ? 1 : 0);
             } catch (Exception e) {
 
             }
@@ -1856,7 +1857,8 @@ public class ServerLink extends Thread {
         sendMessage(new CancelBattleAction(fid));
     }
 
-    public void sendBanMessage(int channel, String user, long length) {
+    public void sendBanMessage(int channel, String user, long length,
+            boolean ipBan) {
         int date;
         if (length == 0) {
             date = 0;
@@ -1868,7 +1870,7 @@ public class ServerLink extends Thread {
             else if (d < Integer.MIN_VALUE) d = Integer.MIN_VALUE;
             date = (int)d;
         }
-        sendMessage(new BanMessage(channel, user, date));
+        sendMessage(new BanMessage(channel, user, date, ipBan));
     }
 
     public void requestUserLookup(String user) {
