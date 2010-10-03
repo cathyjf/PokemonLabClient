@@ -31,6 +31,8 @@ import java.net.UnknownHostException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -72,6 +74,9 @@ public class WelcomeWindow extends javax.swing.JFrame {
         public int getPort() {
             return m_port;
         }
+        public void setUsers(int users) {
+            m_users = users;
+        }
         public int getUsers() {
             return m_users;
         }
@@ -87,20 +92,57 @@ public class WelcomeWindow extends javax.swing.JFrame {
         }
     }
 
-    /** Creates new form WelcomeWindow */
-    public WelcomeWindow() {
-        initComponents();
+    private ServerListEntry[] getServerListEntries() {
+        /**
+         * TODO: In the future, this will obtain the list of servers from a
+         *       metaserver of some sort rather than being hardcoded.
+         */
+
         ServerListEntry sle = new ServerListEntry("Poke Lab Beta",
                 "Beta hosted on the Smogon server", "smogon.com",
-                8446, 0, 250);
+                8446, 0, 500);
         /**ServerListEntry sle3 = new ServerListEntry("Pokemonexperte",
                 "A german server.", "shoddy.pokemonexperte.com",
                 1234, 5, 250);
         ServerListEntry sle4 = new ServerListEntry("Local Server",
                 "This is only for testing", "localhost",
-                8446, 221, 250);**/
-        lstServers.setModel(new ServerListModel(new ServerListEntry[] { sle }));
+                9000, 0, 250);**/
+
+        return new ServerListEntry[] { sle /**, sle4 **/ };
+    }
+
+    private void refreshServerList() {
+        ServerListEntry[] entries = getServerListEntries();
+
+        ServerListEntry selected =
+                (ServerListEntry)lstServers.getSelectedValue();
+        ServerListEntry jump = null;
+        if (selected != null) {
+            for (ServerListEntry i : entries) {
+                if (i.getName().equals(selected.getName())) {
+                    jump = i;
+                    break;
+                }
+            }
+        }
+
+        lstServers.setModel(new ServerListModel(entries, new Runnable() {
+                    @Override
+                    public void run() {
+                        lstServers.repaint();
+                    }
+                }));
         lstServers.setCellRenderer(new ServerListRenderer());
+        if (jump != null) {
+            lstServers.setSelectedValue(jump, true);
+        }
+        lstServers.repaint();
+    }
+
+    /** Creates new form WelcomeWindow */
+    public WelcomeWindow() {
+        initComponents();
+        refreshServerList();
     }
 
     public static boolean connect(String host, int port) {
@@ -173,6 +215,11 @@ public class WelcomeWindow extends javax.swing.JFrame {
         });
 
         btnRefresh.setText("Refresh");
+        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshActionPerformed(evt);
+            }
+        });
 
         jMenu1.setText("File");
 
@@ -208,7 +255,7 @@ public class WelcomeWindow extends javax.swing.JFrame {
                         .add(btnConnect)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(btnAdvanced)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 131, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 223, Short.MAX_VALUE)
                         .add(btnRefresh)))
                 .addContainerGap())
         );
@@ -266,6 +313,10 @@ public class WelcomeWindow extends javax.swing.JFrame {
         Object selection = lstServers.getSelectedValue();
         btnConnect.setEnabled(selection != null);
     }//GEN-LAST:event_lstServersValueChanged
+
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+        refreshServerList();
+    }//GEN-LAST:event_btnRefreshActionPerformed
 
     /**
     * Main entry point for Shoddy Battle 2

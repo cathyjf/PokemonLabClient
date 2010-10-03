@@ -30,6 +30,7 @@ import java.util.List;
 import javax.swing.ListModel;
 import javax.swing.event.ListDataListener;
 import shoddybattleclient.WelcomeWindow.ServerListEntry;
+import shoddybattleclient.network.Metaserver;
 
 
 /**
@@ -41,11 +42,14 @@ public class ServerListModel implements ListModel {
     private List<ServerListEntry> m_entries = new ArrayList<ServerListEntry>();
     private List<ListDataListener> m_listeners = new ArrayList<ListDataListener>();
 
-    public ServerListModel(ServerListEntry[] entries) {
+    public ServerListModel(ServerListEntry[] entries, Runnable informUpdate) {
         for (int i = 0; i < entries.length; i++) {
-            m_entries.add(entries[i]);
+            ServerListEntry e = entries[i];
+            m_entries.add(e);
+            Metaserver.queryServer(e.getHost(), e.getPort(), e, informUpdate);
         }
         Collections.sort(m_entries, new Comparator<ServerListEntry>() {
+            @Override
             public int compare(ServerListEntry o1, ServerListEntry o2) {
                 if (o1.getUsers() < o2.getUsers()) {
                     return 1;
@@ -57,10 +61,12 @@ public class ServerListModel implements ListModel {
         });
     }
 
+    @Override
     public int getSize() {
         return m_entries.size();
     }
 
+    @Override
     public ServerListEntry getElementAt(int index) {
         try {
             return m_entries.get(index);
@@ -69,10 +75,12 @@ public class ServerListModel implements ListModel {
         }
     }
 
+    @Override
     public void addListDataListener(ListDataListener l) {
         m_listeners.add(l);
     }
 
+    @Override
     public void removeListDataListener(ListDataListener l) {
         m_listeners.remove(l);
     }
