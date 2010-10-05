@@ -44,7 +44,8 @@ public class SpriteDownloader extends SwingWorker<Void, Integer> {
     public enum SpriteLink {
         NA ("N/A", ""),
         DP ("DP", "http://shoddybattle.com/sprites/dp.tar.bz2"),
-        PLATINUM ("Platinum", "http://shoddybattle.com/sprites/platinum.tar.bz2");
+        PLATINUM ("Platinum", "http://shoddybattle.com/sprites/platinum.tar.bz2"),
+        BW ("Black/White", "http://shoddybattle.com/sprites/bw.tar.bz2");
         private String m_str;
         private String m_url;
         SpriteLink(String str, String url) {
