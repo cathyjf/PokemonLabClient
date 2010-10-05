@@ -52,6 +52,22 @@ public class Preference {
     private static final String TEAM_DIR = "teamDir";
     private static final String PREVIOUS_HOST = "advancedPreviousHost";
     private static final String PREVIOUS_PORT = "advancedPreviousPort";
+    private static final String REMEMBER_USER_NAME = "_userName";
+    private static final String REMEMBER_PASSWORD = "_password";
+
+    public static void setRememberMe(String server, String user,
+            String password) {
+        m_prefs.put(server + REMEMBER_USER_NAME, user);
+        m_prefs.put(server + REMEMBER_PASSWORD, password);
+    }
+
+    public static String getRememberMeUserName(String server) {
+        return m_prefs.get(server + REMEMBER_USER_NAME, null);
+    }
+
+    public static String getRememberMePassword(String server) {
+        return m_prefs.get(server + REMEMBER_PASSWORD, null);
+    }
 
     public static void setStorageLocation(String loc) {
         m_prefs.put(STORAGE_LOCATION, loc);

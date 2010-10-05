@@ -29,8 +29,8 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="jScrollPane1" alignment="0" pref="332" max="32767" attributes="0"/>
                   <Component id="tabbedPane" alignment="0" pref="332" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" alignment="0" pref="332" max="32767" attributes="0"/>
                   <Component id="lblName" alignment="1" pref="332" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -42,7 +42,7 @@
           <Group type="102" alignment="0" attributes="0">
               <Component id="lblName" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="201" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" pref="213" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="tabbedPane" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -107,8 +107,9 @@
                                   <Component id="txtLoginPassword" alignment="1" pref="217" max="32767" attributes="1"/>
                               </Group>
                           </Group>
-                          <Component id="cmdLogIn" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="txtLoginInfo" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="chkRememberMe" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="cmdLogIn" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -125,15 +126,15 @@
                           <Component id="txtLoginName" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="cmdLogIn" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Component id="txtLoginPassword" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="txtLoginPassword" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="chkRememberMe" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="cmdLogIn" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -171,6 +172,14 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Enter your user name and password to login."/>
               </Properties>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="chkRememberMe">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Remember me?"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkRememberMeActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -234,7 +243,7 @@
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="cmdRegister" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace pref="27" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -303,7 +312,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="txtRegisterInfo" pref="134" max="32767" attributes="0"/>
+                      <Component id="txtRegisterInfo" pref="149" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>

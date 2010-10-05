@@ -1707,6 +1707,8 @@ public class ServerLink extends Thread {
 
     private BlockingQueue<OutMessage> m_queue =
             new LinkedBlockingQueue<OutMessage>();
+    private String m_host;
+    private int m_port;
     private Socket m_socket;
     private DataInputStream m_input;
     private DataOutputStream m_output;
@@ -1751,11 +1753,25 @@ public class ServerLink extends Thread {
 
     public ServerLink(String host, int port)
             throws IOException, UnknownHostException {
+        m_host = host;
+        m_port = port;
         m_socket = new Socket();
         m_socket.bind(null);
         m_socket.connect(new InetSocketAddress(host, port), 5000);
         m_input = new DataInputStream(m_socket.getInputStream());
         m_output = new DataOutputStream(m_socket.getOutputStream());
+    }
+
+    public String getHost() {
+        return m_host;
+    }
+
+    public int getPort() {
+        return m_port;
+    }
+
+    public String getHostPort() {
+        return m_host + ":" + m_port;
     }
 
     public BattleWindow getBattle(int id) {

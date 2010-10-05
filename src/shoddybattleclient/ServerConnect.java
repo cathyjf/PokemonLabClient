@@ -51,6 +51,14 @@ public class ServerConnect extends javax.swing.JFrame {
         initComponents();
         m_link = link;
         lblName.setText(name);
+        String server = link.getHostPort();
+        String userName = Preference.getRememberMeUserName(server);
+        String password = Preference.getRememberMePassword(server);
+        txtLoginName.setText(userName);
+        txtLoginPassword.setText(password);
+        if ((userName != null) && (userName.length() > 0)) {
+            chkRememberMe.setSelected(true);
+        }
         txtLoginName.requestFocus();
         setHtmlMessage(txtWelcome, message);
         txtLoginInfo.setText(loginMessage);
@@ -109,6 +117,7 @@ public class ServerConnect extends javax.swing.JFrame {
         cmdLogIn = new javax.swing.JButton();
         txtLoginPassword = new javax.swing.JPasswordField();
         txtLoginInfo = new javax.swing.JLabel();
+        chkRememberMe = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -163,6 +172,13 @@ public class ServerConnect extends javax.swing.JFrame {
 
         txtLoginInfo.setText("Enter your user name and password to login.");
 
+        chkRememberMe.setText("Remember me?");
+        chkRememberMe.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkRememberMeActionPerformed(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -178,8 +194,9 @@ public class ServerConnect extends javax.swing.JFrame {
                         .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                             .add(txtLoginName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
                             .add(txtLoginPassword, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)))
-                    .add(cmdLogIn)
-                    .add(txtLoginInfo))
+                    .add(txtLoginInfo)
+                    .add(chkRememberMe)
+                    .add(cmdLogIn))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -192,13 +209,14 @@ public class ServerConnect extends javax.swing.JFrame {
                     .add(jLabel2)
                     .add(txtLoginName, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel1Layout.createSequentialGroup()
-                        .add(jLabel3)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                        .add(cmdLogIn))
-                    .add(txtLoginPassword, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(22, 22, 22))
+                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(txtLoginPassword, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jLabel3))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(chkRememberMe)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(cmdLogIn)
+                .add(16, 16, 16))
         );
 
         tabbedPane.addTab("Log In", jPanel1);
@@ -274,7 +292,7 @@ public class ServerConnect extends javax.swing.JFrame {
                     .add(jLabel1))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(cmdRegister)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Register", jPanel2);
@@ -295,7 +313,7 @@ public class ServerConnect extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(txtRegisterInfo, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
+                .add(txtRegisterInfo, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -308,8 +326,8 @@ public class ServerConnect extends javax.swing.JFrame {
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, tabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
                     .add(lblName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -318,7 +336,7 @@ public class ServerConnect extends javax.swing.JFrame {
             .add(layout.createSequentialGroup()
                 .add(lblName)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(tabbedPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -338,6 +356,12 @@ public class ServerConnect extends javax.swing.JFrame {
         // todo: collapse whitespace?
         String password = new String(txtLoginPassword.getPassword()).trim();
         m_link.attemptAuthentication(user, password);
+        String server = m_link.getHostPort();
+        if (chkRememberMe.isSelected()) {
+            Preference.setRememberMe(server, user, password);
+        } else {
+            Preference.setRememberMe(server, "", "");
+        }
 }//GEN-LAST:event_cmdLogInActionPerformed
 
     public void informSuccessfulLogin() {
@@ -447,6 +471,10 @@ public class ServerConnect extends javax.swing.JFrame {
         txtRegisterNameKeyPressed(evt);
     }//GEN-LAST:event_txtRegisterConfirmKeyPressed
 
+    private void chkRememberMeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkRememberMeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_chkRememberMeActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -455,6 +483,7 @@ public class ServerConnect extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox chkRememberMe;
     private javax.swing.JButton cmdLogIn;
     private javax.swing.JButton cmdRegister;
     private javax.swing.JLabel jLabel1;
