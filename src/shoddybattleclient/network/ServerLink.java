@@ -514,6 +514,18 @@ public class ServerLink extends Thread {
         }
     }
 
+    public static class PrivateMessage extends OutMessage {
+        public PrivateMessage(String target, String message) {
+            super(21);
+            try {
+                m_stream.writeUTF(target);
+                m_stream.writeUTF(message);
+            } catch (Exception e) {
+
+            }
+        }
+    }
+
     public static abstract class MessageHandler {
         /**
          * Handle a message from the server by reading values from the
@@ -1676,6 +1688,25 @@ public class ServerLink extends Thread {
                 }
             });
 
+            // PRIVATE_MESSAGE
+            new ServerMessage(34, new MessageHandler() {
+                // string : user
+                // string : sender
+                // string : message
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException{
+                    String user = is.readUTF();
+                    String sender = is.readUTF();
+                    String message = is.readUTF();
+                    if (sender.length() > 0) {
+                        link.m_lobby.handlePrivateMessage(user, sender,
+                                message);
+                    } else {
+                        link.m_lobby.handleInvalidPrivateMessage(user);
+                    }
+                }
+            });
+
             // add additional messages here
         }
 
@@ -1890,8 +1921,7 @@ public class ServerLink extends Thread {
     }
 
     public void sendPrivateMessage(String user, String message) {
-        // TODO: Implement this correctly
-        m_lobby.handlePrivateMessage(user, m_name, message);
+        sendMessage(new PrivateMessage(user, message));
     }
     
     public void requestUserLookup(String user) {

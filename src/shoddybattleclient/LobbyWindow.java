@@ -779,7 +779,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
             return null;
         }
 
-        String name = "PM: [" + user + "]";
+        String name = "PM: " + user;
         Channel channel = m_privateMessages.get(user);
         if (channel == null) {
             channel = new Channel(-2, Channel.TYPE_PRIVATE_MESSAGE, user,
@@ -804,6 +804,13 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         }
 
         return channel;
+    }
+
+    public void handleInvalidPrivateMessage(String user) {
+        Channel chat = openPrivateMessage(user, false);
+        String msg = user + " is not online.";
+        msg = Text.addClass(msg, "important");
+        chat.getChatPane().addMessage(null, msg, false);
     }
 
     public void handlePrivateMessage(String user, String sender,
