@@ -22,6 +22,8 @@ package shoddybattleclient.utils;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.*;
+import shoddybattleclient.network.ServerLink;
+import shoddybattleclient.network.ServerLink.Metagame;
 import shoddybattleclient.utils.SortableJTable.SortableTableModel;
 
 public class BattleTableModel extends AbstractTableModel implements SortableTableModel {
@@ -29,14 +31,17 @@ public class BattleTableModel extends AbstractTableModel implements SortableTabl
     private class TableRow {
         private Integer m_id;
         private Integer m_ladder;
+        private Boolean m_rated;
         private String m_user1;
         private String m_user2;
         private Integer m_pop;
         private Integer m_n;
 
-        public TableRow(int id, int ladder, String u1, String u2, int n, int pop) {
+        public TableRow(int id, int ladder, boolean rated, String u1,
+                String u2, int n, int pop) {
             m_id = id;
             m_ladder = ladder;
+            m_rated = rated;
             m_user1 = u1;
             m_user2 = u2;
             m_pop = pop;
@@ -44,9 +49,15 @@ public class BattleTableModel extends AbstractTableModel implements SortableTabl
         }
     }
 
+    private ServerLink m_link;
     private List<TableRow> m_rows = new ArrayList<TableRow>();
 
-    private static final String[] HEADERS = {"Players", "Ladder", "N", "Pop."};
+    private static final String[] HEADERS = { "Players", "Metagame", "Rated?",
+            "N", "Population" };
+
+    public BattleTableModel(ServerLink link) {
+        m_link = link;
+    }
 
     @Override
     public String getColumnName(int col) {
@@ -67,11 +78,13 @@ public class BattleTableModel extends AbstractTableModel implements SortableTabl
             case 0:
                 return row.m_user1 + " v. " + row.m_user2;
             case 1:
-                //todo: ladder names from server
-                return row.m_ladder;
+                Metagame[] metagames = m_link.getMetagames();
+                return metagames[row.m_ladder].getName();
             case 2:
-                return row.m_n;
+                return row.m_rated;
             case 3:
+                return row.m_n;
+            case 4:
                 return row.m_pop;
         }
         assert false;
@@ -83,8 +96,9 @@ public class BattleTableModel extends AbstractTableModel implements SortableTabl
         return false;
     }
 
-    public void addBattle(int id, int ladder, String u1, String u2, int n, int pop) {
-        m_rows.add(new TableRow(id, ladder, u1, u2, n, pop));
+    public void addBattle(int id, int ladder, boolean rated, String u1,
+            String u2, int n, int pop) {
+        m_rows.add(new TableRow(id, ladder, rated, u1, u2, n, pop));
         fireTableDataChanged();
     }
 

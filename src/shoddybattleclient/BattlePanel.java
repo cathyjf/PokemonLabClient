@@ -40,16 +40,18 @@ public class BattlePanel extends javax.swing.JPanel {
         public String[] players;
         public int generation;
         public int n;
+        public boolean rated;
         public int ladder;
         public int population;
     }
 
-    private BattleTableModel m_model = new BattleTableModel();
+    private BattleTableModel m_model;
     private ServerLink m_link;
     private Battle[] m_battles;
 
     /** Creates new form BattlePanel */
     public BattlePanel(ServerLink link) {
+        m_model = new BattleTableModel(link);
         initComponents();
         m_link = link;
 
@@ -62,7 +64,7 @@ public class BattlePanel extends javax.swing.JPanel {
     }
     
     private void updateBattleTable() {
-        m_model = new BattleTableModel();
+        m_model = new BattleTableModel(m_link);
 
         String filter = txtPlayerFilter.getText().trim().toUpperCase();
         Battle[] battles = m_battles;
@@ -82,7 +84,7 @@ public class BattlePanel extends javax.swing.JPanel {
         
         for (Battle battle : battles) {
             // NOTE: 'generation' is unused for now.
-            m_model.addBattle(battle.id, battle.ladder,
+            m_model.addBattle(battle.id, battle.ladder, battle.rated,
                     battle.players[0], battle.players[1],
                     battle.n, battle.population);
         }

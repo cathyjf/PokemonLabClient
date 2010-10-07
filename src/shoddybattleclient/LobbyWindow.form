@@ -37,14 +37,11 @@
             </MenuItem>
             <MenuItem class="javax.swing.JSeparator" name="jSeparator3">
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="mnuJoinMain">
+            <Menu class="javax.swing.JMenu" name="mnuJoinChannel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Join #main"/>
+                <Property name="text" type="java.lang.String" value="Join Channel"/>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuJoinMainActionPerformed"/>
-              </Events>
-            </MenuItem>
+            </Menu>
             <MenuItem class="javax.swing.JMenuItem" name="mnuBattleList">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Battle List"/>

@@ -749,6 +749,8 @@ public class ServerLink extends Thread {
                     List<BattlePanel.Battle> battles =
                             new ArrayList<BattlePanel.Battle>();
 
+                    List<String> chatChannel = new ArrayList<String>();
+
                     int count = is.readInt();
                     for (int i = 0; i < count; ++i) {
                         String name = is.readUTF();
@@ -768,8 +770,14 @@ public class ServerLink extends Thread {
                             battle.generation =
                                     Integer.valueOf(parts[2]).intValue();
                             battle.n = Integer.valueOf(parts[3]).intValue();
-                            // TODO: ladder
+                            battle.ladder = Integer.valueOf(
+                                    parts[5]).intValue();
+                            battle.rated = (Integer.valueOf(
+                                    parts[6]).intValue() != 0);
                             battles.add(battle);
+                        } else {
+                            // It's a chat channel.
+                            chatChannel.add(name);
                         }
                     }
 
@@ -777,6 +785,9 @@ public class ServerLink extends Thread {
                             (BattlePanel.Battle[])battles.toArray(
                                     new BattlePanel.Battle[battles.size()]);
                     link.m_lobby.getBattlePanel().setBattles(arr);
+                    String[] chats = (String[])chatChannel.toArray(
+                                new String[chatChannel.size()]);
+                    link.m_lobby.setChatChannels(chats);
                 }
             });
 
@@ -2128,8 +2139,8 @@ public class ServerLink extends Thread {
     }
 
     public static void main(String[] args) throws Exception {
-        ServerLink link = new ServerLink("localhost", 8446);
-        link.attemptAuthentication("Catherine", "test");
+        ServerLink link = new ServerLink("localhost", 9000);
+        link.attemptAuthentication("test", "test");
         link.run(); // block
     }
 

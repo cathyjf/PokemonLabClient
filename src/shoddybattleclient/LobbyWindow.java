@@ -26,6 +26,8 @@ package shoddybattleclient;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -448,6 +450,20 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
     //The most recent channel that was focused
     private Channel m_recentChannel = null;
     final private PopupListener m_popupListener = new PopupListener();
+
+    public void setChatChannels(String[] chats) {
+        mnuJoinChannel.removeAll();
+        for (final String i : chats) {
+            JMenuItem item = new JMenuItem("#" + i);
+            item.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    m_link.joinChannel(i);
+                }
+            });
+            mnuJoinChannel.add(item);
+        }
+    }
 
     public BattlePanel getBattlePanel() {
         return m_battlePanel;
@@ -927,7 +943,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         jMenu3 = new javax.swing.JMenu();
         mnuTeamBuilder = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JSeparator();
-        mnuJoinMain = new javax.swing.JMenuItem();
+        mnuJoinChannel = new javax.swing.JMenu();
         mnuBattleList = new javax.swing.JMenuItem();
         mnuFind = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JSeparator();
@@ -975,13 +991,8 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         jMenu3.add(mnuTeamBuilder);
         jMenu3.add(jSeparator3);
 
-        mnuJoinMain.setText("Join #main");
-        mnuJoinMain.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuJoinMainActionPerformed(evt);
-            }
-        });
-        jMenu3.add(mnuJoinMain);
+        mnuJoinChannel.setText("Join Channel");
+        jMenu3.add(mnuJoinChannel);
 
         mnuBattleList.setText("Battle List");
         mnuBattleList.addActionListener(new java.awt.event.ActionListener() {
@@ -1110,10 +1121,6 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         formWindowClosing(null);
     }//GEN-LAST:event_mnuLeaveServerActionPerformed
 
-    private void mnuJoinMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuJoinMainActionPerformed
-        m_link.joinChannel("main");
-    }//GEN-LAST:event_mnuJoinMainActionPerformed
-
     private void mnuPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuPreferencesActionPerformed
         new PreferencePane().setVisible(true);
     }//GEN-LAST:event_mnuPreferencesActionPerformed
@@ -1173,7 +1180,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
     private javax.swing.JList listUsers;
     private javax.swing.JMenuItem mnuBattleList;
     private javax.swing.JMenuItem mnuFind;
-    private javax.swing.JMenuItem mnuJoinMain;
+    private javax.swing.JMenu mnuJoinChannel;
     private javax.swing.JMenuItem mnuLeaveServer;
     private javax.swing.JMenuItem mnuPersonalMessage;
     private javax.swing.JMenuItem mnuPreferences;
