@@ -31,7 +31,7 @@ public class BattleTableModel extends AbstractTableModel implements SortableTabl
     private class TableRow {
         private Integer m_id;
         private Integer m_ladder;
-        private Boolean m_rated;
+        private boolean m_rated;
         private String m_user1;
         private String m_user2;
         private Integer m_pop;
@@ -78,10 +78,13 @@ public class BattleTableModel extends AbstractTableModel implements SortableTabl
             case 0:
                 return row.m_user1 + " v. " + row.m_user2;
             case 1:
-                Metagame[] metagames = m_link.getMetagames();
-                return metagames[row.m_ladder].getName();
+                if (row.m_ladder != -1) {
+                    Metagame[] metagames = m_link.getMetagames();
+                    return metagames[row.m_ladder].getName();
+                }
+                return "(Custom)";
             case 2:
-                return row.m_rated;
+                return row.m_rated ? "Yes" : "No";
             case 3:
                 return row.m_n;
             case 4:
