@@ -1555,14 +1555,14 @@ public class ServerLink extends Thread {
                         link.getLobby().informBadLookup();
                     } else {
                         String ip = is.readUTF();
-                        byte acount = is.readByte();
+                        int acount = is.read();
                         List<String> aliases = new ArrayList<String>();
-                        for (byte i = 0; i < acount; i++) {
+                        for (int i = 0; i < acount; i++) {
                             aliases.add(is.readUTF());
                         }
-                        byte bcount = is.readByte();
+                        int bcount = is.read();
                         List<BanElement> bans = new ArrayList<BanElement>();
-                        for (byte i = 0; i < bcount; i++) {
+                        for (int i = 0; i < bcount; i++) {
                             int channel = is.readInt();
                             String name = is.readUTF();
                             int expiry = is.readInt();
