@@ -69,8 +69,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
 
         public static final int TYPE_ORDINARY = 0;
         public static final int TYPE_BATTLE = 1;
-
-        
+        public static final int TYPE_PRIVATE_MESSAGE = 2;
 
         public static final SimpleDateFormat DATE_FORMATTER =
                 new SimpleDateFormat("dd/MM/yyyy kk:mm:ss");
@@ -439,7 +438,10 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
     private String m_name;
     private ServerLink m_link;
     private Map<Integer, Channel> m_channels = new HashMap<Integer, Channel>();
-    private Map<String, UserPanel>  m_userPanels = new HashMap<String, UserPanel>();
+    private Map<String, UserPanel>  m_userPanels =
+            new HashMap<String, UserPanel>();
+    private Map<String, Channel> m_privateMessages =
+            new HashMap<String, Channel>();
     final private BattlePanel m_battlePanel;
     final private FindPanel m_findPanel;
     final private AdminPanel m_adminPanel;
@@ -505,6 +507,14 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
                 channel.addUser(user, 0);
             } else {
                 channel.removeUser(user);
+
+                // If there are any open pms, send a "client left" message
+                Channel pm = m_privateMessages.get(user);
+                if (pm != null) {
+                    String msg = user + " has disconnected";
+                    msg = Text.addClass(msg, "important");
+                    pm.getChatPane().addMessage(null, msg, false);
+                }
             }
         }
         if (channel.getType() == Channel.TYPE_BATTLE) {
@@ -755,6 +765,61 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
             Channel c = m_channels.get(id);
             if (c != null) c.informBan(mod, user, date);
         }
+    }
+
+    public Channel openPrivateMessage(String user, boolean select) {
+        if (user.equals(m_name)) {
+            return null;
+        }
+        if (Preference.ignoring(user)) {
+            // Sending messages to ignored users but not getting any replies
+            // may be perceived as a bug.
+            JOptionPane.showMessageDialog(this, "This user is ignored",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+
+        String name = "PM: [" + user + "]";
+        Channel channel = m_privateMessages.get(user);
+        if (channel == null) {
+            channel = new Channel(-2, Channel.TYPE_PRIVATE_MESSAGE, user,
+                    "", 0);
+            ChatPane chat = new ChatPane(channel, this, m_name);
+            channel.setChatPane(chat);
+            
+            channel.addUser(user, 0);
+            channel.addUser(m_name, 0);
+
+            m_privateMessages.put(user, channel);
+            tabChats.add(name, chat);
+        }
+
+        if (select) {
+            tabChats.setSelectedComponent(channel.getChatPane());
+        } else {
+            if (tabChats.getSelectedComponent() != channel.getChatPane()) {
+                ((CloseableTabbedPane)tabChats).setFlashingAt(
+                    tabChats.indexOfComponent(channel.getChatPane()), true);
+            }
+        }
+
+        return channel;
+    }
+
+    public void handlePrivateMessage(String user, String sender,
+            String message) {
+        if (Preference.ignoring(user)) {
+            return;
+        }
+        
+        Channel chat = openPrivateMessage(user, false);
+
+        User u = chat.getUser(sender);
+        chat.getChatPane().addMessage(Channel.getUserHtml(u), message, true);
+    }
+
+    public void closePrivateMessage(String user) {
+        m_privateMessages.remove(user);
     }
 
     public void informBadLookup() {

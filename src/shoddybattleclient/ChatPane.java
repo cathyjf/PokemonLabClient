@@ -188,6 +188,9 @@ public class ChatPane extends javax.swing.JPanel implements CloseableTab {
         } else if ("lookup".equals(command)) {
             String user = args.trim();
             m_lobby.getLink().requestUserLookup(user);
+        } else if ("msg".equals(command)) {
+            String user = args.trim();
+            m_lobby.openPrivateMessage(user, true);
         }
     }
 
@@ -322,7 +325,11 @@ public class ChatPane extends javax.swing.JPanel implements CloseableTab {
             return;
         }
 
-        m_lobby.getLink().sendChannelMessage(m_channel.getId(), message);
+        if (m_channel.getType() == Channel.TYPE_PRIVATE_MESSAGE) {
+            m_lobby.getLink().sendPrivateMessage(m_channel.getName(), message);
+        } else {
+            m_lobby.getLink().sendChannelMessage(m_channel.getId(), message);
+        }
     }
 
     public JScrollPane getPane() {
@@ -335,7 +342,11 @@ public class ChatPane extends javax.swing.JPanel implements CloseableTab {
 
     @Override
     public boolean informClosed() {
-        m_lobby.getLink().partChannel(m_channel.getId());
+        if (m_channel.getType() == Channel.TYPE_PRIVATE_MESSAGE) {
+            m_lobby.closePrivateMessage(m_channel.getName());
+        } else {
+            m_lobby.getLink().partChannel(m_channel.getId());
+        }
         return true;
     }
 

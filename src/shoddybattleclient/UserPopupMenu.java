@@ -47,6 +47,15 @@ public class UserPopupMenu extends JPopupMenu {
             }
 
         });
+
+        JMenuItem message = new JMenuItem("Message");
+        message.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                m_lobby.openPrivateMessage(m_user.getName(), true);
+            }
+        });
+
         /***JMenuItem bat = new JMenuItem("View Battle");**/
         JMenuItem kick = new JMenuItem("Kick");
         kick.addActionListener(new ActionListener() {
@@ -163,6 +172,7 @@ public class UserPopupMenu extends JPopupMenu {
         });
         
         this.add(chal);
+        this.add(message);
         //todo: decide what to do about battles
         //this.add(bat);
         //change this to enable moderator functions for unauthorized users

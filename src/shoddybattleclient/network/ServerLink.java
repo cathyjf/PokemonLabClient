@@ -1889,6 +1889,11 @@ public class ServerLink extends Thread {
         sendMessage(new BanMessage(channel, user, date, ipBan));
     }
 
+    public void sendPrivateMessage(String user, String message) {
+        // TODO: Implement this correctly
+        m_lobby.handlePrivateMessage(user, m_name, message);
+    }
+    
     public void requestUserLookup(String user) {
         sendMessage(new UserDetailMessage(user));
     }
