@@ -150,8 +150,9 @@ public class TeamFileParser extends DefaultHandler {
         SAXParserFactory spf = SAXParserFactory.newInstance();
         Pokemon[] ret;
         try {
+            FileInputStream stream = new FileInputStream(file);
             SAXParser sp = spf.newSAXParser();
-            sp.parse(file, this);
+            sp.parse(stream, this);
         } catch (Exception e) {
             ret = null;
         }
