@@ -523,14 +523,6 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
                 channel.addUser(user, 0);
             } else {
                 channel.removeUser(user);
-
-                // If there are any open pms, send a "client left" message
-                Channel pm = m_privateMessages.get(user);
-                if (pm != null) {
-                    String msg = user + " has disconnected";
-                    msg = Text.addClass(msg, "important");
-                    pm.getChatPane().addMessage(null, msg, false);
-                }
             }
         }
         if (channel.getType() == Channel.TYPE_BATTLE) {
