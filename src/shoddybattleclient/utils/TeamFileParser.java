@@ -23,6 +23,7 @@
 package shoddybattleclient.utils;
 
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -150,9 +151,8 @@ public class TeamFileParser extends DefaultHandler {
         SAXParserFactory spf = SAXParserFactory.newInstance();
         Pokemon[] ret;
         try {
-            FileInputStream stream = new FileInputStream(file);
             SAXParser sp = spf.newSAXParser();
-            sp.parse(stream, this);
+            sp.parse(new File(file), this);
         } catch (Exception e) {
             ret = null;
         }
