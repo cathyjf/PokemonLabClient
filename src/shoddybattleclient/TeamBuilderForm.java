@@ -330,6 +330,11 @@ public class TeamBuilderForm extends javax.swing.JPanel {
     public void setPokemon(Pokemon p, boolean loading) {
         m_pokemon = p;
         m_species = m_parent.getSpecies(p.species);
+
+        // Changing the gender/abilities/items will cause an unwanted
+        // side effect if the there are any selected moves.
+        ((SelectedMoveModel)tblSelected.getModel()).clear();
+
         Gender g = m_species.getGenders();
         if (g.equals(Gender.GENDER_MALE)) {
             cmbGender.setModel(new DefaultComboBoxModel(new Gender[] {Gender.GENDER_MALE}));
@@ -377,7 +382,6 @@ public class TeamBuilderForm extends javax.swing.JPanel {
             }
         }
         
-        ((SelectedMoveModel)tblSelected.getModel()).clear();
         MoveTableModel mtm = new MoveTableModel(m_generation.getMoves(),
                 m_species.getMoves(), this);
         mtm.selectMoves(p.moves, p.ppUps);
