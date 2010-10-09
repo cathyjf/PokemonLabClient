@@ -120,8 +120,12 @@ public class BattleTableModel extends AbstractTableModel implements SortableTabl
                     case 1:
                         return t1.m_ladder.compareTo(t2.m_ladder);
                     case 2:
-                        return t1.m_n.compareTo(t2.m_n);
+                        boolean r1 = t1.m_rated;
+                        boolean r2 = t2.m_rated;
+                        return r1 ? (r2 ? 0 : 1) : (r2 ? -1 : 0);
                     case 3:
+                        return t1.m_n.compareTo(t2.m_n);
+                    case 4:
                         return t1.m_pop.compareTo(t2.m_pop);
                 }
                 assert false;
