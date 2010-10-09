@@ -642,7 +642,8 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         if (party == -1) {
             msg = "It's a draw!";
         } else {
-            msg = Text.formatTrainer(m_users[party], m_participant, party) + " wins!";
+            msg = Text.formatTrainer(m_users[party], m_participant, party)
+                    + " wins!";
         }
         msg = Text.addClass(msg, "victory");
         addMessage(null, msg, false);
@@ -718,7 +719,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
 
     /**
      * Switches the move panel to show targets
-     * @param mode Some constant representing the kind of targeting this move has
+     * @param mode A constant representing the kind of targeting this move has
      */
     private void showTargets(TargetClass mode) {
         m_targeting = true;

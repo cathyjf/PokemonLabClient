@@ -292,6 +292,9 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
             m_level = level;
         }
         public int getLevel() {
+            if (m_pokemon != null) {
+                return m_pokemon.level;
+            }
             return m_level;
         }
         public String getItem() {
