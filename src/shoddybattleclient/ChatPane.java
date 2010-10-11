@@ -104,6 +104,7 @@ public class ChatPane extends javax.swing.JPanel implements CloseableTab {
 
     private void initLogging() {
         if (m_channel.getType() == Channel.TYPE_BATTLE) return;
+        if (!m_logging) return;
         File dir = getLogDir();
         dir.mkdirs();
         File f = new File(dir, m_channel.getName() + ".txt");
