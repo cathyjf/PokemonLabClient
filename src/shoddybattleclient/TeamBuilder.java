@@ -94,14 +94,19 @@ public class TeamBuilder extends javax.swing.JFrame {
             addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
                     m_front = !m_front;
-                    setSpecies(m_species, m_shiny, m_front);
+                    setFront(m_front);
                 }
             });
         }
-        public void setSpecies(int species, boolean shiny, boolean front) {
+
+        public void setFront(boolean front) {
+            m_front = front;
+            setSpecies(m_species, m_shiny);
+        }
+
+        public void setSpecies(int species, boolean shiny) {
             m_species = species;
             m_shiny = shiny;
-            m_front = front;
             MediaTracker tracker = new MediaTracker(this);
             m_img = GameVisualisation.getSprite(species, m_front, true, m_shiny);
             tracker.addImage(m_img, WIDTH);
@@ -114,7 +119,7 @@ public class TeamBuilder extends javax.swing.JFrame {
         }
         public void setShiny(boolean shiny) {
             m_shiny = shiny;
-            setSpecies(m_species, m_shiny, m_front);
+            setSpecies(m_species, m_shiny);
         }
         @Override
         public void paintComponent(Graphics g) {
@@ -172,6 +177,7 @@ public class TeamBuilder extends javax.swing.JFrame {
     }
 
     private void addDefaultTeam() {
+        ((SpritePanel)panelSprite).setFront(true);
         m_forms.clear();
         tabForms.removeAll();
         for (int i = 0; i < 6; i++) {
@@ -259,7 +265,7 @@ public class TeamBuilder extends javax.swing.JFrame {
         speciesProgramSelect = true;
         PokemonSpecies species = m_generation.getSpeciesByName(name);
         if (species != null) {
-            ((SpritePanel)panelSprite).setSpecies(species.getId(), false, true);
+            ((SpritePanel)panelSprite).setSpecies(species.getId(), false);
 
             if (!cmbSpecies.getSelectedItem().equals(species)) {
                 cmbSpecies.setSelectedItem(species);
@@ -838,7 +844,7 @@ public class TeamBuilder extends javax.swing.JFrame {
         if (speciesProgramSelect) return;
         PokemonSpecies sp = (PokemonSpecies)cmbSpecies.getSelectedItem();
         if (sp == null) return;
-        ((SpritePanel)panelSprite).setSpecies(sp.getId(), false, true);
+        ((SpritePanel)panelSprite).setSpecies(sp.getId(), false);
 
         //If the species has no gender or is only female, GENDER_MALE is ignored
         TeamBuilderForm tbf = (TeamBuilderForm)tabForms.getSelectedComponent();
