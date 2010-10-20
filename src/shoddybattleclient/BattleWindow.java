@@ -395,6 +395,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     private TargetButton[] m_targets = null;
     private GameVisualisation m_visual;
     private HealthBar[][] m_healthBars;
+    private SpectatorForm m_spectatorForm;
     private HTMLPane m_chat;
     private List<PokemonMove> m_moveList;
     private StringBuilder m_log = new StringBuilder();
@@ -523,8 +524,8 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             // Hide the whole action area for now. Maybe we can come up with
             // a better use of this space later.
             tabAction.removeAll();
-            tabAction.add("Spectator", new JPanel());
-
+            m_spectatorForm = new SpectatorForm(users[0], users[1], m_visual, length);
+            tabAction.add("Spectator", m_spectatorForm);
             // Set all of the health bars to use percents.
             if (m_healthBars != null) {
                 for (HealthBar[] i : m_healthBars) {
@@ -979,11 +980,17 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
         m_visual.setSpecies(party, slot, species);
     }
 
+    public void updateSpectatorForm() {
+        if (m_spectatorForm != null) {
+            m_spectatorForm.refresh();
+        }
+    }
+
     public void sendOut(int party, int slot, int index, int speciesId, 
             String species, String name, int gender, int level) {
         m_visual.sendOut(party, slot, index, speciesId, species, name,
                 gender, level);
-
+        
         if (party == m_participant && m_pokemon != null) {
             Collections.sort(m_sortedPokemon, new Comparator<Integer>() {
                 public int compare(Integer lhs, Integer rhs) {

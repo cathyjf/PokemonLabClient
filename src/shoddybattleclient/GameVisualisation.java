@@ -49,6 +49,7 @@ import java.util.Random;
 import java.util.Set;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JToolTip;
@@ -235,8 +236,8 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
             m_stateMap.put(Text.getText(6, 0), State.BURNED);
             m_stateMap.put(Text.getText(8, 0), State.FROZEN);
             m_stateMap.put(Text.getText(9, 0), State.PARALYSED);
-            m_stateMap.put(Text.getText(10, 0), State.SLEEPING);
-            m_stateMap.put(Text.getText(11, 0), State.POISONED);
+            m_stateMap.put(Text.getText(10, 0), State.POISONED);
+            m_stateMap.put(Text.getText(11, 0), State.SLEEPING);
         }
 
         public VisualPokemon(int id, int gender, int level, boolean shiny) {
@@ -388,6 +389,12 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
                 }
             }
             return GameVisualisation.getSprite(m_id, front, male, m_shiny);
+        }
+        public Image getIcon() {
+            if (getName() == null) {
+                return GameVisualisation.getImageFromResource("missingno_icon.png");
+            }
+            return GameVisualisation.getIcon(m_id);
         }
     }
 
@@ -778,6 +785,40 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
         builder.append(male ? "" : "f");
         builder.append(".png");
         return createPath(builder.toString(), front, shiny, repo, frame);
+    }
+    
+    private static String createIconPath(String path, String repo,
+            String folderName) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(Preference.getSpriteLocation());
+        builder.append(repo);
+        builder.append("/icons/");
+        builder.append(folderName);
+        builder.append(path);
+        builder.append(".png");
+        return builder.toString();
+    }
+
+    private static String getIconPath(String path, String repo) {
+        File f = new File(createIconPath(path, repo, ""));
+        if (f.exists()) return f.toString();
+        return null;
+    }
+
+    public static Image getIcon(int number) {
+        return getIcon("" + number);
+    }
+
+    public static Image getIcon(String path) {
+        String qualified = null;
+        for (String repo : Preference.getSpriteDirectories()) {
+            qualified = getIconPath(path, repo);
+            if (qualified != null) break;
+        }
+        if (qualified != null) {
+            return Toolkit.getDefaultToolkit().getImage(qualified);
+        }
+        return null;
     }
 
     private static String getSpritePath(int number, boolean front, boolean male,

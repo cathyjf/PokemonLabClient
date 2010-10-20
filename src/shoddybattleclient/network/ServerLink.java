@@ -1072,6 +1072,8 @@ public class ServerLink extends Thread {
                             wnd.updateSprite(i, j);
                         }
                     }
+
+                    wnd.updateSpectatorForm();
                 }
             });
 
@@ -1226,6 +1228,7 @@ public class ServerLink extends Thread {
                                 String.valueOf(level),
                                 species });
                     wnd.addMessage(null, message, false);
+                    wnd.updateSpectatorForm();
                 }
             });
 
@@ -1252,6 +1255,7 @@ public class ServerLink extends Thread {
 
                     // Update the health bars.
                     wnd.updateHealth(party, slot, total, denominator);
+                    wnd.updateSpectatorForm();
 
                     boolean ally = wnd.getParty() == party;
                     String name = Text.formatName(
@@ -1312,6 +1316,7 @@ public class ServerLink extends Thread {
                     String message = Text.getText(4, 15, new String[] { name });
                     wnd.addMessage(null, message, false);
                     wnd.faint(party, slot);
+                    wnd.updateSpectatorForm();
                 }
             });
 
@@ -1436,14 +1441,14 @@ public class ServerLink extends Thread {
                                                 statusId, msg, true);
                                     }
                                 }
-
+                                
                                 if (slot != -1) {
                                     battle.updateSprite(i, slot);
                                 }
                             }
                         }
                     }
-
+                    battle.updateSpectatorForm();
                     battle.setVisible(true);
                 }
             });
@@ -1637,10 +1642,11 @@ public class ServerLink extends Thread {
                     switch(type) {
                         case 0:
                             wnd.updateStatus(party, position, radius, id,
-                                    msg, applied);                            
+                                    msg, applied);
                             if (p.getSlot() != -1) {
                                 wnd.updateSprite(party, p.getSlot());
                             }
+                            wnd.updateSpectatorForm();
                             break;
                         case 1:
                             if (applied) {
