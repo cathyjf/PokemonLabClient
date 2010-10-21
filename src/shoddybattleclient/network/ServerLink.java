@@ -39,6 +39,7 @@ import shoddybattleclient.GameVisualisation.VisualPokemon;
 import shoddybattleclient.LobbyWindow;
 import shoddybattleclient.Preference;
 import shoddybattleclient.ServerConnect;
+import shoddybattleclient.WelcomeWindow;
 import shoddybattleclient.shoddybattle.Generation;
 import shoddybattleclient.shoddybattle.Pokemon;
 import shoddybattleclient.shoddybattle.PokemonMove;
@@ -565,15 +566,27 @@ public class ServerLink extends Thread {
                     String loginMessage = is.readUTF();
                     String registerMessage = is.readUTF();
 
-                    link.m_serverConnect =
-                            new ServerConnect(link, name, welcome,
-                            canRegister, loginMessage, registerMessage);
-                    link.m_serverConnect.setVisible(true);
+                    if (ServerLink.CLIENT_VERSION == version) {
+                        link.m_serverConnect =
+                                new ServerConnect(link, name, welcome,
+                                canRegister, loginMessage, registerMessage);
+                        link.m_serverConnect.setVisible(true);
+                        return;
+                    }
 
-                    //System.out.println("Received WELCOME_MESSAGE.");
-                    System.out.println("Server version: " + version);
-                    //System.out.println("Server name: " + name);
-                    //System.out.println("Welcome message: " + welcome);
+                    if (ServerLink.CLIENT_VERSION < version) {
+                        JOptionPane.showMessageDialog(null,
+                                "Your client is older than the server, " +
+                                "please update", "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(null,
+                                "This server is outdated", "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+
+                    link.close();
+                    new WelcomeWindow().setVisible(true);
                 }
             });
 
@@ -1753,6 +1766,8 @@ public class ServerLink extends Thread {
         }
     }
 
+    private static int CLIENT_VERSION = 2;
+    
     private BlockingQueue<OutMessage> m_queue =
             new LinkedBlockingQueue<OutMessage>();
     private String m_host;
