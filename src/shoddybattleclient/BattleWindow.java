@@ -520,11 +520,9 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             preparePlayer();
         } else {
             // We are spectating.
-
-            // Hide the whole action area for now. Maybe we can come up with
-            // a better use of this space later.
+            m_spectatorForm = new SpectatorForm(users[0], users[1],
+                    m_visual, length);
             tabAction.removeAll();
-            m_spectatorForm = new SpectatorForm(users[0], users[1], m_visual, length);
             tabAction.add("Spectator", m_spectatorForm);
             // Set all of the health bars to use percents.
             if (m_healthBars != null) {

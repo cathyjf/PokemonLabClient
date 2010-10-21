@@ -392,7 +392,7 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
         }
         public Image getIcon() {
             if (getName() == null) {
-                return GameVisualisation.getImageFromResource("missingno_icon.png");
+                return GameVisualisation.getIcon(-1);
             }
             return GameVisualisation.getIcon(m_id);
         }
@@ -763,6 +763,13 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
         g2.dispose();
     }
 
+    private static Image getImage(String path, String defaultResource) {
+        if (path == null) {
+            return GameVisualisation.getImageFromResource(defaultResource);
+        }
+        return Toolkit.getDefaultToolkit().createImage(path);
+    }
+    
     private static String createPath(String filename, boolean front,
             boolean shiny, String repo, int frame) {
         StringBuilder builder = new StringBuilder();
@@ -787,38 +794,28 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
         return createPath(builder.toString(), front, shiny, repo, frame);
     }
     
-    private static String createIconPath(String path, String repo,
-            String folderName) {
+    private static String getIconPath(String filename, String repo) {
         StringBuilder builder = new StringBuilder();
         builder.append(Preference.getSpriteLocation());
         builder.append(repo);
         builder.append("/icons/");
-        builder.append(folderName);
-        builder.append(path);
+        builder.append(filename);
         builder.append(".png");
-        return builder.toString();
-    }
-
-    private static String getIconPath(String path, String repo) {
-        File f = new File(createIconPath(path, repo, ""));
-        if (f.exists()) return f.toString();
+        String path = builder.toString();
+        if (new File(path).exists()) {
+            return path;
+        }
         return null;
     }
 
     public static Image getIcon(int number) {
-        return getIcon("" + number);
-    }
-
-    public static Image getIcon(String path) {
         String qualified = null;
         for (String repo : Preference.getSpriteDirectories()) {
-            qualified = getIconPath(path, repo);
+            qualified = getIconPath("" + number, repo);
             if (qualified != null) break;
         }
-        if (qualified != null) {
-            return Toolkit.getDefaultToolkit().getImage(qualified);
-        }
-        return null;
+
+        return getImage(qualified, "missingno_icon.png");
     }
 
     private static String getSpritePath(int number, boolean front, boolean male,
@@ -834,15 +831,6 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
         if (f.exists()) return f.toString();
         return null;
     }
-
-    private static Image getSprite(String path, boolean front) {
-        if (path == null) {
-            String image = (front) ? "missingno_front.png" :
-                    "missingno_back.png";
-            return GameVisualisation.getImageFromResource(image);
-        }
-        return Toolkit.getDefaultToolkit().createImage(path);
-    }
     
     public static Image getSprite(int number, boolean front, boolean male,
             boolean shiny, int frame) {
@@ -852,7 +840,9 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
             if (qualified != null) break;
         }
 
-        return getSprite(qualified, front);
+        String defaultResource = (front) ? "missingno_front.png" :
+                    "missingno_back.png";
+        return getImage(qualified, defaultResource);
     }
 
     public static Image getSprite(int number, boolean front, boolean male,
@@ -880,7 +870,9 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
             }
         }
 
-        return getSprite(qualified, front);
+        String defaultResource = (front) ? "missingno_front.png" :
+                    "missingno_back.png";
+        return getImage(qualified, defaultResource);
     }
 
     public static void main(String[] args) {
