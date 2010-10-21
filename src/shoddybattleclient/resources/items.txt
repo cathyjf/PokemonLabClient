@@ -120,3 +120,4 @@ Heat Rock
 Icy Rock
 Smooth Rock
 Iron Ball
+Griseous Orb
