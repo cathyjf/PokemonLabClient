@@ -527,6 +527,18 @@ public class ServerLink extends Thread {
         }
     }
 
+    public static class ImportantMessage extends OutMessage {
+        public ImportantMessage(int channel, String message) {
+            super(22);
+            try {
+                m_stream.writeInt(channel);
+                m_stream.writeUTF(message);
+            } catch (Exception e) {
+
+            }
+        }
+    }
+
     public static abstract class MessageHandler {
         /**
          * Handle a message from the server by reading values from the
@@ -1724,7 +1736,7 @@ public class ServerLink extends Thread {
                 // string : sender
                 // string : message
                 public void handle(ServerLink link, DataInputStream is)
-                        throws IOException{
+                        throws IOException {
                     String user = is.readUTF();
                     String sender = is.readUTF();
                     String message = is.readUTF();
@@ -1734,6 +1746,22 @@ public class ServerLink extends Thread {
                     } else {
                         link.m_lobby.handleInvalidPrivateMessage(user);
                     }
+                }
+            });
+
+            // IMPORTANT_MESSAGE
+            new ServerMessage(35, new MessageHandler() {
+                // int32  : channel
+                // string : sender
+                // string : message
+                public void handle(ServerLink link, DataInputStream is)
+                        throws IOException {
+                    int channel = is.readInt();
+                    String sender = is.readUTF();
+                    String message = is.readUTF();
+
+                    link.m_lobby.handleImportantMessage(channel, sender,
+                            message);
                 }
             });
 
@@ -1966,6 +1994,10 @@ public class ServerLink extends Thread {
 
     public void requestUserMessage(String user) {
         sendMessage(new RequestUserMessage(user));
+    }
+
+    public void sendImportantMessage(int channel, String message) {
+        sendMessage(new ImportantMessage(channel, message));
     }
 
     private static char[] HEX_TABLE = {

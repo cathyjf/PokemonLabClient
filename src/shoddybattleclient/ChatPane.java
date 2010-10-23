@@ -192,6 +192,12 @@ public class ChatPane extends javax.swing.JPanel implements CloseableTab {
         } else if ("msg".equals(command)) {
             String user = args.trim();
             m_lobby.openPrivateMessage(user, true);
+        } else if ("wall".equals(command)) {
+            String message = args.trim();
+            m_lobby.getLink().sendImportantMessage(-1, message);
+        } else if ("important".equals(command)) {
+            String message = args.trim();
+            m_lobby.getLink().sendImportantMessage(m_channel.getId(), message);
         }
     }
 

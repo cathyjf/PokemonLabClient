@@ -837,6 +837,23 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         m_privateMessages.remove(user);
     }
 
+    public void handleImportantMessage(int channel, String sender,
+            String message) {
+        message += " ~ " + sender;
+        message = Text.addClass(message, "important");
+
+        if (channel == -1) {
+            for (Channel c : m_channels.values()) {
+                this.showChannelMessage(c, null, message, false);
+            }
+        } else {
+            Channel c = m_channels.get(channel);
+            if (c != null) {
+                this.showChannelMessage(c, null, message, false);
+            }
+        }
+    }
+
     public void informBadLookup() {
         m_adminPanel.setErrorText("No such user");
     }
