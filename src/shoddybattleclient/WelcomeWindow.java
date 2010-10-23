@@ -99,7 +99,7 @@ public class WelcomeWindow extends javax.swing.JFrame {
          */
 
         ServerListEntry sle = new ServerListEntry("Poke Lab Beta",
-                "Beta hosted on the Smogon server", "smogon.com",
+                "Pokemon Lab beta server", "beta.poke-lab.com",
                 8446, 0, 500);
         /**ServerListEntry sle3 = new ServerListEntry("Pokemonexperte",
                 "A german server.", "shoddy.pokemonexperte.com",
