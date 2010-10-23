@@ -28,10 +28,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.MediaTracker;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -269,19 +272,37 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             if (pokemon.isFainted()) {
                 fontCol = Color.DARK_GRAY;
             }
-            
+
+            String species = pokemon.getSpecies();
+            Image image = m_visual.getIcon(species);
+            MediaTracker tracker = new MediaTracker(this);
+            tracker.addImage(image, 0);
+            try {
+                tracker.waitForAll();
+            } catch (Exception e) {
+
+            }
+            int imageWidth = image.getWidth(null);
+            g2.drawImage(image, 3, (getHeight() - imageWidth) / 2, null);
+
             g2.setFont(g2.getFont().deriveFont(Font.BOLD));
             int speciesY = getHeight() / 2 - g2.getFontMetrics().getHeight() / 2 + 4;
             g2.setColor(Color.GRAY);
-            g2.drawString(pokemon.getSpecies(), 6, speciesY + 1);
+            g2.drawString(species, 6 + imageWidth, speciesY + 1);
             g2.setColor(fontCol);
-            g2.drawString(pokemon.getSpecies(), 5, speciesY);
+            g2.drawString(species, 5 + imageWidth, speciesY);
+            int speciesWidth = g2.getFontMetrics().stringWidth(species);
+            Image stateImg = pokemon.getState().getImage();
+            if (stateImg != null) {
+                g2.drawImage(stateImg, 5 + imageWidth + 3 + speciesWidth,
+                        speciesY - stateImg.getHeight(null), null);
+            }
             
             int n = pokemon.getNumerator();
             int d = pokemon.getDenominator();
             int y = getHeight() / 2 + 3;
-            int x = 3;
-            int healthW = getWidth() / 2 - x;
+            int x = 5 + imageWidth;
+            int healthW = getWidth() / 2;
             double frac = (double)n / d;
             if (frac < 0) frac = 0;
             g2.setColor(Color.BLACK);

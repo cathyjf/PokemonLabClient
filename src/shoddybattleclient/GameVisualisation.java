@@ -49,7 +49,6 @@ import java.util.Random;
 import java.util.Set;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JToolTip;
@@ -399,13 +398,22 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
     }
 
     public static enum State {
-        NORMAL,
-        PARALYSED,
-        BURNED,
-        FROZEN,
-        SLEEPING,
-        POISONED,
-        FAINTED;
+        NORMAL    (null),
+        PARALYSED (getImageFromResource("status/paralyze.png")),
+        BURNED    (getImageFromResource("status/burn.png")),
+        FROZEN    (getImageFromResource("status/freeze.png")),
+        SLEEPING  (getImageFromResource("status/sleep.png")),
+        POISONED  (getImageFromResource("status/poison.png")),
+        FAINTED   (getImageFromResource("status/faint.png"));
+
+        private Image m_image;
+        State(Image img) {
+            m_image = img;
+        }
+
+        public Image getImage() {
+            return m_image;
+        }
     }
 
     private static final int BACKGROUND_COUNT = 23;
@@ -477,6 +485,14 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
         m_background = getImageFromResource("backgrounds/background" + background + ".png");
         MediaTracker tracker = new MediaTracker(this);
         tracker.addImage(m_background, 0);
+
+        for (State s : State.values()) {
+            Image img = s.getImage();
+            if (img != null) {
+                tracker.addImage(img, 0);
+            }
+        }
+        
         try {
             tracker.waitForAll();
         } catch (InterruptedException e) {
@@ -816,6 +832,10 @@ public class GameVisualisation extends JLayeredPane implements PokemonDelegate {
         }
 
         return getImage(qualified, "missingno_icon.png");
+    }
+
+    public Image getIcon(String name) {
+        return getIcon(PokemonSpecies.getIdFromName(m_generation, name));
     }
 
     private static String getSpritePath(int number, boolean front, boolean male,

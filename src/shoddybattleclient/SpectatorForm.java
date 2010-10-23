@@ -35,8 +35,6 @@ import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.awt.image.RescaleOp;
-import java.util.EnumMap;
-import java.util.Map;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToolTip;
@@ -49,21 +47,6 @@ import shoddybattleclient.utils.JCustomTooltip;
  * @author davidpeter
  */
 public class SpectatorForm extends JPanel {
-    private static final Map<State, Image> m_statusMap
-            = new EnumMap<State, Image>(State.class);
-    static {
-        m_statusMap.put(State.BURNED,
-                GameVisualisation.getImageFromResource("status/burn.png"));
-        m_statusMap.put(State.FROZEN,
-                GameVisualisation.getImageFromResource("status/freeze.png"));
-        m_statusMap.put(State.PARALYSED,
-                GameVisualisation.getImageFromResource("status/paralyze.png"));
-        m_statusMap.put(State.POISONED,
-                GameVisualisation.getImageFromResource("status/poison.png"));
-        m_statusMap.put(State.SLEEPING,
-                GameVisualisation.getImageFromResource("status/sleep.png"));
-    }
-
     private static class MiniIcon extends JPanel {
         private VisualPokemon m_pokemon;
         private Image m_image;
@@ -126,7 +109,7 @@ public class SpectatorForm extends JPanel {
             }
 
             g2.drawImage(m_image, 0, 0, null);
-            Image img = m_statusMap.get(m_pokemon.getState());
+            Image img = m_pokemon.getState().getImage();
             if (img != null) {
                 g2.drawImage(img, 0, 24, null);
             }
@@ -188,17 +171,6 @@ public class SpectatorForm extends JPanel {
         buffer.add(label, BorderLayout.NORTH);
         add(buffer);
         add(panelBottom);
-
-        // We need this in case icons weren't fully loaded. :(
-        MediaTracker tracker = new MediaTracker(this);
-        for (Image i : m_statusMap.values()) {
-            tracker.addImage(i, 0);
-        }
-        try {
-            tracker.waitForAll();
-        } catch (Exception e) {
-
-        }
 
         initPanel(player1, panelTop, 0);
         initPanel(player2, panelBottom, 1);
