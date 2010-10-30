@@ -48,6 +48,10 @@ import shoddybattleclient.utils.JCustomTooltip;
  */
 public class SpectatorForm extends JPanel {
     private static class MiniIcon extends JPanel {
+        private static final Color GREEN  = new Color(0x67e446);
+        private static final Color YELLOW = new Color(230, 240, 38);
+        private static final Color RED    = new Color(219, 43, 15);
+
         private VisualPokemon m_pokemon;
         private Image m_image;
         private boolean m_fainted = false;
@@ -115,23 +119,17 @@ public class SpectatorForm extends JPanel {
             }
             
             if (m_pokemon.getName() != null) {
-                double ratio = (double)m_pokemon.getNumerator() /
+                double frac = (double)m_pokemon.getNumerator() /
                         m_pokemon.getDenominator();
-                int height = (int)(ratio * 10);
-                if (ratio > 0 && height == 0) {
+                int height = (int)(frac * 10);
+                if (frac > 0 && height == 0) {
                     height = 1;
                 }
                 g2.setColor(new Color(32, 32, 32));
                 g2.fillRect(27, 20, 5, 12);
-                Color c;
-                if (ratio > .5) {
-                    c = new Color(0x67e446);
-                } else if (ratio > .15) {
-                    c = new Color(230, 240, 38);
-                } else {
-                    c = new Color(219, 43, 15);
-                }
-                g2.setColor(c);
+                Color color = (frac > 0.5) ? GREEN
+                        : (frac > 0.15) ? YELLOW : RED;
+                g2.setColor(color);
                 g2.fillRect(28, 31 - height, 3, height);
             }
             g2.dispose();

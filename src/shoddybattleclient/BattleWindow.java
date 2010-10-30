@@ -244,8 +244,10 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     }
 
     private class SwitchButton extends GradientButton {
+        private final Color GREEN  = new Color(0x28ae3b);
+        private final Color YELLOW = new Color(240, 223, 38);
+        private final Color RED    = new Color(219, 43, 15);
         private int m_index;
-        private final Color HEALTH_COLOUR = new Color(0x28ae3b);
         public SwitchButton(int index) {
             m_index = index;
             m_colour = new Color(0x4b5278);
@@ -307,7 +309,8 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
             if (frac < 0) frac = 0;
             g2.setColor(Color.BLACK);
             g2.drawRect(x, y, healthW, 10);
-            g2.setColor(HEALTH_COLOUR);
+            Color color = (frac > 0.5) ? GREEN : (frac > 0.15) ? YELLOW : RED;
+            g2.setColor(color);
             int barW = (int)(healthW * frac) - 1;
             g2.fillRect(x + 1, y + 1, barW, 9);
             g2.setColor(Color.DARK_GRAY);
