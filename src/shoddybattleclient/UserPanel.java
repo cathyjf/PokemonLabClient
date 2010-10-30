@@ -113,6 +113,8 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
             }
             if (m_teamLength > 1 && m_teamLength % 2 == 1)
                 this.add(new JPanel());
+
+            revalidate();
             repaint();
         }
 

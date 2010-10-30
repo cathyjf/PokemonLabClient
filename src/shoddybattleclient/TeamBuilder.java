@@ -188,11 +188,11 @@ public class TeamBuilder extends javax.swing.JFrame {
     private void addDefaultForm() {
         TeamBuilderForm tbf = new TeamBuilderForm(this);
         m_forms.add(tbf);
-        ((CloseableTabbedPane)tabForms).addTab("", tbf, false);
+        tabForms.addTab("", tbf, false);
         tbf.setPokemon(new Pokemon("Bulbasaur", "", false, Gender.GENDER_MALE, 100, 255,
             "", "", "", new String[] {null, null, null, null}, new int[] {3,3,3,3},
             new int[] {31,31,31,31,31,31}, new int[] {0,0,0,0,0,0}), true);
-        updateTitle(m_forms.size()-1, "Bulbasaur");
+        updateTitle(m_forms.size() - 1, "Bulbasaur");
     }
 
     public PokemonSpecies getSpecies(String species) {
@@ -463,11 +463,12 @@ public class TeamBuilder extends javax.swing.JFrame {
         tabForms.removeAll();
         for (TeamBuilderForm tab : m_forms) {
             String name = tab.getPokemon().toString();
-            ((CloseableTabbedPane)tabForms).addTab(name, tab, false);
+            tabForms.addTab(name, tab, false);
         }
 
         if (last instanceof BoxForm) {
             tabForms.add("Boxes", last);
+            tabForms.setTabSlidable(tabForms.getTabCount() - 1, false);
         }
     }
 
@@ -480,13 +481,13 @@ public class TeamBuilder extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        tabForms = new CloseableTabbedPane();
         cmbSpecies = new javax.swing.JComboBox();
         scrTreeBox = new javax.swing.JScrollPane();
         treeBox = new javax.swing.JTree();
         btnLoadFromBox = new javax.swing.JButton();
         btnSaveToBox = new javax.swing.JButton();
         panelSprite = new SpritePanel();
+        tabForms = new shoddybattleclient.utils.CloseableTabbedPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         menuNew = new javax.swing.JMenuItem();
@@ -515,12 +516,6 @@ public class TeamBuilder extends javax.swing.JFrame {
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
-            }
-        });
-
-        tabForms.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                tabFormsStateChanged(evt);
             }
         });
 
@@ -563,6 +558,12 @@ public class TeamBuilder extends javax.swing.JFrame {
             panelSpriteLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(0, 81, Short.MAX_VALUE)
         );
+
+        tabForms.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                tabFormsStateChanged(evt);
+            }
+        });
 
         jMenu1.setText("File");
 
@@ -722,19 +723,20 @@ public class TeamBuilder extends javax.swing.JFrame {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(tabForms, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)
+                    .add(layout.createSequentialGroup()
+                        .add(tabForms, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)
+                        .addContainerGap())
                     .add(layout.createSequentialGroup()
                         .add(cmbSpecies, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(panelSprite, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                        .add(scrTreeBox, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
+                        .add(scrTreeBox, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(btnLoadFromBox)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(btnSaveToBox)
-                        .add(88, 88, 88)))
-                .addContainerGap())
+                        .add(99, 99, 99))))
         );
 
         pack();
@@ -800,7 +802,7 @@ public class TeamBuilder extends javax.swing.JFrame {
             return;
         }
 
-        if (size < 1) {
+        if (size < -10) {
             return;
         } else if (size > 24) {
             JOptionPane.showMessageDialog(null,
@@ -823,6 +825,7 @@ public class TeamBuilder extends javax.swing.JFrame {
 
             if (last instanceof BoxForm) {
                 tabForms.addTab("Boxes", last);
+                tabForms.setTabSlidable(tabForms.getTabCount() - 1, false);
             }
         } else {
             while (m_forms.size() > size) {
@@ -906,27 +909,6 @@ public class TeamBuilder extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_mnuHappinessActionPerformed
 
-    private void tabFormsStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabFormsStateChanged
-        int idx = tabForms.getSelectedIndex();
-        if (idx < 0) return;
-
-        if (idx < m_forms.size()) {
-            Pokemon poke = m_forms.get(idx).getPokemon();
-            if (poke == null) return;
-            setSpecies(poke.toString());
-            setSpriteShiny(poke.shiny);
-        } else {
-            cmbSpecies.setModel(new DefaultComboBoxModel());
-            cmbSpecies.setEnabled(false);
-            
-            BoxForm form = (BoxForm)tabForms.getSelectedComponent();
-            scrTreeBox.setViewportView(form.getTeamList(m_forms));
-
-            panelSprite.repaint();
-        }
-
-    }//GEN-LAST:event_tabFormsStateChanged
-
     private void menuNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuNewActionPerformed
         int result = JOptionPane.showOptionDialog(null,
                  "This team may have unsaved changes, create new anyways?",
@@ -963,8 +945,10 @@ public class TeamBuilder extends javax.swing.JFrame {
 
     private void menuBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBoxActionPerformed
         Component last = tabForms.getComponentAt(tabForms.getTabCount() - 1);
-        if (!(last instanceof BoxForm))
+        if (!(last instanceof BoxForm)) {
             tabForms.addTab("Boxes", new BoxForm(this));
+            tabForms.setTabSlidable(tabForms.getTabCount() - 1, false);
+        }
         tabForms.setSelectedIndex(tabForms.getTabCount() - 1);
     }//GEN-LAST:event_menuBoxActionPerformed
 
@@ -1241,6 +1225,35 @@ public class TeamBuilder extends javax.swing.JFrame {
         tabForms.setSelectedComponent(temp);
     }//GEN-LAST:event_menuRightActionPerformed
 
+    private void tabFormsStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabFormsStateChanged
+        // Make m_forms reflect tabForms
+        m_forms.clear();
+        for (int i = 0; i < tabForms.getTabCount(); i++) {
+            Component c = tabForms.getComponentAt(i);
+            if (c instanceof TeamBuilderForm) {
+                m_forms.add((TeamBuilderForm)c);
+            }
+        }
+
+        int idx = tabForms.getSelectedIndex();
+        if (idx < 0) return;
+
+        if (idx < m_forms.size()) {
+            Pokemon poke = m_forms.get(idx).getPokemon();
+            if (poke == null) return;
+            setSpecies(poke.toString());
+            setSpriteShiny(poke.shiny);
+        } else {
+            cmbSpecies.setModel(new DefaultComboBoxModel());
+            cmbSpecies.setEnabled(false);
+
+            BoxForm form = (BoxForm)tabForms.getSelectedComponent();
+            scrTreeBox.setViewportView(form.getTeamList(m_forms));
+
+            panelSprite.repaint();
+        }
+    }//GEN-LAST:event_tabFormsStateChanged
+
     /**
     * @param args the command line arguments
     */
@@ -1299,7 +1312,7 @@ public class TeamBuilder extends javax.swing.JFrame {
     private javax.swing.JMenuItem mnuHappiness;
     private javax.swing.JPanel panelSprite;
     private javax.swing.JScrollPane scrTreeBox;
-    private javax.swing.JTabbedPane tabForms;
+    private shoddybattleclient.utils.CloseableTabbedPane tabForms;
     private javax.swing.JTree treeBox;
     // End of variables declaration//GEN-END:variables
 

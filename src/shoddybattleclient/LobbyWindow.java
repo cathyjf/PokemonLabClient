@@ -498,15 +498,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
                 + channel.getTopic()
                 + "</b>", false);
         if (previous == null) {
-            int idx = 0;
-            while (true) {
-                if (idx > tabChats.getComponentCount() ||
-                        !(tabChats.getComponentAt(idx) instanceof ChatPane)) {
-                    break;
-                }
-                idx++;
-            }
-            tabChats.add(c, idx);
+            tabChats.addTab(name, c);
             tabChats.setSelectedComponent(c);
         }
         listUsers.setModel(channel.getModel());
@@ -947,7 +939,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         btnChallenge = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         listUsers = new javax.swing.JList();
-        tabChats = new CloseableTabbedPane();
+        tabChats = new shoddybattleclient.utils.CloseableTabbedPane();
         jMenuBar2 = new javax.swing.JMenuBar();
         jMenu3 = new javax.swing.JMenu();
         mnuTeamBuilder = new javax.swing.JMenuItem();
@@ -1082,14 +1074,14 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+            .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(tabChats, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
-                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
                         .add(9, 9, 9)
-                        .add(btnChallenge))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, tabChats, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE))
+                        .add(btnChallenge)))
                 .addContainerGap())
         );
 
@@ -1195,7 +1187,7 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
     private javax.swing.JMenuItem mnuPreferences;
     private javax.swing.JMenuItem mnuQuit;
     private javax.swing.JMenuItem mnuTeamBuilder;
-    private javax.swing.JTabbedPane tabChats;
+    private shoddybattleclient.utils.CloseableTabbedPane tabChats;
     // End of variables declaration//GEN-END:variables
 
 }
