@@ -101,11 +101,16 @@ public class SlideTabbedPane extends JPanel {
         @Override
         public void paintComponent(Graphics g) {
             boolean isSelected = (this.index == getSelectedIndex());
-            if (isSelected) {
-                g.setColor(m_panel.getBackground());
-            } else {
-                g.setColor(UIManager.getColor("TabbedPane.light"));
+
+            Color c = m_panel.getBackground();
+            if (!isSelected) {
+                int red = (int)(c.getRed() * 0.8);
+                int green = (int)(c.getGreen() * 0.8);
+                int blue = (int)(c.getBlue() * 0.8);
+                c = new Color(red, green, blue);
             }
+            g.setColor(c);
+
             g.fillRect(0, 0, getWidth(), getHeight());
 
             g.setColor(Color.GRAY);
