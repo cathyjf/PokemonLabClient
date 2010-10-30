@@ -802,7 +802,7 @@ public class TeamBuilder extends javax.swing.JFrame {
             return;
         }
 
-        if (size < -10) {
+        if (size < 1) {
             return;
         } else if (size > 24) {
             JOptionPane.showMessageDialog(null,
