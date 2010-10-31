@@ -52,7 +52,7 @@ public class SlideTabbedPane extends JPanel {
         private Component m_prevComponent;
         
         public int deltaX = 0;
-        private Insets m_insets =  new Insets(3, 6, 3, 6);
+        private Insets m_insets =  new Insets(4, 6, 3, 6);
 
         public Tab() {
             this.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
@@ -113,6 +113,11 @@ public class SlideTabbedPane extends JPanel {
 
             g.fillRect(0, 0, getWidth(), getHeight());
 
+            // Draw top highlight
+            g.setColor(UIManager.getColor("TabbedPane.highlight"));
+            g.drawLine(0, 1, getWidth() - 1, 1);
+
+            // Draw borders
             g.setColor(Color.GRAY);
             g.drawLine(0, 0, getWidth() - 1, 0);
             g.drawLine(0, 0, 0, getHeight() - 1);
@@ -477,7 +482,7 @@ public class SlideTabbedPane extends JPanel {
             throw new IndexOutOfBoundsException();
         }
         remove(index);
-        /* TODO: From the Javadock: Removes the tab at index. After the
+        /* TODO: From the Javadoc: Removes the tab at index. After the
          component associated with index is removed, its visibility is reset
          to true to ensure it will be visible if added to other containers. */
     }
