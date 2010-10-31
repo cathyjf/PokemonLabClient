@@ -696,6 +696,11 @@ public class ServerLink extends Thread {
                         case 8:
                             conn.informAlreadyLoggedIn();
                             break;
+                        case 9:
+                            JOptionPane.showMessageDialog(null,
+                                    "This server is full", "Error",
+                                    JOptionPane.ERROR_MESSAGE);
+                            break;
                     }
                 }
             });
@@ -2154,7 +2159,7 @@ public class ServerLink extends Thread {
                 final ServerMessage msg = ServerMessage.getMessage(type);
                 if (msg == null) {
                     // unknown message type - but we can skip over it and live
-                    System.out.println("Unkown message type: " + type);
+                    System.out.println("Unknown message type: " + type);
                     continue;
                 }
 
@@ -2186,8 +2191,10 @@ public class ServerLink extends Thread {
         m_messageThread.interrupt();
         if (m_lobby != null) {
             m_lobby.addImportantMessage("Disconnected from server");
-        } else {
+        } else if (m_serverConnect != null) {
             JOptionPane.showMessageDialog(null, "Disconnected from server");
+        } else {
+            new WelcomeWindow().setVisible(true);
         }
         String message = Text.addClass("Disconnected from server", "important");
         for (BattleWindow battle : m_battles.values()) {
