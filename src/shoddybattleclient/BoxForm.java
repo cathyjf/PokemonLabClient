@@ -24,6 +24,7 @@
 package shoddybattleclient;
 
 import java.awt.Component;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.datatransfer.DataFlavor;
@@ -157,11 +158,9 @@ public class BoxForm extends javax.swing.JPanel {
             switch (col) {
                 case 0:
                     try {
-                        Pokemon poke = wrapper.pokemon;
-                        boolean showMale = poke.gender != Pokemon.Gender.GENDER_FEMALE;
-                        java.awt.Image img = GameVisualisation.getSprite(
-                            m_teamBuilder.getSpecies(poke.toString()).getId(), true, showMale, poke.shiny);
-                            img = img.getScaledInstance(32, 32, java.awt.Image.SCALE_SMOOTH);
+                        String species = wrapper.pokemon.species;
+                        Image img = GameVisualisation.getIcon(
+                                m_teamBuilder.getSpecies(species).getId());
                         return new ImageIcon(img);
                     } catch (Exception ex) {
                         return null;
@@ -500,7 +499,7 @@ public class BoxForm extends javax.swing.JPanel {
         TableColumnModel model = tblPokemon.getColumnModel();
         tblPokemon.setDefaultRenderer(Object.class, new PokemonTableRenderer());
         model.getColumn(0).setHeaderValue("");
-        model.getColumn(0).setMaxWidth(34);
+        model.getColumn(0).setMaxWidth(32);
         model.getColumn(1).setHeaderValue("Name");
         model.getColumn(2).setHeaderValue("Ability");
         model.getColumn(3).setHeaderValue("Nature");
