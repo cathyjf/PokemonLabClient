@@ -1003,6 +1003,8 @@ public class ServerLink extends Thread {
                  // byte  : slot of relevant pokemon
                  // byte  : position of relevant pokemon
                  // byte  : whether this is a replacement
+                 // byte  : index of the request sequence
+                 // byte  : number of sequential requests
                  // int32 : number of pokemon
                  // for each pokemon:
                  //      byte : whether it is legal to switch to this pokemon
@@ -1020,20 +1022,22 @@ public class ServerLink extends Thread {
                     BattleWindow wnd = link.m_battles.get(fid);
                     if (wnd == null) return;
 
-                    int slot = is.read();
-                    int pos = is.read();
-
+                    int slot = is.readUnsignedByte();
+                    int pos = is.readUnsignedByte();
                     boolean replacement = (is.read() != 0);
+                    int requestIdx = is.readUnsignedByte();
+                    int requestCount = is.readUnsignedByte();
+
                     int count = is.readInt();
                     boolean[] switches = new boolean[count];
                     for (int i = 0; i < count; ++i) {
                         switches[i] = (is.read() != 0);
                     }
                     if (replacement) {
-                        wnd.requestReplacement();
+                        wnd.requestReplacement(requestIdx, requestCount);
                         wnd.setValidSwitches(switches);
                     } else {
-                        wnd.requestAction(pos, slot);
+                        wnd.requestAction(pos, slot, requestIdx, requestCount);
                         boolean canSwitch = (is.read() != 0);
                         if (!canSwitch) {
                             Arrays.fill(switches, false);

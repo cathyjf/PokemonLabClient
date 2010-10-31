@@ -459,8 +459,11 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     // the underlying channel
     private Channel m_channel;
 
-    // This hack is required to unclear a button group in Java 5.
+    // This hack is required to clear a button group in Java 5.
     private JToggleButton m_dummySwitchButton;
+
+    private int m_requestIndex;
+    private int m_requestCount;
 
     public int getPartySize() {
         return m_n;
@@ -872,25 +875,32 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
      * Request an action for a pokemon
      * @param idx the index of the pokemon
      */
-    public void requestAction(int idx, int slot) {
+    public void requestAction(int idx, int slot, int requestIndex,
+            int requestCount) {
         m_current = slot;
+        m_requestIndex = requestIndex;
+        m_requestCount = requestCount;
+
         showMoves();
         setMoves(idx);
         btnMove.setEnabled(true);
         btnSwitch.setEnabled(true);
-        btnMoveCancel.setEnabled(true);
-        btnSwitchCancel.setEnabled(true);
+        btnMoveCancel.setEnabled(requestIndex != 0);
+        btnSwitchCancel.setEnabled(requestIndex != 0);
         tabAction.setSelectedIndex(0);
         if (m_n > 1) m_visual.setSelected(slot);
         m_dummySwitchButton.setSelected(true);
         setTicking(true);
     }
 
-    public void requestReplacement() {
+    public void requestReplacement(int requestIndex, int requestCount) {
+        m_requestIndex = requestIndex;
+        m_requestCount = requestCount;
+
         btnMove.setEnabled(false);
         btnMoveCancel.setEnabled(false);
         btnSwitch.setEnabled(true);
-        btnSwitchCancel.setEnabled(false);
+        btnSwitchCancel.setEnabled(requestIndex != 0);
         tabAction.setSelectedIndex(1);
         for (MoveButton button : m_moveButtons) {
             button.setEnabled(false);
@@ -1516,6 +1526,7 @@ public class BattleWindow extends javax.swing.JFrame implements BattleField {
     private void btnMoveCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveCancelActionPerformed
         if ((evt.getSource() == btnMoveCancel) && m_targeting) {
             showMoves();
+            btnMoveCancel.setEnabled(m_requestIndex != 0);
         } else {
             m_link.cancelBattleAction(m_fid);
         }
