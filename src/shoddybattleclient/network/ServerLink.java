@@ -1739,6 +1739,35 @@ public class ServerLink extends Thread {
                 }
             });
 
+            // ERROR_MESSAGE
+            new ServerMessage(33, new MessageHandler() {
+                // byte   : type
+                // string : details
+                public void handle(ServerLink link, DataInputStream is)
+                                                        throws IOException {
+                    int type = is.readUnsignedByte();
+                    String details = is.readUTF();
+
+                    // Look up these values in the server's network.cpp
+                    String message = "Unknown error";
+                    switch (type) {
+                        case 0:
+                            message = "The user \"" + details + "\" does not "
+                                    + "exist";
+                            break;
+                        case 1:
+                            message = details + " is not online";
+                            break;
+                        case 3:
+                            message = "You lack the authority to perform this "
+                                    + "action";
+                            break;
+                    }
+                    JOptionPane.showMessageDialog(link.m_lobby, message,
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            });
+            
             // PRIVATE_MESSAGE
             new ServerMessage(34, new MessageHandler() {
                 // string : user
