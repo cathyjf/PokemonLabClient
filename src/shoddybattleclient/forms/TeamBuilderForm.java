@@ -21,7 +21,8 @@
  * online at http://gnu.org.
  */
 
-package shoddybattleclient;
+package shoddybattleclient.forms;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -48,6 +49,7 @@ import javax.swing.JTextField;
 import javax.swing.Timer;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import shoddybattleclient.TeamBuilder;
 import shoddybattleclient.shoddybattle.*;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
 import shoddybattleclient.shoddybattle.PokemonSpecies.IllegalCombo;

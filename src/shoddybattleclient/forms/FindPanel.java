@@ -20,7 +20,7 @@
  * online at http://gnu.org.
  */
 
-package shoddybattleclient;
+package shoddybattleclient.forms;
 
 import java.awt.FileDialog;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.JOptionPane;
-import shoddybattleclient.UserPanel.TeamBox;
+import shoddybattleclient.forms.UserPanel.TeamBox;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.shoddybattle.Generation;
 import shoddybattleclient.shoddybattle.Generation.Metagame;

@@ -58,6 +58,8 @@ import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+import shoddybattleclient.forms.BoxForm;
+import shoddybattleclient.forms.TeamBuilderForm;
 import shoddybattleclient.shoddybattle.Generation;
 import shoddybattleclient.shoddybattle.Pokemon;
 import shoddybattleclient.shoddybattle.PokemonBox.PokemonWrapper;

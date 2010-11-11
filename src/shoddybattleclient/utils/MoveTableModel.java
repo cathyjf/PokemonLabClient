@@ -24,7 +24,7 @@ import java.awt.event.MouseListener;
 import javax.swing.table.*;
 import java.util.*;
 import javax.swing.JButton;
-import shoddybattleclient.TeamBuilderForm;
+import shoddybattleclient.forms.TeamBuilderForm;
 import shoddybattleclient.shoddybattle.PokemonMove;
 import shoddybattleclient.utils.SortableJTable.SortableTableModel;
 

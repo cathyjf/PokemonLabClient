@@ -21,7 +21,7 @@
  * online at http://gnu.org.
  */
 
-package shoddybattleclient;
+package shoddybattleclient.forms;
 
 import java.util.ArrayList;
 import shoddybattleclient.utils.*;

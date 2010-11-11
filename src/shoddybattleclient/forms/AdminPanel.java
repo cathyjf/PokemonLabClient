@@ -26,12 +26,13 @@
  * This is another panel that is used for moderators to view user information
  */
 
-package shoddybattleclient;
+package shoddybattleclient.forms;
 
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.table.AbstractTableModel;
+import shoddybattleclient.LobbyWindow;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.network.ServerLink.BanElement;
 import shoddybattleclient.utils.CloseableTabbedPane.CloseableTab;

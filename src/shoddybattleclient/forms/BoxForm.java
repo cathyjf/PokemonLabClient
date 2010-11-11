@@ -21,7 +21,7 @@
  * online at http://gnu.org.
  */
 
-package shoddybattleclient;
+package shoddybattleclient.forms;
 
 import java.awt.Component;
 import java.awt.Image;
@@ -55,6 +55,9 @@ import javax.swing.event.ListDataListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
+import shoddybattleclient.GameVisualisation;
+import shoddybattleclient.Preference;
+import shoddybattleclient.TeamBuilder;
 import shoddybattleclient.shoddybattle.Pokemon;
 import shoddybattleclient.shoddybattle.PokemonBox;
 import shoddybattleclient.shoddybattle.PokemonBox.PokemonWrapper;

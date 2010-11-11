@@ -1,4 +1,5 @@
-/* Spectator.java
+/*
+ * Spectator.java
  *
  * Created October 19, 2010
  *
@@ -20,7 +21,7 @@
  * online at http://gnu.org.
  */
 
-package shoddybattleclient;
+package shoddybattleclient.forms;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -38,8 +39,10 @@ import java.awt.image.RescaleOp;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToolTip;
+import shoddybattleclient.GameVisualisation;
 import shoddybattleclient.GameVisualisation.State;
 import shoddybattleclient.GameVisualisation.VisualPokemon;
+import shoddybattleclient.VisualToolTip;
 import shoddybattleclient.utils.JCustomTooltip;
 
 /**

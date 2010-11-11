@@ -21,7 +21,7 @@
  * online at http://gnu.org.
  */
 
-package shoddybattleclient;
+package shoddybattleclient.forms;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -34,6 +34,7 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import shoddybattleclient.GameVisualisation;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.network.ServerLink.ChallengeMediator;
 import shoddybattleclient.network.ServerLink.MessageListener;
