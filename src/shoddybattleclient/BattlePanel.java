@@ -83,9 +83,8 @@ public class BattlePanel extends javax.swing.JPanel {
         }
         
         for (Battle battle : battles) {
-            // NOTE: 'generation' is unused for now.
-            m_model.addBattle(battle.id, battle.ladder, battle.rated,
-                    battle.players[0], battle.players[1],
+            m_model.addBattle(battle.id, battle.generation, battle.ladder,
+                    battle.rated, battle.players[0], battle.players[1],
                     battle.n, battle.population);
         }
         tblBattles.setModel(m_model);

@@ -23,13 +23,15 @@ package shoddybattleclient.utils;
 import javax.swing.table.AbstractTableModel;
 import java.util.*;
 import shoddybattleclient.network.ServerLink;
-import shoddybattleclient.network.ServerLink.Metagame;
+import shoddybattleclient.shoddybattle.Generation;
+import shoddybattleclient.shoddybattle.Generation.Metagame;
 import shoddybattleclient.utils.SortableJTable.SortableTableModel;
 
 public class BattleTableModel extends AbstractTableModel implements SortableTableModel {
 
     private class TableRow {
         private Integer m_id;
+        private Integer m_generation;
         private Integer m_ladder;
         private boolean m_rated;
         private String m_user1;
@@ -37,9 +39,10 @@ public class BattleTableModel extends AbstractTableModel implements SortableTabl
         private Integer m_pop;
         private Integer m_n;
 
-        public TableRow(int id, int ladder, boolean rated, String u1,
-                String u2, int n, int pop) {
+        public TableRow(int id, int generation, int ladder, boolean rated,
+                String u1, String u2, int n, int pop) {
             m_id = id;
+            m_generation = generation;
             m_ladder = ladder;
             m_rated = rated;
             m_user1 = u1;
@@ -52,8 +55,8 @@ public class BattleTableModel extends AbstractTableModel implements SortableTabl
     private ServerLink m_link;
     private List<TableRow> m_rows = new ArrayList<TableRow>();
 
-    private static final String[] HEADERS = { "Players", "Metagame", "Rated?",
-            "N", "Population" };
+    private static final String[] HEADERS = { "Players", "Gen", 
+        "Metagame", "Rated?", "N", "Population" };
 
     public BattleTableModel(ServerLink link) {
         m_link = link;
@@ -78,16 +81,20 @@ public class BattleTableModel extends AbstractTableModel implements SortableTabl
             case 0:
                 return row.m_user1 + " v. " + row.m_user2;
             case 1:
+                Generation gen = m_link.getGenerations()[row.m_generation];
+                return gen.getId();
+            case 2:
                 if (row.m_ladder != -1) {
-                    Metagame[] metagames = m_link.getMetagames();
-                    return metagames[row.m_ladder].getName();
+                    Generation g = m_link.getGenerations()[row.m_generation];
+                    Metagame metagame = g.getMetagames().get(row.m_ladder);
+                    return metagame.getName();
                 }
                 return "(Custom)";
-            case 2:
-                return row.m_rated ? "Yes" : "No";
             case 3:
-                return row.m_n;
+                return row.m_rated ? "Yes" : "No";
             case 4:
+                return row.m_n;
+            case 5:
                 return row.m_pop;
         }
         assert false;
@@ -99,9 +106,9 @@ public class BattleTableModel extends AbstractTableModel implements SortableTabl
         return false;
     }
 
-    public void addBattle(int id, int ladder, boolean rated, String u1,
-            String u2, int n, int pop) {
-        m_rows.add(new TableRow(id, ladder, rated, u1, u2, n, pop));
+    public void addBattle(int id, int gen, int ladder, boolean rated,
+            String u1, String u2, int n, int pop) {
+        m_rows.add(new TableRow(id, gen, ladder, rated, u1, u2, n, pop));
         fireTableDataChanged();
     }
 

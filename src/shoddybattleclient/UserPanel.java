@@ -30,7 +30,6 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.MediaTracker;
-import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
@@ -38,10 +37,10 @@ import javax.swing.JPanel;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.network.ServerLink.ChallengeMediator;
 import shoddybattleclient.network.ServerLink.MessageListener;
-import shoddybattleclient.network.ServerLink.Metagame;
-import shoddybattleclient.network.ServerLink.RuleSet;
 import shoddybattleclient.network.ServerLink.TimerOptions;
 import shoddybattleclient.shoddybattle.Generation;
+import shoddybattleclient.shoddybattle.Generation.Metagame;
+import shoddybattleclient.shoddybattle.Generation.RuleSet;
 import shoddybattleclient.shoddybattle.Pokemon;
 import shoddybattleclient.shoddybattle.Pokemon.Gender;
 import shoddybattleclient.shoddybattle.PokemonSpecies;
@@ -79,6 +78,8 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
             }
             if (m_teamLength > 1 && m_teamLength % 2 == 1)
                 this.add(new JPanel());
+
+            revalidate();
             repaint();
         }
 
@@ -193,11 +194,11 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         m_link.addMessageListener(this);
         m_link.requestUserMessage(name);
         listClauses.setModel(new ClauseListModel(m_link.getClauseList()));
-        Metagame[] metagames = m_link.getMetagames();
-        DefaultComboBoxModel model = new DefaultComboBoxModel(metagames);
-        model.addElement("Custom...");
-        cmbRules.setModel(model);
-        cmbRules.setSelectedIndex(0);
+
+        Generation[] generations = m_link.getGenerations();
+        DefaultComboBoxModel model = new DefaultComboBoxModel(generations);
+        cmbGen.setModel(model);
+        cmbGen.setSelectedIndex(0);
     }
 
     public void setPersonalMessage(String msg) {
@@ -210,16 +211,24 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
 
     public void setIncoming() {
         btnChallenge.setText("Accept");
-        cmbRules.setEnabled(false);
-        cmbN.setEnabled(false);
-        cmbTeamLength.setEnabled(false);
         cmbGen.setEnabled(false);
+        cmbRules.setEnabled(false);
+        cmbTeamLength.setEnabled(false);
+        cmbN.setEnabled(false);
         m_incoming = true;
     }
 
-    public void setOptions(int n, int teamLength, int generation, int metagame, RuleSet rules) {
+    public void setOptions(int n, int teamLength, int generation, int metagame,
+            RuleSet rules) {
         if (m_waiting) return;
-        
+
+        m_n = n;
+        m_teamLength = teamLength;
+        m_generation = generation;
+        cmbGen.setSelectedIndex(generation);
+        cmbN.setSelectedIndex(n - 1);
+        cmbTeamLength.setSelectedIndex(teamLength - 1);
+
         if (metagame < 0) {
             cmbRules.setSelectedIndex(cmbRules.getItemCount()-1);
             tabSettings.setSelectedIndex(0);
@@ -227,12 +236,6 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
             cmbRules.setSelectedIndex(metagame);
         }
 
-        m_n = n;
-        m_teamLength = teamLength;
-        m_generation = generation;
-        cmbN.setSelectedIndex(n - 1);
-        cmbTeamLength.setSelectedIndex(teamLength - 1);
-        cmbGen.setSelectedIndex(generation);
         m_clauses = rules.getClauses(m_link.getClauseList());
         ((ClauseListModel)listClauses.getModel()).setSelected(m_clauses);
         TimerOptions ops = rules.getTimerOptions();
@@ -357,11 +360,11 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         tabSettings = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        cmbRules = new javax.swing.JComboBox();
-        jLabel2 = new javax.swing.JLabel();
-        cmbN = new javax.swing.JComboBox();
-        jLabel4 = new javax.swing.JLabel();
         cmbGen = new javax.swing.JComboBox();
+        jLabel2 = new javax.swing.JLabel();
+        cmbRules = new javax.swing.JComboBox();
+        jLabel4 = new javax.swing.JLabel();
+        cmbN = new javax.swing.JComboBox();
         panelSprites = new TeamBox();
         btnLoad = new javax.swing.JButton();
         btnChallenge = new javax.swing.JButton();
@@ -416,24 +419,29 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         jPanel2.setOpaque(false);
 
         jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 13));
-        jLabel1.setText("Rules:");
+        jLabel1.setText("Generation:");
 
-        cmbRules.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Standard", "Ubers", "Custom..." }));
+        cmbGen.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Standard", "Ubers", "Custom..." }));
+        cmbGen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbGenActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("Lucida Grande", 1, 13));
+        jLabel2.setText("Rules:");
+
+        cmbRules.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5", "6" }));
         cmbRules.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmbRulesActionPerformed(evt);
             }
         });
 
-        jLabel2.setFont(new java.awt.Font("Lucida Grande", 1, 13));
-        jLabel2.setText("Pokemon per side:");
-
-        cmbN.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5", "6" }));
-
         jLabel4.setFont(new java.awt.Font("Lucida Grande", 1, 13));
-        jLabel4.setText("Generation:");
+        jLabel4.setText("Mode:");
 
-        cmbGen.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "D/P", "Platinum" }));
+        cmbN.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Singles", "Doubles", "3v3", "4v4", "5v5", "6v6" }));
 
         panelSprites.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         panelSprites.setMaximumSize(new java.awt.Dimension(32767, 200));
@@ -465,64 +473,73 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         });
 
         jLabel8.setFont(new java.awt.Font("Lucida Grande", 1, 13));
-        jLabel8.setText("Max team length:");
+        jLabel8.setText("Team Length:");
 
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, panelSprites, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
-                    .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel2Layout.createSequentialGroup()
-                            .add(btnLoad, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 78, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                            .add(btnChallenge, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel2Layout.createSequentialGroup()
-                            .add(jLabel4)
-                            .add(18, 18, 18)
-                            .add(cmbGen, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 112, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                        .add(jPanel2Layout.createSequentialGroup()
-                            .add(jLabel1)
-                            .add(18, 18, 18)
-                            .add(cmbRules, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel2Layout.createSequentialGroup()
-                            .add(jLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 134, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                            .add(cmbN, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel2Layout.createSequentialGroup()
-                            .add(jLabel8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 134, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                            .add(cmbTeamLength, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(34, Short.MAX_VALUE))
+                .add(12, 12, 12)
+                .add(jLabel1)
+                .add(10, 10, 10)
+                .add(cmbGen, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 120, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+            .add(jPanel2Layout.createSequentialGroup()
+                .add(12, 12, 12)
+                .add(jLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(46, 46, 46)
+                .add(cmbRules, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 120, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+            .add(jPanel2Layout.createSequentialGroup()
+                .add(12, 12, 12)
+                .add(jLabel4)
+                .add(50, 50, 50)
+                .add(cmbN, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 120, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+            .add(jPanel2Layout.createSequentialGroup()
+                .add(12, 12, 12)
+                .add(jLabel8)
+                .add(5, 5, 5)
+                .add(cmbTeamLength, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 110, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+            .add(jPanel2Layout.createSequentialGroup()
+                .add(12, 12, 12)
+                .add(panelSprites, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 216, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+            .add(jPanel2Layout.createSequentialGroup()
+                .add(12, 12, 12)
+                .add(btnLoad, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 78, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(6, 6, 6)
+                .add(btnChallenge, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 132, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel2Layout.createSequentialGroup()
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel1)
-                    .add(cmbRules, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel2)
-                    .add(cmbN, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel4)
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel2Layout.createSequentialGroup()
+                        .add(6, 6, 6)
+                        .add(jLabel1))
                     .add(cmbGen, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel8)
+                .add(6, 6, 6)
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel2Layout.createSequentialGroup()
+                        .add(6, 6, 6)
+                        .add(jLabel2))
+                    .add(cmbRules, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(6, 6, 6)
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel2Layout.createSequentialGroup()
+                        .add(6, 6, 6)
+                        .add(jLabel4))
+                    .add(cmbN, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(6, 6, 6)
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel2Layout.createSequentialGroup()
+                        .add(6, 6, 6)
+                        .add(jLabel8))
                     .add(cmbTeamLength, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(6, 6, 6)
                 .add(panelSprites, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 71, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                .add(6, 6, 6)
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(btnLoad)
-                    .add(btnChallenge))
-                .addContainerGap(21, Short.MAX_VALUE))
+                    .add(btnChallenge)))
         );
 
         tabSettings.addTab("Basic", jPanel2);
@@ -566,7 +583,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
                     .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel3Layout.createSequentialGroup()
                         .add(8, 8, 8)
                         .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
+                            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
                             .add(jPanel3Layout.createSequentialGroup()
                                 .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
                                     .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel3Layout.createSequentialGroup()
@@ -598,7 +615,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
                     .add(jLabel7)
                     .add(txtTimerLength, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -663,7 +680,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
                     return cmbGen.getSelectedIndex();
                 }
                 public int getActivePartySize() {
-                    return Integer.parseInt((String)cmbN.getSelectedItem());
+                    return cmbN.getSelectedIndex() + 1;
                 }
                 public int getMaxTeamLength() {
                     return Integer.parseInt((String)cmbTeamLength.getSelectedItem());
@@ -679,8 +696,11 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
                     return new TimerOptions(pool, periods, periodLength);
                 }
                 public int getMetagame() {
+                    int genId = cmbGen.getSelectedIndex();
+                    Generation gen = m_link.getGenerations()[genId];
+
                     int idx = cmbRules.getSelectedIndex();
-                    if (idx >= m_link.getMetagames().length) {
+                    if (idx >= gen.getMetagames().size()) {
                         return -1;
                     }
                     return idx;
@@ -688,10 +708,10 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
             });
             btnChallenge.setEnabled(false);
             btnLoad.setEnabled(false);
-            cmbRules.setEnabled(false);
-            cmbN.setEnabled(false);
-            cmbTeamLength.setEnabled(false);
             cmbGen.setEnabled(false);
+            cmbRules.setEnabled(false);
+            cmbTeamLength.setEnabled(false);
+            cmbN.setEnabled(false);
             enableCustomFields(false);
             m_waiting = true;
         }
@@ -713,22 +733,18 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         }
     }//GEN-LAST:event_btnLoadActionPerformed
 
-    private void cmbRulesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbRulesActionPerformed
-        String val = cmbRules.getSelectedItem().toString();
-        if ("Custom...".equals(val)) {
-            enableCustomFields(true);
-            tabSettings.setSelectedIndex(1);
-        } else {
-            int idx = cmbRules.getSelectedIndex();
-            Metagame meta = m_link.getMetagames()[idx];
-            cmbN.setSelectedIndex(meta.getPartySize()-1);
-            cmbTeamLength.setSelectedIndex(meta.getMaxTeamLength()-1);
-            m_clauses = meta.getClauses(m_link.getClauseList());
-            ((ClauseListModel)listClauses.getModel()).setSelected(m_clauses);
-            
-            enableCustomFields(false);
+    private void cmbGenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbGenActionPerformed
+        Generation gen = (Generation)cmbGen.getSelectedItem();
+
+        DefaultComboBoxModel model = new DefaultComboBoxModel();
+        
+        for (Metagame meta : gen.getMetagames()) {
+            model.addElement(meta);
         }
-    }//GEN-LAST:event_cmbRulesActionPerformed
+        model.addElement("Custom...");
+        cmbRules.setModel(model);
+        cmbRules.setSelectedIndex(0);
+    }//GEN-LAST:event_cmbGenActionPerformed
 
     private void cmbTeamLengthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbTeamLengthActionPerformed
         int teamLength = Integer.parseInt(cmbTeamLength.getSelectedItem().toString());
@@ -741,6 +757,22 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         txtTimerPeriods.setEnabled(enabled);
         txtTimerLength.setEnabled(enabled);
     }//GEN-LAST:event_chkTimedActionPerformed
+
+    private void cmbRulesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbRulesActionPerformed
+        String val = cmbRules.getSelectedItem().toString();
+        if ("Custom...".equals(val)) {
+            enableCustomFields(true);
+            tabSettings.setSelectedIndex(1);
+        } else {
+            Metagame meta = (Metagame)cmbRules.getSelectedItem();
+            cmbN.setSelectedIndex(meta.getPartySize()-1);
+            cmbTeamLength.setSelectedIndex(meta.getMaxTeamLength()-1);
+            m_clauses = meta.getClauses(m_link.getClauseList());
+            ((ClauseListModel)listClauses.getModel()).setSelected(m_clauses);
+
+            enableCustomFields(false);
+        }
+    }//GEN-LAST:event_cmbRulesActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

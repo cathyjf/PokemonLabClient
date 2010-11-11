@@ -1276,7 +1276,7 @@ public class TeamBuilder extends javax.swing.JFrame {
                 long t3 = System.currentTimeMillis();
                 ArrayList<String> items = new ArrayList<String>();
                 items.add("Leftovers");
-                Generation mod = new Generation(species, moves, items);
+                Generation mod = Generation.loadGeneration();
                 System.out.println("Loaded moves in " + (t2-t1) + " milliseconds");
                 System.out.println("Loaded species in " + (t3-t2) + " milliseconds");
 

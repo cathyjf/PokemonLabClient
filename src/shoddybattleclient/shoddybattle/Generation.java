@@ -29,6 +29,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Scanner;
 import shoddybattleclient.TeamBuilder;
+import shoddybattleclient.network.ServerLink.TimerOptions;
+import shoddybattleclient.utils.ClauseList.Clause;
 import shoddybattleclient.utils.MoveListParser;
 import shoddybattleclient.utils.SpeciesListParser;
 
@@ -40,13 +42,99 @@ import shoddybattleclient.utils.SpeciesListParser;
  * @author Carlos
  */
 public class Generation {
+
+    public static interface RuleSet {
+        public TimerOptions getTimerOptions();
+        public int[] getClauses(List<Clause> clauses);
+    }
+
+    public static class Metagame implements RuleSet {
+        private int m_idx;
+        private String m_name;
+        private String m_id;
+        private String m_description;
+        private int m_partySize;
+        private int m_maxTeamLength;
+        private List<String> m_banList;
+        private List<String> m_clauses;
+        private Pokemon[] m_team;
+        private TimerOptions m_timerOptions;
+        public Metagame(int idx, String name, String id, String description,
+                int partySize, int maxTeamLength, List<String> banList,
+                List<String> clauses, TimerOptions timeOps) {
+            m_idx = idx;
+            m_name = name;
+            m_id = id;
+            m_description = description;
+            m_partySize = partySize;
+            m_maxTeamLength = maxTeamLength;
+            m_banList = banList;
+            m_clauses = clauses;
+            m_timerOptions = timeOps;
+        }
+        /*public int getIdx() {
+            return m_idx;
+        }*/
+        public String getName() {
+            return m_name;
+        }
+        public String getId() {
+            return m_id;
+        }
+        public String getDescription() {
+            return m_description;
+        }
+        public int getPartySize() {
+            return m_partySize;
+        }
+        public int getMaxTeamLength() {
+            return m_maxTeamLength;
+        }
+        public String[] getBanList() {
+            return m_banList.toArray(new String[m_banList.size()]);
+        }
+        public String[] getClauseList() {
+            return m_clauses.toArray(new String[m_clauses.size()]);
+        }
+        public int[] getClauses(List<Clause> clauses) {
+            int[] ret = new int[m_clauses.size()];
+            for (int i = 0; i < m_clauses.size(); i++) {
+                String name = m_clauses.get(i);
+                ret[i] = clauses.indexOf(new Clause(name, null));
+            }
+            return ret;
+        }
+        public TimerOptions getTimerOptions() {
+            return m_timerOptions;
+        }
+        public void setTeam(Pokemon[] team) {
+            m_team = team;
+        }
+        public Pokemon[] getTeam() {
+            return m_team;
+        }
+        @Override
+        public String toString() {
+            return m_name;
+        }
+    }
+
+    private String m_id;
+    private String m_name;
     private List<PokemonSpecies> m_species;
     private List<PokemonMove> m_moves;
     private List<String> m_items;
+    private List<Metagame> m_metagames = new ArrayList<Metagame>();
 
-    public Generation(List<PokemonSpecies> species,
+    public Generation(String id, String name,
+            List<PokemonSpecies> species,
             List<PokemonMove> moves,
             List<String> items) {
+        m_id = id;
+        m_species = species;
+        m_moves = moves;
+        m_items = items;
+
         Collections.sort(species, new Comparator<PokemonSpecies>() {
             @Override
             public int compare(PokemonSpecies arg0, PokemonSpecies arg1) {
@@ -54,10 +142,6 @@ public class Generation {
             }
         });
         Collections.sort(items);
-
-        m_species = species;
-        m_moves = moves;
-        m_items = items;
     }
 
     public static List<String> loadItems() {
@@ -87,9 +171,25 @@ public class Generation {
         List<PokemonSpecies> species = parser.parseDocument(
                 TeamBuilder.class.getResource("resources/species.xml").toString());
         List<String> items = Generation.loadItems();
-        return new Generation(species, moves, items);
+        return new Generation("gen4", "Generation 4", species, moves, items);
     }
 
+    // Temporary holdover until proper generation loading is implemented
+    public static Generation loadGeneration(String id, String name) {
+        Generation gen = loadGeneration();
+        gen.m_id = id;
+        gen.m_name = name;
+        return gen;
+    }
+
+    public String getId() {
+        return m_id;
+    }
+
+    public String getName() {
+        return m_name;
+    }
+    
     public List<PokemonMove> getMoves() {
         return m_moves;
     }
@@ -100,6 +200,18 @@ public class Generation {
 
     public List<String> getItems() {
         return m_items;
+    }
+
+    public List<Metagame> getMetagames() {
+        return m_metagames;
+    }
+
+    public Metagame getMetagame(int idx) {
+        return m_metagames.get(idx);
+    }
+
+    public void addMetagame(Metagame metagame) {
+        m_metagames.add(metagame);
     }
 
     public PokemonSpecies getSpeciesById(int id) {
@@ -127,5 +239,10 @@ public class Generation {
             }
         }
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return m_name;
     }
 }

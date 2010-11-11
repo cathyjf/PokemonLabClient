@@ -41,8 +41,8 @@ import shoddybattleclient.AdminPanel.ChannelLookup;
 import shoddybattleclient.network.ServerLink;
 import shoddybattleclient.network.ServerLink.BanElement;
 import shoddybattleclient.network.ServerLink.ChallengeMediator;
-import shoddybattleclient.network.ServerLink.RuleSet;
 import shoddybattleclient.shoddybattle.Generation;
+import shoddybattleclient.shoddybattle.Generation.RuleSet;
 import shoddybattleclient.utils.*;
 import shoddybattleclient.utils.ClauseList.Clause;
 import shoddybattleclient.utils.CloseableTabbedPane.TabCloseListener;
@@ -1139,9 +1139,8 @@ public class LobbyWindow extends javax.swing.JFrame implements TabCloseListener,
 
     private void mnuTeamBuilderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuTeamBuilderActionPerformed
         List<String> items = Generation.loadItems();
-        Generation mod = new Generation(ServerLink.getSpeciesList(),
-                m_link.getMoveList(), items);
-        new TeamBuilder(mod).setVisible(true);
+        Generation generation = m_link.getGenerations()[0];
+        new TeamBuilder(generation).setVisible(true);
     }//GEN-LAST:event_mnuTeamBuilderActionPerformed
 
     // prompts the user to confirm that they wish to leave the server

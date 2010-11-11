@@ -41,6 +41,8 @@ import shoddybattleclient.Preference;
 import shoddybattleclient.ServerConnect;
 import shoddybattleclient.WelcomeWindow;
 import shoddybattleclient.shoddybattle.Generation;
+import shoddybattleclient.shoddybattle.Generation.Metagame;
+import shoddybattleclient.shoddybattle.Generation.RuleSet;
 import shoddybattleclient.shoddybattle.Pokemon;
 import shoddybattleclient.shoddybattle.PokemonMove;
 import shoddybattleclient.shoddybattle.PokemonNature;
@@ -65,11 +67,6 @@ public class ServerLink extends Thread {
             this.periods = pers;
             this.periodLength = periodLen;
         }
-    }
-
-    public static interface RuleSet {
-        public TimerOptions getTimerOptions();
-        public int[] getClauses(List<Clause> clauses);
     }
 
     public interface ChallengeMediator {
@@ -121,76 +118,7 @@ public class ServerLink extends Thread {
         public int getMetagame();
     }
 
-    public static class Metagame implements RuleSet {
-        private int m_idx;
-        private String m_name;
-        private String m_id;
-        private String m_description;
-        private int m_partySize;
-        private int m_maxTeamLength;
-        private List<String> m_banList;
-        private List<String> m_clauses;
-        private Pokemon[] m_team;
-        private TimerOptions m_timerOptions;
-        public Metagame(int idx, String name, String id, String description,
-                int partySize, int maxTeamLength, List<String> banList,
-                List<String> clauses, TimerOptions timeOps) {
-            m_idx = idx;
-            m_name = name;
-            m_id = id;
-            m_description = description;
-            m_partySize = partySize;
-            m_maxTeamLength = maxTeamLength;
-            m_banList = banList;
-            m_clauses = clauses;
-            m_timerOptions = timeOps;
-        }
-        public int getIdx() {
-            return m_idx;
-        }
-        public String getName() {
-            return m_name;
-        }
-        public String getId() {
-            return m_id;
-        }
-        public String getDescription() {
-            return m_description;
-        }
-        public int getPartySize() {
-            return m_partySize;
-        }
-        public int getMaxTeamLength() {
-            return m_maxTeamLength;
-        }
-        public String[] getBanList() {
-            return m_banList.toArray(new String[m_banList.size()]);
-        }
-        public String[] getClauseList() {
-            return m_clauses.toArray(new String[m_clauses.size()]);
-        }
-        public int[] getClauses(List<Clause> clauses) {
-            int[] ret = new int[m_clauses.size()];
-            for (int i = 0; i < m_clauses.size(); i++) {
-                String name = m_clauses.get(i);
-                ret[i] = clauses.indexOf(new Clause(name, null));
-            }
-            return ret;
-        }
-        public TimerOptions getTimerOptions() {
-            return m_timerOptions;
-        }
-        public void setTeam(Pokemon[] team) {
-            m_team = team;
-        }
-        public Pokemon[] getTeam() {
-            return m_team;
-        }
-        @Override
-        public String toString() {
-            return m_name;
-        }
-    }
+    
 
     //Provies callbacks for elements trying to receive a user's personal message
     public static interface MessageListener {
@@ -432,10 +360,11 @@ public class ServerLink extends Thread {
     }
 
     public static class MetagameQueueMessage extends OutMessage {
-        public MetagameQueueMessage(ServerLink link,
+        public MetagameQueueMessage(ServerLink link, int generation,
                 int metagame, boolean rated, Pokemon[] team) {
             super(13);
             try {
+                m_stream.write(generation);
                 m_stream.write(metagame);
                 m_stream.write(rated ? 1 : 0);
                 link.writeTeam(team, m_stream);
@@ -493,9 +422,11 @@ public class ServerLink extends Thread {
     }
 
     public static class MetagameQueueCancelMessage extends OutMessage {
-        public MetagameQueueCancelMessage(int metagame, boolean rated) {
+        public MetagameQueueCancelMessage(int generation, int metagame,
+                boolean rated) {
             super(19);
             try {
+                m_stream.write(generation);
                 m_stream.write(metagame);
                 m_stream.write(rated ? 1 : 0);
             } catch (Exception e) {
@@ -870,7 +801,8 @@ public class ServerLink extends Thread {
                     }
                     
                     if (metagame != -1) {
-                        Metagame mg = link.getMetagames()[metagame];
+                        Generation gen = link.m_generations[generation];
+                        Metagame mg = gen.getMetagame(metagame);
                         link.m_lobby.addChallenge(user, true, generation,
                                 partySize, teamLength, metagame, mg);
                     } else {
@@ -942,6 +874,7 @@ public class ServerLink extends Thread {
                 // int32  : field id
                 // string : opponent
                 // byte   : party
+                // byte   : generation
                 // int16  : metagame (-1 for a direct challenge)
                 // byte   : rated
                 // string : unique battle ID
@@ -949,7 +882,8 @@ public class ServerLink extends Thread {
                         throws IOException {
                     int id = is.readInt();
                     String user = is.readUTF();
-                    int party = is.read();
+                    int party = is.readUnsignedByte();
+                    int generationId = is.readUnsignedByte();
                     int metagameId = is.readShort();
                     boolean rated = (is.read() != 0);
                     String battleUid = is.readUTF();
@@ -967,7 +901,8 @@ public class ServerLink extends Thread {
                     Pokemon[] team;
                     TimerOptions opts;
                     if (metagameId != -1) {
-                        Metagame metagame = link.m_metagames[metagameId];
+                        Generation gen = link.m_generations[generationId];
+                        Metagame metagame = gen.getMetagame(metagameId);
                         partySize = metagame.getPartySize();
                         maxTeamLength = metagame.getMaxTeamLength();
                         team = metagame.getTeam();
@@ -1514,65 +1449,76 @@ public class ServerLink extends Thread {
 
             // METAGAME_LIST
             new ServerMessage(26, new MessageHandler() {
-                // int16  : metagame count
-                // for each metagame:
-                //     byte   : id
-                //     string : name
-                //     string : "id", the table name of the metagame
-                //     string : description
-                //     byte   : party size (n)
-                //     byte   : max team length
-                //     int16  : number of bans
-                //     for each ban:
-                //         int16  : pokemon id
-                //     int16  : number of clauses
-                //     for each clause:
-                //         string : name of clause
-                //     byte   : if timing is enabled
-                //     if timing is enabled:
-                //         short : pool length
-                //         byte  : number of periods
-                //         short : period length
+                // byte : generation count
+                // for each generation:
+                //     string : generation id
+                //     string : generation name
+                //     byte   : metagame count
+                //     for each metagame:
+                //         string : id
+                //         string : name
+                //         string : description
+                //         byte   : party size (n)
+                //         byte   : max team length
+                //         int16  : number of bans
+                //         for each ban:
+                //             int16  : pokemon id
+                //         int16  : number of clauses
+                //         for each clause:
+                //             string : name of clause
+                //         byte   : if timing is enabled
+                //         if timing is enabled:
+                //             short : pool length
+                //             byte  : number of periods
+                //             short : period length
                 public void handle(ServerLink link, DataInputStream is)
                         throws IOException {
-                    int count = is.readShort();
-                    Metagame[] metagames = new Metagame[count];
-                    for (int i = 0; i < metagames.length; ++i) {
-                        int idx = is.readUnsignedByte();
-                        String name = is.readUTF();
-                        String id = is.readUTF();
-                        String description = is.readUTF();
-                        int partySize = is.readUnsignedByte();
-                        int maxTeamLength = is.readUnsignedByte();
-                        List<String> banList = new ArrayList<String>();
-                        int banLength = is.readShort();
-                        for (int j = 0; j < banLength; ++j) {
-                            int entry = is.readShort();
-                            String species = PokemonSpecies.getNameFromId(
-                                    link.m_generation, entry);
-                            banList.add(species);
+                    int nGenerations = is.readUnsignedByte();
+                    Generation[] generations = new Generation[nGenerations];
+                    for (int i = 0; i < generations.length; ++i) {
+                        String genId = is.readUTF();
+                        String genName = is.readUTF();
+                        generations[i] = Generation.loadGeneration(
+                                genId, genName);
+
+                        int nMetagames = is.readUnsignedByte();
+                        for (int j = 0; j < nMetagames; ++j) {
+                            String id = is.readUTF();
+                            String name = is.readUTF();
+                            String description = is.readUTF();
+                            int partySize = is.readUnsignedByte();
+                            int maxTeamLength = is.readUnsignedByte();
+
+                            List<String> banList = new ArrayList<String>();
+                            int banLength = is.readShort();
+                            for (int k = 0; k < banLength; ++k) {
+                                int entry = is.readShort();
+                                String species = PokemonSpecies.getNameFromId(
+                                        link.m_generation, entry);
+                                banList.add(species);
+                            }
+                            List<String> clauses = new ArrayList<String>();
+                            int clauseLength = is.readShort();
+                            for (int k = 0; k < clauseLength; ++k) {
+                                String clause = is.readUTF();
+                                clauses.add(clause);
+                            }
+                            TimerOptions ops;
+                            boolean timing = (is.read() != 0);
+                            if (timing) {
+                                int pool = is.readShort();
+                                int periods = is.read();
+                                int periodLength = is.readShort();
+                                ops = new TimerOptions(pool, periods, periodLength);
+                            } else {
+                                ops = null;
+                            }
+                            generations[i].addMetagame(new Metagame(i, name,
+                                    id, description, partySize, maxTeamLength,
+                                    banList, clauses, ops));
                         }
-                        List<String> clauses = new ArrayList<String>();
-                        int clauseLength = is.readShort();
-                        for (int j = 0; j < clauseLength; ++j) {
-                            String clause = is.readUTF();
-                            clauses.add(clause);
-                        }
-                        TimerOptions ops;
-                        boolean timing = (is.read() != 0);
-                        if (timing) {
-                            int pool = is.readShort();
-                            int periods = is.read();
-                            int periodLength = is.readShort();
-                            ops = new TimerOptions(pool, periods, periodLength);
-                        } else {
-                            ops = null;
-                        }
-                        metagames[i] = new Metagame(idx, name, id,
-                                description, partySize, maxTeamLength,
-                                banList, clauses, ops);
                     }
-                    link.m_metagames = metagames;
+                    link.m_generations = generations;
                     if (link.m_lobby != null) {
                         link.m_lobby.getFindPanel().updateMetagames();
                     }
@@ -1851,13 +1797,13 @@ public class ServerLink extends Thread {
             new HashMap<String, ChallengeMediator>();
     private Map<Integer, BattleWindow> m_battles =
             new HashMap<Integer, BattleWindow>();
-    private Metagame[] m_metagames;
+    private Generation[] m_generations;
     private List<MessageListener> m_msgListeners =
             new ArrayList<MessageListener>();
     private List<Clause> m_clauseList;
 
-    public Metagame[] getMetagames() {
-        return m_metagames;
+    public Generation[] getGenerations() {
+        return m_generations;
     }
 
     public static List<PokemonSpecies> getSpeciesList() {
@@ -1989,13 +1935,18 @@ public class ServerLink extends Thread {
         sendMessage(new ModeMessage(channel, user, mode, enable));
     }
 
-    public void queueTeam(int metagame, boolean rated, Pokemon[] team) {
-        sendMessage(new MetagameQueueMessage(this, metagame, rated, team));
-        m_metagames[metagame].setTeam(team);
+    public void queueTeam(int generation, int metagame, boolean rated,
+            Pokemon[] team) {
+        sendMessage(new MetagameQueueMessage(
+                this, generation, metagame, rated, team));
+
+        Generation gen = m_generations[generation];
+        gen.getMetagame(metagame).setTeam(team);
     }
 
-    public void cancelQueue(int metagame, boolean rated) {
-        sendMessage(new MetagameQueueCancelMessage(metagame, rated));
+    public void cancelQueue(int generation, int metagame, boolean rated) {
+        sendMessage(
+                new MetagameQueueCancelMessage(generation, metagame, rated));
     }
 
     public void cancelBattleAction(int fid) {
