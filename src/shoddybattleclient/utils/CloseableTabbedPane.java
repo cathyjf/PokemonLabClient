@@ -144,6 +144,7 @@ public class CloseableTabbedPane extends SlideTabbedPane {
         
         public void setFlashing(boolean flashing) {
             if (flashing) {
+                m_label.setForeground(COLOR_FLASH);
                 m_timer.start();
             } else {
                 m_label.setForeground(COLOR_NORMAL);

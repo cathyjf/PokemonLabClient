@@ -104,9 +104,9 @@ public class SlideTabbedPane extends JPanel {
 
             Color c = m_panel.getBackground();
             if (!isSelected) {
-                int red = (int)(c.getRed() * 0.8);
-                int green = (int)(c.getGreen() * 0.8);
-                int blue = (int)(c.getBlue() * 0.8);
+                int red = (int)(c.getRed() * 0.85);
+                int green = (int)(c.getGreen() * 0.85);
+                int blue = (int)(c.getBlue() * 0.85);
                 c = new Color(red, green, blue);
             }
             g.setColor(c);
