@@ -448,7 +448,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         jLabel1.setText("Generation:");
         jPanel4.add(jLabel1);
 
-        cmbGen.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Standard", "Ubers", "Custom..." }));
+        cmbGen.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Generation 4", "Generation 5" }));
         cmbGen.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmbGenActionPerformed(evt);
@@ -460,7 +460,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         jLabel2.setText("Rules:");
         jPanel4.add(jLabel2);
 
-        cmbRules.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5", "6" }));
+        cmbRules.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Standard", "Ubers" }));
         cmbRules.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmbRulesActionPerformed(evt);

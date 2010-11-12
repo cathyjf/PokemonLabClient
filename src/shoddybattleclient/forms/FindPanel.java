@@ -167,7 +167,7 @@ public class FindPanel extends javax.swing.JPanel {
         jLabel2.setText("Generation:");
         jPanel2.add(jLabel2);
 
-        cmbGeneration.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbGeneration.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Generation 4", "Generation 5" }));
         cmbGeneration.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmbGenerationActionPerformed(evt);

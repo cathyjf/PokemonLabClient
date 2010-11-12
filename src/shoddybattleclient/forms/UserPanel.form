@@ -216,10 +216,9 @@
                 <Component class="javax.swing.JComboBox" name="cmbGen">
                   <Properties>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                      <StringArray count="3">
-                        <StringItem index="0" value="Standard"/>
-                        <StringItem index="1" value="Ubers"/>
-                        <StringItem index="2" value="Custom..."/>
+                      <StringArray count="2">
+                        <StringItem index="0" value="Generation 4"/>
+                        <StringItem index="1" value="Generation 5"/>
                       </StringArray>
                     </Property>
                   </Properties>
@@ -238,13 +237,9 @@
                 <Component class="javax.swing.JComboBox" name="cmbRules">
                   <Properties>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                      <StringArray count="6">
-                        <StringItem index="0" value="1"/>
-                        <StringItem index="1" value="2"/>
-                        <StringItem index="2" value="3"/>
-                        <StringItem index="3" value="4"/>
-                        <StringItem index="4" value="5"/>
-                        <StringItem index="5" value="6"/>
+                      <StringArray count="2">
+                        <StringItem index="0" value="Standard"/>
+                        <StringItem index="1" value="Ubers"/>
                       </StringArray>
                     </Property>
                   </Properties>
