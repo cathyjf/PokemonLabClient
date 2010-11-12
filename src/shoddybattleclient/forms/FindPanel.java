@@ -81,15 +81,16 @@ public class FindPanel extends javax.swing.JPanel {
         lblDescription = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         btnLoad = new javax.swing.JButton();
-        cmbLadder = new javax.swing.JComboBox();
         chkRated = new javax.swing.JCheckBox();
         panelSprites = new TeamBox();
         jPanel4 = new javax.swing.JPanel();
         btnFind = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         cmbGeneration = new javax.swing.JComboBox();
+        jLabel1 = new javax.swing.JLabel();
+        cmbLadder = new javax.swing.JComboBox();
 
         setOpaque(false);
 
@@ -100,7 +101,7 @@ public class FindPanel extends javax.swing.JPanel {
 
         txtBans.setColumns(14);
         txtBans.setEditable(false);
-        txtBans.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+        txtBans.setFont(new java.awt.Font("Lucida Grande", 0, 11));
         txtBans.setLineWrap(true);
         txtBans.setRows(3);
         txtBans.setWrapStyleWord(true);
@@ -118,7 +119,7 @@ public class FindPanel extends javax.swing.JPanel {
         txtClauses.setMaximumSize(new java.awt.Dimension(200, 200));
         jScrollPane3.setViewportView(txtClauses);
 
-        lblDescription.setFont(new java.awt.Font("Lucida Grande", 0, 12)); // NOI18N
+        lblDescription.setFont(new java.awt.Font("Lucida Grande", 0, 12));
         lblDescription.setText("<html>This is some information about this ladder. This should fit 3 lines worth I hope</html>");
         lblDescription.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
@@ -128,13 +129,6 @@ public class FindPanel extends javax.swing.JPanel {
         btnLoad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLoadActionPerformed(evt);
-            }
-        });
-
-        cmbLadder.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Standard", "Uber", "UU", "Suspect" }));
-        cmbLadder.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbLadderActionPerformed(evt);
             }
         });
 
@@ -166,11 +160,12 @@ public class FindPanel extends javax.swing.JPanel {
         });
         jPanel4.add(btnCancel);
 
-        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-        jLabel1.setText("Ladder:");
+        jPanel2.setOpaque(false);
+        jPanel2.setLayout(new java.awt.GridLayout(2, 2, 5, 7));
 
         jLabel2.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
         jLabel2.setText("Generation:");
+        jPanel2.add(jLabel2);
 
         cmbGeneration.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cmbGeneration.addActionListener(new java.awt.event.ActionListener() {
@@ -178,61 +173,56 @@ public class FindPanel extends javax.swing.JPanel {
                 cmbGenerationActionPerformed(evt);
             }
         });
+        jPanel2.add(cmbGeneration);
+
+        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel1.setText("Ladder:");
+        jPanel2.add(jLabel1);
+
+        cmbLadder.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Standard", "Uber", "UU", "Suspect" }));
+        cmbLadder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbLadderActionPerformed(evt);
+            }
+        });
+        jPanel2.add(cmbLadder);
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1Layout.createSequentialGroup()
-                .add(12, 12, 12)
-                .add(chkRated, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 72, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(6, 6, 6)
-                .add(btnLoad, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 125, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-            .add(jPanel1Layout.createSequentialGroup()
-                .add(12, 12, 12)
-                .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 221, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(17, Short.MAX_VALUE)
-                .add(panelSprites, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 221, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .add(jPanel1Layout.createSequentialGroup()
-                .add(12, 12, 12)
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jLabel2)
-                    .add(jLabel1))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(cmbLadder, 0, 128, Short.MAX_VALUE)
-                    .add(cmbGeneration, 0, 128, Short.MAX_VALUE))
+                    .add(jPanel1Layout.createSequentialGroup()
+                        .add(12, 12, 12)
+                        .add(chkRated, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 72, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(18, 18, 18)
+                        .add(btnLoad, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 125, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 221, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(panelSprites, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE))
+                    .add(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1Layout.createSequentialGroup()
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel1Layout.createSequentialGroup()
-                        .add(13, 13, 13)
-                        .add(jLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(jPanel1Layout.createSequentialGroup()
-                        .add(9, 9, 9)
-                        .add(cmbGeneration, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel1Layout.createSequentialGroup()
-                        .add(10, 10, 10)
-                        .add(jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(jPanel1Layout.createSequentialGroup()
-                        .add(6, 6, 6)
-                        .add(cmbLadder, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel1Layout.createSequentialGroup()
-                        .add(6, 6, 6)
-                        .add(chkRated))
+                .addContainerGap()
+                .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(chkRated)
                     .add(btnLoad))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(panelSprites, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 91, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
@@ -244,13 +234,13 @@ public class FindPanel extends javax.swing.JPanel {
                 .add(jPanel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(10, 10, 10)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
-                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
-                    .add(lblDescription, 0, 0, Short.MAX_VALUE)
                     .add(jLabel3)
-                    .add(jLabel4))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, lblDescription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
+                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
+                    .add(jLabel4)
+                    .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -258,24 +248,23 @@ public class FindPanel extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+                    .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(lblDescription, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(layout.createSequentialGroup()
                                 .add(33, 33, 33)
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                                     .add(jPanel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                     .add(layout.createSequentialGroup()
                                         .add(18, 18, 18)
-                                        .add(jLabel3))))
-                            .add(lblDescription, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                        .add(jLabel3)))))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 61, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jLabel4)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jScrollPane3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 61, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 41, Short.MAX_VALUE)))
+                        .add(jScrollPane3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 61, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -383,6 +372,7 @@ public class FindPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane2;

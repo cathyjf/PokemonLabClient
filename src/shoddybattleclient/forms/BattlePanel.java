@@ -26,7 +26,6 @@ package shoddybattleclient.forms;
 import java.util.ArrayList;
 import shoddybattleclient.utils.*;
 import javax.swing.*;
-import javax.swing.table.TableColumnModel;
 import shoddybattleclient.network.ServerLink;
 
 /**
@@ -88,10 +87,6 @@ public class BattlePanel extends javax.swing.JPanel {
                     battle.n, battle.population);
         }
         tblBattles.setModel(m_model);
-        TableColumnModel cols = tblBattles.getColumnModel();
-        cols.getColumn(1).setMaxWidth(150);
-        cols.getColumn(2).setMaxWidth(50);
-        cols.getColumn(3).setMaxWidth(50);
     }
 
     /** This method is called from within the constructor to

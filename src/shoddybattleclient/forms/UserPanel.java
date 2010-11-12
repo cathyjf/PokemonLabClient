@@ -360,17 +360,18 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
         jLabel3 = new javax.swing.JLabel();
         tabSettings = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
+        panelSprites = new TeamBox();
+        btnLoad = new javax.swing.JButton();
+        btnChallenge = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         cmbGen = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
         cmbRules = new javax.swing.JComboBox();
         jLabel4 = new javax.swing.JLabel();
         cmbN = new javax.swing.JComboBox();
-        panelSprites = new TeamBox();
-        btnLoad = new javax.swing.JButton();
-        btnChallenge = new javax.swing.JButton();
-        cmbTeamLength = new javax.swing.JComboBox();
         jLabel8 = new javax.swing.JLabel();
+        cmbTeamLength = new javax.swing.JComboBox();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         listClauses = new ClauseList();
@@ -414,35 +415,10 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
                 .add(lblMessage, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 135, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jLabel3)
-                .addContainerGap(101, Short.MAX_VALUE))
+                .addContainerGap(147, Short.MAX_VALUE))
         );
 
         jPanel2.setOpaque(false);
-
-        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 13));
-        jLabel1.setText("Generation:");
-
-        cmbGen.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Standard", "Ubers", "Custom..." }));
-        cmbGen.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbGenActionPerformed(evt);
-            }
-        });
-
-        jLabel2.setFont(new java.awt.Font("Lucida Grande", 1, 13));
-        jLabel2.setText("Rules:");
-
-        cmbRules.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5", "6" }));
-        cmbRules.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbRulesActionPerformed(evt);
-            }
-        });
-
-        jLabel4.setFont(new java.awt.Font("Lucida Grande", 1, 13));
-        jLabel4.setText("Mode:");
-
-        cmbN.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Singles", "Doubles", "3v3", "4v4", "5v5", "6v6" }));
 
         panelSprites.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         panelSprites.setMaximumSize(new java.awt.Dimension(32767, 200));
@@ -465,6 +441,44 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
             }
         });
 
+        jPanel4.setOpaque(false);
+        jPanel4.setLayout(new java.awt.GridLayout(4, 2, 5, 7));
+
+        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel1.setText("Generation:");
+        jPanel4.add(jLabel1);
+
+        cmbGen.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Standard", "Ubers", "Custom..." }));
+        cmbGen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbGenActionPerformed(evt);
+            }
+        });
+        jPanel4.add(cmbGen);
+
+        jLabel2.setFont(new java.awt.Font("Lucida Grande", 1, 13));
+        jLabel2.setText("Rules:");
+        jPanel4.add(jLabel2);
+
+        cmbRules.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5", "6" }));
+        cmbRules.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbRulesActionPerformed(evt);
+            }
+        });
+        jPanel4.add(cmbRules);
+
+        jLabel4.setFont(new java.awt.Font("Lucida Grande", 1, 13));
+        jLabel4.setText("Mode:");
+        jPanel4.add(jLabel4);
+
+        cmbN.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Singles", "Doubles", "3v3", "4v4", "5v5", "6v6" }));
+        jPanel4.add(cmbN);
+
+        jLabel8.setFont(new java.awt.Font("Lucida Grande", 1, 13));
+        jLabel8.setText("Team Length:");
+        jPanel4.add(jLabel8);
+
         cmbTeamLength.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5", "6" }));
         cmbTeamLength.setSelectedIndex(5);
         cmbTeamLength.addActionListener(new java.awt.event.ActionListener() {
@@ -472,75 +486,35 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
                 cmbTeamLengthActionPerformed(evt);
             }
         });
-
-        jLabel8.setFont(new java.awt.Font("Lucida Grande", 1, 13));
-        jLabel8.setText("Team Length:");
+        jPanel4.add(cmbTeamLength);
 
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel2Layout.createSequentialGroup()
-                .add(12, 12, 12)
-                .add(jLabel1)
-                .add(10, 10, 10)
-                .add(cmbGen, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 120, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-            .add(jPanel2Layout.createSequentialGroup()
-                .add(12, 12, 12)
-                .add(jLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(46, 46, 46)
-                .add(cmbRules, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 120, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-            .add(jPanel2Layout.createSequentialGroup()
-                .add(12, 12, 12)
-                .add(jLabel4)
-                .add(50, 50, 50)
-                .add(cmbN, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 120, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-            .add(jPanel2Layout.createSequentialGroup()
-                .add(12, 12, 12)
-                .add(jLabel8)
-                .add(5, 5, 5)
-                .add(cmbTeamLength, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 110, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-            .add(jPanel2Layout.createSequentialGroup()
-                .add(12, 12, 12)
-                .add(panelSprites, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 216, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-            .add(jPanel2Layout.createSequentialGroup()
-                .add(12, 12, 12)
-                .add(btnLoad, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 78, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(6, 6, 6)
-                .add(btnChallenge, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 132, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap()
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(panelSprites, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
+                    .add(jPanel2Layout.createSequentialGroup()
+                        .add(btnLoad, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 78, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(18, 18, 18)
+                        .add(btnChallenge, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE))
+                    .add(jPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel2Layout.createSequentialGroup()
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel2Layout.createSequentialGroup()
-                        .add(6, 6, 6)
-                        .add(jLabel1))
-                    .add(cmbGen, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(6, 6, 6)
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel2Layout.createSequentialGroup()
-                        .add(6, 6, 6)
-                        .add(jLabel2))
-                    .add(cmbRules, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(6, 6, 6)
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel2Layout.createSequentialGroup()
-                        .add(6, 6, 6)
-                        .add(jLabel4))
-                    .add(cmbN, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(6, 6, 6)
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel2Layout.createSequentialGroup()
-                        .add(6, 6, 6)
-                        .add(jLabel8))
-                    .add(cmbTeamLength, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(6, 6, 6)
-                .add(panelSprites, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 71, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(6, 6, 6)
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .addContainerGap()
+                .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(panelSprites, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 91, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(btnLoad)
-                    .add(btnChallenge)))
+                    .add(btnChallenge))
+                .addContainerGap())
         );
 
         tabSettings.addTab("Basic", jPanel2);
@@ -584,7 +558,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
                     .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel3Layout.createSequentialGroup()
                         .add(8, 8, 8)
                         .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
                             .add(jPanel3Layout.createSequentialGroup()
                                 .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
                                     .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel3Layout.createSequentialGroup()
@@ -616,7 +590,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
                     .add(jLabel7)
                     .add(txtTimerLength, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -629,19 +603,18 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(31, 31, 31)
-                .add(tabSettings, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 272, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(41, 41, 41)
+                .add(tabSettings, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 262, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(tabSettings, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
-                    .add(layout.createSequentialGroup()
-                        .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, tabSettings, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -795,6 +768,7 @@ public class UserPanel extends javax.swing.JPanel implements CloseableTab, Messa
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblMessage;
     private javax.swing.JLabel lblName;
