@@ -23,7 +23,6 @@
 package shoddybattleclient.forms;
 
 import java.awt.FileDialog;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -62,6 +61,14 @@ public class FindPanel extends javax.swing.JPanel {
         btnCancel.setEnabled(false);
     }
 
+    private String getFriendlyPartySize(int partySize) {
+        String[] partySizes = new String[] {"Singles", "Doubles"};
+        if (partySize <= partySizes.length) {
+            return partySizes[partySize - 1];
+        }
+        return partySize + " vs " + partySize;
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -72,13 +79,6 @@ public class FindPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         jPanel5 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        txtBans = new javax.swing.JTextArea();
-        jLabel4 = new javax.swing.JLabel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        txtClauses = new javax.swing.JTextArea();
-        lblDescription = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         btnLoad = new javax.swing.JButton();
         chkRated = new javax.swing.JCheckBox();
@@ -91,37 +91,25 @@ public class FindPanel extends javax.swing.JPanel {
         cmbGeneration = new javax.swing.JComboBox();
         jLabel1 = new javax.swing.JLabel();
         cmbLadder = new javax.swing.JComboBox();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel3 = new javax.swing.JPanel();
+        jPanel8 = new javax.swing.JPanel();
+        lblDescription = new javax.swing.JLabel();
+        jPanel9 = new javax.swing.JPanel();
+        lblMode = new javax.swing.JLabel();
+        lblTeamLength = new javax.swing.JLabel();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        listBans = new javax.swing.JList();
+        jPanel7 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        listClauses = new javax.swing.JList();
 
         setOpaque(false);
 
         jPanel5.setLayout(new java.awt.GridLayout(1, 2));
-
-        jLabel3.setFont(new java.awt.Font("Lucida Grande", 0, 11));
-        jLabel3.setText("Ban List:");
-
-        txtBans.setColumns(14);
-        txtBans.setEditable(false);
-        txtBans.setFont(new java.awt.Font("Lucida Grande", 0, 11));
-        txtBans.setLineWrap(true);
-        txtBans.setRows(3);
-        txtBans.setWrapStyleWord(true);
-        jScrollPane2.setViewportView(txtBans);
-
-        jLabel4.setFont(new java.awt.Font("Lucida Grande", 0, 11));
-        jLabel4.setText("Clauses:");
-
-        txtClauses.setColumns(14);
-        txtClauses.setEditable(false);
-        txtClauses.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
-        txtClauses.setLineWrap(true);
-        txtClauses.setRows(3);
-        txtClauses.setWrapStyleWord(true);
-        txtClauses.setMaximumSize(new java.awt.Dimension(200, 200));
-        jScrollPane3.setViewportView(txtClauses);
-
-        lblDescription.setFont(new java.awt.Font("Lucida Grande", 0, 12));
-        lblDescription.setText("<html>This is some information about this ladder. This should fit 3 lines worth I hope</html>");
-        lblDescription.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         jPanel1.setOpaque(false);
 
@@ -163,7 +151,7 @@ public class FindPanel extends javax.swing.JPanel {
         jPanel2.setOpaque(false);
         jPanel2.setLayout(new java.awt.GridLayout(2, 2, 5, 7));
 
-        jLabel2.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Lucida Grande", 1, 13));
         jLabel2.setText("Generation:");
         jPanel2.add(jLabel2);
 
@@ -175,7 +163,7 @@ public class FindPanel extends javax.swing.JPanel {
         });
         jPanel2.add(cmbGeneration);
 
-        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 13));
         jLabel1.setText("Ladder:");
         jPanel2.add(jLabel1);
 
@@ -206,13 +194,13 @@ public class FindPanel extends javax.swing.JPanel {
                         .add(panelSprites, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE))
                     .add(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
-                        .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)))
+                        .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 221, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
@@ -221,9 +209,119 @@ public class FindPanel extends javax.swing.JPanel {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(panelSprites, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 91, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
+
+        jPanel3.setOpaque(false);
+
+        jPanel8.setOpaque(false);
+        jPanel8.setLayout(new javax.swing.BoxLayout(jPanel8, javax.swing.BoxLayout.PAGE_AXIS));
+
+        lblDescription.setFont(new java.awt.Font("Lucida Grande", 0, 12));
+        lblDescription.setText("<html>This is some information about this ladder. This should fit 3 lines worth I hope</html>");
+        lblDescription.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        jPanel8.add(lblDescription);
+
+        jPanel9.setMinimumSize(new java.awt.Dimension(0, 15));
+        jPanel9.setOpaque(false);
+
+        org.jdesktop.layout.GroupLayout jPanel9Layout = new org.jdesktop.layout.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 167, Short.MAX_VALUE)
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 10, Short.MAX_VALUE)
+        );
+
+        jPanel8.add(jPanel9);
+
+        lblMode.setText("Singles");
+        jPanel8.add(lblMode);
+
+        lblTeamLength.setText("6 Pokemon per team");
+        jPanel8.add(lblTeamLength);
+
+        org.jdesktop.layout.GroupLayout jPanel3Layout = new org.jdesktop.layout.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jPanel8, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jPanel8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(183, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Rules", jPanel3);
+
+        jPanel6.setOpaque(false);
+
+        jLabel3.setFont(new java.awt.Font("Lucida Grande", 0, 11));
+        jLabel3.setText("Ban List:");
+
+        jScrollPane2.setViewportView(listBans);
+
+        org.jdesktop.layout.GroupLayout jPanel6Layout = new org.jdesktop.layout.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+                    .add(jLabel3))
+                .addContainerGap())
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jLabel3)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Banlist", jPanel6);
+
+        jPanel7.setOpaque(false);
+
+        jLabel4.setFont(new java.awt.Font("Lucida Grande", 0, 11));
+        jLabel4.setText("Clauses:");
+
+        jScrollPane1.setViewportView(listClauses);
+
+        org.jdesktop.layout.GroupLayout jPanel7Layout = new org.jdesktop.layout.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+                    .add(jLabel4))
+                .addContainerGap())
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jLabel4)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Clauses", jPanel7);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -235,36 +333,23 @@ public class FindPanel extends javax.swing.JPanel {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .add(10, 10, 10)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jLabel3)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, lblDescription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
-                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
-                    .add(jLabel4)
-                    .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE))
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(lblDescription, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(layout.createSequentialGroup()
-                                .add(33, 33, 33)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(jPanel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(layout.createSequentialGroup()
-                                        .add(18, 18, 18)
-                                        .add(jLabel3)))))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 61, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jLabel4)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jScrollPane3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 61, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                        .add(139, 139, 139)
+                        .add(jPanel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                .add(90, 90, 90))
+            .add(layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -303,18 +388,16 @@ public class FindPanel extends javax.swing.JPanel {
     private void cmbLadderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbLadderActionPerformed
         Metagame metagame = (Metagame)cmbLadder.getSelectedItem();
         if (metagame != null) {
-            lblDescription.setText("<html>" + metagame.getDescription() + "</html>");
+            String description = metagame.getDescription();
+            int teamLength = metagame.getMaxTeamLength();
             List<String> banList = Arrays.asList(metagame.getBanList());
             Collections.sort(banList);
-            String bans = join(banList, ", ");
-            txtBans.setText(bans);
-            int partySize = metagame.getPartySize();
-            List<String> clauseList = new ArrayList<String>(Arrays.asList(
-                    metagame.getClauseList()));
-            clauseList.add(0, partySize + " v. " + partySize);
-            clauseList.add(1, metagame.getMaxTeamLength() + " Pokemon per team");
-            String clauses = join(clauseList, ", ");
-            txtClauses.setText(clauses);
+            
+            lblDescription.setText("<html>" + description + "</html>");
+            lblMode.setText(getFriendlyPartySize(metagame.getPartySize()));
+            lblTeamLength.setText(teamLength + " Pokemon per team");
+            listBans.setListData(banList.toArray());
+            listClauses.setListData(metagame.getClauseList());
             ((TeamBox)panelSprites).setTeamLength(metagame.getMaxTeamLength());
         }
     }//GEN-LAST:event_cmbLadderActionPerformed
@@ -373,14 +456,22 @@ public class FindPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lblDescription;
+    private javax.swing.JLabel lblMode;
+    private javax.swing.JLabel lblTeamLength;
+    private javax.swing.JList listBans;
+    private javax.swing.JList listClauses;
     private javax.swing.JPanel panelSprites;
-    private javax.swing.JTextArea txtBans;
-    private javax.swing.JTextArea txtClauses;
     // End of variables declaration//GEN-END:variables
 
 }
