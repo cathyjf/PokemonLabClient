@@ -8929,6 +8929,7 @@
 			<move>Double-Edge</move>
 			<move>DynamicPunch</move>
 			<move>Endure</move>
+			<move>Fly</move>
 			<move>Follow Me</move>
 			<move>Headbutt</move>
 			<move>Helping Hand</move>
@@ -8960,6 +8961,7 @@
 			<move>Charge Beam</move>
 			<move>Dig</move>
 			<move>Double Team</move>
+			<move>Endeavour</move>
 			<move>Endure</move>
 			<move>Facade</move>
 			<move>Flash</move>
@@ -8971,6 +8973,7 @@
 			<move>Iron Tail</move>
 			<move>Light Screen</move>
 			<move>Natural Gift</move>
+			<move>Pain Split</move>
 			<move>Protect</move>
 			<move>Rain Dance</move>
 			<move>Rest</move>
@@ -15308,6 +15311,7 @@
 			<move>Substitute</move>
 			<move>Swagger</move>
 			<move>Swords Dance</move>
+			<move>Synthesis</move>
 			<move>Worry Seed</move>
 		</moves>
 		<moves origin="machine">
@@ -42514,6 +42518,9 @@
 		</moves>
 		<moves origin="pikalightball">
 			<move>Volt Tackle</move>
+			<move>Endure</move>
+			<move>Endeavour</move>
+			<move>Pain Split</move>
 		</moves>
 	</moveset>
 	<illegal>
@@ -59098,12 +59105,14 @@
 			<move>Thunder Wave</move>
 		</moves>
 		<moves origin="machine">
+			<move>Aura Sphere</move>
 			<move>Calm Mind</move>
 			<move>Charge Beam</move>
 			<move>Cut</move>
 			<move>Dig</move>
 			<move>Double Team</move>
 			<move>Endure</move>
+			<move>ExtremeSpeed</move>
 			<move>Facade</move>
 			<move>Flash</move>
 			<move>Frustration</move>
@@ -59135,6 +59144,8 @@
 			<move>Thunder Wave</move>
 			<move>Thunderbolt</move>
 			<move>Toxic</move>
+			<move>Weather Ball</move>
+			<move>Zap Cannon</move>
 		</moves>
 	</moveset>
 	<illegal>
@@ -59630,17 +59641,21 @@
 		</moves>
 		<moves origin="machine">
 			<move>Calm Mind</move>
+			<move>Crush Claw</move>
 			<move>Cut</move>
 			<move>Dig</move>
 			<move>Double Team</move>
 			<move>Endure</move>
+			<move>ExtremeSpeed</move>
 			<move>Facade</move>
 			<move>Fire Blast</move>
 			<move>Flamethrower</move>
+			<move>Flare Blitz</move>
 			<move>Flash</move>
 			<move>Frustration</move>
 			<move>Giga Impact</move>
 			<move>Hidden Power</move>
+			<move>Howl</move>
 			<move>Hyper Beam</move>
 			<move>Iron Tail</move>
 			<move>Natural Gift</move>
@@ -60162,6 +60177,8 @@
 			<move>Tailwind</move>
 		</moves>
 		<moves origin="machine">
+			<move>Air Slash</move>
+			<move>Aqua Ring</move>
 			<move>Avalanche</move>
 			<move>Blizzard</move>
 			<move>Brine</move>
@@ -60171,6 +60188,7 @@
 			<move>Dive</move>
 			<move>Double Team</move>
 			<move>Endure</move>
+			<move>ExtremeSpeed</move>
 			<move>Facade</move>
 			<move>Frustration</move>
 			<move>Giga Impact</move>
@@ -60192,6 +60210,7 @@
 			<move>Sandstorm</move>
 			<move>Secret Power</move>
 			<move>Shadow Ball</move>
+			<move>Sheer Cold</move>
 			<move>Sleep Talk</move>
 			<move>Substitute</move>
 			<move>Sunny Day</move>
@@ -62069,6 +62088,7 @@
 			<move>Hidden Power</move>
 			<move>Hyper Beam</move>
 			<move>Light Screen</move>
+			<move>Nasty Plot</move>
 			<move>Natural Gift</move>
 			<move>Protect</move>
 			<move>Psych Up</move>
@@ -70630,6 +70650,7 @@
 		</moves>
 		<moves origin="machine">
 			<move>Aerial Ace</move>
+			<move>Baton Pass</move>
 			<move>Cut</move>
 			<move>Dig</move>
 			<move>Double Team</move>
@@ -70651,11 +70672,13 @@
 			<move>Secret Power</move>
 			<move>Shadow Ball</move>
 			<move>Shadow Claw</move>
+			<move>Slash</move>
 			<move>Sleep Talk</move>
 			<move>SolarBeam</move>
 			<move>Substitute</move>
 			<move>Sunny Day</move>
 			<move>Swagger</move>
+			<move>Swords Dance</move>
 			<move>Thief</move>
 			<move>Toxic</move>
 			<move>Will-O-Wisp</move>
@@ -84679,6 +84702,7 @@
 			<move>Snore</move>
 			<move>Spite</move>
 			<move>Substitute</move>
+			<move>Superpower</move>
 			<move>Swagger</move>
 			<move>Swift</move>
 			<move>Swords Dance</move>
@@ -88250,6 +88274,7 @@
 			<move>Calm Mind</move>
 			<move>Charge Beam</move>
 			<move>Double Team</move>
+			<move>Draco Meteor</move>
 			<move>Drain Punch</move>
 			<move>Dream Eater</move>
 			<move>Endure</move>
@@ -88616,14 +88641,18 @@
 		</moves>
 		<moves origin="machine">
 			<move>Aerial Ace</move>
+			<move>Amnesia</move>
 			<move>Avalanche</move>
+			<move>Body Slam</move>
 			<move>Brick Break</move>
 			<move>Calm Mind</move>
 			<move>Charge Beam</move>
 			<move>Cut</move>
+			<move>Double-Edge</move>
 			<move>Double Team</move>
 			<move>Drain Punch</move>
 			<move>Dream Eater</move>
+			<move>Dynamicpunch</move>
 			<move>Endure</move>
 			<move>Energy Ball</move>
 			<move>Facade</move>
@@ -88639,6 +88668,9 @@
 			<move>Hyper Beam</move>
 			<move>Ice Beam</move>
 			<move>Light Screen</move>
+			<move>Mega Kick</move>
+			<move>Mega Punch</move>
+			<move>Mimic</move>
 			<move>Natural Gift</move>
 			<move>Poison Jab</move>
 			<move>Protect</move>
@@ -88654,6 +88686,7 @@
 			<move>Rock Tomb</move>
 			<move>Safeguard</move>
 			<move>Secret Power</move>
+			<move>Seismic Toss</move>
 			<move>Shadow Ball</move>
 			<move>Shock Wave</move>
 			<move>Skill Swap</move>
@@ -88877,13 +88910,16 @@
 		<moves origin="machine">
 			<move>Aerial Ace</move>
 			<move>Avalanche</move>
+			<move>Body Slam</move>
 			<move>Brick Break</move>
 			<move>Calm Mind</move>
 			<move>Charge Beam</move>
 			<move>Cut</move>
+			<move>Double-Edge</move>
 			<move>Double Team</move>
 			<move>Drain Punch</move>
 			<move>Dream Eater</move>
+			<move>Dynamicpunch</move>
 			<move>Endure</move>
 			<move>Energy Ball</move>
 			<move>Facade</move>
@@ -88899,6 +88935,9 @@
 			<move>Hyper Beam</move>
 			<move>Ice Beam</move>
 			<move>Light Screen</move>
+			<move>Mega Kick</move>
+			<move>Mega Punch</move>
+			<move>Mimic</move>
 			<move>Natural Gift</move>
 			<move>Poison Jab</move>
 			<move>Protect</move>
@@ -88914,6 +88953,7 @@
 			<move>Rock Tomb</move>
 			<move>Safeguard</move>
 			<move>Secret Power</move>
+			<move>Seismic Toss</move>
 			<move>Shadow Ball</move>
 			<move>Shock Wave</move>
 			<move>Skill Swap</move>
@@ -107479,6 +107519,7 @@
 			<move>Toxic</move>
 			<move>Water Pulse</move>
 			<move>Whirlpool</move>
+			<move>Wish</move>
 		</moves>
 		<moves origin="prevevo">
 			<move>Attract</move>
@@ -118795,6 +118836,7 @@
 			<move>Torment</move>
 			<move>Toxic</move>
 			<move>Trick Room</move>
+			<move>Wish</move>
 			<move>X-Scissor</move>
 		</moves>
 		<moves origin="prevevo">
@@ -120341,6 +120383,7 @@
 			<move>Dragon Pulse</move>
 			<move>Earthquake</move>
 			<move>Endure</move>
+			<move>Eruption</move>
 			<move>Explosion</move>
 			<move>Facade</move>
 			<move>Fire Blast</move>
@@ -121221,6 +121264,7 @@
 			<move>Rest</move>
 			<move>Return</move>
 			<move>Roar</move>
+			<move>Roar of Time</move>
 			<move>Rock Climb</move>
 			<move>Rock Slide</move>
 			<move>Rock Smash</move>
@@ -121230,11 +121274,13 @@
 			<move>Secret Power</move>
 			<move>Shadow Ball</move>
 			<move>Shadow Claw</move>
+			<move>Shadow Force</move>
 			<move>Shock Wave</move>
 			<move>Silver Wind</move>
 			<move>Sleep Talk</move>
 			<move>Sludge Bomb</move>
 			<move>SolarBeam</move>
+			<move>Spacial Rend</move>
 			<move>Stealth Rock</move>
 			<move>Stone Edge</move>
 			<move>Strength</move>
