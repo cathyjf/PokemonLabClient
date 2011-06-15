@@ -98,8 +98,8 @@ public class WelcomeWindow extends javax.swing.JFrame {
          *       metaserver of some sort rather than being hardcoded.
          */
 
-        ServerListEntry sle = new ServerListEntry("Poke Lab Beta",
-                "Pokemon Lab beta server", "beta.poke-lab.com",
+        ServerListEntry sle = new ServerListEntry("Pokemonexperte",
+                "Pokemonexperte Server", "lab.pokemonexperte.de",
                 8446, 0, 500);
         /**ServerListEntry sle3 = new ServerListEntry("Pokemonexperte",
                 "A german server.", "shoddy.pokemonexperte.com",
