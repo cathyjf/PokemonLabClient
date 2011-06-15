@@ -81,7 +81,7 @@ public class UserPopupMenu extends JPopupMenu {
             }
         });
         JMenuItem gban = new JMenuItem("Ban user from server");
-        ban.addActionListener(new ActionListener() {
+        gban.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 BanDialog bd = new BanDialog(m_user.getName());
@@ -94,7 +94,7 @@ public class UserPopupMenu extends JPopupMenu {
             }
         });
         JMenuItem ipban = new JMenuItem("Ban user's IP address");
-        ban.addActionListener(new ActionListener() {
+        ipban.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 BanDialog bd = new BanDialog(m_user.getName());
