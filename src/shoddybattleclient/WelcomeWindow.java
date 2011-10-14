@@ -99,8 +99,11 @@ public class WelcomeWindow extends javax.swing.JFrame {
          */
 
         ServerListEntry sle = new ServerListEntry("Pokemonexperte",
-                "Pokemonexperte server", "lab.pokemonexperte.de",
+                "Pokemonexperte Server", "lab.pokemonexperte.de",
                 8446, 0, 500);
+        ServerListEntry sle2 = new ServerListEntry("Localhost",
+                "Virtual Machine Development Server", "localhost",
+                8446, 0, 15);
         /**ServerListEntry sle3 = new ServerListEntry("Pokemonexperte",
                 "A german server.", "shoddy.pokemonexperte.com",
                 1234, 5, 250);
@@ -108,7 +111,7 @@ public class WelcomeWindow extends javax.swing.JFrame {
                 "This is only for testing", "localhost",
                 9000, 0, 250);**/
 
-        return new ServerListEntry[] { sle /**, sle4 **/ };
+        return new ServerListEntry[] { sle, sle2 /**, sle4 **/ };
     }
 
     private void refreshServerList() {
